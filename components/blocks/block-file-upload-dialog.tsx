@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import {
   RiCheckboxCircleFill,
   RiCloseLine,
@@ -8,6 +8,7 @@ import {
   RiLinksLine,
   RiLoader2Fill,
   RiUploadCloud2Line,
+  RiInformationLine,
 } from '@remixicon/react';
 
 import * as Button from '@/components/ui/button';
@@ -19,6 +20,10 @@ import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
 import * as Modal from '@/components/ui/modal';
 import * as ProgressBar from '@/components/ui/progress-bar';
+import * as Checkbox from '@/components/ui/checkbox';
+import * as Badge from '@/components/ui/badge';
+import * as Tag from '@/components/ui/tag';
+import { cn } from '@/utils/cn';
 
 function IconInfoCustomFill(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -43,37 +48,44 @@ function IconInfoCustomFill(props: React.SVGProps<SVGSVGElement>) {
 interface BlockFileUploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  // We might add more props later, e.g., for handling uploads
 }
 
 export default function BlockFileUploadDialog({
   open,
   onOpenChange,
 }: BlockFileUploadDialogProps) {
-  // Remove internal state for open
-  // const [open, setOpen] = React.useState(true);
+  const [tags, setTags] = useState<string[]>([
+    'Digital Painting',
+    'Retrowave',
+    'NFT',
+  ]);
+  const [tagInput, setTagInput] = useState('');
+
+  const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && tagInput.trim() !== '' && tags.length < 8) {
+      e.preventDefault();
+      setTags([...tags, tagInput.trim()]);
+      setTagInput('');
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
 
   return (
-    // Pass props down to Modal.Root
     <Modal.Root open={open} onOpenChange={onOpenChange}>
-      {/* Remove Modal.Trigger from here, it's handled outside */}
-      {/* <Modal.Trigger asChild>
-        <Button.Root variant='neutral' mode='stroke'>
-          Upload Files
-        </Button.Root>
-      </Modal.Trigger> */}
       <Modal.Content className='max-w-[440px] shadow-custom-md'>
         <Modal.Header
           icon={RiUploadCloud2Line}
           title='Upload files'
           description='Select and upload the files of your choice'
         />
-        <Modal.Body>
+        <Modal.Body className='space-y-6'>
           <div className='space-y-4'>
             <FileUpload.Root>
               <input multiple type='file' tabIndex={-1} className='hidden' />
               <FileUpload.Icon as={RiUploadCloud2Line} />
-
               <div className='space-y-1.5'>
                 <div className='text-label-sm text-text-strong-950'>
                   Choose a file or drag & drop it here
@@ -84,9 +96,7 @@ export default function BlockFileUploadDialog({
               </div>
               <FileUpload.Button>Browse File</FileUpload.Button>
             </FileUpload.Root>
-
             <div className='space-y-4'>
-              {/* Uploading File */}
               <div className='flex w-full flex-col gap-4 rounded-2xl border border-stroke-soft-200 p-4 pl-3.5'>
                 <div className='flex gap-3'>
                   <FileFormatIcon.Root format='PDF' color='red' />
@@ -96,7 +106,7 @@ export default function BlockFileUploadDialog({
                     </div>
                     <div className='flex items-center gap-1'>
                       <span className='text-paragraph-xs text-text-sub-600'>
-                        0 KB of 120 KB
+                        60 KB of 120 KB
                       </span>
                       <span className='text-paragraph-xs text-text-sub-600'>
                         ∙
@@ -115,52 +125,102 @@ export default function BlockFileUploadDialog({
                     <CompactButton.Icon as={RiCloseLine} />
                   </CompactButton.Root>
                 </div>
-                <ProgressBar.Root value={40} />
-              </div>
-
-              {/* Completed File */}
-              <div className='flex items-start gap-3 rounded-2xl border border-stroke-soft-200 p-4 pl-3.5'>
-                <FileFormatIcon.Root format='PDF' color='red' />
-                <div className='flex-1 space-y-1'>
-                  <div className='text-label-sm text-text-strong-950'>
-                    google-certificate.pdf
-                  </div>
-                  <div className='flex items-center gap-1'>
-                    <span className='text-paragraph-xs text-text-sub-600'>
-                      94 KB of 94 KB
-                    </span>
-                    <span className='text-paragraph-xs text-text-sub-600'>
-                      ∙
-                    </span>
-                    <RiCheckboxCircleFill className='size-4 shrink-0 text-success-base' />
-                    <span className='text-paragraph-xs text-text-strong-950'>
-                      Completed
-                    </span>
-                  </div>
-                </div>
-                <CompactButton.Root variant='ghost' size='medium' tabIndex={-1}>
-                  <CompactButton.Icon as={RiDeleteBinLine} />
-                </CompactButton.Root>
+                <ProgressBar.Root value={50} />
               </div>
             </div>
           </div>
-          <Divider.Root variant='line-text' className='my-6'>
-            OR
-          </Divider.Root>
+          <Divider.Root variant='line-text'>OR</Divider.Root>
           <div className='flex flex-col gap-1'>
-            <Label.Root className='text-label-sm text-text-strong-950'>
+            <Label.Root className='flex items-center gap-1 text-label-sm text-text-strong-950'>
               Import from URL Link
-              <IconInfoCustomFill className='size-5 text-text-disabled-300' />
+              <IconInfoCustomFill className='size-4 text-text-disabled-300' />
             </Label.Root>
-
-            <Input.Root className='w-full'>
+            <Input.Root>
               <Input.Wrapper>
                 <Input.Icon as={RiLinksLine} />
                 <Input.Input placeholder='Paste file URL' />
               </Input.Wrapper>
             </Input.Root>
           </div>
+          <div className='flex flex-col gap-1'>
+            <Label.Root className='text-label-sm text-text-strong-950'>
+              Subject (Optional)
+            </Label.Root>
+            <Input.Root>
+              <Input.Wrapper>
+                <Input.Input placeholder='Question' />
+              </Input.Wrapper>
+            </Input.Root>
+          </div>
+          <div className='flex flex-col gap-1'>
+            <Label.Root className='flex items-center gap-1 text-label-sm text-text-strong-950'>
+              Add Tags (max. 8)
+              <RiInformationLine className='text-icon-secondary-400 size-4' />
+            </Label.Root>
+            <Input.Root>
+              <Input.Wrapper>
+                <Input.Input
+                  placeholder='Pixel Art'
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleAddTag}
+                />
+              </Input.Wrapper>
+            </Input.Root>
+            {tags.length > 0 && (
+              <div className='mt-2 flex flex-wrap gap-1.5'>
+                {tags.map((tag, index) => (
+                  <Tag.Root key={index} variant='stroke' className='pl-2'>
+                    {tag}
+                    <Tag.DismissButton onClick={() => handleRemoveTag(tag)} />
+                  </Tag.Root>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className='flex flex-col gap-3'>
+            <Label.Root className='text-label-sm text-text-strong-950'>
+              Display Preferences
+            </Label.Root>
+            <div className='flex items-center gap-3'>
+              <Checkbox.Root id='display-profile' defaultChecked />
+              <Label.Root
+                htmlFor='display-profile'
+                className='text-text-secondary-600 flex items-center gap-1.5 text-paragraph-sm font-normal'
+              >
+                Display on profile
+                <Badge.Root size='small' color='yellow' className='ml-1'>
+                  NEW
+                </Badge.Root>
+              </Label.Root>
+            </div>
+            <div className='flex items-center gap-3'>
+              <Checkbox.Root id='disable-commenting' />
+              <Label.Root
+                htmlFor='disable-commenting'
+                className='text-text-secondary-600 text-paragraph-sm font-normal'
+              >
+                Disable commenting
+              </Label.Root>
+            </div>
+          </div>
         </Modal.Body>
+        <Modal.Footer>
+          <Button.Root
+            variant='neutral'
+            mode='stroke'
+            onClick={() => onOpenChange(false)}
+          >
+            Cancel
+          </Button.Root>
+          <Button.Root
+            variant='neutral'
+            mode='filled'
+            onClick={() => onOpenChange(false)}
+          >
+            Upload
+          </Button.Root>
+        </Modal.Footer>
       </Modal.Content>
     </Modal.Root>
   );
