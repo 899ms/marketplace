@@ -22,24 +22,48 @@ import {
   RiQuestionLine, // Added for Help Center
   RiChat1Line, // Added for Live Chat
 } from '@remixicon/react';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
+import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 
 export default function Navbar() {
-  // --- Placeholder for Auth State ---
-  const isLoggedIn = true; // Set to true to show logged-in state, false for logged-out
-  // TODO: Replace with actual authentication check
-  // ---------------------------------
+  // --- Get Auth State using useAuth hook ---
+  const { user, signOut, loading } = useAuth();
+  // Replace the placeholder isLoggedIn with the actual user state
+  // const isLoggedIn = true; // Remove this line
+  // -----------------------------------------
 
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const { copy, hasCopied } = useCopyToClipboard(); // Assuming hook usage
-  const userId = '1235984'; // Example User ID
+  const { copy, hasCopied } = useCopyToClipboard();
+  // const userId = '1235984'; // Use user.id instead
 
   // TODO: Implement Dark Mode toggle logic (e.g., using next-themes)
   const handleDarkModeToggle = () => {
     setIsDarkMode((prev) => !prev);
     // Add theme switching logic here
   };
+
+  // Handle Logout
+  const handleLogout = async () => {
+    const { error } = await signOut();
+    if (error) {
+      console.error('Error logging out:', error);
+      // TODO: Show notification to user
+    }
+    // No need to redirect here, AuthProvider listener will update state
+  };
+
+  // Optional: Basic loading state
+  if (loading) {
+    return (
+      <nav className=''>
+        <div className='flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8'>
+          {/* Simplified loading state or skeleton */}
+          <div>Loading...</div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className=''>
@@ -107,7 +131,7 @@ export default function Navbar() {
             <RiGlobalLine className='size-5' />
           </button>
 
-          {isLoggedIn ? (
+          {user ? ( // Use user !== null for checking login status
             <>
               {/* Create Button */}
               <Button.Root variant='neutral' mode='filled' size='medium'>
@@ -127,10 +151,17 @@ export default function Navbar() {
                 <Dropdown.Trigger asChild>
                   <button className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center gap-2 rounded-lg border border-stroke-soft-200 p-1 pr-2 text-label-md'>
                     <Avatar.Root size='40'>
-                      {/* Placeholder - Replace with actual user image */}
+                      {/* Use user avatar or fallback */}
                       <Avatar.Image
-                        src='https://via.placeholder.com/40'
-                        alt='User Avatar'
+                        src={
+                          user.user_metadata?.avatar_url ||
+                          'https://via.placeholder.com/40'
+                        } // Use actual avatar_url from metadata
+                        alt={
+                          user.user_metadata?.full_name ||
+                          user.email ||
+                          'User Avatar'
+                        } // Use name or email for alt text
                       />
                     </Avatar.Root>
                     <span className='hidden md:inline'>Account</span>
@@ -142,21 +173,28 @@ export default function Navbar() {
                   <div className='mb-1 flex items-center gap-3 p-2'>
                     <Avatar.Root size='40'>
                       <Avatar.Image
-                        src='https://via.placeholder.com/40'
-                        alt='Emma Wright'
+                        src={
+                          user.user_metadata?.avatar_url ||
+                          'https://via.placeholder.com/40'
+                        } // Use actual avatar_url from metadata
+                        alt={
+                          user.user_metadata?.full_name ||
+                          user.email ||
+                          'User Avatar'
+                        } // Use name or email for alt text
                       />
-                      {/* Add Fallback logic if needed, Avatar component might handle it */}
                     </Avatar.Root>
                     <div className='flex-1'>
                       <div className='text-label-sm text-text-strong-950'>
-                        Emma Wright
+                        {user.user_metadata?.full_name || user.email || 'User'}{' '}
+                        {/* Display user name or email */}
                       </div>
                       <div className='mt-0.5 flex items-center gap-1'>
                         <span className='text-paragraph-xs text-text-sub-600'>
-                          ID: {userId}
+                          ID: {user.id} {/* Use actual user ID */}
                         </span>
                         <button
-                          onClick={() => copy(userId)}
+                          onClick={() => copy(user.id)} // Copy actual user ID
                           title='Copy ID'
                           className='text-icon-secondary-400 hover:text-icon-primary-500'
                         >
@@ -193,21 +231,30 @@ export default function Navbar() {
                   </Dropdown.Item>
 
                   {/* Account Settings */}
-                  <Dropdown.Item>
-                    <Dropdown.ItemIcon as={RiSettings3Line} />
-                    Account Settings
-                  </Dropdown.Item>
+                  <Link href='/settings' passHref>
+                    {' '}
+                    {/* Link to settings page */}
+                    <Dropdown.Item>
+                      <Dropdown.ItemIcon as={RiSettings3Line} />
+                      Account Settings
+                    </Dropdown.Item>
+                  </Link>
 
                   {/* Orders */}
-                  <Dropdown.Item>
-                    <Dropdown.ItemIcon as={RiFileList2Line} />
-                    Orders
-                  </Dropdown.Item>
+                  <Link href='/orders' passHref>
+                    {' '}
+                    {/* Link to orders page */}
+                    <Dropdown.Item>
+                      <Dropdown.ItemIcon as={RiFileList2Line} />
+                      Orders
+                    </Dropdown.Item>
+                  </Link>
 
                   <Divider.Root className='mx-2 my-1' />
 
                   {/* Support Section */}
                   <Dropdown.Label>SUPPORT</Dropdown.Label>
+                  {/* TODO: Add links to help/chat pages */}
                   <Dropdown.Item>
                     <Dropdown.ItemIcon as={RiQuestionLine} />
                     Help Center
@@ -219,16 +266,15 @@ export default function Navbar() {
 
                   <Divider.Root className='mx-2 my-1' />
 
-                  {/* Balance Section */}
+                  {/* Balance Section - TODO: Fetch actual balance */}
                   <div className='flex items-center justify-between p-2'>
                     <div>
                       <div className='text-text-secondary-600 text-label-sm'>
                         Balance
                       </div>
                       <div className='text-label-md font-medium text-text-strong-950'>
-                        12,000.05
-                      </div>{' '}
-                      {/* Example balance */}
+                        12,000.05 {/* Example balance */}
+                      </div>
                     </div>
                     <Button.Root variant='primary' mode='stroke' size='small'>
                       Top up
@@ -238,7 +284,12 @@ export default function Navbar() {
                   <Divider.Root className='mx-2 my-1' />
 
                   {/* Logout */}
-                  <Dropdown.Item className='text-error-base'>
+                  <Dropdown.Item
+                    className='text-error-base'
+                    onSelect={handleLogout}
+                  >
+                    {' '}
+                    {/* Call handleLogout on select */}
                     <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
                     Logout
                   </Dropdown.Item>
@@ -247,12 +298,24 @@ export default function Navbar() {
               {/* --- End Account Dropdown --- */}
             </>
           ) : (
+            // --- Logged Out State ---
             <>
-              {/* Free Start Button */}
-              <Button.Root variant='neutral' mode='filled' size='medium'>
-                Free Start
-              </Button.Root>
+              <Link href='/auth/login' passHref>
+                {' '}
+                {/* Link to login page */}
+                <Button.Root variant='neutral' mode='stroke' size='medium'>
+                  Log In
+                </Button.Root>
+              </Link>
+              <Link href='/auth/signup' passHref>
+                {' '}
+                {/* Link to sign up page */}
+                <Button.Root variant='neutral' mode='filled' size='medium'>
+                  Free Start {/* Or Sign Up */}
+                </Button.Root>
+              </Link>
             </>
+            // --- End Logged Out State ---
           )}
 
           {/* Mobile Menu Button - Placeholder */}
