@@ -103,7 +103,7 @@ export default function SignupForm() {
               className='w-full'
               asChild
             >
-              <a href='/auth?view=login'>Go to Login</a>
+              <a href='/auth/login'>Go to Login</a>
             </Button.Root>
           </div>
         </div>

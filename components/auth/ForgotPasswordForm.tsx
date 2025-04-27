@@ -105,7 +105,7 @@ export default function ForgotPasswordForm() {
               className='w-full'
               asChild
             >
-              <a href='/auth?view=login'>Back to Login</a>
+              <a href='/auth/login'>Back to Login</a>
             </Button.Root>
           </div>
         </div>
@@ -170,10 +170,7 @@ export default function ForgotPasswordForm() {
       <div className='text-center text-paragraph-sm'>
         <p className='text-text-sub-600'>
           Remember your password?{' '}
-          <a
-            href='/auth?view=login'
-            className='text-primary-base hover:underline'
-          >
+          <a href='/auth/login' className='text-primary-base hover:underline'>
             Back to Login
           </a>
         </p>
