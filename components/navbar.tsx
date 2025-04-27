@@ -1,7 +1,6 @@
 'use client'; // Mark component as client-side
 
 import Link from 'next/link';
-import Image from 'next/image'; // Using next/image for optimization
 import * as Button from './ui/button';
 import * as Input from './ui/input';
 import * as Dropdown from './ui/dropdown';
@@ -15,7 +14,6 @@ import {
   RiAddLine,
   RiNotification3Line,
   RiArrowDownSLine,
-  RiUserLine, // Icon for Profile
   RiSettings3Line, // Icon for Settings
   RiLogoutBoxRLine, // Icon for Logout
   RiMoonLine, // Added
@@ -25,7 +23,6 @@ import {
   RiChat1Line, // Added for Live Chat
 } from '@remixicon/react';
 import { useState } from 'react';
-import { cn } from '@/utils/cn'; // Import cn utility
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
 
 export default function Navbar() {

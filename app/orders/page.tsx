@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
 import * as Avatar from '@/components/ui/avatar';
 import * as AvatarGroup from '@/components/ui/avatar-group';
 import * as Divider from '@/components/ui/divider';
@@ -20,7 +19,6 @@ import {
   RiGoogleFill,
   RiArrowRightSLine,
 } from '@remixicon/react';
-import { cn } from '@/utils/cn';
 
 // Order Page Sidebar Component
 const OrderSidebar = () => {

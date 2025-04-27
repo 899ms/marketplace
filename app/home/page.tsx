@@ -2,11 +2,11 @@
 
 import React, { useState, useEffect } from 'react'; // Import hooks
 import Link from 'next/link';
-import Image from 'next/image'; // For Google logos if needed
 import * as Avatar from '@/components/ui/avatar';
 import * as Divider from '@/components/ui/divider'; // Import Divider
 import * as LinkButton from '@/components/ui/link-button'; // Restore import
 import * as Badge from '@/components/ui/badge'; // Restore import
+import * as Tabs from '@/components/ui/tabs';
 import {
   RiStarFill,
   RiHomeLine,
@@ -34,18 +34,10 @@ interface SidebarLinkProps {
   // isActive?: boolean;
 }
 const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
-  // Remove isActive logic for now
-  const isActive = false;
   return (
     <Link
       href={href}
-      className={cn(
-        'flex items-center gap-3 rounded-lg px-3 py-2 text-label-md transition-colors duration-200',
-        // isActive // Use this line later
-        //   ? 'bg-bg-weak-50 font-medium text-text-strong-950'
-        //   : 'text-text-secondary-600 hover:bg-bg-weak-50 hover:text-text-strong-950'
-        'text-text-secondary-600 hover:bg-bg-weak-50 hover:text-text-strong-950', // Default style
-      )}
+      className='text-text-primary-600 hover:bg-secondary-transparent-50 flex items-center gap-2 rounded-full px-4 py-2 text-paragraph-sm'
     >
       <Icon
         className={cn(
@@ -335,8 +327,8 @@ const WorkerCard = () => {
         </span>
       </div>
       <p className='text-text-secondary-600 mb-3 line-clamp-2 text-paragraph-xs'>
-        Passionate about delivering high-quality audio mixing and editing. Let's
-        create something....
+        Passionate about delivering high-quality audio mixing and editing.
+        Let&apos;s create something....
       </p>
       <div className='flex flex-wrap gap-1'>
         <Badge.Root variant='light' size='small'>
@@ -361,6 +353,9 @@ const WorkerCard = () => {
 
 // Main Content Component
 const MainContent = () => {
+  const tabItems = ['All', 'Offers', 'Completed', 'Cancelled'];
+  const [activeTab, setActiveTab] = useState(tabItems[0]);
+
   return (
     <main className='flex-1'>
       <Banner />
@@ -394,6 +389,37 @@ const MainContent = () => {
           <ServiceCard />
         </div>
       </section>
+
+      {/* Orders Section */}
+      <section className='mt-8'>
+        <SectionHeader title='Orders' href='/orders' />
+        <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
+          <Tabs.List>
+            {tabItems.map((tab) => (
+              <Tabs.Trigger key={tab} value={tab}>
+                {tab}
+              </Tabs.Trigger>
+            ))}
+          </Tabs.List>
+          <Tabs.Content value={activeTab}>
+            {/* Orders content */}
+            <div className='text-text-sub-500 mt-1 text-paragraph-sm'>
+              You can manage your orders, view details, and track their status
+              here. Find everything you need in one place. We&apos;re here to
+              help!
+            </div>
+            {/* Buttons can go here if needed */}
+          </Tabs.Content>
+        </Tabs.Root>
+      </section>
+
+      {/* Order Details Section */}
+      <section className='mt-8'>
+        {/* Replace ' with &apos; if present in actual content */}
+      </section>
+
+      {/* Review Section */}
+      <section className='mt-8'>{/* Review content */}</section>
     </main>
   );
 };

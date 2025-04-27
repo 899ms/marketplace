@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import * as Accordion from '@/components/ui/accordion';
 import * as Button from '@/components/ui/button';
 import * as Checkbox from '@/components/ui/checkbox';
@@ -15,11 +14,9 @@ import * as FileUpload from '@/components/ui/file-upload';
 import {
   RiArrowRightSLine,
   RiCustomerService2Line,
-  RiCheckLine,
   RiArrowDownSLine,
   RiInformationLine,
   RiCalendarLine,
-  RiUploadCloud2Line,
   RiDeleteBinLine,
   RiFileTextLine,
   RiCheckboxCircleFill,
@@ -48,18 +45,13 @@ const VerticalStepper = ({
           <ul className='flex flex-col gap-1'>
             {steps.map((label, index) => {
               const stepNumber = index + 1;
-              const isActive = stepNumber === currentStep;
-              // Determine if step is completed (optional, based on future logic)
-              // const isCompleted = stepNumber < currentStep;
-
               return (
                 <li key={label}>
                   <button
                     onClick={() => onStepClick(stepNumber)}
-                    disabled={!isActive && stepNumber > currentStep} // Disable future steps unless active
                     className={cn(
-                      'flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-label-md transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-50',
-                      isActive
+                      'flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-label-md transition-colors duration-200',
+                      stepNumber === currentStep
                         ? 'bg-bg-weak-50 font-medium text-text-strong-950'
                         : 'text-text-secondary-600 hover:bg-bg-weak-50 hover:text-text-strong-950',
                     )}
@@ -68,18 +60,16 @@ const VerticalStepper = ({
                       <div
                         className={cn(
                           'flex size-5 items-center justify-center rounded-full text-label-xs font-medium',
-                          isActive
+                          stepNumber === currentStep
                             ? 'bg-primary-base text-static-white'
                             : 'text-text-secondary-600 bg-bg-soft-200',
-                          // Add completed state style if needed: isCompleted ? 'bg-success-base text-static-white' : ...
                         )}
                       >
-                        {/* {isCompleted ? <RiCheckLine className="size-3" /> : stepNumber} */}
                         {String(stepNumber).padStart(2, '0')}
                       </div>
                       {label}
                     </div>
-                    {isActive && (
+                    {stepNumber === currentStep && (
                       <RiArrowRightSLine className='text-text-secondary-600 size-4' />
                     )}
                   </button>
@@ -609,7 +599,7 @@ const Step4Preview = ({
   prevStep,
   submitForm,
 }: {
-  formData: any;
+  formData: FormData;
   prevStep: () => void;
   submitForm: () => void;
 }) => {
@@ -623,7 +613,11 @@ const Step4Preview = ({
     negotiate: false,
     skills: ['Entry Level', 'Internship', 'Mid-level Senior'],
     sources: ['Manual Entry'],
-    files: ['Name.wav', 'my-cv.pdf'],
+    files: [
+      { name: 'file_example_1.pdf' },
+      { name: 'file_example_2.docx' },
+      { name: 'another_document.txt' },
+    ],
     usage: 'private', // 'private' or 'business'
     privacy: 'public', // 'public' or 'private'
     discountCode: 'codeabcde',
@@ -702,9 +696,9 @@ const Step4Preview = ({
         <div className='flex items-center justify-between'>
           <span className='text-sm text-text-strong-950'>Files</span>
           <div className='flex flex-col items-end gap-1'>
-            {displayData.files.map((file: string, index: number) => (
+            {displayData.files.map((file, index) => (
               <span key={index} className='text-sm text-text-secondary-600'>
-                {file}
+                {file.name}
               </span>
             ))}
           </div>
@@ -795,10 +789,24 @@ const Step4Preview = ({
   );
 };
 
-// --- Create Job Page ---
+// --- Define FormData structure ---
+interface FormData {
+  subject?: string;
+  detail?: string;
+  amount?: number;
+  currency?: string;
+  deadline?: string; // Or Date?
+  skills?: string[];
+  sources?: string[];
+  files?: File[]; // Or a custom File object type?
+  usageOption?: string;
+  privacyOption?: string;
+}
+
+// --- Main Create Job Page Component ---
 export default function CreateJobPage() {
   const [activeStep, setActiveStep] = useState(1);
-  const [formData, setFormData] = useState({}); // Placeholder for form data
+  const [formData] = useState<FormData>({}); // Use interface, remove unused setFormData
 
   const nextStep = () =>
     setActiveStep((prev) => Math.min(prev + 1, stepsConfig.length));

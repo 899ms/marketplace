@@ -15,14 +15,12 @@ import {
   RiSearchLine,
   RiStarFill,
   RiCloseLine,
-  RiFilter2Line,
   RiInformationLine,
   RiGoogleFill,
   RiFireFill,
   RiMoneyDollarCircleLine,
   RiBriefcaseLine,
   RiSparklingLine,
-  RiTimeLine,
   RiExternalLinkLine,
   RiArrowRightLine,
   RiHeartLine,
@@ -394,8 +392,8 @@ const WorkerCard = ({ onClick }: { onClick?: () => void }) => {
         </span>
       </div>
       <p className='text-text-secondary-600 mb-3 line-clamp-2 text-paragraph-xs'>
-        Passionate about delivering high-quality audio mixing and editing. Let's
-        create something....
+        Passionate about delivering high-quality audio mixing and editing.
+        Let&apos;s create something....
       </p>
       <div className='flex flex-wrap gap-1'>
         <Badge.Root variant='light' size='small'>

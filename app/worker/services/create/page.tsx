@@ -1,11 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
+import Image from 'next/image';
 import * as Avatar from '@/components/ui/avatar';
-import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
-import * as Checkbox from '@/components/ui/checkbox';
 import * as FileUpload from '@/components/ui/file-upload';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';
@@ -19,12 +17,9 @@ import {
   RiArrowRightSLine,
   RiArrowLeftSLine,
   RiInformationLine,
-  RiDeleteBinLine,
   RiAddLine,
-  RiImageLine, // Placeholder for image carousel
-  RiFileListLine, // Placeholder for Options section
-  RiStarFill, // For review step
-  RiGoogleFill, // For review step
+  RiStarFill,
+  RiGoogleFill,
   RiMoneyDollarCircleLine,
   RiTimeLine,
 } from '@remixicon/react';
@@ -41,7 +36,6 @@ const Stepper = ({ currentStep, steps }: StepperProps) => {
     <div className='mb-8 flex items-center justify-center gap-4'>
       {steps.map((label, index) => {
         const stepNumber = index + 1;
-        const isActive = stepNumber === currentStep;
         const isCompleted = stepNumber < currentStep;
 
         return (
@@ -50,11 +44,9 @@ const Stepper = ({ currentStep, steps }: StepperProps) => {
               <div
                 className={cn(
                   'flex size-6 items-center justify-center rounded-full text-label-sm font-medium',
-                  isActive
-                    ? 'bg-primary-base text-static-white'
-                    : isCompleted
-                      ? 'bg-success-base text-static-white'
-                      : 'text-text-secondary-600 bg-bg-weak-50',
+                  isCompleted
+                    ? 'bg-success-base text-static-white'
+                    : 'text-text-secondary-600 bg-bg-weak-50',
                 )}
               >
                 {isCompleted ? <RiCheckLine className='size-4' /> : stepNumber}
@@ -62,7 +54,9 @@ const Stepper = ({ currentStep, steps }: StepperProps) => {
               <span
                 className={cn(
                   'text-label-md',
-                  isActive ? 'text-text-strong-950' : 'text-text-secondary-600',
+                  isCompleted
+                    ? 'text-text-strong-950'
+                    : 'text-text-secondary-600',
                 )}
               >
                 {label}
@@ -79,25 +73,19 @@ const Stepper = ({ currentStep, steps }: StepperProps) => {
 };
 
 // --- Step 1: Basic Settings ---
-const Step1BasicSettings = ({ formData, setFormData, nextStep }: any) => {
-  const [tags, setTags] = useState<string[]>([
-    'Digital Painting',
-    'Retrowave',
-    'NFT',
-  ]);
-  const [tagInput, setTagInput] = useState('');
+const Step1BasicInfo = ({ nextStep }: { nextStep: () => void }) => {
+  const [tags, setTags] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState('');
 
   const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && tagInput.trim() !== '' && tags.length < 8) {
+    if (e.key === 'Enter' && inputValue.trim() !== '' && tags.length < 8) {
       e.preventDefault();
-      // TODO: Update formData as well
-      setTags([...tags, tagInput.trim()]);
-      setTagInput('');
+      setTags([...tags, inputValue.trim()]);
+      setInputValue('');
     }
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
-    // TODO: Update formData as well
     setTags(tags.filter((tag) => tag !== tagToRemove));
   };
 
@@ -149,8 +137,8 @@ const Step1BasicSettings = ({ formData, setFormData, nextStep }: any) => {
             <Input.Wrapper>
               <Input.Input
                 placeholder='Pixel Art'
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
                 onKeyDown={handleAddTag}
               />
             </Input.Wrapper>
@@ -208,9 +196,13 @@ const Step1BasicSettings = ({ formData, setFormData, nextStep }: any) => {
 };
 
 // --- Step 2: Pricing ---
-const Step2Pricing = ({ formData, setFormData, nextStep, prevStep }: any) => {
-  // TODO: Add state and handlers for additional services
-
+const Step2Pricing = ({
+  nextStep,
+  prevStep,
+}: {
+  nextStep: () => void;
+  prevStep: () => void;
+}) => {
   return (
     <div className='shadow-sm mx-auto max-w-2xl rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
       <div className='flex items-center justify-between border-b border-stroke-soft-200 p-4'>
@@ -347,7 +339,13 @@ const Step2Pricing = ({ formData, setFormData, nextStep, prevStep }: any) => {
 };
 
 // --- Step 3: Review ---
-const Step3Review = ({ formData, prevStep, submitForm }: any) => {
+const Step3Review = ({
+  prevStep,
+  submitForm,
+}: {
+  prevStep: () => void;
+  submitForm: () => void;
+}) => {
   // Mock data for preview - replace with formData when available
   const previewData = {
     title: 'WordPress Website Design',
@@ -427,11 +425,12 @@ const Step3Review = ({ formData, prevStep, submitForm }: any) => {
           {/* Image Carousel */}
           <div className='space-y-3'>
             <div className='relative aspect-video w-full overflow-hidden rounded-xl bg-bg-weak-50'>
-              {/* Main Image - Placeholder */}
-              <img
+              {/* Main Image - Replaced with next/image */}
+              <Image
                 src={previewData.images[currentImageIndex]}
                 alt={previewData.title}
-                className='absolute inset-0 h-full w-full object-cover'
+                fill
+                className='object-cover'
               />
               {/* Carousel Controls */}
               <button
@@ -452,7 +451,7 @@ const Step3Review = ({ formData, prevStep, submitForm }: any) => {
               {previewData.images.slice(1).map((thumb, index) => (
                 <button
                   key={index}
-                  onClick={() => handleThumbnailClick(index + 1)} // Adjust index if main image is first
+                  onClick={() => handleThumbnailClick(index + 1)}
                   className={cn(
                     'aspect-video w-24 overflow-hidden rounded-lg border-2',
                     currentImageIndex === index + 1
@@ -460,10 +459,11 @@ const Step3Review = ({ formData, prevStep, submitForm }: any) => {
                       : 'border-transparent hover:border-gray-300',
                   )}
                 >
-                  <img
+                  <Image
                     src={thumb}
                     alt={`Thumbnail ${index + 1}`}
-                    className='h-full w-full object-cover'
+                    fill
+                    className='object-cover'
                   />
                 </button>
               ))}
@@ -607,54 +607,51 @@ const Step3Review = ({ formData, prevStep, submitForm }: any) => {
 
 // --- Main Page Component ---
 export default function CreateServicePage() {
-  const [currentStep, setCurrentStep] = useState(1);
-  const [formData, setFormData] = useState({}); // Initialize with your form structure
+  const [activeStep, setActiveStep] = useState(1);
 
+  const [currentStep, setCurrentStep] = useState(activeStep);
+
+  // Form state
+  const [formData, setFormData] = useState({
+    title: '',
+    detail: '',
+    tags: [] as string[],
+    image: null,
+    price: 0.0,
+    currency: 'CNY',
+    leadTime: 7,
+  });
   const steps = ['Worker Terms', 'Submit', 'Review'];
 
   const nextStep = () =>
     setCurrentStep((prev) => Math.min(prev + 1, steps.length));
   const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
   const submitForm = () => {
-    console.log('Form Submitted:', formData);
+    console.log('Form Submitted:', {});
     // Handle actual form submission logic here
+    console.log('Form Submitted:', formData);
+    setActiveStep(currentStep + 1);
+    setFormData({
+      title: '',
+      detail: '',
+      tags: [] as string[],
+      image: null,
+      price: 0.0,
+      currency: 'CNY',
+      leadTime: 7,
+    });
   };
 
   const renderStep = () => {
     switch (currentStep) {
       case 1:
-        return (
-          <Step1BasicSettings
-            formData={formData}
-            setFormData={setFormData}
-            nextStep={nextStep}
-          />
-        );
+        return <Step1BasicInfo nextStep={nextStep} />;
       case 2:
-        return (
-          <Step2Pricing
-            formData={formData}
-            setFormData={setFormData}
-            nextStep={nextStep}
-            prevStep={prevStep}
-          />
-        );
+        return <Step2Pricing nextStep={nextStep} prevStep={prevStep} />;
       case 3:
-        return (
-          <Step3Review
-            formData={formData}
-            prevStep={prevStep}
-            submitForm={submitForm}
-          />
-        );
+        return <Step3Review prevStep={prevStep} submitForm={submitForm} />;
       default:
-        return (
-          <Step1BasicSettings
-            formData={formData}
-            setFormData={setFormData}
-            nextStep={nextStep}
-          />
-        );
+        return <Step1BasicInfo nextStep={nextStep} />;
     }
   };
 

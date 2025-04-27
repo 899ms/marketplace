@@ -7,8 +7,6 @@ import * as Avatar from '@/components/ui/avatar';
 import * as Divider from '@/components/ui/divider';
 import * as LinkButton from '@/components/ui/link-button';
 import * as Badge from '@/components/ui/badge';
-import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal'; // For Meetings widget
-import * as Tabs from '@/components/ui/tabs'; // For Meetings widget
 import {
   RiStarFill,
   RiHomeLine,
@@ -21,48 +19,29 @@ import {
   RiTwitterXFill,
   RiGoogleFill,
   RiArrowRightSLine,
-  RiArrowLeftSLine,
-  RiBriefcaseLine,
+  RiCalendarEventLine,
   RiMoneyDollarCircleLine,
+  RiBriefcaseLine,
   RiSparklingLine,
-  RiCalendarEventLine, // For Calendar widget
-  RiInformationLine, // For Calendar widget
-  RiTimeLine, // For Meetings widget
-  RiErrorWarningLine, // For Meetings widget
-  RiCheckLine, // For Meetings widget
 } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 
-// --- Reusable Helper Components ---
+// --- Helper Components and Interfaces ---
 interface SidebarLinkProps {
   href: string;
   icon: React.ElementType;
   label: string;
-  isActive?: boolean; // Add isActive back for potential use
 }
 
-const SidebarLink = ({
-  href,
-  icon: Icon,
-  label,
-  isActive,
-}: SidebarLinkProps) => {
+const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
   return (
     <Link
       href={href}
       className={cn(
         'flex items-center gap-3 rounded-lg px-3 py-2 text-label-md transition-colors duration-200',
-        isActive
-          ? 'bg-bg-weak-50 font-medium text-text-strong-950'
-          : 'text-text-secondary-600 hover:bg-bg-weak-50 hover:text-text-strong-950',
       )}
     >
-      <Icon
-        className={cn(
-          'size-5',
-          isActive ? 'text-icon-strong-950' : 'text-icon-secondary-400',
-        )}
-      />
+      <Icon className={cn('size-5')} />
       {label}
     </Link>
   );
@@ -100,7 +79,6 @@ const WorkerSidebar = () => {
     rating: 4.9,
     reviews: 125,
   };
-  const activeRoute = '/home'; // Example, replace with actual router logic
 
   const tags = [
     'Grammy',
@@ -151,19 +129,13 @@ const WorkerSidebar = () => {
         <nav>
           <ul className='flex flex-col gap-1'>
             <li>
-              <SidebarLink
-                href='/worker/home'
-                icon={RiHomeLine}
-                label='Home'
-                isActive={activeRoute === '/home'}
-              />
+              <SidebarLink href='/worker/home' icon={RiHomeLine} label='Home' />
             </li>
             <li>
               <SidebarLink
                 href='/worker/orders'
                 icon={RiFileList2Line}
                 label='Order'
-                isActive={activeRoute === '/orders'}
               />
             </li>
             <li>
@@ -171,7 +143,6 @@ const WorkerSidebar = () => {
                 href='/worker/chat'
                 icon={RiChat1Line}
                 label='Chat'
-                isActive={activeRoute === '/chat'}
               />
             </li>
             <li>
@@ -179,7 +150,6 @@ const WorkerSidebar = () => {
                 href='/worker/bonus'
                 icon={RiCouponLine}
                 label='Bonus'
-                isActive={activeRoute === '/bonus'}
               />
             </li>
             <li>
@@ -187,7 +157,6 @@ const WorkerSidebar = () => {
                 href='/worker/help'
                 icon={RiQuestionLine}
                 label='Help Center'
-                isActive={activeRoute === '/help'}
               />
             </li>
           </ul>

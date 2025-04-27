@@ -4,8 +4,6 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import * as Avatar from '@/components/ui/avatar';
 import * as Badge from '@/components/ui/badge';
-import * as Breadcrumb from '@/components/ui/breadcrumb';
-import * as Accordion from '@/components/ui/accordion';
 import {
   RiHomeLine,
   RiNotification4Line,
@@ -19,10 +17,7 @@ import {
   RiCloseLine,
   RiAddLine,
   RiChat3Line,
-  RiCheckLine,
-  RiArrowRightSLine,
 } from '@remixicon/react';
-import { cn } from '@/utils/cn';
 
 // Mock data for the project
 const projectData = {
@@ -130,7 +125,7 @@ const projectData = {
   ],
 };
 
-const ProjectDetailPage = ({ params }: { params: { id: string } }) => {
+const ProjectDetailPage = () => {
   const [faqs, setFaqs] = useState(projectData.faqs);
 
   const toggleFaq = (index: number) => {

@@ -2,9 +2,7 @@
 
 import React, { useState } from 'react';
 import {
-  RiCheckboxCircleFill,
   RiCloseLine,
-  RiDeleteBinLine,
   RiLinksLine,
   RiLoader2Fill,
   RiUploadCloud2Line,
@@ -23,7 +21,6 @@ import * as ProgressBar from '@/components/ui/progress-bar';
 import * as Checkbox from '@/components/ui/checkbox';
 import * as Badge from '@/components/ui/badge';
 import * as Tag from '@/components/ui/tag';
-import { cn } from '@/utils/cn';
 
 function IconInfoCustomFill(props: React.SVGProps<SVGSVGElement>) {
   return (

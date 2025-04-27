@@ -1,13 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import * as Avatar from '@/components/ui/avatar';
 import * as Badge from '@/components/ui/badge';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import * as Button from '@/components/ui/button';
-import * as Tabs from '@/components/ui/tabs';
-import * as Modal from '@/components/ui/modal';
 import BlockFileUploadDialog from '@/components/blocks/block-file-upload-dialog';
 import {
   RiStarFill,
@@ -15,13 +12,9 @@ import {
   RiPlayLine,
   RiBookmarkLine,
   RiHeartLine,
-  RiMoneyDollarCircleLine,
-  RiBriefcaseLine,
-  RiSparklingLine,
   RiExternalLinkLine,
   RiUploadCloud2Line,
 } from '@remixicon/react';
-import { cn } from '@/utils/cn';
 
 // Mock data for the worker profile
 const workerData = {
@@ -150,8 +143,37 @@ const workerData = {
   ],
 };
 
+// --- Interface Definitions ---
+interface ServiceItemData {
+  image: string;
+  title: string;
+  rating: number;
+  reviewCount: number;
+  price: number;
+}
+
+interface WorkItemData {
+  id?: string;
+  title: string;
+  description: string;
+  genres: string[];
+  duration: string;
+  bpm: string;
+}
+
+interface ReviewItemData {
+  id: string;
+  reviewer: string;
+  reviewerAvatar: string;
+  rating: number;
+  date: string;
+  contractTitle: string;
+  content: string;
+  price: number;
+}
+
 // Service Card Component
-const ServiceCard = ({ service }: { service: any }) => {
+const ServiceCard = ({ service }: { service: ServiceItemData }) => {
   return (
     <div className='shadow-sm hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all'>
       {/* Image Section with Blue "J" Avatar */}
@@ -187,7 +209,7 @@ const ServiceCard = ({ service }: { service: any }) => {
 };
 
 // Work Item Component
-const WorkItem = ({ item }: { item: any }) => {
+const WorkItem = ({ item }: { item: WorkItemData }) => {
   return (
     <div className='flex items-center justify-between gap-4 border-b border-stroke-soft-200 py-4 last:border-b-0'>
       <div className='flex items-center gap-3'>
@@ -220,7 +242,7 @@ const WorkItem = ({ item }: { item: any }) => {
 };
 
 // Review Item Component
-const ReviewItem = ({ review }: { review: any }) => {
+const ReviewItem = ({ review }: { review: ReviewItemData }) => {
   return (
     <div className='border-b border-stroke-soft-200 py-5 last:border-b-0'>
       <div className='mb-3 flex items-start justify-between'>
@@ -259,11 +281,11 @@ const ReviewItem = ({ review }: { review: any }) => {
   );
 };
 
-export default function WorkerDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function WorkerDetailPage(
+  {
+    // params prop removed as it was unused
+  },
+) {
   const worker = workerData; // In reality, this would be fetched based on params.id
   const [activeTab, setActiveTab] = useState('Work');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -357,10 +379,10 @@ export default function WorkerDetailPage({
               <h2 className='mb-3 font-semibold text-text-strong-950'>About</h2>
               <p className='text-sm text-text-secondary-600 mb-6'>
                 Lorem Ipsum is simply dummy text of the printing and typesetting
-                industry. Lorem Ipsum has been the industry's standard dummy
-                text ever since the 1500s, when an unknown printer took a galley
-                of type and scrambled it to make a type specimen book. It has
-                survived not only five centuries, but also the leap into
+                industry. Lorem Ipsum has been the industry&apos;s standard
+                dummy text ever since the 1500s, when an unknown printer took a
+                galley of type and scrambled it to make a type specimen book. It
+                has survived not only five centuries, but also the leap into
                 electronic typesetting, remaining essentially unchanged.
               </p>
 

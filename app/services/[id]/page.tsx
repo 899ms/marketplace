@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-import Image from 'next/image';
+import React, { useState, use } from 'react';
 import Link from 'next/link';
 import * as Avatar from '@/components/ui/avatar';
 import * as Badge from '@/components/ui/badge';
@@ -19,7 +18,6 @@ import {
   RiCalendar2Line,
   RiMessage2Line,
   RiCheckLine,
-  RiMoreLine,
   RiTwitchFill,
   RiTwitterXFill,
   RiHomeLine,
@@ -86,17 +84,48 @@ const ImageCarousel = ({ images }: { images: string[] }) => {
   );
 };
 
+// --- Interface Definitions ---
+interface RelatedService {
+  title: string;
+  rating: number;
+  reviews: number;
+  price: number;
+}
+
+interface ReviewUser {
+  name: string;
+  avatar: string;
+  rating: number;
+}
+
+interface Review {
+  user: ReviewUser;
+  date: string;
+  text: string;
+  amount: number;
+}
+
+interface ServicePageProps {
+  params: Promise<{ id: string }>;
+  searchParams?: Promise<Record<string, string | string[] | undefined>>;
+}
+
 // Service Detail Component
 export default function ServiceDetailPage({
   params,
-}: {
-  params: { id: string };
-}) {
+  searchParams,
+}: ServicePageProps) {
+  // Use React's 'use' hook to resolve the promises
+  const awaitedParams = use(params);
+  console.log('Awaited Params:', searchParams);
+  // Resolve searchParams even if not immediately used, to satisfy types
+  //const awaitedSearchParams = searchParams ? use(searchParams) : undefined;
+
   const [activeTab, setActiveTab] = useState('Details');
 
   // Placeholder data - would be fetched from API in a real application
   const service = {
-    id: params.id,
+    id: awaitedParams.id,
     title: 'You will get WordPress Website Design',
     images: ['/placeholder1.jpg', '/placeholder2.jpg', '/placeholder3.jpg'],
     price: 140,
@@ -209,7 +238,7 @@ export default function ServiceDetailPage({
   };
 
   // Related service card component (reusing from services page with modifications)
-  const RelatedServiceCard = ({ service }: { service: any }) => {
+  const RelatedServiceCard = ({ service }: { service: RelatedService }) => {
     return (
       <div className='shadow-sm hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all'>
         {/* Image Section with Blue "J" Avatar */}
@@ -245,7 +274,7 @@ export default function ServiceDetailPage({
   };
 
   // Review item component
-  const ReviewItem = ({ review }: { review: any }) => {
+  const ReviewItem = ({ review }: { review: Review }) => {
     const [expanded, setExpanded] = useState(false);
 
     return (
