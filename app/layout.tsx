@@ -36,7 +36,7 @@ export default function RootLayout({
       className={cn(inter.variable, geistMono.variable, 'antialiased')}
     >
       <body className='bg-bg-white-0 text-text-strong-950'>
-        <ThemeProvider attribute='class'>
+        <ThemeProvider attribute='class' defaultTheme='light'>
           <TooltipProvider>
             <div className='flex min-h-screen flex-col'>
               <Navbar />
