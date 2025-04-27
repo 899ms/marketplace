@@ -7,6 +7,7 @@ import { cn } from '@/utils/cn';
 import { Provider as TooltipProvider } from '@/components/ui/tooltip';
 import { NotificationProvider } from '@/components/ui/notification-provider';
 import Navbar from '@/components/navbar';
+import { AuthProvider } from '@/utils/supabase/AuthContext';
 
 const inter = FontSans({
   subsets: ['latin'],
@@ -36,20 +37,22 @@ export default function RootLayout({
       className={cn(inter.variable, geistMono.variable, 'antialiased')}
     >
       <body className='bg-bg-white-0 text-text-strong-950'>
-        <ThemeProvider attribute='class' defaultTheme='light'>
-          <TooltipProvider>
-            <div className='flex min-h-screen flex-col'>
-              <div className='border-b border-stroke-soft-200'>
+        <AuthProvider>
+          <ThemeProvider attribute='class' defaultTheme='light'>
+            <TooltipProvider>
+              <div className='flex min-h-screen flex-col'>
+                <div className='border-b border-stroke-soft-200'>
+                  <div className='mx-auto w-full max-w-[1440px]'>
+                    <Navbar />
+                  </div>
+                </div>
                 <div className='mx-auto w-full max-w-[1440px]'>
-                  <Navbar />
+                  <main className='flex flex-1 flex-col'>{children}</main>
                 </div>
               </div>
-              <div className='mx-auto w-full max-w-[1440px]'>
-                <main className='flex flex-1 flex-col'>{children}</main>
-              </div>
-            </div>
-          </TooltipProvider>
-        </ThemeProvider>
+            </TooltipProvider>
+          </ThemeProvider>
+        </AuthProvider>
         <NotificationProvider />
       </body>
     </html>
