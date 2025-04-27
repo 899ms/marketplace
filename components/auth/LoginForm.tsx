@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
-import { authOperations, SignInSchema } from '@/utils/supabase';
+import { useState, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { authOperations, SignInSchema, userOperations } from '@/utils/supabase';
 import { z } from 'zod';
 import * as Input from '@/components/ui/input';
 import * as Button from '@/components/ui/button';
@@ -43,7 +44,33 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirectedFrom = searchParams.get('redirectedFrom');
+
+  useEffect(() => {
+    // Check if there's an error parameter in the URL
+    const errorParam = searchParams.get('error');
+    if (errorParam) {
+      switch (errorParam) {
+        case 'profile_fetch_failed':
+          setError('Failed to load your profile. Please try again.');
+          break;
+        case 'invalid_role':
+          setError(
+            'Account role is missing or invalid. Please contact support.',
+          );
+          break;
+        case 'profile_fetch_exception':
+          setError(
+            'An error occurred while loading your profile. Please try again.',
+          );
+          break;
+        default:
+          setError('An error occurred. Please try again.');
+      }
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,24 +82,77 @@ export default function LoginForm() {
       SignInSchema.parse({ email, password });
 
       // Attempt to sign in
-      const { user, error } = await authOperations.signIn({ email, password });
+      const { user, error: signInError } = await authOperations.signIn({
+        email,
+        password,
+      });
 
-      if (error) {
-        setError(error);
+      if (signInError) {
+        setError(signInError);
+        setLoading(false);
         return;
       }
 
-      setSuccess(true);
-      // Redirect or update UI state on successful login
-      window.location.href = '/dashboard';
+      if (user) {
+        // Fetch user profile data after successful login
+        const profile = await userOperations.getUserById(user.id);
+
+        if (profile && profile.user_type) {
+          // If we have a redirectedFrom URL and it matches the user's role, go there
+          if (redirectedFrom) {
+            // Check that the redirect URL is appropriate for the user's role
+            const isBuyerRedirect = redirectedFrom.startsWith('/app/home');
+            const isSellerRedirect =
+              redirectedFrom.startsWith('/app/worker/home');
+
+            if (
+              (profile.user_type === 'buyer' && isBuyerRedirect) ||
+              (profile.user_type === 'seller' && isSellerRedirect)
+            ) {
+              console.log(`Redirecting to: ${redirectedFrom}`);
+              window.location.href = redirectedFrom;
+              return;
+            }
+          }
+
+          // Otherwise, redirect based on user_type
+          if (profile.user_type === 'seller') {
+            console.log('Redirecting to seller home');
+            window.location.href = '/worker/home';
+          } else if (profile.user_type === 'buyer') {
+            console.log('Redirecting to buyer home');
+            window.location.href = '/home'; // Changed from router.push to window.location
+          } else {
+            // Fallback if user_type is somehow invalid (shouldn't happen with CHECK constraint)
+            console.warn('Invalid user_type found:', profile.user_type);
+            setError('Login successful, but could not determine user role.');
+            window.location.href = '/'; // Redirect to generic home or dashboard
+          }
+        } else {
+          // Handle case where profile data couldn't be fetched
+          console.error(
+            'Failed to fetch user profile after login for user:',
+            user.id,
+          );
+          setError(
+            'Login successful, but failed to load user data. Please try again later or contact support.',
+          );
+          // Maybe redirect to a generic page or show error in place
+          // For now, keep loading=false and let error message show
+          setLoading(false);
+        }
+      } else {
+        // Handle case where user object is null after successful sign-in (unexpected)
+        setError('Login seemed successful, but user data is missing.');
+        setLoading(false);
+      }
     } catch (err) {
       if (err instanceof z.ZodError) {
         setError(err.errors[0].message);
       } else {
-        setError('An unexpected error occurred');
+        setError('An unexpected error occurred during login');
         console.error(err);
       }
-    } finally {
       setLoading(false);
     }
   };
@@ -93,15 +173,6 @@ export default function LoginForm() {
           variant='error'
           title='Login failed'
           description={error}
-          className='mb-4'
-        />
-      )}
-
-      {success && (
-        <Alert
-          variant='success'
-          title='Success!'
-          description='Login successful! Redirecting...'
           className='mb-4'
         />
       )}

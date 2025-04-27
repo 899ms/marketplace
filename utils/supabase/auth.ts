@@ -5,7 +5,10 @@ import { z } from 'zod';
 export const SignUpSchema = z.object({
   email: z.string().email('Please enter a valid email'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
-  full_name: z.string().min(2, 'Full name is required').optional(),
+  full_name: z.string().min(2, 'Full name is required'),
+  user_type: z.enum(['buyer', 'seller'], {
+    required_error: 'Please select a role',
+  }),
 });
 
 export const SignInSchema = z.object({
@@ -26,7 +29,7 @@ export const authOperations = {
       // Validate credentials
       SignUpSchema.parse(credentials);
 
-      const { email, password, full_name } = credentials;
+      const { email, password, full_name, user_type } = credentials;
 
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -34,6 +37,7 @@ export const authOperations = {
         options: {
           data: {
             full_name,
+            user_type,
           },
         },
       });
@@ -47,6 +51,7 @@ export const authOperations = {
       if (err instanceof z.ZodError) {
         return { user: null, error: err.errors[0].message };
       }
+      console.error('Sign up error:', err);
       return { user: null, error: 'An error occurred during sign up' };
     }
   },

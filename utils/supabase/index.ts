@@ -7,8 +7,7 @@ export * from './types';
 
 // Operations exports
 export { userOperations } from './database';
-export { trackOperations } from './database';
-export { orderOperations } from './database';
+
 export { authOperations } from './auth';
 export type { SignUpCredentials, SignInCredentials } from './auth';
 

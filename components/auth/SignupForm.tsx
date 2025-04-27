@@ -6,6 +6,8 @@ import { z } from 'zod';
 import * as Input from '@/components/ui/input';
 import * as Button from '@/components/ui/button';
 import * as AlertUI from '@/components/ui/alert';
+import * as Radio from '@/components/ui/radio';
+import * as Label from '@/components/ui/label';
 import { RiErrorWarningLine, RiCheckboxCircleLine } from '@remixicon/react';
 
 // Custom Alert component using the AlertUI components
@@ -42,6 +44,7 @@ export default function SignupForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [userType, setUserType] = useState<'buyer' | 'seller' | ''>('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -52,18 +55,24 @@ export default function SignupForm() {
     setLoading(true);
 
     try {
-      // Validate the form data with Zod
-      SignUpSchema.parse({ email, password, full_name: fullName });
-
-      // Attempt to sign up
-      const { user, error } = await authOperations.signUp({
+      // Validate the form data with Zod, including userType
+      SignUpSchema.parse({
         email,
         password,
         full_name: fullName,
+        user_type: userType || undefined,
       });
 
-      if (error) {
-        setError(error);
+      // Attempt to sign up
+      const { error: signUpError } = await authOperations.signUp({
+        email,
+        password,
+        full_name: fullName,
+        user_type: userType as 'buyer' | 'seller',
+      });
+
+      if (signUpError) {
+        setError(signUpError);
         return;
       }
 
@@ -132,6 +141,30 @@ export default function SignupForm() {
       )}
 
       <form onSubmit={handleSubmit} className='space-y-4'>
+        <div className='space-y-2'>
+          <Label.Root className='text-label-sm text-text-strong-950'>
+            I am a:
+          </Label.Root>
+          <Radio.Group
+            className='flex gap-4'
+            value={userType}
+            onValueChange={(value: string) =>
+              setUserType(value as 'buyer' | 'seller')
+            }
+            required
+            disabled={loading}
+          >
+            <div className='flex items-center space-x-2'>
+              <Radio.Item value='buyer' id='r1' />
+              <Label.Root htmlFor='r1'>Buyer (Looking to hire)</Label.Root>
+            </div>
+            <div className='flex items-center space-x-2'>
+              <Radio.Item value='seller' id='r2' />
+              <Label.Root htmlFor='r2'>Seller (Looking for work)</Label.Root>
+            </div>
+          </Radio.Group>
+        </div>
+
         <div>
           <Input.Root size='medium'>
             <Input.Wrapper>
