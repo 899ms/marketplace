@@ -42,7 +42,7 @@ export default function Navbar() {
   };
 
   return (
-    <nav className='border-b border-stroke-soft-200'>
+    <nav className=''>
       <div className='flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8'>
         {/* Left Section: Logo and Nav Links */}
         <div className='flex items-center gap-8'>
