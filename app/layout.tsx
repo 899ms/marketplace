@@ -40,7 +40,9 @@ export default function RootLayout({
           <TooltipProvider>
             <div className='flex min-h-screen flex-col'>
               <Navbar />
-              <main className='flex flex-1 flex-col'>{children}</main>
+              <div className='mx-auto w-full max-w-[1440px]'>
+                <main className='flex flex-1 flex-col'>{children}</main>
+              </div>
             </div>
           </TooltipProvider>
         </ThemeProvider>
