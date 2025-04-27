@@ -52,7 +52,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // --- 2. Define Protected Routes ---
-  const buyerRoutes = ['/home']; // Changed from '/app/home' to '/home'
+  const buyerRoutes: string[] = []; // Changed from '/app/home' to '/home'
   const sellerRoutes = ['/app/worker/home']; // Add more seller routes/patterns (e.g., '/app/services/create')
   const allProtectedRoutes = [...buyerRoutes, ...sellerRoutes];
 
