@@ -39,7 +39,11 @@ export default function RootLayout({
         <ThemeProvider attribute='class' defaultTheme='light'>
           <TooltipProvider>
             <div className='flex min-h-screen flex-col'>
-              <Navbar />
+              <div className='border-b border-stroke-soft-200'>
+                <div className='mx-auto w-full max-w-[1440px]'>
+                  <Navbar />
+                </div>
+              </div>
               <div className='mx-auto w-full max-w-[1440px]'>
                 <main className='flex flex-1 flex-col'>{children}</main>
               </div>
