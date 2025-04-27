@@ -100,34 +100,38 @@ const WorkerProfileDrawer = ({
 
   return (
     <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      {isOpen && <div className='fixed inset-0 z-50 bg-black/40' />}
-      <Drawer.Content className='shadow-lg fixed inset-y-0 right-0 z-50 h-full w-full max-w-3xl bg-white sm:max-w-xl md:max-w-2xl'>
+      {isOpen && <div className='fixed inset-0 z-40 bg-black/40' />}
+      <Drawer.Content className='shadow-xl fixed inset-y-0 right-0 z-50 h-[100dvh] w-full max-w-md overflow-hidden bg-white sm:max-w-lg md:max-w-xl lg:max-w-2xl'>
         <div className='flex h-full flex-col'>
-          {/* Header */}
-          <div className='border-b border-stroke-soft-200 p-4'>
+          {/* Header with Close Button and External Link */}
+          <div className='border-b border-stroke-soft-200 px-5 py-4'>
             <div className='flex items-center justify-between'>
-              <button onClick={onClose} className='text-text-secondary-600'>
-                <RiCloseLine className='size-5' />
-              </button>
+              <Drawer.Close asChild>
+                <button className='focus-visible:ring-ring rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'>
+                  <RiCloseLine className='text-text-secondary-600 size-5' />
+                  <span className='sr-only'>Close</span>
+                </button>
+              </Drawer.Close>
               <Link
                 href='#'
-                className='text-text-primary-600 text-sm flex items-center gap-1'
+                className='text-text-primary-600 text-sm flex items-center gap-1.5 font-medium'
               >
                 Open in new tab <RiExternalLinkLine className='size-4' />
               </Link>
             </div>
 
-            <div className='mt-4 flex items-start justify-between'>
-              <div className='flex items-center gap-3'>
-                <Avatar.Root size='40'>
+            {/* Profile Information */}
+            <div className='mt-5 flex items-start justify-between'>
+              <div className='flex items-center gap-4'>
+                <Avatar.Root size='48'>
                   <Avatar.Image
-                    src='https://via.placeholder.com/40'
+                    src='https://via.placeholder.com/48'
                     alt='Cleve Music'
                   />
                 </Avatar.Root>
                 <div>
-                  <div className='flex items-center gap-1.5'>
-                    <h2 className='text-lg font-medium text-text-strong-950'>
+                  <div className='flex items-center gap-2'>
+                    <h2 className='text-xl font-semibold text-text-strong-950'>
                       Cleve Music
                     </h2>
                     <div className='text-sm flex items-center gap-0.5'>
@@ -135,22 +139,23 @@ const WorkerProfileDrawer = ({
                       <span className='text-text-secondary-600'>4.9 (125)</span>
                     </div>
                   </div>
-                  <div className='text-sm text-text-secondary-600 flex gap-1'>
+                  <div className='text-sm text-text-secondary-600 mt-1 flex gap-1'>
                     <RiGoogleFill className='size-4' />
                     <RiGoogleFill className='size-4' />
                     <RiGoogleFill className='size-4' />
-                    <span>Specia</span>
+                    <span>Specialist</span>
                   </div>
                 </div>
               </div>
-              <div className='flex items-center gap-2'>
-                <button className='text-sm rounded-md border border-stroke-soft-200 px-3 py-1.5 font-medium text-text-strong-950 hover:bg-bg-weak-50'>
-                  Hire <RiArrowRightLine className='ml-1 inline size-3.5' />
+              <div className='flex items-center gap-3'>
+                <button className='text-sm rounded-md border border-stroke-soft-200 px-3.5 py-2 font-medium text-text-strong-950 transition-colors hover:bg-bg-weak-50'>
+                  Hire <RiArrowRightLine className='ml-1.5 inline size-3.5' />
                 </button>
-                <button className='text-sm flex items-center justify-center rounded-md bg-text-strong-950 px-3 py-1.5 text-white'>
-                  Touch <RiExternalLinkLine className='ml-1 inline size-3.5' />
+                <button className='text-sm hover:bg-text-strong-900 flex items-center justify-center rounded-md bg-text-strong-950 px-3.5 py-2 font-medium text-white transition-colors'>
+                  Touch{' '}
+                  <RiExternalLinkLine className='ml-1.5 inline size-3.5' />
                 </button>
-                <button className='text-text-secondary-600 hover:text-red-500'>
+                <button className='text-text-secondary-600 flex items-center justify-center rounded-full p-1.5 transition-colors hover:bg-bg-weak-50 hover:text-red-500'>
                   <RiHeartLine className='size-5' />
                 </button>
               </div>
@@ -160,28 +165,28 @@ const WorkerProfileDrawer = ({
           {/* Navigation Tabs */}
           <div className='border-b border-stroke-soft-200'>
             <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
-              <Tabs.List className='flex'>
+              <Tabs.List className='flex border-0 bg-transparent p-0'>
                 <Tabs.Trigger
                   value='About'
-                  className='flex-1 px-4 py-2 text-center'
+                  className='text-sm text-text-secondary-600 flex-1 border-b-2 border-transparent px-4 py-3 text-center font-medium transition-colors data-[state=active]:border-primary-base data-[state=active]:text-text-strong-950'
                 >
                   About
                 </Tabs.Trigger>
                 <Tabs.Trigger
                   value='Work'
-                  className='flex-1 px-4 py-2 text-center'
+                  className='text-sm text-text-secondary-600 flex-1 border-b-2 border-transparent px-4 py-3 text-center font-medium transition-colors data-[state=active]:border-primary-base data-[state=active]:text-text-strong-950'
                 >
                   Work
                 </Tabs.Trigger>
                 <Tabs.Trigger
                   value='Service'
-                  className='flex-1 px-4 py-2 text-center'
+                  className='text-sm text-text-secondary-600 flex-1 border-b-2 border-transparent px-4 py-3 text-center font-medium transition-colors data-[state=active]:border-primary-base data-[state=active]:text-text-strong-950'
                 >
                   Service
                 </Tabs.Trigger>
                 <Tabs.Trigger
                   value='Review'
-                  className='flex-1 px-4 py-2 text-center'
+                  className='text-sm text-text-secondary-600 flex-1 border-b-2 border-transparent px-4 py-3 text-center font-medium transition-colors data-[state=active]:border-primary-base data-[state=active]:text-text-strong-950'
                 >
                   Review
                 </Tabs.Trigger>
@@ -190,11 +195,11 @@ const WorkerProfileDrawer = ({
           </div>
 
           {/* Content Area - scrollable */}
-          <div className='flex-1 overflow-y-auto'>
+          <div className='flex-1 overflow-y-auto overflow-x-hidden'>
             {/* About Tab Content */}
             {activeTab === 'About' && (
-              <div className='p-4'>
-                <p className='text-text-secondary-600'>
+              <div className='p-5'>
+                <p className='text-text-secondary-600 text-paragraph-sm leading-relaxed'>
                   TypeScript Specialist Next.js & TypeScript Specialist Next.js
                   & TypeScript Specialist Next.js & TypeScript Specialist
                   Next.js & TypeScript Specialist Next.js & TypeScript
@@ -206,7 +211,7 @@ const WorkerProfileDrawer = ({
                   Development Next.js & TypeScript Specialist Next.js &
                   TypeScript...
                 </p>
-                <button className='text-sm text-text-primary-600 mt-2'>
+                <button className='text-sm text-text-primary-600 hover:text-text-primary-700 mt-3 font-medium transition-colors'>
                   More
                 </button>
               </div>
@@ -214,42 +219,40 @@ const WorkerProfileDrawer = ({
 
             {/* Work Tab Content */}
             {activeTab === 'Work' && (
-              <div className='p-4'>
+              <div className='divide-y divide-stroke-soft-200'>
                 {[1, 2, 3, 4, 5, 6].map((item) => (
                   <div
                     key={item}
-                    className='mb-4 flex items-center justify-between border-b border-stroke-soft-200 pb-4 last:border-0'
+                    className='flex items-center justify-between gap-3 p-5'
                   >
-                    <div className='flex items-center gap-3'>
-                      <button className='bg-bg-subtle-100 flex size-10 items-center justify-center rounded-full'>
+                    <div className='flex items-center gap-3.5'>
+                      <button className='bg-bg-subtle-100 hover:bg-bg-subtle-200 flex size-11 items-center justify-center rounded-full transition-colors'>
                         <RiPlayLine className='size-5 text-text-strong-950' />
                       </button>
                       <div>
                         <p className='font-medium text-text-strong-950'>
                           Funky Bounce Logo
                         </p>
-                        <p className='text-sm text-text-secondary-600'>
+                        <p className='text-xs text-text-secondary-600'>
                           Worker Remarks Text
                         </p>
                       </div>
                     </div>
-                    <div className='flex items-center gap-3'>
-                      <div className='flex gap-1'>
-                        {['Mixing', 'Singing', 'Jazz', 'Hip hop', 'K pop'].map(
-                          (tag) => (
-                            <Badge.Root key={tag} variant='light' size='small'>
-                              {tag}
-                            </Badge.Root>
-                          ),
-                        )}
+                    <div className='flex items-center gap-4'>
+                      <div className='hidden gap-1 lg:flex'>
+                        {['Mixing', 'Singing', 'Jazz'].map((tag) => (
+                          <Badge.Root key={tag} variant='light' size='small'>
+                            {tag}
+                          </Badge.Root>
+                        ))}
                       </div>
                       <div className='text-right'>
-                        <p className='text-text-strong-950'>0:22</p>
+                        <p className='font-medium text-text-strong-950'>0:22</p>
                         <p className='text-xs text-text-secondary-600'>
                           112 BPM
                         </p>
                       </div>
-                      <button className='text-text-secondary-600'>
+                      <button className='text-text-secondary-600 hover:text-text-primary-600 rounded-full p-1.5 transition-colors hover:bg-bg-weak-50'>
                         <RiBookmarkLine className='size-5' />
                       </button>
                     </div>
@@ -260,7 +263,7 @@ const WorkerProfileDrawer = ({
 
             {/* Service Tab Content */}
             {activeTab === 'Service' && (
-              <div className='grid grid-cols-2 gap-4 p-4 md:grid-cols-3'>
+              <div className='grid grid-cols-1 gap-5 p-5 sm:grid-cols-2 md:grid-cols-3'>
                 {[1, 2, 3].map((item) => (
                   <div
                     key={item}
@@ -270,13 +273,13 @@ const WorkerProfileDrawer = ({
                     <div className='relative h-40 w-full bg-gradient-to-br from-blue-400 to-purple-500'>
                       <div className='absolute right-3 top-3'>
                         <Avatar.Root size='32' color='blue'>
-                          <span className='text-label-sm font-medium'>J</span>
+                          <span className='text-[10px] font-medium'>J</span>
                         </Avatar.Root>
                       </div>
                     </div>
 
-                    <div className='p-3'>
-                      <p className='mb-2 line-clamp-2 text-paragraph-sm font-medium text-text-strong-950'>
+                    <div className='p-3.5'>
+                      <p className='mb-2.5 line-clamp-2 text-paragraph-sm font-medium text-text-strong-950'>
                         Draw catchy and eye-catching illustrations anime
                       </p>
 
@@ -297,12 +300,9 @@ const WorkerProfileDrawer = ({
 
             {/* Review Tab Content */}
             {activeTab === 'Review' && (
-              <div className='p-4'>
+              <div className='divide-y divide-stroke-soft-200'>
                 {[1, 2].map((item) => (
-                  <div
-                    key={item}
-                    className='mb-6 border-b border-stroke-soft-200 pb-6 last:border-0'
-                  >
+                  <div key={item} className='p-5'>
                     <div className='mb-3 flex items-start justify-between'>
                       <div className='flex items-center gap-3'>
                         <Avatar.Root size='32'>
@@ -315,7 +315,7 @@ const WorkerProfileDrawer = ({
                           <p className='font-medium text-text-strong-950'>
                             Cleve Music
                           </p>
-                          <div className='text-sm text-text-secondary-600 flex items-center gap-2'>
+                          <div className='text-xs text-text-secondary-600 flex items-center gap-2'>
                             <div className='flex items-center'>
                               <RiStarFill className='size-3.5 text-yellow-400' />
                               <span>4.9</span>
@@ -333,13 +333,13 @@ const WorkerProfileDrawer = ({
                       Contract title text here...Contract title text here..ntr
                     </h3>
 
-                    <p className='text-text-secondary-600 mb-2'>
+                    <p className='text-sm text-text-secondary-600 mb-2.5 leading-relaxed'>
                       idence.123confidence.123confidence.123cidence.123confidence.123confidence.123cidence.123confidence.123confidence.123
                       e.123
                       idence.123confidence.123confidence.123cidence.123confidence.123confidence.
                     </p>
 
-                    <button className='text-sm text-text-primary-600'>
+                    <button className='text-sm text-text-primary-600 hover:text-text-primary-700 font-medium transition-colors'>
                       More
                     </button>
                   </div>
@@ -435,6 +435,87 @@ const FilterTag = ({
       >
         <RiCloseLine className='size-3.5' />
       </button>
+    </div>
+  );
+};
+
+// Project Card Component
+const ProjectCard = () => {
+  return (
+    <div className='shadow-sm hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 transition-all'>
+      {/* Project Header */}
+      <h3 className='mb-2 line-clamp-2 text-paragraph-md font-medium text-text-strong-950'>
+        Write professional resume, cover letter
+      </h3>
+
+      {/* Tags */}
+      <div className='mb-3 flex flex-wrap gap-1'>
+        <Badge.Root variant='light' size='small'>
+          Mixing
+        </Badge.Root>
+        <Badge.Root variant='light' size='small'>
+          Singing
+        </Badge.Root>
+        <Badge.Root variant='light' size='small'>
+          Jazz
+        </Badge.Root>
+        <Badge.Root variant='light' size='small'>
+          Hip hop
+        </Badge.Root>
+        <Badge.Root variant='light' size='small'>
+          K pop
+        </Badge.Root>
+      </div>
+
+      {/* Description */}
+      <p className='text-text-secondary-600 text-sm mb-4 line-clamp-2'>
+        We are seeking a talented Website Designer and Front-End Developer to
+        join our team. In this role, you will12312312 will12312312 will12312312
+        will12312312 will12312312 will12312312
+      </p>
+
+      {/* Project Info Badges */}
+      <div className='mb-3 flex flex-wrap gap-1.5'>
+        <Badge.Root variant='stroke' size='small'>
+          Deadline date
+        </Badge.Root>
+        <Badge.Root variant='stroke' size='small'>
+          1 sent proposal
+        </Badge.Root>
+        <Badge.Root variant='stroke' size='small'>
+          Business
+        </Badge.Root>
+      </div>
+
+      {/* Footer */}
+      <div className='flex items-center justify-between'>
+        {/* Provider Info */}
+        <div className='flex items-center gap-2'>
+          <Avatar.Root size='24'>
+            <Avatar.Image src='https://via.placeholder.com/24' alt='Provider' />
+          </Avatar.Root>
+          <div>
+            <div className='text-xs flex items-center gap-0.5'>
+              <span className='text-text-secondary-600'>Cleve Music</span>
+              <div className='text-text-secondary-600 flex items-center'>
+                <RiStarFill className='size-3 text-yellow-400' />
+                <span className='text-[10px]'>4.9(125)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Price & Apply Button */}
+        <div className='flex items-center gap-3'>
+          <div className='text-right'>
+            <p className='text-xs text-text-secondary-600'>Budget</p>
+            <p className='text-sm font-medium text-text-strong-950'>$1,400</p>
+          </div>
+          <button className='text-xs hover:bg-text-strong-900 rounded-md bg-text-strong-950 px-3 py-1.5 font-medium text-white'>
+            Apply
+          </button>
+        </div>
+      </div>
     </div>
   );
 };
@@ -669,7 +750,7 @@ export default function ServicesPage() {
         {/* Right Content Area */}
         <div className='flex-1'>
           {/* Search and Filters - Only show for Service and Project tabs */}
-          {activeTab !== 'Worker' && (
+          {activeTab === 'Project' && (
             <div className='bg-bg-subtle-100 mb-6 flex gap-3 rounded-lg p-3'>
               {/* Search Input */}
               <div className='flex-1'>
@@ -681,45 +762,48 @@ export default function ServicesPage() {
                 </Input.Root>
               </div>
 
-              {/* Filter Dropdowns */}
+              {/* Project-specific Filter Dropdowns */}
               <div className='flex gap-3'>
-                <Select.Root defaultValue='real-time' size='small'>
+                <Select.Root defaultValue='deadline' size='small'>
                   <Select.Trigger>
-                    <Select.Value placeholder='Real-time' />
+                    <Select.Value placeholder='Deadline' />
                   </Select.Trigger>
                   <Select.Content>
                     <Select.Group>
-                      <Select.Item value='real-time'>Real-time</Select.Item>
-                      <Select.Item value='any-time'>Any time</Select.Item>
+                      <Select.Item value='deadline'>Deadline</Select.Item>
+                      <Select.Item value='today'>Today</Select.Item>
+                      <Select.Item value='this-week'>This Week</Select.Item>
+                      <Select.Item value='this-month'>This Month</Select.Item>
                     </Select.Group>
                   </Select.Content>
                 </Select.Root>
 
-                <Select.Root defaultValue='price-range' size='small'>
+                <Select.Root defaultValue='purpose' size='small'>
                   <Select.Trigger>
-                    <Select.Value placeholder='Price Range' />
+                    <Select.Value placeholder='Purpose' />
                   </Select.Trigger>
                   <Select.Content>
                     <Select.Group>
-                      <Select.Item value='price-range'>Price Range</Select.Item>
-                      <Select.Item value='0-50'>$0-$50</Select.Item>
-                      <Select.Item value='50-100'>$50-$100</Select.Item>
-                      <Select.Item value='100-plus'>$100+</Select.Item>
+                      <Select.Item value='purpose'>Purpose</Select.Item>
+                      <Select.Item value='business'>Business</Select.Item>
+                      <Select.Item value='personal'>Personal</Select.Item>
+                      <Select.Item value='education'>Education</Select.Item>
                     </Select.Group>
                   </Select.Content>
                 </Select.Root>
 
-                <Select.Root defaultValue='due-date' size='small'>
+                <Select.Root defaultValue='posting-date' size='small'>
                   <Select.Trigger>
-                    <Select.Value placeholder='Due Date' />
+                    <Select.Value placeholder='Posting Date' />
                   </Select.Trigger>
                   <Select.Content>
                     <Select.Group>
-                      <Select.Item value='due-date'>Due Date</Select.Item>
-                      <Select.Item value='1-day'>1 Day</Select.Item>
-                      <Select.Item value='3-days'>3 Days</Select.Item>
-                      <Select.Item value='7-days'>7 Days</Select.Item>
-                      <Select.Item value='any'>Any</Select.Item>
+                      <Select.Item value='posting-date'>
+                        Posting Date
+                      </Select.Item>
+                      <Select.Item value='last-24h'>Last 24h</Select.Item>
+                      <Select.Item value='last-week'>Last Week</Select.Item>
+                      <Select.Item value='last-month'>Last Month</Select.Item>
                     </Select.Group>
                   </Select.Content>
                 </Select.Root>
@@ -755,23 +839,12 @@ export default function ServicesPage() {
             </div>
           )}
           {activeTab === 'Project' && (
-            <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-              {/* Project cards would go here */}
-              <div className='flex h-40 items-center justify-center rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4'>
-                <p className='text-text-secondary-600 text-center'>
-                  Project listing coming soon
-                </p>
-              </div>
-              <div className='flex h-40 items-center justify-center rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4'>
-                <p className='text-text-secondary-600 text-center'>
-                  Project listing coming soon
-                </p>
-              </div>
-              <div className='flex h-40 items-center justify-center rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4'>
-                <p className='text-text-secondary-600 text-center'>
-                  Project listing coming soon
-                </p>
-              </div>
+            <div className='flex flex-col space-y-4'>
+              <ProjectCard />
+              <ProjectCard />
+              <ProjectCard />
+              <ProjectCard />
+              <ProjectCard />
             </div>
           )}
         </div>
