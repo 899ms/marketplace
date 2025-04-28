@@ -81,14 +81,14 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
 
       const filePath = `public/job-attachments/${user.id}/${Date.now()}-${file.name}`;
       const { error } = await supabase.storage
-        .from('files') // Use your bucket name
+        .from('job-files') // Use your bucket name
         .upload(filePath, file);
 
       if (error) throw error;
 
       // Get the public URL of the uploaded file
       const { data: urlData } = supabase.storage
-        .from('files')
+        .from('job-files')
         .getPublicUrl(filePath);
 
       if (!urlData || !urlData.publicUrl) {
