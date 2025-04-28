@@ -1,6 +1,10 @@
+import React from 'react';
+import Link from 'next/link';
 import { createServerClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import LoginForm from '@/components/auth/LoginForm';
+
+export const dynamic = 'force-dynamic';
 
 export default async function LoginPage() {
   const supabase = await createServerClient();
@@ -17,7 +21,9 @@ export default async function LoginPage() {
   return (
     <div className='flex min-h-screen items-center justify-center bg-bg-weak-50 px-4 py-12 sm:px-6 lg:px-8'>
       <div className='w-full max-w-md space-y-8'>
-        <LoginForm />
+        <React.Suspense fallback={<div>Loading...</div>}>
+          <LoginForm />
+        </React.Suspense>
       </div>
     </div>
   );

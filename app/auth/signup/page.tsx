@@ -1,6 +1,10 @@
+import React from 'react';
+import Link from 'next/link';
 import { createServerClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import SignupForm from '@/components/auth/SignupForm';
+
+export const dynamic = 'force-dynamic';
 
 export default async function SignupPage() {
   const supabase = await createServerClient();

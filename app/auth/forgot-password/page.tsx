@@ -2,6 +2,8 @@ import { createServerClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
 
+export const dynamic = 'force-dynamic';
+
 export default async function ForgotPasswordPage() {
   const supabase = await createServerClient();
 
