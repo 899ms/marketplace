@@ -33,8 +33,8 @@ export const CreateJobFormSchema = z.object({
     })
     .default('public'),
 
-  // Potentially add buyer_id here if needed, though it might be added server-side or contextually
-  // buyer_id: z.string().uuid('Invalid buyer ID'),
+  // Optional buyerId for client-side authentication flow
+  buyerId: z.string().optional(),
 });
 
 export type CreateJobFormData = z.infer<typeof CreateJobFormSchema>;

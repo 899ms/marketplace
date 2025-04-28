@@ -5,26 +5,30 @@ import { UseFormReturn } from 'react-hook-form';
 import * as Button from '@/components/ui/button';
 import * as Tag from '@/components/ui/tag';
 import { CreateJobFormData } from '@/app/jobs/create/schema';
+import { RiLoader4Line } from '@remixicon/react';
+import { cn } from '@/utils/cn';
 
 interface Step4Props {
   formMethods: UseFormReturn<CreateJobFormData>;
   prevStep: () => void;
-  submitForm: (data: CreateJobFormData) => void; // Adjusted to accept data
+  submitForm: (data: CreateJobFormData) => void;
+  isSubmitting: boolean;
+  error: string | null;
+  success: boolean;
 }
 
 const Step4Preview: React.FC<Step4Props> = ({
   formMethods,
   prevStep,
   submitForm,
+  isSubmitting,
+  error,
+  success,
 }) => {
-  const {
-    getValues,
-    handleSubmit, // Use RHF handleSubmit for the final submit button
-  } = formMethods;
+  const { getValues, handleSubmit } = formMethods;
 
-  const formData = getValues(); // Get current form values
+  const formData = getValues();
 
-  // Mock discount data - replace or integrate with actual logic later
   const discountCode = 'codeabcde';
   const discountAmount = 20;
 
@@ -45,8 +49,6 @@ const Step4Preview: React.FC<Step4Props> = ({
 
   const formatCurrency = (value?: number) => {
     if (value === undefined || value === null) return 'N/A';
-    // TODO: Use currency from form data (formData.currency)
-    // Basic formatting, consider using Intl.NumberFormat for better localization
     return `$${value.toFixed(2)}`;
   };
 
@@ -75,7 +77,6 @@ const Step4Preview: React.FC<Step4Props> = ({
         <p className='text-sm text-text-secondary-600 whitespace-pre-wrap'>
           {formData.requirements || '-'}
         </p>
-        {/* TODO: Display extracted skills/sources/files if they are implemented separately */}
       </div>
 
       {/* Step 3 Usage */}
@@ -139,6 +140,20 @@ const Step4Preview: React.FC<Step4Props> = ({
         </div>
       </div>
 
+      {/* Display Error Message */}
+      {error && (
+        <div className='text-sm rounded-md border border-red-200 bg-red-50 p-3 text-red-700'>
+          <p>Error: {error}</p>
+        </div>
+      )}
+
+      {/* Display Success Message */}
+      {success && (
+        <div className='text-sm rounded-md border border-green-200 bg-green-50 p-3 text-green-700'>
+          <p>Success! Your job posting has been created.</p>
+        </div>
+      )}
+
       {/* Navigation/Action Buttons */}
       <div className='flex justify-between gap-3'>
         <Button.Root
@@ -146,18 +161,23 @@ const Step4Preview: React.FC<Step4Props> = ({
           mode='stroke'
           onClick={prevStep}
           className='flex-1'
-          type='button' // Ensure it doesn't trigger form submit
+          type='button'
+          disabled={isSubmitting}
         >
           Previous
         </Button.Root>
         <Button.Root
           variant='neutral'
           mode='filled'
-          onClick={handleSubmit(submitForm)} // Use RHF handleSubmit
-          className='flex-1'
-          type='submit' // Trigger RHF submit
+          onClick={handleSubmit(submitForm)}
+          className='flex flex-1 items-center justify-center'
+          type='submit'
+          disabled={isSubmitting}
         >
-          Post
+          {isSubmitting ? (
+            <RiLoader4Line className='mr-2 size-4 animate-spin' />
+          ) : null}
+          {isSubmitting ? 'Posting...' : 'Post'}
         </Button.Root>
       </div>
     </div>

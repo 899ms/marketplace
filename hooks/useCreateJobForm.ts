@@ -7,38 +7,48 @@ import {
   CreateJobFormSchema,
   CreateJobFormData,
 } from '@/app/jobs/create/schema';
-// import { createClient } from '@/utils/supabase/client'; // Uncomment when Supabase client setup is ready
-// import { JobSchema } from '@/utils/supabase/types'; // Import if needed for mapping before insert
+import { useAuth } from '@/utils/supabase/AuthContext';
+import supabase from '@/utils/supabase/client';
+import { useRouter } from 'next/navigation';
 
 export interface UseCreateJobFormReturn {
   activeStep: number;
   setActiveStep: React.Dispatch<React.SetStateAction<number>>;
   formMethods: UseFormReturn<CreateJobFormData>;
-  onSubmit: (data: CreateJobFormData) => void;
+  onSubmit: (data: CreateJobFormData) => Promise<void>;
   nextStep: () => void;
   prevStep: () => void;
+  isSubmitting: boolean;
+  error: string | null;
+  success: boolean;
 }
 
 const STEPS_COUNT = 4; // Total number of steps
 
 export function useCreateJobForm(): UseCreateJobFormReturn {
   const [activeStep, setActiveStep] = useState(1);
-  // const supabase = createClient(); // Uncomment when Supabase client setup is ready
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const { user } = useAuth();
+  const router = useRouter();
+
+  const resolver = zodResolver(CreateJobFormSchema) as any;
 
   const formMethods = useForm<CreateJobFormData>({
-    resolver: zodResolver(CreateJobFormSchema),
-    mode: 'onBlur', // Validate on blur
-    // Explicitly define all defaults, including undefined for optional fields
+    resolver,
+    mode: 'onBlur',
+    // Explicitly define all defaults matching schema structure
     defaultValues: {
       title: '',
       description: '',
-      budget: undefined,
-      currency: 'USD', // Default from schema
-      deadline: undefined, // Explicitly undefined for optional string
-      negotiateBudget: false, // Default from schema
+      budget: 0, // Keep as 0 or potentially undefined if input handles NaN
+      currency: 'USD', // Explicitly match schema default
+      deadline: undefined, // Explicit optional
+      negotiateBudget: false, // Explicitly match schema default
       requirements: '',
-      usageOption: 'private', // Default from schema
-      privacyOption: 'public', // Default from schema
+      usageOption: 'private', // Explicitly match schema default
+      privacyOption: 'public', // Explicitly match schema default
     },
   });
 
@@ -56,34 +66,57 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
   const prevStep = () => setActiveStep((prev) => Math.max(prev - 1, 1));
 
   const onSubmit = async (data: CreateJobFormData) => {
-    console.log('Form Data Submitted:', data);
+    if (!user) {
+      setError('You must be logged in to create a job');
+      return;
+    }
 
-    // --- TODO: Implement actual Supabase insert logic ---
-    // 1. Map data to match Supabase 'jobs' table schema if necessary
-    //    const jobToInsert = {
-    //      title: data.title,
-    //      description: data.description,
-    //      requirements: data.requirements, // Ensure this matches your table structure
-    //      budget: data.budget,
-    //      // buyer_id: await getUserId(), // Get current user ID
-    //      // status: 'open', // Default status
-    //      // deadline: data.deadline ? new Date(data.deadline).toISOString() : null, // Convert if needed
-    //    };
-    //
-    // 2. Perform the insert
-    // try {
-    //   const { error } = await supabase.from('jobs').insert(jobToInsert);
-    //   if (error) {
-    //     console.error('Error inserting job:', error);
-    //     // Handle error (e.g., show notification to user)
-    //   } else {
-    //     console.log('Job created successfully!');
-    //     // Handle success (e.g., redirect to job details page or dashboard)
-    //   }
-    // } catch (e) {
-    //   console.error('Exception during job insert:', e);
-    //   // Handle exception
-    // }
+    setIsSubmitting(true);
+    setError(null);
+    setSuccess(false);
+
+    try {
+      // Validate data using Zod
+      const validatedData = CreateJobFormSchema.parse(data);
+
+      // Prepare job data for insertion
+      const jobData = {
+        buyer_id: user.id,
+        title: validatedData.title,
+        description: validatedData.description,
+        budget: validatedData.budget,
+        currency: validatedData.currency,
+        deadline: validatedData.deadline || null,
+        negotiate_budget: validatedData.negotiateBudget || false,
+        requirements: validatedData.requirements,
+        usage_option: validatedData.usageOption,
+        privacy_option: validatedData.privacyOption,
+        status: 'open', // Default status for new jobs
+      };
+
+      // Insert job into database
+      const { error: supabaseError } = await supabase
+        .from('jobs')
+        .insert(jobData);
+
+      if (supabaseError) {
+        console.error('Error creating job:', supabaseError);
+        setError(supabaseError.message);
+        return;
+      }
+
+      // Set success and redirect after a short delay
+      setSuccess(true);
+      setTimeout(() => {
+        router.push('/jobs');
+        router.refresh(); // Refresh the page data
+      }, 1000);
+    } catch (err) {
+      console.error('Job creation error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to create job');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return {
@@ -93,15 +126,8 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
     onSubmit,
     nextStep,
     prevStep,
+    isSubmitting,
+    error,
+    success,
   };
 }
-
-// Helper function to get fields for a specific step (if validation per step is needed)
-// function getFieldsForStep(step: number): (keyof CreateJobFormData)[] {
-//   switch (step) {
-//     case 1: return ['title', 'description', 'budget', 'currency', 'deadline', 'negotiateBudget'];
-//     case 2: return ['requirements']; // Adjust based on final schema
-//     case 3: return ['usageOption', 'privacyOption'];
-//     default: return [];
-//   }
-// }

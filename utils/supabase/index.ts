@@ -1,6 +1,7 @@
 // Client exports
-export { supabase } from './client';
-export { createServerClient } from './server';
+export { default as supabase } from './client';
+// Only import createServerClient in server-side app router code
+// export { createServerClient } from './server';
 
 // Types exports
 export * from './types';

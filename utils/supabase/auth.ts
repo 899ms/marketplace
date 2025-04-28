@@ -1,4 +1,4 @@
-import { supabase } from './client';
+import supabase from './client';
 import { z } from 'zod';
 
 // Validation schemas for auth operations

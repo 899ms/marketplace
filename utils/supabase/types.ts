@@ -24,6 +24,11 @@ export const JobSchema = z.object({
   budget: z.number(), // DECIMAL NOT NULL
   buyer_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
   status: z.enum(['open', 'in_progress', 'completed']).optional(), // TEXT default 'open' CHECK
+  currency: z.string().default('USD'), // TEXT NOT NULL DEFAULT 'USD'
+  deadline: z.string().nullable().optional(), // DATE NULL (Using string to align with form, consider z.date() if applicable)
+  negotiate_budget: z.boolean().default(false), // BOOLEAN NOT NULL DEFAULT FALSE
+  usage_option: z.enum(['private', 'business']).default('private'), // TEXT NOT NULL DEFAULT 'private' CHECK
+  privacy_option: z.enum(['public', 'private']).default('public'), // TEXT NOT NULL DEFAULT 'public' CHECK
 });
 export type Job = z.infer<typeof JobSchema>;
 
