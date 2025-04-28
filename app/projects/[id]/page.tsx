@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { RiHomeLine, RiNotification4Line } from '@remixicon/react';
+import { RiHomeLine } from '@remixicon/react';
 
 // Import extracted components
 import ClientProfileCard from '@/components/projects/detail/ClientProfileCard';

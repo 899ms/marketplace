@@ -7,7 +7,6 @@ import { ProfileSidebar } from '@/components/worker/profile/profile-sidebar';
 import { ServiceCard } from '@/components/worker/profile/service-card';
 import { WorkItem } from '@/components/worker/profile/work-item';
 import { ReviewItem } from '@/components/worker/profile/review-item';
-import { RiUploadCloud2Line } from '@remixicon/react';
 
 // Mock data for the worker profile
 const workerData = {

@@ -94,7 +94,7 @@ export default function ForgotPasswordForm() {
             Check Your Email
           </h2>
           <p className='mt-4 text-paragraph-sm text-text-sub-600'>
-            We've sent a password reset link to <strong>{email}</strong>. Please
+            Weve sent a password reset link to <strong>{email}</strong>. Please
             check your inbox and follow the instructions.
           </p>
           <div className='mt-6'>
@@ -120,7 +120,7 @@ export default function ForgotPasswordForm() {
           Forgot Password
         </h2>
         <p className='mt-2 text-paragraph-sm text-text-sub-600'>
-          Enter your email and we'll send you a link to reset your password
+          Enter your email and well send you a link to reset your password
         </p>
       </div>
 

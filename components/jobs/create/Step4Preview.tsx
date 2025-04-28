@@ -6,7 +6,6 @@ import * as Button from '@/components/ui/button';
 import * as Tag from '@/components/ui/tag';
 import { CreateJobFormData } from '@/app/jobs/create/schema';
 import { RiLoader4Line } from '@remixicon/react';
-import { cn } from '@/utils/cn';
 
 interface Step4Props {
   formMethods: UseFormReturn<CreateJobFormData>;

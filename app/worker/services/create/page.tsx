@@ -1,9 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateServiceFormData, CreateServiceFormSchema } from './schema';
+import React from 'react';
+import { FormProvider } from 'react-hook-form';
+
 import { Step1BasicInfo } from '@/components/worker/create-service-step-1';
 import { Step2Pricing } from '@/components/worker/create-service-step-2';
 import { Step3Review } from '@/components/worker/create-service-step-3';
@@ -50,11 +49,9 @@ export default function CreateServicePage() {
 
   return (
     <div className='px-4 py-10 md:px-10'>
-      <Stepper
-        currentStep={activeStep}
-        steps={steps}
-        className='mx-auto mb-8 max-w-3xl'
-      />
+      <div className='mx-auto mb-8 max-w-3xl'>
+        <Stepper currentStep={activeStep} steps={steps} />
+      </div>
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit)}>
           {renderStep()}

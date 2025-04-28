@@ -25,6 +25,7 @@ export interface UseCreateJobFormReturn {
     file: File,
   ) => Promise<{ name: string; size: number; url: string } | null>;
   removeFile: (fileName: string) => void;
+  uploading: boolean;
 }
 
 const STEPS_COUNT = 4; // Total number of steps
@@ -36,6 +37,7 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
   const [success, setSuccess] = useState(false);
   const { user } = useAuth();
   const router = useRouter();
+  const [uploading, setUploading] = useState(false);
 
   const resolver = zodResolver(CreateJobFormSchema) as any;
 
@@ -73,42 +75,38 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
 
   // Function to upload a file to Supabase Storage
   const uploadFile = async (file: File) => {
-    if (!user) {
-      setError('You must be logged in to upload files');
-      return null;
-    }
-
+    setUploading(true);
     try {
-      // Create a unique file path
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
-      const filePath = `${user.id}/${fileName}`;
+      if (!user) throw new Error('User not logged in');
 
-      // Upload to Supabase Storage
-      const { data, error: uploadError } = await supabase.storage
-        .from('job-files')
+      const filePath = `public/job-attachments/${user.id}/${Date.now()}-${file.name}`;
+      const { error } = await supabase.storage
+        .from('files') // Use your bucket name
         .upload(filePath, file);
 
-      if (uploadError) {
-        console.error('Error uploading file:', uploadError);
-        setError(uploadError.message);
-        return null;
-      }
+      if (error) throw error;
 
-      // Get the public URL
-      const {
-        data: { publicUrl },
-      } = supabase.storage.from('job-files').getPublicUrl(filePath);
+      // Get the public URL of the uploaded file
+      const { data: urlData } = supabase.storage
+        .from('files')
+        .getPublicUrl(filePath);
+
+      if (!urlData || !urlData.publicUrl) {
+        throw new Error('Failed to get public URL');
+      }
 
       return {
         name: file.name,
         size: file.size,
-        url: publicUrl,
+        type: file.type,
+        url: urlData.publicUrl,
       };
-    } catch (err) {
-      console.error('File upload error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to upload file');
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      // Return null or rethrow depending on desired error handling
       return null;
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -220,5 +218,6 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
     success,
     uploadFile,
     removeFile,
+    uploading,
   };
 }

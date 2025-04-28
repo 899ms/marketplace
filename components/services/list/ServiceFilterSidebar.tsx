@@ -7,10 +7,14 @@ import FilterTag from '@/components/filters/FilterTag'; // Import extracted Filt
 import { RiInformationLine, RiFireFill } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 
+// Remove empty interface
+/*
 // TODO: Define props if filter state needs to be managed externally
 interface ServiceFilterSidebarProps {}
+*/
 
-const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = () => {
+const ServiceFilterSidebar: React.FC /*<ServiceFilterSidebarProps>*/ = () => {
+  // Remove props type annotation
   // Internal state for filters - can be lifted later if needed
   const [selectedSkills, setSelectedSkills] = useState(['Retrowave']);
   const [selectedTools, setSelectedTools] = useState(['Retrowave']);

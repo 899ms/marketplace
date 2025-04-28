@@ -2,8 +2,8 @@
 
 import React from 'react';
 import * as Avatar from '@/components/ui/avatar';
-import * as Button from '@/components/ui/button'; // Keep if like button is added
-import { RiStarFill, RiHeartLine } from '@remixicon/react';
+
+import { RiStarFill } from '@remixicon/react';
 import { Review } from './types'; // Import type
 
 interface ReviewItemProps {

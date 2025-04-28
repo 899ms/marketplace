@@ -104,8 +104,8 @@ export function Step3Review({
     return () => {
       blobUrls.forEach((url) => URL.revokeObjectURL(url));
     };
-    // Use formData.images as dependency, because displayData.images might contain blob URLs that change
-  }, [formData.images]);
+    // Add displayData.images to the dependency array
+  }, [formData.images, displayData.images]);
 
   const handleThumbnailClick = (index: number) => {
     // Adjust index because reference sliced the array for thumbnails
@@ -199,7 +199,7 @@ export function Step3Review({
             {displayData.includedItems.length > 0 && (
               <>
                 <h3 className='text-sm mb-2 font-medium text-text-strong-950'>
-                  What's Included:
+                  Whats Included
                 </h3>
                 <ul className='mb-3 space-y-1.5'>
                   {displayData.includedItems.map((item, idx) => (

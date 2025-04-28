@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import Image from 'next/image'; // Assuming Image might be used if placeholder replaced
+// Assuming Image might be used if placeholder replaced
 import * as Avatar from '@/components/ui/avatar';
 import { RiStarFill } from '@remixicon/react';
 import { ServiceItemData } from './types'; // Import type from the same directory

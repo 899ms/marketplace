@@ -5,11 +5,7 @@ import * as Input from '@/components/ui/input';
 import * as Select from '@/components/ui/select';
 import { RiSearchLine } from '@remixicon/react';
 
-interface ProjectFiltersProps {
-  // Add props for search query, filter values, and change handlers if state is managed outside
-}
-
-export function ProjectFilters({}: ProjectFiltersProps) {
+export function ProjectFilters() {
   return (
     <div className='bg-bg-subtle-100 mb-6 flex flex-col gap-3 rounded-lg p-3 sm:flex-row'>
       {/* Search Input */}

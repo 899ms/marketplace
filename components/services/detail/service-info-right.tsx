@@ -17,6 +17,7 @@ import {
   RiTwitchFill,
   RiTwitterXFill,
 } from '@remixicon/react';
+import { cn } from '@/utils/cn';
 
 // Define subset of service data needed
 interface ServiceProviderInfo {
@@ -41,25 +42,6 @@ interface ServiceInfoRightProps {
 }
 
 export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
-  const getSocialIcon = (platform: string) => {
-    switch (platform.toLowerCase()) {
-      case 'twitch':
-        return (
-          <RiTwitchFill className='text-text-secondary-600 size-5 hover:text-[#6441a5]' />
-        );
-      case 'twitter':
-        return (
-          <RiTwitterXFill className='text-text-secondary-600 size-5 hover:text-text-strong-950' />
-        );
-      case 'google':
-        return (
-          <RiGoogleFill className='text-text-secondary-600 hover:text-text-primary-500 size-5' />
-        );
-      default:
-        return null;
-    }
-  };
-
   return (
     <div className='sticky top-20'>
       <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-5'>

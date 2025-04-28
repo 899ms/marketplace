@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+
 import * as Avatar from '@/components/ui/avatar';
 import * as Divider from '@/components/ui/divider';
 import * as Badge from '@/components/ui/badge';
