@@ -3,12 +3,17 @@
 import React from 'react';
 import Link from 'next/link';
 import * as LinkButton from '@/components/ui/link-button';
-import { Banner } from './banner';
+import * as Tag from '@/components/ui/tag';
+import * as Button from '@/components/ui/button';
+
+import Banner from './banner';
 import {
   RiArrowRightSLine,
   RiMoneyDollarCircleLine,
   RiTimeLine,
 } from '@remixicon/react';
+import * as Divider from '@/components/ui/divider';
+
 
 // --- Section Header ---
 interface SectionHeaderProps {
@@ -19,14 +24,13 @@ interface SectionHeaderProps {
 export function SectionHeader({ title, href = '#' }: SectionHeaderProps) {
   return (
     <div className='mb-4 flex items-center justify-between'>
-      <h2 className='text-xl font-semibold text-text-strong-950'>{title}</h2>
+      <h2 className='text-[18px] font-semibold text-[#0A0D14]'>{title}</h2>
       <LinkButton.Root
-        variant='gray'
         size='small'
-        className='text-label-md'
+        className='text-[14px] text-[#222530]'
         asChild
       >
-        <Link href={href}>
+        <Link href={href} className=''>
           More
           <LinkButton.Icon as={RiArrowRightSLine} />
         </Link>
@@ -40,37 +44,39 @@ export function ProjectCard() {
   // Placeholder data - replace with actual data fetching/props
   const project = {
     title: 'Need Professional Backend Developer (NodeJs)',
-    budget: '$500 - $1k',
+    budget: '1400',
     posted: '2 hours ago',
     proposals: 15,
+    description: 'We are seeking a talented Website Designer and Front-End Developer to join our ',
+    tags: ['Mixing', 'Singing', 'Jazz', 'Hip hop', 'K pop']
   };
   return (
-    <div className='rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4'>
-      <h3 className='mb-2 font-medium text-text-strong-950'>{project.title}</h3>
-      <div className='text-text-secondary-600 mb-3 flex items-center gap-4 text-paragraph-sm'>
-        <span className='flex items-center gap-1'>
-          <RiMoneyDollarCircleLine className='text-icon-primary-500 size-4' />{' '}
-          {project.budget}
-        </span>
-        <span className='flex items-center gap-1'>
-          <RiTimeLine className='text-icon-primary-500 size-4' />{' '}
-          {project.posted}
-        </span>
+    <>
+    <div className='flex flex-col gap-2 px-2 pt-4'>
+    <div className='flex flex-row justify-between'>
+      <div className='flex flex-col gap-2'>
+        <h3 className='text-[14px] font-medium text-[#0A0D14]'>{project.title}</h3>
+        <div className='flex flex-row gap-2'>
+          {project.tags.map((tag) => (
+            <Tag.Root key={tag} className='text-[12px] text-[#525866] '>{tag}</Tag.Root>
+          ))}
+        </div>
       </div>
-      <p className='text-text-secondary-600 mb-4 text-paragraph-sm'>
-        Proposals:{' '}
-        <span className='font-medium text-text-strong-950'>
-          {project.proposals}
-        </span>
-      </p>
-      <LinkButton.Root size='small' variant='primary' asChild>
-        <Link href='#'>
-          {' '}
-          {/* TODO: Add correct link */}
-          Submit a Proposal
-        </Link>
-      </LinkButton.Root>
+      <div className='flex flex-col gap-2'>
+        <p className='text-[14px] text-[#525866]'>Budget</p>
+        <p className='text-[18px] font-medium text-[#0A0D14]'>${project.budget}</p>
+      </div>
     </div>
+    <div className='flex justify-between'>
+    <p className='text-[14px] text-[#0E121B]'>{project.description}</p>
+    <Button.Root mode='stroke' size='xsmall' variant='neutral'>
+        Apply
+        <Button.Icon as={RiArrowRightSLine} />
+      </Button.Root>
+    </div>
+    </div>
+    <Divider.Root />
+    </>
   );
 }
 
@@ -80,14 +86,15 @@ export function WorkerMainContent() {
   const projects = [1, 2, 3]; // Example: map over actual project data
 
   return (
-    <main className='flex-1'>
+    <main className='flex-1 mt-[3.5rem]'>
       <Banner />
       <section className='mt-6'>
-        <SectionHeader title='Recent Projects' href='#' />
-        <div className='grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3'>
+        <SectionHeader title='Projects' href='#' />
+        <div className='flex flex-col gap-2'>
           {projects.map((p) => (
             <ProjectCard key={p} />
           ))}
+          
         </div>
       </section>
       {/* Add other main content sections here */}
