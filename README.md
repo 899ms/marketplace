@@ -6,6 +6,7 @@
   <p align="center">The Design System You Need</p>
 </p>
 
+
 [Join the AlignUI Community](https://discord.gg/alignui)
 
 # AlignUI Starter Template with Next.js
