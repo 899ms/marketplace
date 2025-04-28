@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '@/utils/cn';
+import Image from 'next/image';
+import artistImage from '@/assets/images/artist_image_banner.png';
 // import Image from 'next/image'; // Uncomment if using Next Image
 
 // --- Banner Component ---
@@ -10,19 +12,19 @@ const dummyBanners = [
     title: 'R & B Hits',
     description:
       'All mine, Lie again, Petty call me everyday, Out of time, No love, Bad habit, and so much more',
-    // image: '/path/to/rb-artist.png' // Optional image path
+    image: artistImage,
   },
   {
     title: 'Indie Rock Anthems',
     description:
       'Latest tracks from underground favorites and rising stars. Explore the new sounds.',
-    // image: '/path/to/indie-artist.png'
+    image: artistImage,
   },
   {
     title: 'Smooth Jazz Grooves',
     description:
       'Relax and unwind with the smoothest jazz tunes. Perfect for a chill evening.',
-    // image: '/path/to/jazz-artist.png'
+    image: artistImage,
   },
 ];
 
@@ -43,11 +45,11 @@ const Banner = () => {
   const currentBanner = dummyBanners[currentBannerIndex];
 
   return (
-    <div className='shadow-lg relative mb-8 min-h-[280px] overflow-hidden rounded-xl bg-gray-800 p-6 text-white'>
+    <div className='shadow-lg relative mb-8 min-h-[244px] overflow-hidden rounded-xl bg-[#253337] p-6 pl-12 text-white flex items-center'>
       <div className='relative z-10 max-w-xl'>
         {/* Display dynamic content */}
-        <h1 className='text-3xl mb-2 font-semibold'>{currentBanner.title}</h1>
-        <p className='text-sm mb-4 text-gray-300'>
+        <h1 className='text-[32px] mb-2 font-semibold'>{currentBanner.title}</h1>
+        <p className='text-[14px] mb-8 text-gray-300'>
           {currentBanner.description}
         </p>
         {/* Indicator Dots - Update based on current index */}
@@ -56,15 +58,25 @@ const Banner = () => {
             <span
               key={index}
               className={cn(
-                'block h-1.5 w-1.5 rounded-full transition-colors duration-300',
-                index === currentBannerIndex ? 'bg-white' : 'bg-gray-500',
+                'block rounded-full transition-colors duration-300',
+                index === currentBannerIndex ? 'bg-white h-1.5 w-3' : 'bg-gray-500 h-1.5 w-1.5',
               )}
             ></span>
           ))}
         </div>
       </div>
-      {/* TODO: Add dynamic image based on currentBanner.image */}
-      {/* <Image src={currentBanner.image || defaultImage} alt={currentBanner.title} ... /> */}
+      {/* Image positioned absolutely on the right side */}
+      {currentBanner.image && (
+        <div className='absolute right-0 top-0 h-full w-[40%] overflow-hidden'>
+          <Image 
+            src={currentBanner.image} 
+            alt={currentBanner.title}
+            className='h-full w-full object-cover'
+            width={400}
+            height={244}
+          />
+        </div>
+      )}
     </div>
   );
 };

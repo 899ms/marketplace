@@ -11,16 +11,16 @@ interface SectionHeaderProps {
 const SectionHeader = ({ title, href = '#' }: SectionHeaderProps) => {
   return (
     <div className='mb-4 flex items-center justify-between'>
-      <h2 className='text-xl font-semibold text-text-strong-950'>{title}</h2>
+      <h2 className='text-[24px] text-[#0E121B] font-semibold '>{title}</h2>
       <LinkButton.Root
         variant='gray'
         size='small'
-        className='text-label-md'
+        className='text-surface-800 text-[14px] font-medium'
         asChild
       >
-        <Link href={href}>
+        <Link href={href} className='leading-none'>
           More
-          <LinkButton.Icon as={RiArrowRightSLine} />
+          <LinkButton.Icon as={RiArrowRightSLine} className='size-6'/>
         </Link>
       </LinkButton.Root>
     </div>

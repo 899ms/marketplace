@@ -56,7 +56,7 @@ export default function Navbar() {
   // Optional: Basic loading state
   if (loading) {
     return (
-      <nav className=''>
+      <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-sm'>
         <div className='flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8'>
           {/* Simplified loading state or skeleton */}
           <div>Loading...</div>
@@ -66,7 +66,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className=''>
+    <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-sm'>
       <div className='flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8'>
         {/* Left Section: Logo and Nav Links */}
         <div className='flex items-center gap-8'>
@@ -150,7 +150,7 @@ export default function Navbar() {
               <Dropdown.Root>
                 <Dropdown.Trigger asChild>
                   <button className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center gap-2 rounded-lg border border-stroke-soft-200 p-1 pr-2 text-label-md'>
-                    <Avatar.Root size='40'>
+                    {user.user_metadata?.avatar_url ? <Avatar.Root size='40'>
                       {/* Use user avatar or fallback */}
                       <Avatar.Image
                         src={
@@ -163,7 +163,8 @@ export default function Navbar() {
                           'User Avatar'
                         } // Use name or email for alt text
                       />
-                    </Avatar.Root>
+                    </Avatar.Root>:
+                    <Avatar.Root size='40' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
                     <span className='hidden md:inline'>Account</span>
                     <RiArrowDownSLine className='text-icon-sub-500 hidden size-4 md:inline' />
                   </button>

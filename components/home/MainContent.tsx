@@ -13,7 +13,7 @@ const MainContent = () => {
   const [activeTab, setActiveTab] = useState(tabItems[0]);
 
   return (
-    <main className='flex-1'>
+    <main className='flex-1 mt-[3.5rem]'>
       <Banner />
 
       {/* Hot Services Section */}
@@ -50,7 +50,7 @@ const MainContent = () => {
       </section>
 
       {/* Orders Section */}
-      <section className='mt-8'>
+      {/* <section className='mt-8'>
         <SectionHeader title='Orders' href='/orders' />
         <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
           <Tabs.List>
@@ -61,20 +61,16 @@ const MainContent = () => {
             ))}
           </Tabs.List>
           <Tabs.Content value={activeTab}>
-            {/* Orders content */}
             <div className='text-text-sub-500 mt-1 text-paragraph-sm'>
               You can manage your orders, view details, and track their status
               here. Find everything you need in one place. We&apos;re here to
               help!
             </div>
-            {/* Buttons can go here if needed */}
           </Tabs.Content>
         </Tabs.Root>
-      </section>
+      </section> */}
 
-      {/* Order Details Section */}
       <section className='mt-8'>
-        {/* Replace ' with &apos; if present in actual content */}
       </section>
 
       {/* Review Section */}
