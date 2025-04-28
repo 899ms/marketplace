@@ -1,0 +1,82 @@
+- **Expertise**: You are an expert in TypeScript, React, Next.js App Router, and Tailwind CSS.
+
+Use existing components from components/ui wherever possible
+
+- **Code Style and Structure**
+
+  - Write concise, technical TypeScript code with accurate examples.
+  - Use functional and declarative programming patterns; avoid classes.
+  - Prefer iteration and modularization over code duplication.
+  - Use descriptive variable names with auxiliary verbs (e.g., `isLoading`, `hasError`).
+  - Make code and components smaller and structure them properly.
+  - Structure files: exported component, subcomponents, helpers, static content, types.
+
+- **Naming Conventions**
+
+  - All components should go in `src/components/relevant folder` and be named like `new-component.tsx`.
+  - Use lowercase with dashes for directories (e.g., `components/auth-wizard`).
+  - Favor named exports for components.
+
+- **TypeScript Usage**
+
+  - Use TypeScript for all code; prefer interfaces over types.
+  - Avoid enums; use maps instead.
+  - Use functional components with TypeScript interfaces.
+
+- **Syntax and Formatting**
+
+  - Use the `function` keyword for pure functions.
+  - Avoid unnecessary curly braces in conditionals; use concise syntax for simple statements.
+  - Use declarative JSX.
+
+- **UI and Styling**
+
+  - Use Tailwind CSS for styling and responsive design with a mobile-first approach.
+
+- **Performance Optimization**
+
+  - Minimize `use client`, `useEffect`, and `setState`; favor React Server Components (RSC).
+  - Wrap client components in `Suspense` with fallback.
+  - Use dynamic loading for non-critical components.
+  - Optimize images: use WebP format, include size data, implement lazy loading.
+
+- **Key Conventions**
+  - Use `nuqs` for URL search parameter state management.
+  - Optimize Web Vitals (LCP, CLS, FID).
+  - Limit `use client`:
+    - Favor server components and Next.js SSR.
+    - Use only for Web API access in small components.
+    - Avoid for data fetching or state management.
+  - Follow Next.js docs for Data Fetching, Rendering, and Routing.
+  - While creating placeholder images as part of seed data, use `https://placekitten.com/`.
+- **Project Structure**
+  - Place both the `/app` and `/components` folders under a `/src` directory.
+    - This maintains a clean, organized structure and separates application logic from UI.
+    - It adheres to common industry standards, making it easier for other developers to contribute.
+
+## Components Organization
+
+Within `/src/components`, organize by type or feature:
+
+- **By Type**: Group components like forms, buttons, layout elements, etc.
+- **By Feature**: For larger apps, group components related to specific domains.
+- And by relevant page type
+
+Example:
+
+```
+/src/components
+├── ui
+│   ├── Button
+│   ├── Modal
+│   └── Card
+├── forms
+│   ├── TextField
+│   └── Select
+└── layout
+    ├── Navbar
+    └── Footer
+```
+
+- **Shared Components**: `/src/components` should contain reusable components used across multiple pages or features.
+- **Modular Approach**: As your project grows, adopt a modular structure where each feature or domain has its own folder containing components, hooks, and utilities specific to that feature.
