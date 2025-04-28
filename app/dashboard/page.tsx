@@ -2,6 +2,8 @@ import { createServerClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 import { userOperations } from '@/utils/supabase';
 
+export const dynamic = 'force-dynamic';
+
 export default async function DashboardPage() {
   const supabase = await createServerClient();
 
