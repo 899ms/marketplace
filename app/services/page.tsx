@@ -3,9 +3,7 @@
 import React, { useState } from 'react';
 // import Link from 'next/link'; // Keep if ProjectCard needs it
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
-import * as Input from '@/components/ui/input';
-import * as Select from '@/components/ui/select';
-import { RiSearchLine } from '@remixicon/react';
+// Removed unused Input, Select, RiSearchLine imports
 
 // Import shared card components
 import ServiceCard from '@/components/cards/ServiceCard'; // Assuming path from home refactor
@@ -14,10 +12,8 @@ import ProjectCard from '@/components/cards/ProjectCard'; // Assuming a ProjectC
 
 // Import extracted components for this page
 import ServiceFilterSidebar from '@/components/services/list/ServiceFilterSidebar';
+import { ProjectFilters } from '@/components/services/list/project-filters'; // Added import
 import WorkerProfileDrawer from '@/components/worker/WorkerProfileDrawer';
-
-// Removed local component definitions: ServiceCard, WorkerProfileDrawer, WorkerCard, FilterTag, ProjectCard
-// Removed filter state and handlers (now encapsulated in ServiceFilterSidebar)
 
 export default function ServicesPage() {
   const [activeTab, setActiveTab] = useState('Service');
@@ -53,68 +49,8 @@ export default function ServicesPage() {
 
         {/* Right Content Area */}
         <div className='flex-1'>
-          {/* Search and Filters - Only show for Project tab for now */}
-          {activeTab === 'Project' && (
-            <div className='bg-bg-subtle-100 mb-6 flex flex-col gap-3 rounded-lg p-3 sm:flex-row'>
-              {' '}
-              {/* Flex wrap for smaller screens */}
-              {/* Search Input */}
-              <div className='flex-1'>
-                <Input.Root>
-                  <Input.Wrapper>
-                    <Input.Icon as={RiSearchLine} />
-                    <Input.Input placeholder='Search Projects...' />
-                  </Input.Wrapper>
-                </Input.Root>
-              </div>
-              {/* Project-specific Filter Dropdowns */}
-              <div className='flex flex-wrap gap-3'>
-                {' '}
-                {/* Allow wrapping */}
-                <Select.Root defaultValue='deadline' size='small'>
-                  <Select.Trigger>
-                    <Select.Value placeholder='Deadline' />
-                  </Select.Trigger>
-                  <Select.Content>
-                    <Select.Group>
-                      <Select.Item value='deadline'>Deadline</Select.Item>
-                      <Select.Item value='today'>Today</Select.Item>
-                      <Select.Item value='this-week'>This Week</Select.Item>
-                      <Select.Item value='this-month'>This Month</Select.Item>
-                    </Select.Group>
-                  </Select.Content>
-                </Select.Root>
-                <Select.Root defaultValue='purpose' size='small'>
-                  <Select.Trigger>
-                    <Select.Value placeholder='Purpose' />
-                  </Select.Trigger>
-                  <Select.Content>
-                    <Select.Group>
-                      <Select.Item value='purpose'>Purpose</Select.Item>
-                      <Select.Item value='business'>Business</Select.Item>
-                      <Select.Item value='personal'>Personal</Select.Item>
-                      <Select.Item value='education'>Education</Select.Item>
-                    </Select.Group>
-                  </Select.Content>
-                </Select.Root>
-                <Select.Root defaultValue='posting-date' size='small'>
-                  <Select.Trigger>
-                    <Select.Value placeholder='Posting Date' />
-                  </Select.Trigger>
-                  <Select.Content>
-                    <Select.Group>
-                      <Select.Item value='posting-date'>
-                        Posting Date
-                      </Select.Item>
-                      <Select.Item value='last-24h'>Last 24h</Select.Item>
-                      <Select.Item value='last-week'>Last Week</Select.Item>
-                      <Select.Item value='last-month'>Last Month</Select.Item>
-                    </Select.Group>
-                  </Select.Content>
-                </Select.Root>
-              </div>
-            </div>
-          )}
+          {/* Conditionally render ProjectFilters */}
+          {activeTab === 'Project' && <ProjectFilters />}
 
           {/* Services/Workers Grid based on active tab */}
           {activeTab === 'Worker' && (
