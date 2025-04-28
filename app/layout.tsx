@@ -47,7 +47,7 @@ export default function RootLayout({
                   </div>
                 </div>
                 <div className='mx-auto w-full max-w-[1440px]'>
-                  <main className='flex flex-1 flex-col'>{children}</main>
+                  <main className='flex flex-1 flex-col pt-16'>{children}</main>
                 </div>
               </div>
             </TooltipProvider>
