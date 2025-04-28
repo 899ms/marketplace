@@ -21,6 +21,10 @@ export interface UseCreateJobFormReturn {
   isSubmitting: boolean;
   error: string | null;
   success: boolean;
+  uploadFile: (
+    file: File,
+  ) => Promise<{ name: string; size: number; url: string } | null>;
+  removeFile: (fileName: string) => void;
 }
 
 const STEPS_COUNT = 4; // Total number of steps
@@ -47,6 +51,9 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
       deadline: undefined, // Explicit optional
       negotiateBudget: false, // Explicitly match schema default
       requirements: '',
+      skill_levels: [], // New field
+      candidate_sources: [], // New field
+      files: [], // New field
       usageOption: 'private', // Explicitly match schema default
       privacyOption: 'public', // Explicitly match schema default
     },
@@ -65,6 +72,57 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
 
   const prevStep = () => setActiveStep((prev) => Math.max(prev - 1, 1));
 
+  // Function to upload a file to Supabase Storage
+  const uploadFile = async (file: File) => {
+    if (!user) {
+      setError('You must be logged in to upload files');
+      return null;
+    }
+
+    try {
+      // Create a unique file path
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `${user.id}/${fileName}`;
+
+      // Upload to Supabase Storage
+      const { data, error: uploadError } = await supabase.storage
+        .from('job-files')
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error('Error uploading file:', uploadError);
+        setError(uploadError.message);
+        return null;
+      }
+
+      // Get the public URL
+      const {
+        data: { publicUrl },
+      } = supabase.storage.from('job-files').getPublicUrl(filePath);
+
+      return {
+        name: file.name,
+        size: file.size,
+        url: publicUrl,
+      };
+    } catch (err) {
+      console.error('File upload error:', err);
+      setError(err instanceof Error ? err.message : 'Failed to upload file');
+      return null;
+    }
+  };
+
+  // Function to remove a file from the form state
+  const removeFile = (fileName: string) => {
+    const currentFiles = formMethods.getValues('files');
+    formMethods.setValue(
+      'files',
+      currentFiles.filter((file) => file.name !== fileName),
+      { shouldValidate: true },
+    );
+  };
+
   const onSubmit = async (data: CreateJobFormData) => {
     if (!user) {
       setError('You must be logged in to create a job');
@@ -79,6 +137,28 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
       // Validate data using Zod
       const validatedData = CreateJobFormSchema.parse(data);
 
+      // Upload all files first if they exist
+      const fileUploads = [];
+      for (const fileEntry of validatedData.files) {
+        // Skip files that already have a URL (were previously uploaded)
+        if (fileEntry.url) {
+          fileUploads.push(fileEntry);
+          continue;
+        }
+
+        // Upload file if the File object exists
+        if (fileEntry.file) {
+          const uploadedFile = await uploadFile(fileEntry.file);
+          if (uploadedFile) {
+            fileUploads.push(uploadedFile);
+          } else {
+            setError(`Failed to upload file: ${fileEntry.name}`);
+            setIsSubmitting(false);
+            return;
+          }
+        }
+      }
+
       // Prepare job data for insertion
       const jobData = {
         buyer_id: user.id,
@@ -89,6 +169,13 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
         deadline: validatedData.deadline || null,
         negotiate_budget: validatedData.negotiateBudget || false,
         requirements: validatedData.requirements,
+        skill_levels: validatedData.skill_levels,
+        candidate_sources: validatedData.candidate_sources,
+        files: fileUploads.map((file) => ({
+          name: file.name,
+          size: file.size,
+          url: file.url,
+        })),
         usage_option: validatedData.usageOption,
         privacy_option: validatedData.privacyOption,
         status: 'open', // Default status for new jobs
@@ -129,5 +216,7 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
     isSubmitting,
     error,
     success,
+    uploadFile,
+    removeFile,
   };
 }

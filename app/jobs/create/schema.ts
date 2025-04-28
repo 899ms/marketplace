@@ -15,11 +15,25 @@ export const CreateJobFormSchema = z.object({
   deadline: z.string().optional(), // Keep as string for now, could use z.date() if using a date picker component that yields Date objects
   negotiateBudget: z.boolean().optional().default(false),
 
-  // Step 2: Skills (Refining based on JobSchema - requirements could map here)
-  requirements: z.string().min(1, 'Requirements are required'), // Map 'skills', 'sources', 'files' potentially into a richer 'requirements' text field or structured data if needed later
-  // skills: z.array(z.string()).optional(), // Keep if needed separately
-  // sources: z.array(z.string()).optional(), // Keep if needed separately
-  // files: z.custom<File[]>().optional(), // Use z.custom for File objects, add validation if needed
+  // Step 2: Skills and Requirements
+  requirements: z.string().min(1, 'Requirements are required'),
+  skill_levels: z
+    .array(z.enum(['Trainee', 'Director', 'Skilled', 'Expert']))
+    .min(1, 'At least one skill level is required'),
+  candidate_sources: z
+    .array(z.enum(['Manual Entry', 'Referral', 'Skilled']))
+    .min(1, 'At least one candidate source is required'),
+  files: z
+    .array(
+      z.object({
+        name: z.string(),
+        size: z.number(),
+        url: z.string().optional(), // For uploaded files from Supabase storage
+        file: z.any().optional(), // For File objects during upload
+      }),
+    )
+    .optional()
+    .default([]),
 
   // Step 3: Usage
   usageOption: z
