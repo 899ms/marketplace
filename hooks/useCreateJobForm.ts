@@ -46,16 +46,15 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
     defaultValues: {
       title: '',
       description: '',
-      budget: 0, // Keep as 0 or potentially undefined if input handles NaN
-      currency: 'USD', // Explicitly match schema default
-      deadline: undefined, // Explicit optional
-      negotiateBudget: false, // Explicitly match schema default
-      requirements: '',
+      budget: 0,
+      currency: 'USD',
+      deadline: undefined,
+      negotiateBudget: false,
       skill_levels: [], // New field
       candidate_sources: [], // New field
       files: [], // New field
-      usageOption: 'private', // Explicitly match schema default
-      privacyOption: 'public', // Explicitly match schema default
+      usageOption: 'private',
+      privacyOption: 'public',
     },
   });
 
@@ -168,7 +167,10 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
         currency: validatedData.currency,
         deadline: validatedData.deadline || null,
         negotiate_budget: validatedData.negotiateBudget || false,
-        requirements: validatedData.requirements,
+        // Only include requirements if it exists
+        ...(validatedData.requirements && {
+          requirements: validatedData.requirements,
+        }),
         skill_levels: validatedData.skill_levels,
         candidate_sources: validatedData.candidate_sources,
         files: fileUploads.map((file) => ({

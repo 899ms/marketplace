@@ -16,7 +16,7 @@ export const CreateJobFormSchema = z.object({
   negotiateBudget: z.boolean().optional().default(false),
 
   // Step 2: Skills and Requirements
-  requirements: z.string().min(1, 'Requirements are required'),
+  requirements: z.string().optional(), // Now optional as we're using structured fields instead
   skill_levels: z
     .array(z.enum(['Trainee', 'Director', 'Skilled', 'Expert']))
     .min(1, 'At least one skill level is required'),
