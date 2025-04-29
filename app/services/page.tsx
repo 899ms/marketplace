@@ -12,11 +12,17 @@ import ProjectCard from '@/components/cards/ProjectCard'; // Assuming a ProjectC
 
 // Import extracted components for this page
 import ServiceFilterSidebar from '@/components/services/list/ServiceFilterSidebar';
-import { ProjectFilters } from '@/components/services/list/project-filters'; // Added import
+// import { ProjectFilters } from '@/components/services/list/project-filters'; // Removed import
+import { ServiceSearchBar } from '@/components/services/list/ServiceSearchBar';
+import { ProjectSearchBar } from '@/components/services/list/ProjectSearchBar'; // Import the project search bar
+// import { WorkerSearchBar } from '@/components/services/list/WorkerSearchBar'; // Removed import
 import WorkerProfileDrawer from '@/components/worker/WorkerProfileDrawer';
 
+// Define the possible tab values
+type ActiveTabValue = 'Service' | 'Worker' | 'Project';
+
 export default function ServicesPage() {
-  const [activeTab, setActiveTab] = useState('Service');
+  const [activeTab, setActiveTab] = useState<ActiveTabValue>('Service');
   const [selectedWorker, setSelectedWorker] = useState<boolean>(false);
 
   // Worker profile handlers (remain here to control the drawer)
@@ -24,67 +30,110 @@ export default function ServicesPage() {
   const closeWorkerProfile = () => setSelectedWorker(false);
 
   return (
-    <div className='flex flex-1 flex-col gap-4 px-6 py-6'>
-      {/* Tab Navigation */}
-      <div className='border-b border-stroke-soft-200'>
-        <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
-          <TabMenuHorizontal.List>
-            <TabMenuHorizontal.Trigger value='Service'>
-              Service
-            </TabMenuHorizontal.Trigger>
-            <TabMenuHorizontal.Trigger value='Worker'>
-              Worker
-            </TabMenuHorizontal.Trigger>
-            <TabMenuHorizontal.Trigger value='Project'>
-              Project
-            </TabMenuHorizontal.Trigger>
-          </TabMenuHorizontal.List>
-        </TabMenuHorizontal.Root>
-      </div>
+    <>
+      <div className='flex flex-1 gap-6 px-6 py-6'>
+        {/* Left Column: Tabs + Filters */}
+        <div className='w-full max-w-[342px] flex-shrink-0 space-y-4'>
+          {/* Tab Navigation */}
+          <div className='border-b border-stroke-soft-200'>
+            <TabMenuHorizontal.Root
+              value={activeTab}
+              onValueChange={(value) => setActiveTab(value as ActiveTabValue)}
+            >
+              <TabMenuHorizontal.List>
+                <TabMenuHorizontal.Trigger value='Service'>
+                  Service
+                </TabMenuHorizontal.Trigger>
+                <TabMenuHorizontal.Trigger value='Worker'>
+                  Worker
+                </TabMenuHorizontal.Trigger>
+                <TabMenuHorizontal.Trigger value='Project'>
+                  Project
+                </TabMenuHorizontal.Trigger>
+              </TabMenuHorizontal.List>
+            </TabMenuHorizontal.Root>
+          </div>
 
-      {/* Main Content Area */}
-      <div className='flex gap-6'>
-        {/* Left Sidebar Filters */}
-        <ServiceFilterSidebar />
+          {/* Filters Sidebar */}
+          <ServiceFilterSidebar activeTab={activeTab} />
+        </div>
 
-        {/* Right Content Area */}
-        <div className='flex-1'>
-          {/* Conditionally render ProjectFilters */}
-          {activeTab === 'Project' && <ProjectFilters />}
+        {/* Right Column: Tab Content */}
+        <div className='flex-1 space-y-4 min-w-0'>
+          {/* Search Bars (Service/Project) */}
+          {activeTab === 'Service' && <ServiceSearchBar />}
+          {activeTab === 'Project' && <ProjectSearchBar />}
+          {/* Note: WorkerSearchBar is rendered inside ServiceFilterSidebar */}
 
-          {/* Services/Workers Grid based on active tab */}
+          {/* Grids/Lists */}
           {activeTab === 'Worker' && (
-            // TODO: Replace with actual data mapping
-            <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
-              {[...Array(9)].map((_, i) => (
-                <WorkerCard key={i} onClick={openWorkerProfile} />
-              ))}
+            <div className='grid grid-cols-2 gap-4'>
+              {[...Array(9)].map((_, i) => {
+                const mockWorkerData = {
+                  avatarUrl: 'https://placekitten.com/48/48?image=' + i,
+                  name: `Cleve Music ${i + 1}`,
+                  rating: 4.5 + Math.random() * 0.5,
+                  reviewCount: Math.floor(Math.random() * 200) + 10,
+                  badges: [
+                    { label: 'Salary' },
+                    { label: 'Work' },
+                    { label: 'Specialty' },
+                  ],
+                  description:
+                    'Passionate about delivering high-quality audio mixing and editing. Let\'s create something amazing together!',
+                  skills: ['Mixing', 'Singing', 'Jazz', 'Hip hop', 'K pop'],
+                };
+                return (
+                  <WorkerCard
+                    key={i}
+                    {...mockWorkerData}
+                    onClick={openWorkerProfile}
+                  />
+                );
+              })}
             </div>
           )}
           {activeTab === 'Service' && (
-            // TODO: Replace with actual data mapping
-            <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'>
+            <div className='grid grid-cols-3 gap-4'>
               {[...Array(9)].map((_, i) => (
                 <ServiceCard key={i} />
               ))}
             </div>
           )}
           {activeTab === 'Project' && (
-            // TODO: Replace with actual data mapping
             <div className='flex flex-col space-y-4'>
-              {[...Array(5)].map((_, i) => (
-                <ProjectCard key={i} />
-              ))}
+              {[...Array(5)].map((_, i) => {
+                const mockProjectData = {
+                  title: `Write professional resume, cover letter ${i + 1}`,
+                  infoBadges: [
+                    { label: 'Deadline date' },
+                    { label: `${i + 1} sent proposal` },
+                    { label: 'Business' },
+                  ],
+                  skillTags: ['Mixing', 'Singing', 'Jazz', 'Hip hop', 'K pop'],
+                  description:
+                    'We are seeking a talented Website Designer and Front-End Developer to join our team. In this role, you will be responsible for designing and implementing user-friendly...',
+                  client: {
+                    avatarUrl: 'https://placekitten.com/24/24?image=' + (i + 10),
+                    name: 'Cleve Music',
+                    rating: 4.8 + Math.random() * 0.1,
+                    reviewCount: Math.floor(Math.random() * 50) + 100,
+                  },
+                  budget: 1000 + Math.floor(Math.random() * 1000),
+                  onApply: () => console.log('Apply clicked for project', i + 1),
+                };
+                return <ProjectCard key={i} {...mockProjectData} />;
+              })}
             </div>
           )}
         </div>
       </div>
 
-      {/* Worker Profile Drawer */}
+      {/* Worker Profile Drawer (Keep outside the main layout) */}
       <WorkerProfileDrawer
         isOpen={selectedWorker}
         onClose={closeWorkerProfile}
       />
-    </div>
+    </>
   );
 }

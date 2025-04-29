@@ -76,7 +76,7 @@ const TabMenuHorizontalList = React.forwardRef<
         {/* Floating Bg */}
         <div
           className={cn(
-            'absolute -bottom-px left-0 h-0.5 bg-primary-base opacity-0 transition-all duration-300 group-has-[[data-state=active]]/tab-list:opacity-100',
+            'absolute -bottom-px left-0 h-0.5 bg-black opacity-0 transition-all duration-300 group-has-[[data-state=active]]/tab-list:opacity-100',
             {
               hidden: !mounted,
             },
@@ -103,13 +103,13 @@ const TabMenuHorizontalTrigger = React.forwardRef<
       ref={forwardedRef}
       className={cn(
         // base
-        'group/tab-item h-12 py-3.5 text-label-sm text-text-sub-600 outline-none',
+        'group/tab-item h-12 py-3.5 text-base text-gray-500 outline-none',
         'flex items-center justify-center gap-1.5',
         'transition duration-200 ease-out',
         // focus
         'focus:outline-none',
         // active
-        'data-[state=active]:text-text-strong-950',
+        'data-[state=active]:text-black',
         className,
       )}
       {...rest}
