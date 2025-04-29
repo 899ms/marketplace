@@ -81,7 +81,7 @@ export default function CreateJobPage() {
       ),
     },
     {
-      title: 'Skills & Requirements', // Updated title
+      title: 'Skills', // Updated title
       content: (
         <Step2SkillsForm
           formMethods={formMethods}
@@ -91,7 +91,7 @@ export default function CreateJobPage() {
       ),
     },
     {
-      title: 'Usage & Privacy', // Updated title
+      title: 'Usage', // Updated title
       content: (
         <Step3UsageForm
           formMethods={formMethods}
@@ -101,7 +101,7 @@ export default function CreateJobPage() {
       ),
     },
     {
-      title: 'Preview & Post', // Updated title
+      title: 'Preview', // Updated title
       content: (
         <Step4Preview
           formMethods={formMethods}
