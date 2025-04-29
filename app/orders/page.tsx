@@ -200,9 +200,9 @@ const OrderListItem = () => {
   };
 
   return (
-    <div className='flex items-start gap-4 border-b border-stroke-soft-200 py-4'>
+    <div className='flex items-start justify-between gap-4 border-b border-stroke-soft-200 py-4'>
 
-      <div className='flex-1'>
+      <div className='flex-1 max-w-[80%]'>
         {/* Title */}
         <h3 className='mb-1 text-paragraph-lg font-medium text-text-strong-950'>
           {order.title}
@@ -262,35 +262,38 @@ const ReviewListItem = () => {
 
   return (
     <div className='border-b border-stroke-soft-200 py-4'>
-      <div className='flex items-start gap-3'>
-        {/* Avatar and User Info */}
-        <Avatar.Root size='40' className='mt-1 shrink-0'>
-          <Avatar.Image src={review.avatarUrl} alt={review.name} />
-        </Avatar.Root>
+      <div className='flex justify-between items-start gap-3'>
+        <div className='flex items-start gap-3'>
 
-        <div className='flex-1'>
-          <div className='mb-1 flex items-center gap-1.5'>
-            <div className='text-text-secondary-600 text-label-sm font-medium'>
-              {review.name}
-            </div>
-            <div className='flex items-center gap-0.5'>
-              <RiStarFill className='size-3.5 text-yellow-400' />
+          {/* Avatar and User Info */}
+          <Avatar.Root size='40' className='mt-1 shrink-0'>
+            <Avatar.Image src={review.avatarUrl} alt={review.name} />
+          </Avatar.Root>
+
+          <div className='flex-1 max-w-[80%]'>
+            <div className='mb-1 flex items-center gap-1.5'>
+              <div className='text-text-secondary-600 text-label-sm font-medium'>
+                {review.name}
+              </div>
+              <div className='flex items-center gap-0.5'>
+                <RiStarFill className='size-3.5 text-yellow-400' />
+                <span className='text-text-secondary-600 text-paragraph-xs'>
+                  {review.rating}
+                </span>
+              </div>
               <span className='text-text-secondary-600 text-paragraph-xs'>
-                {review.rating}
+                {review.date}
               </span>
             </div>
-            <span className='text-text-secondary-600 text-paragraph-xs'>
-              {review.date}
-            </span>
-          </div>
 
-          {/* Review Title and Description */}
-          <h3 className='mb-1 text-paragraph-md font-medium text-text-strong-950'>
-            {review.title}
-          </h3>
-          <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm'>
-            {review.description}
-          </p>
+            {/* Review Title and Description */}
+            <h3 className='mb-1 text-paragraph-md font-medium text-text-strong-950'>
+              {review.title}
+            </h3>
+            <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm'>
+              {review.description}
+            </p>
+          </div>
         </div>
 
         {/* Amount */}
@@ -364,43 +367,34 @@ export default function OrderPage() {
     <div className='flex flex-1 gap-6 px-6 pt-6'>
       <OrderSidebar />
       <main className='flex-1'>
-        <div className='mb-6'>
-          <TabMenuHorizontal.Root
-            value={activeTab}
-            onValueChange={setActiveTab}
-          >
-            <TabMenuHorizontal.List className="flex items-center gap-6">
+        <div className="mb-6 border-t-0">
+          <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
+            <TabMenuHorizontal.List className="flex items-center gap-6 border-none">
               <TabMenuHorizontal.Trigger
                 value="Order"
                 className="
-                px-4 py-2 text-label-md font-medium text-text-secondary-600
-                data-[state=active]:text-text-strong-950
-                data-[state=active]:after:block
-                data-[state=active]:after:h-[2px]
-                data-[state=active]:after:w-full
-                data-[state=active]:after:bg-black
-              "
+                  px-4 pb-2 text-label-md font-medium 
+                  text-gray-400 
+                  data-[state=active]:text-black
+                "
               >
                 Order
               </TabMenuHorizontal.Trigger>
               <TabMenuHorizontal.Trigger
                 value="Review"
                 className="
-                px-4 py-2 text-label-md font-medium text-text-secondary-600
-                data-[state=active]:text-text-strong-950
-                data-[state=active]:after:block
-                data-[state=active]:after:h-[2px]
-                data-[state=active]:after:w-full
-                data-[state=active]:after:bg-black
-              "
+                  px-4 pb-2 text-label-md font-medium 
+                  text-gray-400 
+                  data-[state=active]:text-black
+                "
               >
                 Review
-
               </TabMenuHorizontal.Trigger>
             </TabMenuHorizontal.List>
           </TabMenuHorizontal.Root>
         </div>
-        <div className='shadow-sm rounded-xl border-b border-l border-r border-stroke-soft-200 bg-bg-white-0 p-4'>
+
+        <div className='p-4'>
           {activeTab === 'Order' && (
             <div className='flex flex-col divide-y divide-stroke-soft-200'>
               <OrderListItem />
