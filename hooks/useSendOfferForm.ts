@@ -8,6 +8,7 @@ import { useAuth } from '@/utils/supabase/AuthContext';
 import supabase from '@/utils/supabase/client';
 import { SendOfferSchema, SendOfferFormData } from '@/components/offers/schema';
 import { User, Job, BaseFileData } from '@/utils/supabase/types';
+import { chatOperations } from '@/utils/supabase/database';
 
 export interface UseSendOfferFormReturn {
   formMethods: UseFormReturn<SendOfferFormData>;
@@ -134,7 +135,7 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
       const contractData = {
         buyer_id: user.id,
         seller_id: validatedData.sendTo,
-        job_id: validatedData.selectOrder,
+        job_id: validatedData.selectOrder || null,
         service_id: null,
         status: 'pending',
         amount: totalAmount,
@@ -146,11 +147,62 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
       const { data: newContract, error: contractError } = await supabase
         .from('contracts')
         .insert(contractData)
-        .select('id')
+        .select('id, buyer_id, seller_id')
         .single();
+
+      // --- DEBUG LOGGING START ---
+      console.log('Contract creation attempt complete.');
+      if (contractError) {
+        console.error('Contract creation FAILED:', contractError);
+      } else {
+        console.log('Contract created successfully:', newContract);
+      }
+      // --- DEBUG LOGGING END ---
 
       if (contractError || !newContract) {
         throw contractError || new Error('Failed to create contract record');
+      }
+
+      // --- DEBUG LOGGING START ---
+      console.log('Attempting to create chat with data:', {
+        buyer_id: newContract.buyer_id,
+        seller_id: newContract.seller_id,
+        contract_id: newContract.id,
+      });
+      // --- DEBUG LOGGING END ---
+      try {
+        const newChat = await chatOperations.createChat({
+          buyer_id: newContract.buyer_id,
+          seller_id: newContract.seller_id,
+          contract_id: newContract.id,
+        });
+
+        // --- DEBUG LOGGING START ---
+        console.log('chatOperations.createChat call finished.');
+        // --- DEBUG LOGGING END ---
+
+        if (!newChat) {
+          console.error(
+            `Offer sent (Contract ID: ${newContract.id}), but failed to create associated chat. createChat returned null.`,
+          );
+          setError(
+            `Offer sent, but couldn't initiate chat. Please contact support if needed.`,
+          );
+        } else {
+          console.log(
+            `Chat created successfully (Chat ID: ${newChat.id}) for Contract ID: ${newContract.id}`,
+          );
+        }
+      } catch (chatErr: any) {
+        // --- DEBUG LOGGING START ---
+        console.error(
+          `Error caught during chatOperations.createChat call for contract ${newContract.id}:`,
+          chatErr,
+        );
+        // --- DEBUG LOGGING END ---
+        setError(
+          `Offer sent, but failed to create chat: ${chatErr.message || 'Unknown error'}.`,
+        );
       }
 
       if (
@@ -172,17 +224,16 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
 
         if (milestoneError) {
           console.error('Failed to insert milestones:', milestoneError);
+          const currentError = error ? `${error} ` : '';
           setError(
-            `Offer sent (Contract ID: ${newContract.id}), but failed to save milestones: ${milestoneError.message}`,
+            `${currentError}Offer & chat created, but failed to save milestones: ${milestoneError.message}`,
           );
-          // Proceed but show the error
         }
       }
 
-      setSuccess(true);
-      // Optional: Reset form after successful submission
-      // formMethods.reset();
-      // setTimeout(() => { router.push('/dashboard'); router.refresh(); }, 1500);
+      if (!error) {
+        setSuccess(true);
+      }
     } catch (err: any) {
       console.error('Send Offer error:', err);
       setError(err.message || 'Failed to send offer. Please try again.');

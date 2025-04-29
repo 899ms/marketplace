@@ -3,7 +3,7 @@ import { z } from 'zod';
 // --- User Schema (maps to public.users) ---
 export const UserSchema = z.object({
   id: z.string(), // TEXT primary key (usually UUID from auth, but TEXT in table)
-  created_at: z.string().datetime().optional().nullable(), // TIMESTAMPTZ default NOW(), nullable based on schema info (was optional before)
+  created_at: z.string().optional().nullable(), // TIMESTAMPTZ default NOW(), nullable based on schema info (was optional before)
   username: z.string(), // TEXT UNIQUE NOT NULL
   full_name: z.string(), // TEXT NOT NULL
   avatar_url: z.string().url().nullable(), // TEXT, nullable
@@ -95,7 +95,7 @@ export type Contract = z.infer<typeof ContractSchema>;
 // --- Chat Schema (maps to public.chats) ---
 export const ChatSchema = z.object({
   id: z.string().uuid(), // UUID primary key default uuid_generate_v4()
-  created_at: z.string().datetime().optional().nullable(), // TIMESTAMPTZ default NOW(), nullable
+  created_at: z.string().optional().nullable(),
   buyer_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
   seller_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
   contract_id: z.string().uuid().nullable(), // UUID REFERENCES contracts(id), nullable
@@ -105,7 +105,7 @@ export type Chat = z.infer<typeof ChatSchema>;
 // --- Message Schema (maps to public.messages) ---
 export const MessageSchema = z.object({
   id: z.string().uuid(), // UUID primary key default uuid_generate_v4()
-  created_at: z.string().datetime().optional().nullable(), // TIMESTAMPTZ default NOW(), nullable
+  created_at: z.string().optional().nullable(),
   chat_id: z.string().uuid(), // UUID NOT NULL REFERENCES chats(id)
   sender_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
   content: z.string(), // TEXT NOT NULL
