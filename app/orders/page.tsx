@@ -19,6 +19,7 @@ import {
   RiGoogleFill,
   RiArrowRightSLine,
 } from '@remixicon/react';
+import { clsx } from 'clsx';
 
 // Order Page Sidebar Component
 const OrderSidebar = () => {
@@ -157,7 +158,7 @@ const OrderSidebar = () => {
             </button>
           </div>
           <p className='text-gray-600 line-clamp-5 text-paragraph-sm'>
-          {user.about}
+            {user.about}
           </p>
         </div>
 
@@ -200,10 +201,6 @@ const OrderListItem = () => {
 
   return (
     <div className='flex items-start gap-4 border-b border-stroke-soft-200 py-4'>
-      {/* Blue J Indicator - Placeholder */}
-      <Avatar.Root size='32' color='blue' className='mt-1 shrink-0'>
-        <span className='text-label-sm font-medium'>J</span>
-      </Avatar.Root>
 
       <div className='flex-1'>
         {/* Title */}
@@ -213,8 +210,18 @@ const OrderListItem = () => {
 
         {/* Tags */}
         <div className='mb-2 flex flex-wrap gap-1.5'>
-          {order.tags.map((tag) => (
-            <Badge.Root key={tag} variant='light' size='small'>
+          {order.tags.map((tag, i) => (
+            <Badge.Root
+              key={tag}
+              variant='light'
+              size='small'
+              className={clsx(
+                'bg-white px-2 py-0.5 rounded-md',
+                i === 0
+                  ? 'border border-black text-text-strong-950'     // first tag: black border + text
+                  : 'border border-gray-300 text-text-secondary-600' // others: gray border + text
+              )}
+            >
               {tag}
             </Badge.Root>
           ))}
@@ -227,7 +234,7 @@ const OrderListItem = () => {
       </div>
 
       <div className='shrink-0 text-right'>
-        <div className='text-text-secondary-600 text-label-sm'>Budget</div>
+        <div className='text-gray-600 text-label-sm'>Budget</div>
         <div className='mb-2 text-label-lg font-medium text-text-strong-950'>
           ${order.budget.toLocaleString()}
         </div>
@@ -362,12 +369,33 @@ export default function OrderPage() {
             value={activeTab}
             onValueChange={setActiveTab}
           >
-            <TabMenuHorizontal.List>
-              <TabMenuHorizontal.Trigger value='Order'>
+            <TabMenuHorizontal.List className="flex items-center gap-6">
+              <TabMenuHorizontal.Trigger
+                value="Order"
+                className="
+                px-4 py-2 text-label-md font-medium text-text-secondary-600
+                data-[state=active]:text-text-strong-950
+                data-[state=active]:after:block
+                data-[state=active]:after:h-[2px]
+                data-[state=active]:after:w-full
+                data-[state=active]:after:bg-black
+              "
+              >
                 Order
               </TabMenuHorizontal.Trigger>
-              <TabMenuHorizontal.Trigger value='Review'>
+              <TabMenuHorizontal.Trigger
+                value="Review"
+                className="
+                px-4 py-2 text-label-md font-medium text-text-secondary-600
+                data-[state=active]:text-text-strong-950
+                data-[state=active]:after:block
+                data-[state=active]:after:h-[2px]
+                data-[state=active]:after:w-full
+                data-[state=active]:after:bg-black
+              "
+              >
                 Review
+
               </TabMenuHorizontal.Trigger>
             </TabMenuHorizontal.List>
           </TabMenuHorizontal.Root>
