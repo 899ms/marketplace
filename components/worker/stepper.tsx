@@ -22,20 +22,21 @@ export function Stepper({ currentStep, steps }: StepperProps) {
             <div className='flex items-center gap-2'>
               <div
                 className={cn(
-                  'flex size-6 items-center justify-center rounded-full text-label-sm font-medium',
+                  'flex size-6 items-center justify-center rounded-full text-[12px] font-medium',
                   isCompleted
-                    ? 'bg-success-base text-static-white'
-                    : 'text-text-secondary-600 bg-bg-weak-50',
+                    ? 'bg-[#1FC16B] text-static-white' :
+                    stepNumber === currentStep ? 'text-white bg-[#335CFF]'
+                      : 'text-[#5C5C5C] bg-white border border-[#E1E4EA]',
                 )}
               >
-                {isCompleted ? <RiCheckLine className='size-4' /> : stepNumber}
+                {isCompleted ? <RiCheckLine className='size-5 ' /> : stepNumber}
               </div>
               <span
                 className={cn(
-                  'text-label-md',
-                  isCompleted
-                    ? 'text-text-strong-950'
-                    : 'text-text-secondary-600',
+                  'text-[14px]',
+                  isCompleted || stepNumber === currentStep
+                    ? 'text-[#0E121B]'
+                    : 'text-[#525866]',
                 )}
               >
                 {label}

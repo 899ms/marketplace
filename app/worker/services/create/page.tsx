@@ -20,7 +20,7 @@ export default function CreateServicePage() {
     isSubmitting,
   } = useCreateServiceForm();
 
-  const steps = ['Basic Info', 'Pricing & Details', 'Review'];
+  const steps = ['Worker Terms', 'Submit', 'Review'];
 
   const renderStep = () => {
     switch (activeStep) {
@@ -53,7 +53,7 @@ export default function CreateServicePage() {
       <Stepper
         currentStep={activeStep}
         steps={steps}
-        className='mx-auto mb-8 max-w-3xl'
+      // className='mx-auto mb-8 max-w-3xl'
       />
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit)}>

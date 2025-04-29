@@ -46,6 +46,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
 }) => {
   const {
     register,
+    setValue,
     formState: { errors },
     watch
   } = formMethods;
@@ -123,7 +124,12 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
                 </Input.InlineAffix>
                 <Input.Input id='budget' type='number' placeholder='0.00' step='0.01' {...register('budget', { valueAsNumber: true })} />
               </Input.Wrapper>
-              <Select.Root variant='compactForInput' defaultValue='USD' {...register('currency')}>
+              <Select.Root variant='compactForInput' defaultValue='USD'
+                value={currency}
+                onValueChange={(value) =>
+                  setValue('currency', value, { shouldValidate: true })
+                }
+              >
                 <Select.Trigger>
                   <Select.Value />
                 </Select.Trigger>
