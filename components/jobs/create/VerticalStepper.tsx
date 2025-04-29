@@ -18,9 +18,9 @@ const VerticalStepper = ({
   onStepClick,
 }: VerticalStepperProps) => {
   return (
-    <aside className='shadow-sm sticky top-20 hidden h-[calc(100vh-10rem)] w-64 shrink-0 flex-col justify-between rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4 lg:flex xl:w-72'>
-      <div>
-        <p className='text-xs text-text-secondary-600 mb-4 font-semibold uppercase'>
+    <aside className='shadow-sm sticky top-20 hidden h-[calc(100vh-10rem)] w-64 shrink-0 flex-col justify-between rounded-xl border border-stroke-soft-200 bg-[#F5F7FA] p-4 lg:flex xl:w-72'>
+      <div className=''>
+        <p className='text-[16px] text-[#99A0AE] mb-4 font-semibold uppercase'>
           TRANSFER SEQUENCE
         </p>
         <nav>
@@ -34,25 +34,25 @@ const VerticalStepper = ({
                     className={cn(
                       'flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2 text-left text-label-md transition-colors duration-200',
                       stepNumber === currentStep
-                        ? 'bg-bg-weak-50 font-medium text-text-strong-950'
-                        : 'text-text-secondary-600 hover:bg-bg-weak-50 hover:text-text-strong-950',
+                        ? 'bg-white font-medium text-[#0E121B] text-[14px]'
+                        : 'font-medium text-[#525866] text-[14px]',
                     )}
                   >
                     <div className='flex items-center gap-3'>
                       <div
                         className={cn(
-                          'flex size-5 items-center justify-center rounded-full text-label-xs font-medium',
+                          'flex size-6 items-center justify-center rounded-full text-label-xs font-medium',
                           stepNumber === currentStep
-                            ? 'bg-primary-base text-static-white'
-                            : 'text-text-secondary-600 bg-bg-soft-200',
+                            ? 'text-[12px] text-white bg-[#525866]'
+                            : 'text-[12px] text-[#525866] bg-white',
                         )}
                       >
-                        {String(stepNumber).padStart(2, '0')}
+                        {String(stepNumber)}
                       </div>
                       {label}
                     </div>
                     {stepNumber === currentStep && (
-                      <RiArrowRightSLine className='text-text-secondary-600 size-4' />
+                      <RiArrowRightSLine className='text-[#525866] size-5' />
                     )}
                   </button>
                 </li>
@@ -62,8 +62,8 @@ const VerticalStepper = ({
         </nav>
       </div>
       {/* Contact Button */}
-      <div className='mt-auto border-t border-stroke-soft-200 pt-4'>
-        <p className='text-sm text-text-secondary-600 mb-2 text-center'>
+      <div className='mt-auto pt-4'>
+        <p className='text-[14px] text-[#525866] mb-2 text-center'>
           Having trouble with transfer?
         </p>
         <Button.Root variant='neutral' mode='stroke' className='w-full'>

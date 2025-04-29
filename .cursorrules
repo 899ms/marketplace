@@ -11,6 +11,8 @@ We will use Next.Js as a frontend framework only
   - Make code and components smaller and structure them properly.
   - Structure files consistently: exported component first, then subcomponents, helpers, static content, then types.
 
+
+
 - **Naming Conventions**
 
   - Place all components in `src/components/<feature-or-type>` and name files in kebab-case (e.g., `new-component.tsx`).

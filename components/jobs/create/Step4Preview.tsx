@@ -7,6 +7,7 @@ import * as Tag from '@/components/ui/tag';
 import { CreateJobFormData } from '@/app/jobs/create/schema';
 import { RiLoader4Line } from '@remixicon/react';
 import { cn } from '@/utils/cn';
+import * as FancyButton from '@/components/ui/fancy-button';
 
 interface Step4Props {
   formMethods: UseFormReturn<CreateJobFormData>;
@@ -53,92 +54,98 @@ const Step4Preview: React.FC<Step4Props> = ({
   };
 
   const finalAmount = (formData.budget || 0) - discountAmount;
-
+  console.log(formData)
   return (
-    <div className='space-y-6'>
+    <div className='flex flex-col'>
       {/* Step 1 Basic */}
-      <div className='rounded-lg bg-bg-weak-50 p-4'>
-        <p className='text-xs text-text-secondary-600 mb-2 font-semibold uppercase'>
-          Basic Info
-        </p>
-        <p className='text-sm font-medium text-text-strong-950'>
-          {formData.title || '-'}
-        </p>
-        <p className='text-sm text-text-secondary-600 mt-1'>
-          {formData.description || '-'}
-        </p>
+
+      <div className='flex flex-col'>
+        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] p-2'>
+          Step 1 Basic
+        </div>
+        <div className='p-4'>
+          <p className='text-[14px] text-[#525866] mt-1'>
+            {formData.description || '-'}
+          </p>
+        </div>
+
+      </div>
+      <div className='flex flex-col'>
+        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] p-2'>
+          Step 2 Skills
+        </div>
+        <div className='p-2 flex flex-col gap-3 p-4'>
+          <div className='flex flex-row justify-between items-start'>
+            <p className='text-[#525866] text-[14px]'>Experience Levels</p>
+            <div className='flex flex-wrap gap-2 max-w-[200px] justify-end'>
+              {formData.skill_levels.map((skillLevel) => (
+                <Tag.Root key={skillLevel} variant='stroke'>
+                  {skillLevel}
+                </Tag.Root>
+              ))}
+            </div>
+          </div>
+          <div className='flex flex-row justify-between items-start'>
+            <p className='text-[#525866] text-[14px]'>Candidate Sources</p>
+            <div className='flex flex-wrap gap-2 max-w-[200px] justify-end'>
+              {formData.candidate_sources.map((candidateSource) => (
+                <Tag.Root key={candidateSource} variant='stroke'>
+                  {candidateSource}
+                </Tag.Root>
+              ))}
+            </div>
+          </div>
+          <div className='flex flex-row justify-between items-start'>
+            <p className='text-[#525866] text-[14px]'>Files</p>
+            <div className='flex flex-col gap-1'>
+              {formData.files.map((file) => (
+                <p key={file.url} className='text-[#525866] text-[14px]'>{file.name}</p>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+      <div className='flex flex-col'>
+        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] p-2'>
+          Step 3 Usage
+        </div>
+        <div className='p-2 flex flex-col gap-3 p-4'>
+          <div className='flex flex-col gap-1'>
+            <p className='text-[#525866] text-[14px] font-semibold capitalize'>{formData.usageOption}</p>
+            <p className='text-[#525866] text-[12px]'>{getUsageDescription(formData.usageOption)}</p>
+          </div>
+          <div className='flex flex-col gap-1'>
+            <p className='text-[#525866] text-[14px] font-semibold capitalize'>{formData.privacyOption}</p>
+            <p className='text-[#525866] text-[12px]'>{getPrivacyDescription(formData.privacyOption)}</p>
+          </div>
+        </div>
+      </div>
+      <div className='flex flex-col'>
+        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] p-2'>
+          Step 4 Order Amount & Date
+        </div>
+        <div className='p-2 flex flex-col gap-2 p-4'>
+          <div className='flex flex-row justify-between items-center'>
+            <p className='text-[#525866] text-[14px]'>Deadline</p>
+            <p className='text-[#0E121B] text-[14px]'>{formData.deadline || '-'}</p>
+          </div>
+          <div className='flex flex-row justify-between items-center'>
+            <p className='text-[#525866] text-[14px]'>Order Amount</p>
+            <p className='text-[#0E121B] text-[14px]'>{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{formData.budget || '-'}</p>
+          </div>
+          <div className='flex flex-row justify-between items-center'>
+            <p className='text-[#525866] text-[14px]'>Discount {discountCode}</p>
+            <p className='text-[#0E121B] text-[14px]'>-{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{discountAmount || '-'}</p>
+          </div>
+          <div className='flex flex-row justify-between items-end mt-2'>
+            <p className='text-[#525866] text-[14px]'>Amount Paid</p>
+            <p className='text-[#0E121B] text-[24px]'>{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{formData.budget - discountAmount || '-'}</p>
+          </div>
+
+        </div>
       </div>
 
-      {/* Step 2 Skills / Requirements */}
-      <div className='rounded-lg bg-bg-weak-50 p-4'>
-        <p className='text-xs text-text-secondary-600 mb-2 font-semibold uppercase'>
-          Requirements / Skills
-        </p>
-        <p className='text-sm text-text-secondary-600 whitespace-pre-wrap'>
-          {formData.requirements || '-'}
-        </p>
-      </div>
-
-      {/* Step 3 Usage */}
-      <div className='space-y-3 rounded-lg bg-bg-weak-50 p-4'>
-        <p className='text-xs text-text-secondary-600 mb-2 font-semibold uppercase'>
-          Usage & Privacy
-        </p>
-        <div>
-          <p className='text-sm font-medium capitalize text-text-strong-950'>
-            Usage: {formData.usageOption || '-'}
-          </p>
-          <p className='text-sm text-text-secondary-600 mt-1'>
-            {getUsageDescription(formData.usageOption)}
-          </p>
-        </div>
-        <div>
-          <p className='text-sm font-medium capitalize text-text-strong-950'>
-            Privacy: {formData.privacyOption || '-'}
-          </p>
-          <p className='text-sm text-text-secondary-600 mt-1'>
-            {getPrivacyDescription(formData.privacyOption)}
-          </p>
-        </div>
-      </div>
-
-      {/* Step 4 Order Amount & Date */}
-      <div className='space-y-3 rounded-lg bg-bg-weak-50 p-4'>
-        <p className='text-xs text-text-secondary-600 mb-3 font-semibold uppercase'>
-          Order Amount & Date
-        </p>
-        <div className='text-sm flex items-center justify-between'>
-          <span className='text-text-secondary-600'>Deadline</span>
-          <span className='font-medium text-text-strong-950'>
-            {formData.deadline || 'Not set'}
-          </span>
-        </div>
-        <div className='text-sm flex items-center justify-between'>
-          <span className='text-text-secondary-600'>Budget</span>
-          <span className='font-medium text-text-strong-950'>
-            {formatCurrency(formData.budget)}
-          </span>
-        </div>
-        <div className='text-sm text-sm flex items-center justify-between'>
-          <span className='text-text-secondary-600'>
-            Discount{' '}
-            <Tag.Root variant='gray' className='ml-1'>
-              {discountCode}
-            </Tag.Root>
-          </span>
-          <span className='font-medium text-text-strong-950'>
-            -{formatCurrency(discountAmount)}
-          </span>
-        </div>
-        <div className='text-lg mt-3 flex items-center justify-between border-t border-stroke-soft-200 pt-3'>
-          <span className='text-text-secondary-600 font-medium'>
-            Amount paid
-          </span>
-          <span className='font-semibold text-text-strong-950'>
-            {formatCurrency(finalAmount)}
-          </span>
-        </div>
-      </div>
 
       {/* Display Error Message */}
       {error && (
@@ -166,9 +173,8 @@ const Step4Preview: React.FC<Step4Props> = ({
         >
           Previous
         </Button.Root>
-        <Button.Root
+        <FancyButton.Root
           variant='neutral'
-          mode='filled'
           onClick={handleSubmit(submitForm)}
           className='flex flex-1 items-center justify-center'
           type='submit'
@@ -178,7 +184,7 @@ const Step4Preview: React.FC<Step4Props> = ({
             <RiLoader4Line className='mr-2 size-4 animate-spin' />
           ) : null}
           {isSubmitting ? 'Posting...' : 'Post'}
-        </Button.Root>
+        </FancyButton.Root>
       </div>
     </div>
   );
