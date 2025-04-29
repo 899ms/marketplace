@@ -262,39 +262,32 @@ const ReviewListItem = () => {
 
   return (
     <div className='border-b border-stroke-soft-200 py-4'>
-      <div className='flex items-start justify-between gap-4'>
-
-        {/* LEFT SIDE: Avatar + Text, limit only text area */}
-        <div className='flex items-start gap-3 flex-1 max-w-[80%]'>
-
-          {/* Avatar - don't limit this */}
-          <Avatar.Root size='40' className='mt-1 shrink-0'>
+      {/* Top row with user info and amount */}
+      <div className='flex items-start justify-between mb-3'>
+        {/* LEFT SIDE: Avatar + User Info */}
+        <div className='flex items-start gap-3'>
+          <Avatar.Root size='40' className='shrink-0'>
             <Avatar.Image src={review.avatarUrl} alt={review.name} />
           </Avatar.Root>
 
-          {/* Text content - limit only this part */}
-          <div className='max-w-[80%]'>
-            <div className='mb-1 flex items-center gap-1.5'>
-              <div className='text-text-secondary-600 text-label-sm font-medium'>
-                {review.name}
-              </div>
+          <div className='flex flex-col'>
+            {/* Row 1: Name */}
+            <div className='text-text-secondary-600 text-label-sm font-medium'>
+              {review.name}
+            </div>
+
+            {/* Row 2: Rating and Date */}
+            <div className='flex items-center gap-1.5'>
               <div className='flex items-center gap-0.5'>
                 <RiStarFill className='size-3.5 text-yellow-400' />
-                <span className='text-text-secondary-600 text-paragraph-xs'>
+                <span className='text-gray-600 text-paragraph-xs'>
                   {review.rating}
                 </span>
               </div>
-              <span className='text-text-secondary-600 text-paragraph-xs'>
+              <span className='text-gray-600 text-paragraph-xs'>
                 {review.date}
               </span>
             </div>
-
-            <h3 className='mb-1 text-paragraph-md font-medium text-text-strong-950'>
-              {review.title}
-            </h3>
-            <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm'>
-              {review.description}
-            </p>
           </div>
         </div>
 
@@ -302,6 +295,16 @@ const ReviewListItem = () => {
         <div className='shrink-0 text-right text-label-lg font-medium text-text-strong-950'>
           ${review.amount.toFixed(2)}
         </div>
+      </div>
+
+      {/* Bottom row with title and description */}
+      <div>
+        <h3 className='mb-1 text-paragraph-lg font-medium text-text-strong-950'>
+          {review.title}
+        </h3>
+        <p className='text-gray-600 line-clamp-2 text-paragraph-sm'>
+          {review.description}
+        </p>
       </div>
     </div>
   );
@@ -374,11 +377,11 @@ export default function OrderPage() {
           {/* tab bar */}
           <div className="mb-6 border-t-0">
             <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
-              <TabMenuHorizontal.List className="flex items-center gap-6 border-none">
+              <TabMenuHorizontal.List className="flex items-center gap-2 border-none">
                 <TabMenuHorizontal.Trigger
                   value="Order"
                   className="
-                    px-4 pb-2 text-label-md font-medium 
+                    px-4 pb-2 text-label-lg font-medium 
                     text-gray-400 
                     data-[state=active]:text-black
                   "
@@ -388,7 +391,7 @@ export default function OrderPage() {
                 <TabMenuHorizontal.Trigger
                   value="Review"
                   className="
-                    px-4 pb-2 text-label-md font-medium 
+                    px-4 pb-2 text-label-lg font-medium 
                     text-gray-400 
                     data-[state=active]:text-black
                   "
