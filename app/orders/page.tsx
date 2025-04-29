@@ -262,15 +262,18 @@ const ReviewListItem = () => {
 
   return (
     <div className='border-b border-stroke-soft-200 py-4'>
-      <div className='flex justify-between items-start gap-3'>
-        <div className='flex items-start gap-3'>
+      <div className='flex items-start justify-between gap-4'>
 
-          {/* Avatar and User Info */}
+        {/* LEFT SIDE: Avatar + Text, limit only text area */}
+        <div className='flex items-start gap-3 flex-1 max-w-[80%]'>
+
+          {/* Avatar - don't limit this */}
           <Avatar.Root size='40' className='mt-1 shrink-0'>
             <Avatar.Image src={review.avatarUrl} alt={review.name} />
           </Avatar.Root>
 
-          <div className='flex-1 max-w-[80%]'>
+          {/* Text content - limit only this part */}
+          <div className='max-w-[80%]'>
             <div className='mb-1 flex items-center gap-1.5'>
               <div className='text-text-secondary-600 text-label-sm font-medium'>
                 {review.name}
@@ -286,7 +289,6 @@ const ReviewListItem = () => {
               </span>
             </div>
 
-            {/* Review Title and Description */}
             <h3 className='mb-1 text-paragraph-md font-medium text-text-strong-950'>
               {review.title}
             </h3>
@@ -296,7 +298,7 @@ const ReviewListItem = () => {
           </div>
         </div>
 
-        {/* Amount */}
+        {/* RIGHT SIDE: Amount */}
         <div className='shrink-0 text-right text-label-lg font-medium text-text-strong-950'>
           ${review.amount.toFixed(2)}
         </div>
@@ -366,51 +368,57 @@ export default function OrderPage() {
   return (
     <div className='flex flex-1 gap-6 px-6 pt-6'>
       <OrderSidebar />
-      <main className='flex-1'>
-        <div className="mb-6 border-t-0">
-          <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
-            <TabMenuHorizontal.List className="flex items-center gap-6 border-none">
-              <TabMenuHorizontal.Trigger
-                value="Order"
-                className="
-                  px-4 pb-2 text-label-md font-medium 
-                  text-gray-400 
-                  data-[state=active]:text-black
-                "
-              >
-                Order
-              </TabMenuHorizontal.Trigger>
-              <TabMenuHorizontal.Trigger
-                value="Review"
-                className="
-                  px-4 pb-2 text-label-md font-medium 
-                  text-gray-400 
-                  data-[state=active]:text-black
-                "
-              >
-                Review
-              </TabMenuHorizontal.Trigger>
-            </TabMenuHorizontal.List>
-          </TabMenuHorizontal.Root>
-        </div>
+      <main className="flex-1">
+        {/* center everything horizontally */}
+        <div className="w-full lg:max-w-[1000px] mx-auto px-4 sm:px-6">
+          {/* tab bar */}
+          <div className="mb-6 border-t-0">
+            <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
+              <TabMenuHorizontal.List className="flex items-center gap-6 border-none">
+                <TabMenuHorizontal.Trigger
+                  value="Order"
+                  className="
+                    px-4 pb-2 text-label-md font-medium 
+                    text-gray-400 
+                    data-[state=active]:text-black
+                  "
+                >
+                  Order
+                </TabMenuHorizontal.Trigger>
+                <TabMenuHorizontal.Trigger
+                  value="Review"
+                  className="
+                    px-4 pb-2 text-label-md font-medium 
+                    text-gray-400 
+                    data-[state=active]:text-black
+                  "
+                >
+                  Review
+                </TabMenuHorizontal.Trigger>
+              </TabMenuHorizontal.List>
+            </TabMenuHorizontal.Root>
+          </div>
 
-        <div className='p-4'>
-          {activeTab === 'Order' && (
-            <div className='flex flex-col divide-y divide-stroke-soft-200'>
-              <OrderListItem />
-              <OrderListItem />
-              <OrderListItem />
-            </div>
-          )}
-          {activeTab === 'Review' && (
-            <div className='flex flex-col'>
-              {reviewsData.map((review, index) => (
-                <ReviewListItem key={index} />
-              ))}
-            </div>
-          )}
+          {/* content panel */}
+          <div className="p-4">
+            {activeTab === "Order" && (
+              <div className="flex flex-col divide-y divide-stroke-soft-200">
+                <OrderListItem />
+                <OrderListItem />
+                <OrderListItem />
+              </div>
+            )}
+            {activeTab === "Review" && (
+              <div className="flex flex-col divide-y divide-stroke-soft-200">
+                {reviewsData.map((review, i) => (
+                  <ReviewListItem key={i} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </main>
+
     </div>
   );
 }
