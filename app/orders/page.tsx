@@ -45,7 +45,7 @@ const OrderSidebar = () => {
   ];
 
   return (
-    <aside className='hidden w-64 shrink-0 lg:block xl:w-72'>
+    <aside className='hidden max-w-[352px] w-full shrink-0 lg:block'>
       <div className='shadow-sm sticky top-20 flex flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4'>
         {/* Profile Section */}
         <div className='flex flex-col items-center gap-3 text-center'>
@@ -67,13 +67,13 @@ const OrderSidebar = () => {
             </div>
           </div>
           <div className='flex items-center justify-center gap-2'>
-            <RiGoogleFill className='size-5 text-text-sub-600' />
-            <RiGoogleFill className='size-5 text-text-sub-600' />
+            <RiGoogleFill className='size-5 text-text-sub-600' /> Google
+            <RiGoogleFill className='size-5 text-text-sub-600' /> Google
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2 mb-4">
           {/* Follow Button */}
           <Button.Root
             variant="neutral"
@@ -98,44 +98,51 @@ const OrderSidebar = () => {
         </div>
 
 
-
-        <Divider.Root />
-
         {/* Recent Reviews */}
         <div>
-          <div className='mb-2 flex items-center gap-1 text-label-md font-medium text-text-strong-950'>
-            <RiStarSFill className='size-4' />
-            Recent reviews
-          </div>
-          <div className='flex items-center gap-2'>
-            <AvatarGroup.Root size='24'>
-              {reviewAvatars.map((src, i) => (
-                <Avatar.Root key={i} size='24'>
-                  <Avatar.Image src={src} />
-                </Avatar.Root>
-              ))}
-            </AvatarGroup.Root>
-            <span className='text-text-secondary-600 text-paragraph-xs'>
-              +4
-            </span>
+          <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            {/* Left section - Star and text */}
+            <div className="flex items-center gap-1 text-label-md font-medium text-text-strong-950">
+              <RiStarSFill className="size-6" /> {/* Slightly bigger */}
+              <span>Recent reviews</span>
+            </div>
+
+            {/* Right section - Avatars */}
+            <div className="mt-1 sm:mt-0 flex items-center gap-2">
+              <AvatarGroup.Root size="24">
+                {reviewAvatars.map((src, i) => (
+                  <Avatar.Root key={i} size="24">
+                    <Avatar.Image src={src} />
+                  </Avatar.Root>
+                ))}
+              </AvatarGroup.Root>
+              <span className="text-text-secondary-600 text-paragraph-xs">+4</span>
+            </div>
           </div>
         </div>
+
 
         <Divider.Root />
 
         {/* Tags Section */}
         <div>
-          <h3 className='mb-2 text-label-md font-medium text-text-strong-950'>
+          <h3 className="mb-2 text-label-md font-medium text-text-strong-950">
             Tags
           </h3>
-          <div className='flex flex-wrap gap-1.5'>
+          <div className="flex flex-wrap gap-1.5">
             {tags.map((tag) => (
-              <Badge.Root key={tag} variant='light' size='medium'>
+              <Badge.Root
+                key={tag}
+                variant="light"
+                size="medium"
+                className="bg-white rounded-md border border-stroke-soft-300 text-gray-600 px-2 py-0.5"
+              >
                 {tag}
               </Badge.Root>
             ))}
           </div>
         </div>
+
 
         <Divider.Root />
 
@@ -149,8 +156,8 @@ const OrderSidebar = () => {
               <RiPencilLine className='size-4' />
             </button>
           </div>
-          <p className='text-text-secondary-600 line-clamp-5 text-paragraph-sm'>
-            {user.about}
+          <p className='text-gray-600 line-clamp-5 text-paragraph-sm'>
+          {user.about}
           </p>
         </div>
 
