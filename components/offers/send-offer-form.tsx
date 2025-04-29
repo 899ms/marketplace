@@ -40,6 +40,13 @@ export function SendOfferForm({ offerId }: SendOfferFormProps) {
     setIsUploadingFiles,
   } = useSendOfferForm();
 
+  // Add null check for formMethods
+  if (!formMethods) {
+    // Handle the case where the hook hasn't returned the methods yet
+    // You might want a more sophisticated loading indicator
+    return <div>Loading form...</div>;
+  }
+
   // Get watch function to monitor paymentType changes
   const {
     handleSubmit,
