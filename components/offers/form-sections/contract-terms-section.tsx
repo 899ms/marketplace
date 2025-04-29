@@ -16,18 +16,12 @@ type FormMethods = Omit<UseFormReturn<SendOfferFormData>, 'handleSubmit'>;
 
 interface ContractTermsSectionProps {
   form: FormMethods;
-  // We need paymentType state here to conditionally render details
-  // Or we could pass watch('paymentType') down
   paymentType: 'one-time' | 'installment';
-  setPaymentType: React.Dispatch<
-    React.SetStateAction<'one-time' | 'installment'>
-  >;
 }
 
 export function ContractTermsSection({
   form,
   paymentType,
-  setPaymentType,
 }: ContractTermsSectionProps) {
   const {
     control,
@@ -48,13 +42,10 @@ export function ContractTermsSection({
             onValueChange={(value) => {
               const newPaymentType = value as 'one-time' | 'installment';
               field.onChange(newPaymentType);
-              setPaymentType(newPaymentType);
-              // Reset fields when switching types
               if (newPaymentType === 'one-time') {
-                setValue('milestones', [], { shouldValidate: true }); // Clear milestones
+                setValue('milestones', [], { shouldValidate: true });
               } else {
-                setValue('amount', undefined, { shouldValidate: true }); // Clear one-time fields
-                setValue('currency', undefined);
+                setValue('amount', undefined, { shouldValidate: true });
                 setValue('deadline', undefined);
               }
             }}
@@ -107,6 +98,36 @@ export function ContractTermsSection({
           {errors.paymentType.message}
         </p>
       )}
+
+      {/* --- Add General Currency Selector Here --- */}
+      <div>
+        <Label htmlFor='currency'>Contract Currency</Label>
+        <Controller
+          name='currency'
+          control={control}
+          defaultValue='USD' // Set a default if desired
+          render={({ field }) => (
+            <select
+              id='currency'
+              {...field}
+              className='text-base focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm mt-1 block w-full rounded-md border-gray-300 py-2 pl-3 pr-10 focus:outline-none' // Use standard select styles
+            >
+              {/* Add an empty option for the placeholder/required validation */}
+              <option value='' disabled>
+                Select Currency
+              </option>
+              <option value='USD'>USD</option>
+              <option value='EUR'>EUR</option>
+              <option value='CNY'>CNY</option>
+              {/* Add other currencies as needed */}
+            </select>
+          )}
+        />
+        {errors.currency && (
+          <p className='text-sm mt-1 text-red-500'>{errors.currency.message}</p>
+        )}
+      </div>
+      {/* --- End General Currency Selector --- */}
 
       {/* Conditional Payment Details */}
       {paymentType === 'one-time' && <OneTimePaymentDetails form={form} />}

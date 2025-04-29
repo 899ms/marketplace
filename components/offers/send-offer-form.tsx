@@ -1,9 +1,16 @@
 'use client';
 
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { SendOfferSchema, SendOfferFormData } from './schema';
+import React from 'react';
+import type { SendOfferFormData } from './schema';
+import { useSendOfferForm } from '@/hooks/useSendOfferForm';
+
+// Import UI components
+// Import Root as Alert based on ui/alert.tsx structure
+import { Root as Alert } from '@/components/ui/alert';
+// Remove lucide-react import - not found and Alert might handle icons
+// import { Terminal } from 'lucide-react';
+// Spinner component not found in ui directory - Placeholder needed
+// import { Spinner } from '@/components/ui/spinner';
 
 // Import section components
 import { JobDetailsSection } from './form-sections/job-details-section';
@@ -13,74 +20,107 @@ import { AgreementSection } from './form-sections/agreement-section';
 import { FormActions } from './form-sections/form-actions';
 
 interface SendOfferFormProps {
-  offerId: string;
+  offerId?: string; // Make offerId optional if it's not always needed or comes from route
   // Add other props like default values, user details etc. if necessary
 }
 
 export function SendOfferForm({ offerId }: SendOfferFormProps) {
-  // Keep paymentType state here as it controls conditional rendering in ContractTermsSection
-  const [paymentType, setPaymentType] = useState<'one-time' | 'installment'>(
-    'one-time',
-  );
+  // Use the custom hook to manage form state and logic
+  const {
+    formMethods,
+    onSubmit,
+    isSubmitting,
+    isLoadingSellers,
+    isLoadingJobs,
+    error,
+    success,
+    sellers,
+    jobs,
+    isUploadingFiles,
+    setIsUploadingFiles,
+  } = useSendOfferForm();
 
-  // Initialize useForm hook
-  const form = useForm<SendOfferFormData>({
-    resolver: zodResolver(SendOfferSchema),
-    defaultValues: {
-      // Ensure default values match schema expectations
-      paymentType: 'one-time',
-      agreeToTerms: false,
-      skillLevels: [], // Default to empty array
-      currency: 'CNY', // Default currency for one-time
-      milestones: [], // Default to empty array for installment
-      amount: undefined, // Explicitly undefined
-      deadline: undefined,
-      // Initialize other fields as needed
-      sendTo: '',
-      selectOrder: '',
-      contractTitle: '',
-      description: '',
-    },
-    mode: 'onBlur', // Optional: trigger validation on blur
-  });
-
+  // Get watch function to monitor paymentType changes
   const {
     handleSubmit,
-    formState: { isSubmitting },
-  } = form;
+    watch,
+    control,
+    setValue,
+    getValues,
+    register,
+    formState,
+  } = formMethods;
+  const { errors } = formState; // Explicitly get errors from formState
+  const paymentType = watch('paymentType'); // Watch paymentType from react-hook-form state
 
-  const onSubmit = async (data: SendOfferFormData) => {
-    console.log('Form Data:', data);
-    // Replace with your actual API submission logic
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    console.log('Form submitted successfully');
-    // Add post-submission logic (e.g., redirect, show success message)
-  };
+  // ADD THIS LOG:
+  console.log('Form Validation Errors:', errors);
 
   // Optional: Handle Cancel action
   const handleCancel = () => {
     console.log('Form cancelled');
-    // Add navigation logic if needed
-    // e.g., router.back();
+    // Add navigation logic if needed (e.g., router.back() from next/navigation)
   };
 
+  const isLoadingData = isLoadingSellers || isLoadingJobs;
+
   return (
-    // Pass the whole form object down, sections can destructure what they need
-    // Pass paymentType state and setter to ContractTermsSection
-    <form onSubmit={handleSubmit(onSubmit)} className='space-y-8'>
-      <JobDetailsSection form={form} />
+    // Pass formMethods down, sections can destructure what they need
+    <form onSubmit={handleSubmit(onSubmit)} className='relative space-y-8'>
+      {/* Loading Overlay - Placeholder for Spinner */}
+      {isLoadingData && (
+        <div className='absolute inset-0 z-10 flex items-center justify-center bg-white/50'>
+          {/* <Spinner size="large" /> */}
+          <p>Loading form data...</p> {/* Removed ml-2 as spinner is missing */}
+        </div>
+      )}
 
-      <ContractTermsSection
-        form={form}
-        paymentType={paymentType}
-        setPaymentType={setPaymentType}
+      {/* Error Alert - Using Root as Alert */}
+      {error && (
+        <Alert status='error' size='small' className='items-center'>
+          <div>
+            <p className='font-medium'>Error</p>
+            <p className='text-sm'>{error}</p>
+          </div>
+        </Alert>
+      )}
+
+      {/* Success Alert - Using Root as Alert */}
+      {success && (
+        <Alert status='success' size='small' className='items-center'>
+          <div>
+            <p className='font-medium'>Success</p>
+            <p className='text-sm'>Offer sent successfully!</p>
+          </div>
+        </Alert>
+      )}
+
+      {/* Disable form sections while loading initial data */}
+      <fieldset
+        disabled={isLoadingData || isSubmitting || isUploadingFiles}
+        className='space-y-8'
+      >
+        <JobDetailsSection
+          form={formMethods}
+          sellers={sellers}
+          jobs={jobs}
+          isLoading={isLoadingData}
+        />
+
+        <ContractTermsSection form={formMethods} paymentType={paymentType} />
+
+        <AttachmentsSection
+          form={formMethods}
+          setIsUploadingFiles={setIsUploadingFiles}
+        />
+
+        <AgreementSection form={formMethods} />
+      </fieldset>
+
+      <FormActions
+        isSubmitting={isSubmitting || isUploadingFiles}
+        onCancel={handleCancel}
       />
-
-      <AttachmentsSection form={form} />
-
-      <AgreementSection form={form} />
-
-      <FormActions isSubmitting={isSubmitting} onCancel={handleCancel} />
     </form>
   );
 }

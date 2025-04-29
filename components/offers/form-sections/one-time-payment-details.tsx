@@ -39,50 +39,17 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
         <div>
           <Label htmlFor='amount'>Amount</Label>
           <InputRoot className='mt-1' size='medium'>
-            <div className={inputStyles.wrapper({ size: 'medium' })}>
-              <div className='pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3'>
-                <span className='sm:text-sm text-gray-500'>¥</span>
-              </div>
-              <input
-                id='amount'
-                type='number'
-                step='0.01'
-                {...register('amount', { valueAsNumber: true })}
-                placeholder='0.00'
-                className={cn(
-                  inputStyles.input({ size: 'medium' }),
-                  'pl-7 pr-16',
-                )}
-              />
-              <div className='absolute inset-y-0 right-0 flex items-center pr-1'>
-                <Label htmlFor='currency' className='sr-only'>
-                  Currency
-                </Label>
-                <Controller
-                  name='currency'
-                  control={control}
-                  render={({ field: currencyField }) => (
-                    <select
-                      id='currency'
-                      {...currencyField}
-                      className='focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm h-full appearance-none rounded-md border-transparent bg-transparent py-0 pl-1 pr-2 text-gray-500'
-                    >
-                      <option>CNY</option>
-                      <option>USD</option>
-                      <option>EUR</option>
-                    </select>
-                  )}
-                />
-              </div>
-            </div>
+            <input
+              id='amount'
+              type='number'
+              step='0.01'
+              {...register('amount', { valueAsNumber: true })}
+              placeholder='0.00'
+              className={cn(inputStyles.input({ size: 'medium' }))}
+            />
           </InputRoot>
           {errors.amount && (
             <p className='text-sm mt-1 text-red-500'>{errors.amount.message}</p>
-          )}
-          {errors.currency && !errors.amount && (
-            <p className='text-sm mt-1 text-red-500'>
-              {errors.currency.message}
-            </p>
           )}
         </div>
 
@@ -116,7 +83,7 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
                 <PopoverContent className='w-auto p-0'>
                   <Calendar
                     mode='single'
-                    selected={field.value}
+                    selected={field.value || undefined}
                     onSelect={(date) => {
                       field.onChange(date);
                       setDeadlineCalendarOpen(false);

@@ -1,14 +1,14 @@
 'use client';
 
 import React from 'react';
+import { useParams } from 'next/navigation';
 import { SendOfferForm } from '@/components/offers/send-offer-form';
 import { OfferProfileSidebar } from '@/components/offers/offer-profile-sidebar';
 
 interface SendOfferPageProps {
-  params: {
-    offerid: string;
-  };
-  // searchParams could be added if needed
+  // params: {
+  //   offerid: string;
+  // };
 }
 
 // Updated mock worker data for the OfferProfileSidebar
@@ -32,8 +32,16 @@ const mockOfferWorker = {
 
 // This page will be a client component because the form itself is a client component.
 // Alternatively, wrap SendOfferForm in Suspense if fetching data server-side.
-export default function SendOfferPage({ params }: SendOfferPageProps) {
-  const { offerid } = params;
+export default function SendOfferPage() {
+  // Use the useParams hook to get route parameters
+  const params = useParams<{ offerid: string }>(); // Specify expected param shape
+  const offerid = params.offerid; // Access directly from hook result
+
+  // Handle case where offerid might not be available initially (optional but good practice)
+  if (!offerid) {
+    // Render loading state or return null/error
+    return <div>Loading offer details...</div>;
+  }
 
   // TODO: Fetch actual data based on offerid (worker details, order details, etc.)
 

@@ -3,43 +3,58 @@ import { z } from 'zod';
 // Define the payment type enum
 const PaymentType = z.enum(['one-time', 'installment']);
 
+// Define the base file schema mirroring types.ts for consistency
+// Revert: URL is now required by the time validation runs
+const BaseFileSchema = z.object({
+  name: z.string(),
+  size: z.number(),
+  url: z.string().url(), // URL is required again
+  // file: z.instanceof(File).optional(), // Remove optional file property
+});
+
 // Define the milestone schema for installment payments
 const MilestoneSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   amount: z.number().positive('Amount must be positive'),
-  currency: z.string().length(3, 'Currency code must be 3 letters'), // Assuming 3-letter currency codes like CNY
-  deadline: z.date().optional(),
+  // currency: z.string().length(3, 'Currency code must be 3 letters'), // Removed - Not in DB schema
+  dueDate: z.date().optional().nullable(), // Renamed from deadline, match DB type (nullable)
+  // Optional: Add currency to milestones if needed, sync with Contract currency otherwise
+  // currency: z.string().length(3).optional(),
 });
 
 // Define the main form schema
 export const SendOfferSchema = z
   .object({
-    // Job Details
-    // Assuming 'sendTo' and 'selectOrder' might be IDs or more complex objects later,
-    // using string for now.
+    // Offer Details
+    // Assuming 'sendTo' is the seller's user ID (string/text)
+    // Assuming 'selectOrder' is the job's ID (string/uuid)
     sendTo: z.string().min(1, 'Recipient is required'),
-    selectOrder: z.string().min(1, 'Order selection is required'),
+    selectOrder: z
+      .string()
+      .uuid('Invalid Order ID format')
+      .min(1, 'Order selection is required'),
     contractTitle: z.string().min(1, 'Contract title is required'),
-    description: z.string().min(1, 'Description is required').max(1000),
-    skillLevels: z
-      .array(z.string())
-      .min(1, 'At least one skill level is required'), // Assuming skill levels are strings
+    description: z.string().min(1, 'Description is required').max(5000), // Allow longer description
+    // skillLevels: z // This field is not part of the Contract schema, removing
+    //   .array(z.string())
+    //   .min(1, 'At least one skill level is required'),
 
     // Contract Terms
     paymentType: PaymentType,
-    amount: z.number().positive('Amount must be positive').optional(), // Optional for installment
+    amount: z.number().positive('Amount must be positive').optional(),
+    // Add currency back - make it required for the form
     currency: z
       .string()
       .length(3, 'Currency code must be 3 letters')
-      .optional(), // Optional for installment
-    deadline: z.date().optional(),
+      .min(1, 'Currency is required'), // Add min(1) to make it required
+    deadline: z.date().optional().nullable(), // Deadline for the overall contract (if applicable)
 
     // Installment specific fields
     milestones: z.array(MilestoneSchema).optional(),
 
-    // Attachments - Handling files needs client-side logic beyond basic schema
-    // For schema, we might just track if files are present or their metadata later.
-    // attachments: z.array(z.any()).optional(), // Placeholder
+    // Attachments
+    // Uses BaseFileSchema which now requires URL
+    attachments: z.array(BaseFileSchema).optional().nullable(), // Matches contract.attachments (jsonb)
 
     // Agreement
     agreeToTerms: z.boolean().refine((val) => val === true, {
@@ -49,14 +64,20 @@ export const SendOfferSchema = z
   .refine(
     (data) => {
       if (data.paymentType === 'one-time') {
-        // For one-time payment, amount and currency are required
-        return data.amount !== undefined && data.currency !== undefined;
+        // For one-time payment, amount AND currency are now required
+        return (
+          data.amount !== undefined &&
+          data.amount > 0 &&
+          data.currency !== undefined &&
+          data.currency.length === 3
+        );
       }
       return true;
     },
     {
-      message: 'Amount and currency are required for one-time payment',
-      path: ['amount'], // You can associate the error with a specific field
+      // Update message to reflect both requirements
+      message: 'Amount and Currency are required for one-time payment',
+      path: ['amount'], // Point error to amount, but message covers both
     },
   )
   .refine(

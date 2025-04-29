@@ -12,17 +12,27 @@ import {
 import { Root as InputRoot, inputVariants } from '@/components/ui/input';
 import { Root as Textarea } from '@/components/ui/textarea';
 import { Root as Label } from '@/components/ui/label';
-import { SendOfferFormData } from '../schema'; // Adjust path as needed
+import { SendOfferFormData } from '../schema';
 import { cn } from '@/utils/cn';
+import type { User, Job } from '@/utils/supabase/types'; // Import User and Job types
 
 // Use Omit to exclude handleSubmit and other methods not needed directly here
 type FormMethods = Omit<UseFormReturn<SendOfferFormData>, 'handleSubmit'>;
 
+// Update props interface
 interface JobDetailsSectionProps {
   form: FormMethods;
+  sellers: Pick<User, 'id' | 'username' | 'full_name'>[]; // Add sellers prop
+  jobs: Pick<Job, 'id' | 'title'>[]; // Add jobs prop
+  isLoading: boolean; // Add isLoading prop
 }
 
-export function JobDetailsSection({ form }: JobDetailsSectionProps) {
+export function JobDetailsSection({
+  form,
+  sellers,
+  jobs,
+  isLoading, // Destructure new props
+}: JobDetailsSectionProps) {
   const {
     register,
     control,
@@ -37,19 +47,34 @@ export function JobDetailsSection({ form }: JobDetailsSectionProps) {
       {/* Send & Select Order */}
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
         <div>
-          <Label htmlFor='sendTo'>Send</Label>
+          <Label htmlFor='sendTo'>Send To</Label>
           <Controller
             name='sendTo'
             control={control}
             render={({ field }) => (
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isLoading || sellers.length === 0}
+              >
                 <SelectTrigger className='mt-1'>
-                  <SelectValue placeholder='Select Recipient' />
+                  <SelectValue
+                    placeholder={
+                      isLoading ? 'Loading sellers...' : 'Select Recipient'
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* Replace with actual data */}
-                  <SelectItem value='cleve-music'>Cleve Music</SelectItem>
-                  <SelectItem value='other-user'>Other User</SelectItem>
+                  {sellers.map((seller) => (
+                    <SelectItem key={seller.id} value={seller.id}>
+                      {seller.username} ({seller.full_name})
+                    </SelectItem>
+                  ))}
+                  {!isLoading && sellers.length === 0 && (
+                    <div className='text-sm text-text-tertiary-500 px-2 py-1.5'>
+                      No sellers found
+                    </div>
+                  )}
                 </SelectContent>
               </Select>
             )}
@@ -59,19 +84,34 @@ export function JobDetailsSection({ form }: JobDetailsSectionProps) {
           )}
         </div>
         <div>
-          <Label htmlFor='selectOrder'>Select Order</Label>
+          <Label htmlFor='selectOrder'>Related Job/Order</Label>
           <Controller
             name='selectOrder'
             control={control}
             render={({ field }) => (
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                disabled={isLoading || jobs.length === 0}
+              >
                 <SelectTrigger className='mt-1'>
-                  <SelectValue placeholder='Select Order Title' />
+                  <SelectValue
+                    placeholder={
+                      isLoading ? 'Loading jobs...' : 'Select Job/Order Title'
+                    }
+                  />
                 </SelectTrigger>
                 <SelectContent>
-                  {/* Replace with actual data */}
-                  <SelectItem value='order-1'>Order Title 1</SelectItem>
-                  <SelectItem value='order-2'>Order Title 2</SelectItem>
+                  {jobs.map((job) => (
+                    <SelectItem key={job.id} value={job.id}>
+                      {job.title}
+                    </SelectItem>
+                  ))}
+                  {!isLoading && jobs.length === 0 && (
+                    <div className='text-sm text-text-tertiary-500 px-2 py-1.5'>
+                      No jobs found
+                    </div>
+                  )}
                 </SelectContent>
               </Select>
             )}
@@ -119,7 +159,8 @@ export function JobDetailsSection({ form }: JobDetailsSectionProps) {
         )}
       </div>
 
-      {/* Skill Levels (Multi-select placeholder) */}
+      {/* Skill Levels - This was removed from the main form schema, so commenting out */}
+      {/*
       <div>
         <Label htmlFor='skillLevels'>Skill Levels</Label>
         <Controller
@@ -148,6 +189,7 @@ export function JobDetailsSection({ form }: JobDetailsSectionProps) {
           </p>
         )}
       </div>
+      */}
     </div>
   );
 }

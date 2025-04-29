@@ -42,9 +42,11 @@ export function InstallmentPaymentDetails({
   >(null);
   const inputStyles = inputVariants();
 
+  // Explicitly type the FieldArray and its items
   const { fields, append, remove } = useFieldArray<
     SendOfferFormData,
-    'milestones'
+    'milestones',
+    'id' // Default key name
   >({
     control,
     name: 'milestones',
@@ -54,15 +56,9 @@ export function InstallmentPaymentDetails({
     append({
       description: '',
       amount: 0,
-      currency: 'CNY',
-      deadline: undefined,
+      dueDate: undefined,
     });
   };
-
-  // Type assertion for nested array errors - handle potential undefined
-  const milestoneErrors = errors.milestones as
-    | FieldErrors<SendOfferFormData['milestones']>[number]
-    | undefined;
 
   return (
     <div className='space-y-4 rounded-md border bg-gray-50 p-4'>
@@ -99,74 +95,37 @@ export function InstallmentPaymentDetails({
               </p>
             )}
 
-            {/* Milestone Amount & Deadline */}
+            {/* Milestone Amount & Deadline -> Due Date */}
             <div className='mt-4 grid grid-cols-1 items-end gap-4 md:grid-cols-3'>
               {/* Milestone Amount Input */}
               <div>
                 <Label htmlFor={`milestones.${index}.amount`}>Amount</Label>
                 <InputRoot className='mt-1' size='medium'>
-                  <div className={inputStyles.wrapper({ size: 'medium' })}>
-                    <div className='pointer-events-none absolute inset-y-0 left-0 z-10 flex items-center pl-3'>
-                      <span className='sm:text-sm text-gray-500'>¥</span>
-                    </div>
-                    <input
-                      id={`milestones.${index}.amount`}
-                      type='number'
-                      step='0.01'
-                      {...register(`milestones.${index}.amount`, {
-                        valueAsNumber: true,
-                      })}
-                      placeholder='0.00'
-                      className={cn(
-                        inputStyles.input({ size: 'medium' }),
-                        'pl-7 pr-16',
-                      )}
-                    />
-                    <div className='absolute inset-y-0 right-0 flex items-center pr-1'>
-                      <Label
-                        htmlFor={`milestones.${index}.currency`}
-                        className='sr-only'
-                      >
-                        Currency
-                      </Label>
-                      <Controller
-                        name={`milestones.${index}.currency`}
-                        control={control}
-                        render={({ field: currencyField }) => (
-                          <select
-                            id={`milestones.${index}.currency`}
-                            {...currencyField}
-                            className='focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm h-full appearance-none rounded-md border-transparent bg-transparent py-0 pl-1 pr-2 text-gray-500'
-                          >
-                            <option>CNY</option>
-                            <option>USD</option>
-                            <option>EUR</option>
-                          </select>
-                        )}
-                      />
-                    </div>
-                  </div>
+                  <input
+                    id={`milestones.${index}.amount`}
+                    type='number'
+                    step='0.01'
+                    {...register(`milestones.${index}.amount`, {
+                      valueAsNumber: true,
+                    })}
+                    placeholder='0.00'
+                    className={cn(inputStyles.input({ size: 'medium' }))}
+                  />
                 </InputRoot>
                 {errors.milestones?.[index]?.amount && (
                   <p className='text-sm mt-1 text-red-500'>
                     {errors.milestones[index]?.amount?.message}
                   </p>
                 )}
-                {errors.milestones?.[index]?.currency &&
-                  !errors.milestones?.[index]?.amount && (
-                    <p className='text-sm mt-1 text-red-500'>
-                      {errors.milestones[index]?.currency?.message}
-                    </p>
-                  )}
               </div>
 
-              {/* Milestone Deadline Date Picker */}
+              {/* Milestone Due Date Date Picker */}
               <div>
-                <Label htmlFor={`milestones.${index}.deadline`}>
-                  Deadline (Optional)
+                <Label htmlFor={`milestones.${index}.dueDate`}>
+                  Due Date (Optional)
                 </Label>
                 <Controller
-                  name={`milestones.${index}.deadline`}
+                  name={`milestones.${index}.dueDate`}
                   control={control}
                   render={({ field: milestoneField }) => (
                     <Popover
@@ -194,7 +153,7 @@ export function InstallmentPaymentDetails({
                       <PopoverContent className='w-auto p-0'>
                         <Calendar
                           mode='single'
-                          selected={milestoneField.value}
+                          selected={milestoneField.value || undefined}
                           onSelect={(date) => {
                             milestoneField.onChange(date);
                             setMilestoneCalendarOpen(null);
@@ -205,9 +164,9 @@ export function InstallmentPaymentDetails({
                     </Popover>
                   )}
                 />
-                {errors.milestones?.[index]?.deadline && (
+                {errors.milestones?.[index]?.dueDate && (
                   <p className='text-sm mt-1 text-red-500'>
-                    {errors.milestones[index]?.deadline?.message}
+                    {errors.milestones[index]?.dueDate?.message}
                   </p>
                 )}
               </div>
