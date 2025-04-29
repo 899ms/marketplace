@@ -67,7 +67,7 @@ export default function Navbar() {
 
   return (
     <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-sm'>
-      <div className='flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8'>
+      <div className='mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8'>
         {/* Left Section: Logo and Nav Links */}
         <div className='flex items-center gap-8'>
           {/* Logo */}
@@ -163,8 +163,8 @@ export default function Navbar() {
                           'User Avatar'
                         } // Use name or email for alt text
                       />
-                    </Avatar.Root>:
-                    <Avatar.Root size='40' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
+                    </Avatar.Root> :
+                      <Avatar.Root size='40' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
                     <span className='hidden md:inline'>Account</span>
                     <RiArrowDownSLine className='text-icon-sub-500 hidden size-4 md:inline' />
                   </button>
