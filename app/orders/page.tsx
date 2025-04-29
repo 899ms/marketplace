@@ -11,7 +11,7 @@ import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import {
   RiStarFill,
   RiStarSFill,
-  RiHeartLine,
+  RiHeart3Line,
   RiSendPlane2Fill,
   RiPencilLine,
   RiTwitchFill,
@@ -39,9 +39,9 @@ const OrderSidebar = () => {
     'Eurovision Awards',
   ];
   const reviewAvatars = [
-    'https://via.placeholder.com/40?text=R1',
-    'https://via.placeholder.com/40?text=R2',
-    'https://via.placeholder.com/40?text=R3',
+    'https://i.pravatar.cc/40?img=32',
+    'https://i.pravatar.cc/40?img=45',
+    'https://i.pravatar.cc/40?img=12',
   ];
 
   return (
@@ -49,38 +49,55 @@ const OrderSidebar = () => {
       <div className='shadow-sm sticky top-20 flex flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4'>
         {/* Profile Section */}
         <div className='flex flex-col items-center gap-3 text-center'>
-          <Avatar.Root size='80'>
+          <Avatar.Root size='80' className="relative">
             <Avatar.Image src={user.avatarUrl} alt={user.name} />
-            {/* No status indicator shown in this screenshot */}
+            <Avatar.Indicator position="bottom">
+              <Avatar.Status status="online" />
+            </Avatar.Indicator>
           </Avatar.Root>
           <div>
             <h2 className='text-label-lg font-medium text-text-strong-950'>
               {user.name}
             </h2>
-            <div className='text-text-secondary-600 mt-1 flex items-center justify-center gap-1 text-paragraph-sm'>
-              <RiStarFill className='size-4 text-yellow-400' />
-              <span>
+            <div className='mt-1 flex items-center justify-center gap-1'>
+              <RiStarFill className='size-3.5 text-yellow-400' />
+              <span className='text-text-secondary-600 text-paragraph-xs'>
                 {user.rating} ({user.reviews})
               </span>
             </div>
           </div>
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center justify-center gap-2'>
             <RiGoogleFill className='size-5 text-text-sub-600' />
             <RiGoogleFill className='size-5 text-text-sub-600' />
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className='grid grid-cols-2 gap-2'>
-          <Button.Root variant='neutral' mode='stroke' size='small'>
-            <Button.Icon as={RiHeartLine} />
-            Follow
+        <div className="flex items-center justify-center gap-2">
+          {/* Follow Button */}
+          <Button.Root
+            variant="neutral"
+            mode="stroke"
+            size="xsmall"
+            className="w-[85px] h-[32px] rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-sm flex items-center justify-center gap-[6px] px-2"
+          >
+            <span className="text-paragraph-xs">Follow</span>
+            <Button.Icon as={RiHeart3Line} className="size-[18px]" />
           </Button.Root>
-          <Button.Root variant='neutral' mode='filled' size='small'>
-            <Button.Icon as={RiSendPlane2Fill} />
-            Touch
+
+          {/* Touch Button */}
+          <Button.Root
+            variant="neutral"
+            mode="filled"
+            size="xsmall"
+            className="w-[83px] h-[32px] rounded-lg bg-[#20232D] border border-[#242628] shadow-md flex items-center justify-center gap-[6px] px-2"
+          >
+            <span className="text-paragraph-xs text-bg-white-0">Touch</span>
+            <Button.Icon as={RiSendPlane2Fill} className="size-[18px]" />
           </Button.Root>
         </div>
+
+
 
         <Divider.Root />
 
