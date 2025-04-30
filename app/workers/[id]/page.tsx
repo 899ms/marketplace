@@ -144,6 +144,34 @@ export default function WorkerDetailPage() {
   // Function to render content based on active tab
   const renderTabContent = () => {
     switch (activeTab) {
+      case 'about':
+        return (
+          <>
+            {/* 1) Work */}
+            <h3 className="inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Work</h3>
+            <div className='divide-y divide-stroke-soft-200'>
+              {worker.workItems.map((item, i) => (
+                <WorkItem key={i} item={item} />
+              ))}
+            </div>
+
+            {/* 2) Services */}
+            <h3 className="inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Service</h3>
+            <div className='mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+              {worker.services.map((svc) => (
+                <ServiceCard key={svc.id} service={svc} />
+              ))}
+            </div>
+
+            {/* 3) Reviews */}
+            <h3 className="inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Review</h3>
+            <div className='mt-8 space-y-5 divide-y divide-stroke-soft-200'>
+              {worker.reviews.map((r) => (
+                <ReviewItem key={r.id} review={r} />
+              ))}
+            </div>
+          </>
+        );
       case 'work':
         return (
           <div className='divide-y divide-stroke-soft-200'>
@@ -193,6 +221,9 @@ export default function WorkerDetailPage() {
               onValueChange={setActiveTab}
             >
               <TabMenuHorizontal.List>
+                <TabMenuHorizontal.Trigger value='about'>
+                  About
+                </TabMenuHorizontal.Trigger>
                 <TabMenuHorizontal.Trigger value='work'>
                   Work
                 </TabMenuHorizontal.Trigger>
