@@ -125,6 +125,137 @@ export const userOperations = {
       return null;
     }
   },
+
+  // Get recent workers (sellers)
+  async getRecentWorkers(limit: number = 3): Promise<User[]> {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('user_type', 'seller')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) {
+        console.error('Error fetching recent workers:', error);
+        return [];
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No workers found');
+        return [];
+      }
+
+      console.log(`Found ${data.length} recent workers`);
+
+      try {
+        const users = data.map((user) => UserSchema.parse(user));
+        return users;
+      } catch (err) {
+        console.error('Error parsing worker data:', err);
+        return [];
+      }
+    } catch (err) {
+      console.error('Unexpected error in getRecentWorkers:', err);
+      return [];
+    }
+  },
+
+  // Get workers (sellers) with pagination and filtering
+  async getWorkersWithPagination({
+    limit = 9,
+    offset = 0,
+    searchTerm = '',
+    skills = [],
+    isAvailable = false,
+    isProfessional = false,
+    sortBy = 'created_at',
+    sortOrder = 'desc',
+  }: {
+    limit?: number;
+    offset?: number;
+    searchTerm?: string;
+    skills?: string[];
+    isAvailable?: boolean;
+    isProfessional?: boolean;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  } = {}): Promise<{ workers: User[]; total: number }> {
+    try {
+      let query = supabase
+        .from('users')
+        .select('*', { count: 'exact' })
+        .eq('user_type', 'seller');
+
+      // Apply search term filter if provided (search in username or full_name)
+      if (searchTerm && searchTerm.trim() !== '') {
+        query = query.or(
+          `username.ilike.%${searchTerm}%,full_name.ilike.%${searchTerm}%`,
+        );
+      }
+
+      // Note: We're not applying skills filter as the User schema doesn't have a skills field
+      // If you add skills to the users table in the future, you can uncomment this
+      // if (skills && skills.length > 0) {
+      //   query = query.overlaps('skills', skills);
+      // }
+
+      // Apply professional filter if set - update to match your schema
+      // Currently there's no is_professional field, so this is commented out
+      // if (isProfessional) {
+      //   query = query.eq('is_professional', true);
+      // }
+
+      // Apply available filter based on recent login - update to match your schema
+      // Currently there's no last_online field, so this is commented out
+      // if (isAvailable) {
+      //   const oneDayAgo = new Date();
+      //   oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+      //   query = query.gte('last_online', oneDayAgo.toISOString());
+      // }
+
+      // Apply sorting
+      query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+      // Apply pagination
+      query = query.range(offset, offset + limit - 1);
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        console.error('Supabase error fetching workers:', error);
+        return { workers: [], total: 0 };
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No workers found or empty array returned');
+        return { workers: [], total: 0 };
+      }
+
+      console.log(`Found ${data.length} workers with pagination`);
+
+      // Process users one by one to avoid failing all if one fails
+      const validWorkers: User[] = [];
+
+      for (const worker of data) {
+        try {
+          const parsedWorker = UserSchema.parse(worker);
+          validWorkers.push(parsedWorker);
+        } catch (err) {
+          console.error(`Error validating worker ${worker.id}:`, err);
+          // Continue with next worker instead of failing the whole array
+        }
+      }
+
+      return {
+        workers: validWorkers,
+        total: count || validWorkers.length,
+      };
+    } catch (err) {
+      console.error('Unexpected error in getWorkersWithPagination:', err);
+      return { workers: [], total: 0 };
+    }
+  },
 };
 
 /**
@@ -168,18 +299,64 @@ export const jobOperations = {
 
   // Get jobs by buyer ID
   async getJobsByBuyerId(buyerId: string): Promise<Job[]> {
-    const { data, error } = await supabase
-      .from('jobs')
-      .select('*')
-      .eq('buyer_id', buyerId)
-      .order('created_at', { ascending: false });
-
-    if (error || !data) return [];
-
     try {
-      return data.map((job) => JobSchema.parse(job));
+      const { data, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .eq('buyer_id', buyerId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase error fetching jobs:', error);
+        return [];
+      }
+
+      if (!data || !Array.isArray(data)) {
+        console.log('No jobs found or empty array returned');
+        return [];
+      }
+
+      console.log(`Found ${data.length} jobs for buyer ID ${buyerId}`);
+
+      // Process each job individually to avoid failing all if one fails
+      const validJobs: Job[] = [];
+
+      for (const job of data) {
+        try {
+          // Ensure all required fields have appropriate values
+          const processedJob = {
+            ...job,
+            id: String(job.id),
+            title: String(job.title || ''),
+            description: job.description || null,
+            budget: typeof job.budget === 'number' ? job.budget : 0,
+            buyer_id: String(job.buyer_id || buyerId),
+            currency: job.currency || 'USD',
+            created_at: job.created_at ? String(job.created_at) : null,
+            // Handle array fields carefully
+            skill_levels: Array.isArray(job.skill_levels)
+              ? job.skill_levels
+              : [],
+            candidate_sources: Array.isArray(job.candidate_sources)
+              ? job.candidate_sources
+              : [],
+            files: Array.isArray(job.files) ? job.files : [],
+          };
+
+          const validJob = JobSchema.parse(processedJob);
+          validJobs.push(validJob);
+        } catch (err) {
+          console.error(`Error processing job ${job.id}:`, err);
+          // Continue with next job instead of failing the whole array
+        }
+      }
+
+      console.log(
+        `Successfully processed ${validJobs.length} out of ${data.length} jobs`,
+      );
+      return validJobs;
     } catch (err) {
-      console.error('Invalid job data:', err);
+      console.error('Unexpected error in getJobsByBuyerId:', err);
       return [];
     }
   },
@@ -229,6 +406,89 @@ export const jobOperations = {
       return null;
     }
   },
+
+  // Get jobs with pagination and filtering
+  async getJobsWithPagination({
+    limit = 9,
+    offset = 0,
+    searchTerm = '',
+    skills = [], // Changed from skill_levels to skills for consistency
+    budgetRange = null,
+    sortBy = 'created_at',
+    sortOrder = 'desc',
+  }: {
+    limit?: number;
+    offset?: number;
+    searchTerm?: string;
+    skills?: string[];
+    budgetRange?: [number, number] | null;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  } = {}): Promise<{ jobs: Job[]; total: number }> {
+    try {
+      let query = supabase.from('jobs').select('*', { count: 'exact' });
+
+      // Apply search term filter if provided (search in title or description)
+      if (searchTerm && searchTerm.trim() !== '') {
+        query = query.or(
+          `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`,
+        );
+      }
+
+      // Apply skills filter if provided
+      if (skills && skills.length > 0) {
+        // Assuming 'skill_levels' is the correct column name in your 'jobs' table
+        query = query.overlaps('skill_levels', skills);
+      }
+
+      // Apply budget range filter if provided
+      if (budgetRange && budgetRange.length === 2) {
+        const [minBudget, maxBudget] = budgetRange;
+        query = query.gte('budget', minBudget).lte('budget', maxBudget);
+      }
+
+      // Apply sorting
+      query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+      // Apply pagination
+      query = query.range(offset, offset + limit - 1);
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        console.error('Supabase error fetching jobs:', error);
+        return { jobs: [], total: 0 };
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No jobs found or empty array returned');
+        return { jobs: [], total: 0 };
+      }
+
+      console.log(`Found ${data.length} jobs with pagination`);
+
+      // Process jobs one by one
+      const validJobs: Job[] = [];
+
+      for (const job of data) {
+        try {
+          const parsedJob = JobSchema.parse(job);
+          validJobs.push(parsedJob);
+        } catch (err) {
+          console.error(`Error validating job ${job.id}:`, err);
+          // Continue with next job
+        }
+      }
+
+      return {
+        jobs: validJobs,
+        total: count || validJobs.length,
+      };
+    } catch (err) {
+      console.error('Unexpected error in getJobsWithPagination:', err);
+      return { jobs: [], total: 0 };
+    }
+  },
 };
 
 /**
@@ -237,17 +497,67 @@ export const jobOperations = {
 export const serviceOperations = {
   // Get all services
   async getAllServices(): Promise<Service[]> {
-    const { data, error } = await supabase
-      .from('services')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error || !data) return [];
-
     try {
-      return data.map((service) => ServiceSchema.parse(service));
+      // Extended query with join to get seller information
+      const { data, error } = await supabase
+        .from('services')
+        .select(
+          `
+          *,
+          seller:seller_id (
+            full_name,
+            username
+          )
+        `,
+        )
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase error fetching services:', error);
+        return [];
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No services found or empty array returned');
+        return [];
+      }
+
+      console.log(
+        'Raw services data from Supabase with seller info:',
+        data.length,
+        'services found',
+      );
+
+      // Process services one by one to avoid failing all if one fails
+      const validServices: Service[] = [];
+
+      for (const service of data) {
+        try {
+          // Extract seller info from the join result
+          const sellerInfo = service.seller || {};
+
+          // Ensure created_at is a string (some types might cause issues)
+          const processedService = {
+            ...service,
+            seller_name:
+              sellerInfo.full_name || sellerInfo.username || 'Unknown Seller',
+            created_at: service.created_at ? String(service.created_at) : null,
+          };
+
+          const parsedService = ServiceSchema.parse(processedService);
+          validServices.push(parsedService);
+        } catch (err) {
+          console.error(`Error validating service ${service.id}:`, err);
+          // Continue with next service instead of failing the whole array
+        }
+      }
+
+      console.log(
+        `Successfully processed ${validServices.length} out of ${data.length} services`,
+      );
+      return validServices;
     } catch (err) {
-      console.error('Invalid service data:', err);
+      console.error('Unexpected error in getAllServices:', err);
       return [];
     }
   },
@@ -333,6 +643,112 @@ export const serviceOperations = {
     } catch (err) {
       console.error('Invalid service data after update:', err);
       return null;
+    }
+  },
+
+  // Get services with pagination, filtering, and user join
+  async getServicesWithPagination({
+    limit = 9,
+    offset = 0,
+    searchTerm = '',
+    priceRange = null,
+    tags = [],
+    sortBy = 'created_at',
+    sortOrder = 'desc',
+  }: {
+    limit?: number;
+    offset?: number;
+    searchTerm?: string;
+    priceRange?: [number, number] | null;
+    tags?: string[];
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  } = {}): Promise<{ services: Service[]; total: number }> {
+    try {
+      let query = supabase.from('services').select(
+        `
+          *,
+          users!services_seller_id_fkey (
+            id,
+            full_name,
+            username,
+            avatar_url
+          )
+          `,
+        { count: 'exact' },
+      );
+
+      // Apply search term filter if provided
+      if (searchTerm && searchTerm.trim() !== '') {
+        query = query.ilike('title', `%${searchTerm}%`);
+      }
+
+      // Apply price range filter if provided
+      if (priceRange && priceRange.length === 2) {
+        const [minPrice, maxPrice] = priceRange;
+        query = query.gte('price', minPrice).lte('price', maxPrice);
+      }
+
+      // Apply tags filter if provided
+      if (tags && tags.length > 0) {
+        // Use overlap operator to find services with any of the specified tags
+        query = query.overlaps('tags', tags);
+      }
+
+      // Apply sorting
+      query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+      // Apply pagination
+      query = query.range(offset, offset + limit - 1);
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        console.error('Supabase error fetching services:', error);
+        return { services: [], total: 0 };
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No services found or empty array returned');
+        return { services: [], total: 0 };
+      }
+
+      console.log(`Found ${data.length} services with pagination`);
+
+      // Process services one by one to avoid failing all if one fails
+      const validServices: Service[] = [];
+
+      for (const service of data) {
+        try {
+          // Extract seller info from the join result
+          const sellerInfo = service.users || {};
+
+          // Process service data
+          const processedService = {
+            ...service,
+            seller_name:
+              sellerInfo.full_name || sellerInfo.username || 'Unknown Seller',
+            created_at: service.created_at ? String(service.created_at) : null,
+          };
+
+          // Remove the nested users object to match our schema
+          delete processedService.users;
+
+          const parsedService = ServiceSchema.parse(processedService);
+          validServices.push(parsedService);
+        } catch (err) {
+          console.error(`Error validating service ${service.id}:`, err);
+          // Continue with next service instead of failing the whole array
+        }
+      }
+
+      return {
+        services: validServices,
+        total: count || validServices.length,
+      };
+    } catch (err) {
+      console.error('Unexpected error in getServicesWithPagination:', err);
+      return { services: [], total: 0 };
     }
   },
 };

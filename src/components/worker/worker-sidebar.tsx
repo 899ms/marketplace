@@ -105,7 +105,7 @@ export function WorkerSidebar() {
         <nav>
           <ul className='flex flex-col gap-1'>
             <li>
-              <SidebarLink href='/worker/home' icon={RiHomeLine} label='Home' />
+              <SidebarLink href='/home' icon={RiHomeLine} label='Home' />
             </li>
             <li>
               <SidebarLink

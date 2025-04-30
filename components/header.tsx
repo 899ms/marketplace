@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import DynamicThemeSwitch from './dynamic-theme-switch';
 
+
 export default function Header() {
   return (
     <div className='border-b border-stroke-soft-200'>

@@ -37,7 +37,7 @@ export function ServiceCard({ service }: ServiceCardProps) {
         <div className='flex items-center justify-between text-paragraph-sm'>
           <div className='text-text-secondary-600 flex items-center gap-0.5'>
             <RiStarFill className='size-3.5 text-yellow-400' />
-            <span>
+            <span className='text-gray-600'>
               {service.rating} ({service.reviewCount})
             </span>
           </div>
