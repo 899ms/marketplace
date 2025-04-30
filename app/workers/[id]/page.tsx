@@ -139,7 +139,7 @@ const workerData = {
 
 export default function WorkerDetailPage() {
   const worker = workerData;
-  const [activeTab, setActiveTab] = useState('work');
+  const [activeTab, setActiveTab] = useState('about');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   // Function to render content based on active tab
