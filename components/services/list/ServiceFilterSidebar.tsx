@@ -26,11 +26,29 @@ const TagInputContainer: React.FC<TagInputContainerProps> = ({ children }) => {
 
 // Main Sidebar Component
 interface ServiceFilterSidebarProps {
-  activeTab: 'Service' | 'Worker' | 'Project'; // Add activeTab prop
+  activeTab: 'Service' | 'Worker' | 'Project';
+  onPriceRangeChange?: (range: [number, number]) => void;
+  onSkillsChange?: (skills: string[]) => void;
+  onToolsChange?: (tools: string[]) => void;
+  onFeaturedTagsChange?: (tags: string[]) => void;
+  onToggleChange?: (option: string, value: boolean) => void;
+  onClearAllFilters?: () => void;
+  onWorkerSearch?: (term: string) => void;
+  workerSearchTerm?: string;
+  resetKey?: number;
 }
 
 const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
-  activeTab, // Destructure activeTab
+  activeTab,
+  onPriceRangeChange,
+  onSkillsChange,
+  onToolsChange,
+  onFeaturedTagsChange,
+  onToggleChange,
+  onClearAllFilters,
+  onWorkerSearch,
+  workerSearchTerm,
+  resetKey,
 }) => {
   const [selectedSkills, setSelectedSkills] = useState(['Retrowave']);
   const [selectedTools, setSelectedTools] = useState(['Retrowave']);
@@ -39,36 +57,79 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
   ]);
   const [isAvailable, setIsAvailable] = useState(false);
   const [isProfessional, setIsProfessional] = useState(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>([300, 450]); // Price state
+  const [priceRange, setPriceRange] = useState<[number, number]>([300, 450]);
 
-  // --- Filter Handlers ---
+  // --- Filter Handlers (Updated with callbacks) ---
   const handleSkillToggle = (skill: string) => {
-    setSelectedSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill],
-    );
+    const newSkills = selectedSkills.includes(skill)
+      ? selectedSkills.filter((s) => s !== skill)
+      : [...selectedSkills, skill];
+
+    setSelectedSkills(newSkills);
+    if (onSkillsChange) onSkillsChange(newSkills);
   };
+
   const removeSkill = (skill: string) => {
-    setSelectedSkills((prev) => prev.filter((s) => s !== skill));
+    const newSkills = selectedSkills.filter((s) => s !== skill);
+    setSelectedSkills(newSkills);
+    if (onSkillsChange) onSkillsChange(newSkills);
   };
-  const clearSkills = () => setSelectedSkills([]);
+
+  const clearSkills = () => {
+    setSelectedSkills([]);
+    if (onSkillsChange) onSkillsChange([]);
+  };
 
   const handleToolToggle = (tool: string) => {
-    setSelectedTools((prev) =>
-      prev.includes(tool) ? prev.filter((t) => t !== tool) : [...prev, tool],
-    );
+    const newTools = selectedTools.includes(tool)
+      ? selectedTools.filter((t) => t !== tool)
+      : [...selectedTools, tool];
+
+    setSelectedTools(newTools);
+    if (onToolsChange) onToolsChange(newTools);
   };
+
   const removeTool = (tool: string) => {
-    setSelectedTools((prev) => prev.filter((t) => t !== tool));
+    const newTools = selectedTools.filter((t) => t !== tool);
+    setSelectedTools(newTools);
+    if (onToolsChange) onToolsChange(newTools);
   };
-  const clearTools = () => setSelectedTools([]);
+
+  const clearTools = () => {
+    setSelectedTools([]);
+    if (onToolsChange) onToolsChange([]);
+  };
 
   const handleFeaturedTagToggle = (tag: string) => {
-    setSelectedFeaturedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
-    );
+    const newTags = selectedFeaturedTags.includes(tag)
+      ? selectedFeaturedTags.filter((t) => t !== tag)
+      : [...selectedFeaturedTags, tag];
+
+    setSelectedFeaturedTags(newTags);
+    if (onFeaturedTagsChange) onFeaturedTagsChange(newTags);
   };
+
   const removeFeaturedTag = (tag: string) => {
-    setSelectedFeaturedTags((prev) => prev.filter((t) => t !== tag));
+    const newTags = selectedFeaturedTags.filter((t) => t !== tag);
+    setSelectedFeaturedTags(newTags);
+    if (onFeaturedTagsChange) onFeaturedTagsChange(newTags);
+  };
+
+  // Handle price range changes
+  const handlePriceRangeChange = (value: [number, number]) => {
+    setPriceRange(value);
+    if (onPriceRangeChange) onPriceRangeChange(value);
+  };
+
+  // Handle toggle changes
+  const handleAvailableToggle = (checked: boolean) => {
+    setIsAvailable(checked);
+    if (onToggleChange) onToggleChange('available', checked);
+  };
+
+  const handleProfessionalToggle = (checked: boolean) => {
+    setIsProfessional(checked);
+    if (onToggleChange) onToggleChange('professional', checked);
   };
 
   // Mock data
@@ -76,10 +137,30 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
   const availableTools = ['Digital Painting', 'Retrowave', 'NFT'];
   const availableFeaturedTags = ['Digital Painting', 'Retrowave', 'NFT'];
 
+  // Clear all filters handler
+  const handleClearAllFilters = () => {
+    // Reset local state
+    setSelectedSkills([]);
+    setSelectedTools([]);
+    setSelectedFeaturedTags([]);
+    setIsAvailable(false);
+    setIsProfessional(false);
+    setPriceRange([0, 1000]); // Reset to full range
+
+    // Notify parent component
+    if (onClearAllFilters) onClearAllFilters();
+  };
+
   return (
     <aside className='w-full space-y-6 text-sm'> { /* Base size is sm, headings will be xs */}
       {/* Conditionally render Worker Search Bar at the top */}
-      {activeTab === 'Worker' && <WorkerSearchBar />}
+      {activeTab === 'Worker' && (
+        <WorkerSearchBar
+          onSearch={onWorkerSearch}
+          searchTerm={workerSearchTerm}
+          resetKey={resetKey}
+        />
+      )}
 
       {/* Filters for Service/Worker Tabs */}
       {(activeTab === 'Service' || activeTab === 'Worker') && (
@@ -225,7 +306,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
               <Switch.Root
                 id='available-toggle'
                 checked={isAvailable}
-                onCheckedChange={setIsAvailable}
+                onCheckedChange={handleAvailableToggle}
               />
               {/* Text block */}
               <div>
@@ -241,7 +322,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
               <Switch.Root
                 id='professional-toggle'
                 checked={isProfessional}
-                onCheckedChange={setIsProfessional}
+                onCheckedChange={handleProfessionalToggle}
               />
               {/* Text block */}
               <div>
@@ -358,7 +439,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
             </h3>
             <PriceRangeSlider
               value={priceRange}
-              onValueChange={setPriceRange}
+              onValueChange={handlePriceRangeChange}
               max={1000} // Example max value
               step={10} // Example step
               minStepsBetweenThumbs={1} // Example min distance
@@ -368,6 +449,16 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           </div>
         </>
       )}
+
+      {/* Clear Filters Button - Add at the end of the sidebar */}
+      <div className="pt-4">
+        <button
+          onClick={handleClearAllFilters}
+          className="w-full py-2 px-4 border border-gray-300 rounded-lg text-center text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          Clear Filters
+        </button>
+      </div>
     </aside>
   );
 };

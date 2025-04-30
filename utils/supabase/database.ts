@@ -160,6 +160,102 @@ export const userOperations = {
       return [];
     }
   },
+
+  // Get workers (sellers) with pagination and filtering
+  async getWorkersWithPagination({
+    limit = 9,
+    offset = 0,
+    searchTerm = '',
+    skills = [],
+    isAvailable = false,
+    isProfessional = false,
+    sortBy = 'created_at',
+    sortOrder = 'desc',
+  }: {
+    limit?: number;
+    offset?: number;
+    searchTerm?: string;
+    skills?: string[];
+    isAvailable?: boolean;
+    isProfessional?: boolean;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  } = {}): Promise<{ workers: User[]; total: number }> {
+    try {
+      let query = supabase
+        .from('users')
+        .select('*', { count: 'exact' })
+        .eq('user_type', 'seller');
+
+      // Apply search term filter if provided (search in username or full_name)
+      if (searchTerm && searchTerm.trim() !== '') {
+        query = query.or(
+          `username.ilike.%${searchTerm}%,full_name.ilike.%${searchTerm}%`,
+        );
+      }
+
+      // Note: We're not applying skills filter as the User schema doesn't have a skills field
+      // If you add skills to the users table in the future, you can uncomment this
+      // if (skills && skills.length > 0) {
+      //   query = query.overlaps('skills', skills);
+      // }
+
+      // Apply professional filter if set - update to match your schema
+      // Currently there's no is_professional field, so this is commented out
+      // if (isProfessional) {
+      //   query = query.eq('is_professional', true);
+      // }
+
+      // Apply available filter based on recent login - update to match your schema
+      // Currently there's no last_online field, so this is commented out
+      // if (isAvailable) {
+      //   const oneDayAgo = new Date();
+      //   oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+      //   query = query.gte('last_online', oneDayAgo.toISOString());
+      // }
+
+      // Apply sorting
+      query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+      // Apply pagination
+      query = query.range(offset, offset + limit - 1);
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        console.error('Supabase error fetching workers:', error);
+        return { workers: [], total: 0 };
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No workers found or empty array returned');
+        return { workers: [], total: 0 };
+      }
+
+      console.log(`Found ${data.length} workers with pagination`);
+
+      // Process users one by one to avoid failing all if one fails
+      const validWorkers: User[] = [];
+
+      for (const worker of data) {
+        try {
+          const parsedWorker = UserSchema.parse(worker);
+          validWorkers.push(parsedWorker);
+        } catch (err) {
+          console.error(`Error validating worker ${worker.id}:`, err);
+          // Continue with next worker instead of failing the whole array
+        }
+      }
+
+      return {
+        workers: validWorkers,
+        total: count || validWorkers.length,
+      };
+    } catch (err) {
+      console.error('Unexpected error in getWorkersWithPagination:', err);
+      return { workers: [], total: 0 };
+    }
+  },
 };
 
 /**
@@ -464,6 +560,112 @@ export const serviceOperations = {
     } catch (err) {
       console.error('Invalid service data after update:', err);
       return null;
+    }
+  },
+
+  // Get services with pagination, filtering, and user join
+  async getServicesWithPagination({
+    limit = 9,
+    offset = 0,
+    searchTerm = '',
+    priceRange = null,
+    tags = [],
+    sortBy = 'created_at',
+    sortOrder = 'desc',
+  }: {
+    limit?: number;
+    offset?: number;
+    searchTerm?: string;
+    priceRange?: [number, number] | null;
+    tags?: string[];
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  } = {}): Promise<{ services: Service[]; total: number }> {
+    try {
+      let query = supabase.from('services').select(
+        `
+          *,
+          users!services_seller_id_fkey (
+            id,
+            full_name,
+            username,
+            avatar_url
+          )
+          `,
+        { count: 'exact' },
+      );
+
+      // Apply search term filter if provided
+      if (searchTerm && searchTerm.trim() !== '') {
+        query = query.ilike('title', `%${searchTerm}%`);
+      }
+
+      // Apply price range filter if provided
+      if (priceRange && priceRange.length === 2) {
+        const [minPrice, maxPrice] = priceRange;
+        query = query.gte('price', minPrice).lte('price', maxPrice);
+      }
+
+      // Apply tags filter if provided
+      if (tags && tags.length > 0) {
+        // Use overlap operator to find services with any of the specified tags
+        query = query.overlaps('tags', tags);
+      }
+
+      // Apply sorting
+      query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+      // Apply pagination
+      query = query.range(offset, offset + limit - 1);
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        console.error('Supabase error fetching services:', error);
+        return { services: [], total: 0 };
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No services found or empty array returned');
+        return { services: [], total: 0 };
+      }
+
+      console.log(`Found ${data.length} services with pagination`);
+
+      // Process services one by one to avoid failing all if one fails
+      const validServices: Service[] = [];
+
+      for (const service of data) {
+        try {
+          // Extract seller info from the join result
+          const sellerInfo = service.users || {};
+
+          // Process service data
+          const processedService = {
+            ...service,
+            seller_name:
+              sellerInfo.full_name || sellerInfo.username || 'Unknown Seller',
+            created_at: service.created_at ? String(service.created_at) : null,
+          };
+
+          // Remove the nested users object to match our schema
+          delete processedService.users;
+
+          const parsedService = ServiceSchema.parse(processedService);
+          validServices.push(parsedService);
+        } catch (err) {
+          console.error(`Error validating service ${service.id}:`, err);
+          // Continue with next service instead of failing the whole array
+        }
+      }
+
+      return {
+        services: validServices,
+        total: count || validServices.length,
+      };
+    } catch (err) {
+      console.error('Unexpected error in getServicesWithPagination:', err);
+      return { services: [], total: 0 };
     }
   },
 };
