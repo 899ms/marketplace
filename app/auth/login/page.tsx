@@ -15,7 +15,7 @@ export default async function LoginPage() {
 
   // If already authenticated, redirect to dashboard
   if (isAuthenticated) {
-    redirect('/dashboard');
+    redirect('/home');
   }
 
   return (

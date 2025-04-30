@@ -118,7 +118,7 @@ export default function LoginForm() {
           // Otherwise, redirect based on user_type
           if (profile.user_type === 'seller') {
             console.log('Redirecting to seller home');
-            window.location.href = '/worker/home';
+            window.location.href = '/home';
           } else if (profile.user_type === 'buyer') {
             console.log('Redirecting to buyer home');
             window.location.href = '/home'; // Changed from router.push to window.location
