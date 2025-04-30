@@ -1,128 +1,86 @@
 import React from 'react';
 import * as Avatar from '@/components/ui/avatar';
+import * as Badge from '@/components/ui/badge';
 import * as Tag from '@/components/ui/tag';
-import { RiStarFill } from '@remixicon/react';
+
+import {
+  RiStarFill,
+  RiBriefcaseLine,
+  RiMoneyDollarCircleLine,
+  RiSparklingLine,
+} from '@remixicon/react';
 import * as Divider from '@/components/ui/divider';
-import { cn } from '@/utils/cn';
 
-// --- Interfaces --- //
-interface WorkerBadge {
-  label: string;
-  // Add icon if needed later
-}
 
+// --- Worker Card Component ---
+
+// Add onClick prop
 interface WorkerCardProps {
-  avatarUrl: string;
-  name: string;
-  rating: number;
-  reviewCount: number;
-  badges: WorkerBadge[];
-  description: string;
-  skills: string[];
   onClick?: () => void;
-  className?: string;
+  // Add other props if needed later for data
 }
 
-// --- Google Icon SVG --- //
-// Reusable Google Icon component (consider moving to a shared location if used elsewhere)
-function GoogleIcon() {
-  return (
-    <svg
-      width='16'
-      height='16'
-      viewBox='0 0 16 16'
-      fill='none'
-      xmlns='http://www.w3.org/2000/svg'
-      aria-hidden='true'
-      className='size-4' // Added size class
-    >
-      <path
-        d='M8.14258 6.72729V9.4382H11.9868C11.818 10.31 11.3114 11.0482 10.5517 11.5446L12.8699 13.3073C14.2205 12.0855 14.9998 10.291 14.9998 8.15918C14.9998 7.66283 14.9543 7.18551 14.8699 6.72737L8.14258 6.72729Z'
-        fill='#4285F4'
-      />
-      <path
-        d='M4.13966 9.33234L3.61681 9.72456L1.76611 11.1373C2.94145 13.4218 5.35039 15 8.14261 15C10.0712 15 11.688 14.3763 12.8699 13.3073L10.5517 11.5445C9.91532 11.9645 9.10362 12.2191 8.14261 12.2191C6.28545 12.2191 4.70756 10.9909 4.14258 9.33638L4.13966 9.33234Z'
-        fill='#34A853'
-      />
-      <path
-        d='M1.76619 4.86285C1.27919 5.80463 1 6.86737 1 8.00007C1 9.13278 1.27919 10.1955 1.76619 11.1373C1.76619 11.1436 4.14288 9.33003 4.14288 9.33003C4.00002 8.91003 3.91558 8.46461 3.91558 8C3.91558 7.5354 4.00002 7.08997 4.14288 6.66997L1.76619 4.86285Z'
-        fill='#FBBC05'
-      />
-      <path
-        d='M8.14275 3.78726C9.19473 3.78726 10.1298 4.14361 10.8766 4.83089L12.922 2.82638C11.6817 1.69368 10.0714 1 8.14275 1C5.35054 1 2.94145 2.57181 1.76611 4.86272L4.14273 6.66999C4.70764 5.01543 6.2856 3.78726 8.14275 3.78726Z'
-        fill='#EA4335'
-      />
-    </svg>
-  );
-}
-
-// --- Worker Card Component --- //
-export function WorkerCard({
-  avatarUrl,
-  name,
-  rating,
-  reviewCount,
-  badges,
-  description,
-  skills,
-  onClick,
-  className,
-}: WorkerCardProps) {
+const WorkerCard: React.FC<WorkerCardProps> = ({ onClick }) => {
+  // TODO: Accept props for dynamic data
   return (
     <div
-      className={cn(
-        'overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-md transition-shadow hover:shadow-lg',
-        onClick && 'cursor-pointer',
-        className,
-      )}
-      onClick={onClick}
+      className='shadow-sm hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 transition-all' // Added hover:shadow-md, transition-all
+      onClick={onClick} // Apply onClick handler
+      style={{ cursor: onClick ? 'pointer' : 'default' }} // Add cursor pointer if clickable
     >
-      {/* Top Section */}
-      <div className='mb-4 flex items-start gap-3'>
-        <Avatar.Root size='48'>
-          <Avatar.Image src={avatarUrl} alt={`${name}'s avatar`} />
-          {/* <Avatar.Fallback>{name.charAt(0)}</Avatar.Fallback> Removed Fallback based on linter error */}
-        </Avatar.Root>
-        <div className='flex flex-col gap-1'>
-          {/* Name & Rating */}
-          <div className='flex flex-wrap items-center gap-x-2 gap-y-1'>
-            <h3 className='text-base font-medium text-text-strong-950'>{name}</h3>
-            <div className='flex items-center gap-0.5 text-sm text-text-secondary-600'>
-              <RiStarFill className='size-4 text-yellow-500' />
-              <span>
-                {typeof rating === 'number' ? rating.toFixed(1) : 'N/A'} ({typeof reviewCount === 'number' ? reviewCount : 0})
+      <div className='mb-2 flex items-start justify-between'>
+        <div className='flex items-center gap-2'>
+          <Avatar.Root size='48'>
+            <Avatar.Image
+              src='https://via.placeholder.com/40' // Placeholder
+              alt='Worker Avatar'
+            />
+          </Avatar.Root>
+          <div className='flex flex-col gap-1'>
+            <div className='flex flex-row gap-2 items-center'>
+              <div className='text-[14px] font-medium text-surface-800'>
+                Cleve Music {/* Placeholder Name */}
+              </div>
+              <div className='text-text-secondary-600 mt-0.5 flex items-center gap-0.5 text-[11px]'>
+                <RiStarFill className='size-3 text-yellow-500' />
+                <span className='text-[#525866]'>4.9 (125)</span> {/* Placeholder Rating */}
+              </div>
+            </div>
+            <div className='text-text-secondary-600 mb-2 flex items-center gap-1.5 text-[11px]'>
+              <span className='inline-flex items-center gap-0.5'>
+                <RiMoneyDollarCircleLine className='size-3' /> Salary{' '}
+                {/* Placeholder Info */}
+              </span>
+              <span className='inline-flex items-center gap-0.5'>
+                <RiBriefcaseLine className='size-3' /> Work {/* Placeholder Info */}
+              </span>
+              <span className='inline-flex items-center gap-0.5'>
+                <RiSparklingLine className='size-3' /> Specia {/* Placeholder Info */}
               </span>
             </div>
           </div>
-          {/* Badges */}
-          <div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-secondary-600'>
-            {(Array.isArray(badges) ? badges : []).map((badge) => (
-              <span key={badge.label} className='inline-flex items-center gap-1'>
-                <GoogleIcon />
-                {badge.label}
-              </span>
-            ))}
-          </div>
         </div>
+
       </div>
 
-      <Divider.Root className='my-4' />
+      <Divider.Root className='my-5' />
 
-      {/* Description */}
-      <p className='mb-4 line-clamp-2 text-sm text-text-secondary-600'>
-        {description}
+      <p className='text-[#525866] mb-3 line-clamp-2 text-[14px]'>
+        Passionate about delivering high-quality audio mixing and editing.
+        Let&apos;s create something.... {/* Placeholder Bio */}
       </p>
+      <div className='flex flex-wrap gap-1'>
+        {/* Placeholder Badges */}
 
-      {/* Skills Tags */}
-      <div className='flex flex-wrap gap-1.5'>
-        {(Array.isArray(skills) ? skills : []).map((skill) => (
-          <Tag.Root key={skill} variant='gray'>
-            {skill}
-          </Tag.Root>
-        ))}
+        <Tag.Root className='text-[12px] text-[#525866]'>Mixing</Tag.Root>
+        <Tag.Root className='text-[12px] text-[#525866]'>Singing</Tag.Root>
+        <Tag.Root className='text-[12px] text-[#525866]'>Jazz</Tag.Root>
+        <Tag.Root className='text-[12px] text-[#525866]'>Hip hop</Tag.Root>
+        <Tag.Root className='text-[12px] text-[#525866]'>K pop</Tag.Root>
+
       </div>
     </div>
   );
-}
+};
 
-export default WorkerCard; // Keep default export if needed elsewhere
+export default WorkerCard;
