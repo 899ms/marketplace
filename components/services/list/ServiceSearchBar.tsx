@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { RiSearchLine } from '@remixicon/react'; // Removed RiArrowDownSLine as Select likely includes it
 import { Input } from '@/components/ui/input';
 import * as SelectPrimitive from '@/components/ui/select'; // Import as namespace
@@ -17,6 +17,9 @@ export function ServiceSearchBar({
   resetKey = 0
 }: ServiceSearchBarProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const searchTimeout = useRef<NodeJS.Timeout | null>(null);
+  const prevSearchTerm = useRef(searchTerm);
+  const isInitialMount = useRef(true);
 
   // Reset search input when resetKey changes
   useEffect(() => {
@@ -27,15 +30,47 @@ export function ServiceSearchBar({
 
   // Update internal state when external search term changes
   useEffect(() => {
-    if (externalSearchTerm !== undefined) {
+    if (externalSearchTerm !== undefined && externalSearchTerm !== searchTerm) {
       setSearchTerm(externalSearchTerm);
     }
   }, [externalSearchTerm]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    onSearch(searchTerm);
-  };
+  // Implement improved debounced search
+  useEffect(() => {
+    // Skip if it's the initial mount or if the search term hasn't changed
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      prevSearchTerm.current = searchTerm;
+      return;
+    }
+
+    // Skip if the search term hasn't changed
+    if (prevSearchTerm.current === searchTerm) {
+      return;
+    }
+
+    // Update previous search term
+    prevSearchTerm.current = searchTerm;
+
+    // Clear previous timeout if it exists
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current);
+      searchTimeout.current = null;
+    }
+
+    // Only set timeout if there's a search term or it was cleared (to handle empty search)
+    searchTimeout.current = setTimeout(() => {
+      onSearch(searchTerm);
+    }, 2000);
+
+    // Cleanup function
+    return () => {
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+        searchTimeout.current = null;
+      }
+    };
+  }, [searchTerm]); // Removed onSearch from dependencies
 
   // Handle filter changes
   const handleFilterChange = (filterType: string, value: string) => {
@@ -46,7 +81,7 @@ export function ServiceSearchBar({
 
   return (
     <div className='mb-4 rounded-lg bg-gray-100 p-4'> {/* Adjust background color if needed */}
-      <form onSubmit={handleSubmit} className='flex flex-wrap items-center gap-4'>
+      <div className='flex flex-wrap items-center gap-4'>
         {/* Search Input */}
         <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3'>
           <RiSearchLine className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-500' />
@@ -58,14 +93,6 @@ export function ServiceSearchBar({
             onChange={(e) => setSearchTerm(e.target.value)}
           />
         </div>
-
-        {/* Search Button */}
-        <button
-          type="submit"
-          className="px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700"
-        >
-          Search
-        </button>
 
         {/* Real-time Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('leadTime', value)}>
@@ -103,7 +130,7 @@ export function ServiceSearchBar({
             <SelectPrimitive.Item value='price_desc'>Price: High to Low</SelectPrimitive.Item>
           </SelectPrimitive.Content>
         </SelectPrimitive.Root>
-      </form>
+      </div>
     </div>
   );
 } 
