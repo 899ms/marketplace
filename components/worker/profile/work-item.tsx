@@ -2,7 +2,7 @@
 
 import React from 'react';
 import * as Badge from '@/components/ui/badge';
-import { RiPlayLine, RiBookmarkLine } from '@remixicon/react';
+import { RiPlayCircleFill, RiBookmarkLine } from '@remixicon/react';
 import { WorkItemData } from './types'; // adjust import path as needed
 
 interface WorkItemProps {
@@ -15,7 +15,7 @@ export function WorkItem({ item }: WorkItemProps) {
       {/* 1. Play + Info */}
       <div className="flex items-center gap-3">
         <button className="bg-bg-subtle-100 hover:bg-bg-subtle-200 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors">
-          <RiPlayLine className="size-5 text-text-strong-950" />
+          <RiPlayCircleFill className="size-8 text-text-strong-950" />
         </button>
         <div>
           <p className="font-medium text-text-strong-950">{item.title}</p>
@@ -38,8 +38,8 @@ export function WorkItem({ item }: WorkItemProps) {
       </div>
 
       {/* 3. Duration/BPM + Bookmark */}
-      <div className="flex items-center gap-3">
-        <div className="text-right">
+      <div className="flex items-center gap-7">
+        <div className="text-left">
           <p className="text-paragraph-sm text-gray-600">{item.duration}</p>
           <p className="text-xs text-gray-600">{item.bpm}</p>
         </div>
