@@ -44,6 +44,7 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
     mode: 'onBlur',
     defaultValues: {
       sendTo: '',
+      skillLevels: [],
       selectOrder: '',
       contractTitle: '',
       description: '',
@@ -139,10 +140,12 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
         service_id: null,
         status: 'pending',
         amount: totalAmount,
-        description: `Title: ${validatedData.contractTitle}\n\n${validatedData.description}`,
+        title: validatedData.contractTitle,
+        description: validatedData.description,
         attachments: validatedData.attachments || null,
         currency: validatedData.currency,
       };
+
 
       const { data: newContract, error: contractError } = await supabase
         .from('contracts')
