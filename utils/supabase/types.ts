@@ -108,7 +108,12 @@ export const MessageSchema = z.object({
   created_at: z.string().optional().nullable(),
   chat_id: z.string().uuid(), // UUID NOT NULL REFERENCES chats(id)
   sender_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
-  content: z.string(), // TEXT NOT NULL
+  content: z.string(), // TEXT NOT NULL (For text messages or caption)
+  message_type: z
+    .enum(['text', 'image', 'offer', 'milestone', 'system_event', 'message']) // Added 'message' for attachments
+    .nullable()
+    .default('text'),
+  data: z.array(BaseFileSchema).nullable().optional(), // Expect data to be an array of BaseFileData or null/undefined
   read: z.boolean().optional().nullable(), // BOOLEAN default FALSE, nullable
 });
 export type Message = z.infer<typeof MessageSchema>;
