@@ -1,13 +1,10 @@
-import { createClient } from '@supabase/supabase-js';
+import { createBrowserClient } from '@supabase/ssr';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// No changes needed if already using environment variables directly
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  throw new Error('Missing Supabase environment variables');
-}
-
-// Create a single instance of the Supabase client
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+// Create a single instance of the Supabase client for the browser
+const supabase = createBrowserClient(supabaseUrl, supabaseKey);
 
 export default supabase;

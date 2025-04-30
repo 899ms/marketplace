@@ -90,13 +90,13 @@ export function WorkerCard({
             <div className='flex items-center gap-0.5 text-sm text-text-secondary-600'>
               <RiStarFill className='size-4 text-yellow-500' />
               <span>
-                {rating.toFixed(1)} ({reviewCount})
+                {typeof rating === 'number' ? rating.toFixed(1) : 'N/A'} ({typeof reviewCount === 'number' ? reviewCount : 0})
               </span>
             </div>
           </div>
           {/* Badges */}
           <div className='flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-text-secondary-600'>
-            {badges.map((badge) => (
+            {(Array.isArray(badges) ? badges : []).map((badge) => (
               <span key={badge.label} className='inline-flex items-center gap-1'>
                 <GoogleIcon />
                 {badge.label}
@@ -115,7 +115,7 @@ export function WorkerCard({
 
       {/* Skills Tags */}
       <div className='flex flex-wrap gap-1.5'>
-        {skills.map((skill) => (
+        {(Array.isArray(skills) ? skills : []).map((skill) => (
           <Tag.Root key={skill} variant='gray'>
             {skill}
           </Tag.Root>
