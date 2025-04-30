@@ -25,7 +25,7 @@ export type BaseFileData = z.infer<typeof BaseFileSchema>;
 // --- Job Schema (maps to public.jobs) ---
 export const JobSchema = z.object({
   id: z.string().uuid(), // UUID primary key default uuid_generate_v4()
-  created_at: z.string().datetime().optional().nullable(), // TIMESTAMPTZ default NOW(), nullable
+  created_at: z.string().optional().nullable(), // Changed from datetime() to string() to be more flexible
   title: z.string(), // TEXT NOT NULL
   description: z.string().nullable(), // TEXT, nullable (updated from NOT NULL)
   // requirements: z.string(), // TEXT NOT NULL - This column seems removed based on the new schema list
@@ -73,7 +73,7 @@ export type Service = z.infer<typeof ServiceSchema>;
 export const ContractSchema = z
   .object({
     id: z.string().uuid(), // UUID primary key default uuid_generate_v4()
-    created_at: z.string().datetime().optional().nullable(), // TIMESTAMPTZ default NOW(), nullable
+    created_at: z.string().optional().nullable(), // Changed from datetime() to string() to be more flexible
     buyer_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
     seller_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
     job_id: z.string().uuid().nullable(), // UUID REFERENCES jobs(id), nullable
@@ -134,13 +134,13 @@ export const ContractMilestoneSchema = z.object({
   id: z.string().uuid(), // UUID primary key default uuid_generate_v4()
   contract_id: z.string().uuid(), // UUID NOT NULL REFERENCES contracts(id)
   description: z.string(), // TEXT NOT NULL
-  due_date: z.string().datetime().nullable(), // TIMESTAMPTZ, nullable (Using datetime string)
+  due_date: z.string().nullable(), // Changed from datetime() to string() to be more flexible
   amount: z.number().nullable(), // NUMERIC, nullable
   status: z
     .enum(['pending', 'approved', 'rejected', 'paid'])
     .default('pending'), // TEXT NOT NULL DEFAULT 'pending' (Assuming possible statuses)
   sequence: z.number().int().default(1), // INTEGER NOT NULL DEFAULT 1
-  created_at: z.string().datetime().optional(), // TIMESTAMPTZ NOT NULL DEFAULT now() - Optional on creation
-  updated_at: z.string().datetime().optional(), // TIMESTAMPTZ NOT NULL DEFAULT now() - Optional on creation
+  created_at: z.string().optional(), // Changed from datetime() to string() to be more flexible
+  updated_at: z.string().optional(), // Changed from datetime() to string() to be more flexible
 });
 export type ContractMilestone = z.infer<typeof ContractMilestoneSchema>;

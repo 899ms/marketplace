@@ -203,18 +203,64 @@ export const jobOperations = {
 
   // Get jobs by buyer ID
   async getJobsByBuyerId(buyerId: string): Promise<Job[]> {
-    const { data, error } = await supabase
-      .from('jobs')
-      .select('*')
-      .eq('buyer_id', buyerId)
-      .order('created_at', { ascending: false });
-
-    if (error || !data) return [];
-
     try {
-      return data.map((job) => JobSchema.parse(job));
+      const { data, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .eq('buyer_id', buyerId)
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase error fetching jobs:', error);
+        return [];
+      }
+
+      if (!data || !Array.isArray(data)) {
+        console.log('No jobs found or empty array returned');
+        return [];
+      }
+
+      console.log(`Found ${data.length} jobs for buyer ID ${buyerId}`);
+
+      // Process each job individually to avoid failing all if one fails
+      const validJobs: Job[] = [];
+
+      for (const job of data) {
+        try {
+          // Ensure all required fields have appropriate values
+          const processedJob = {
+            ...job,
+            id: String(job.id),
+            title: String(job.title || ''),
+            description: job.description || null,
+            budget: typeof job.budget === 'number' ? job.budget : 0,
+            buyer_id: String(job.buyer_id || buyerId),
+            currency: job.currency || 'USD',
+            created_at: job.created_at ? String(job.created_at) : null,
+            // Handle array fields carefully
+            skill_levels: Array.isArray(job.skill_levels)
+              ? job.skill_levels
+              : [],
+            candidate_sources: Array.isArray(job.candidate_sources)
+              ? job.candidate_sources
+              : [],
+            files: Array.isArray(job.files) ? job.files : [],
+          };
+
+          const validJob = JobSchema.parse(processedJob);
+          validJobs.push(validJob);
+        } catch (err) {
+          console.error(`Error processing job ${job.id}:`, err);
+          // Continue with next job instead of failing the whole array
+        }
+      }
+
+      console.log(
+        `Successfully processed ${validJobs.length} out of ${data.length} jobs`,
+      );
+      return validJobs;
     } catch (err) {
-      console.error('Invalid job data:', err);
+      console.error('Unexpected error in getJobsByBuyerId:', err);
       return [];
     }
   },

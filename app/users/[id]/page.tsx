@@ -7,6 +7,7 @@ import * as AvatarGroup from '@/components/ui/avatar-group';
 import * as Divider from '@/components/ui/divider';
 import * as Button from '@/components/ui/button';
 import * as Badge from '@/components/ui/badge';
+import * as Tag from '@/components/ui/tag';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import {
   RiStarFill,
@@ -20,8 +21,22 @@ import {
   RiArrowRightSLine,
 } from '@remixicon/react';
 import { clsx } from 'clsx';
-import { userOperations } from '@/utils/supabase/database';
-import { User } from '@/utils/supabase/types';
+import { userOperations, jobOperations } from '@/utils/supabase/database';
+import { User, Job } from '@/utils/supabase/types';
+
+// Helper function to get currency symbol
+const getCurrencySymbol = (currency: string): string => {
+  switch (currency?.toUpperCase()) {
+    case 'USD':
+      return '$';
+    case 'EUR':
+      return '€';
+    case 'CNY':
+      return '¥';
+    default:
+      return '$'; // Default to USD
+  }
+};
 
 // User Sidebar Component
 const UserSidebar = ({ userData }: { userData: User | null }) => {
@@ -165,9 +180,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
             <h3 className='text-label-md font-medium text-text-strong-950'>
               About
             </h3>
-            <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
-              <RiPencilLine className='size-4' />
-            </button>
+
           </div>
           <p className='text-gray-600 line-clamp-5 text-paragraph-sm'>
             {userData.bio || "This user hasn't added a bio yet."}
@@ -201,54 +214,62 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
 };
 
 // Order List Item Component
-const OrderListItem = () => {
-  // Example data - replace with props
-  const order = {
-    title: 'Write professional resume, cover letter',
-    tags: ['Mixing', 'Singing', 'Jazz', 'Hip hop', 'K pop'],
-    description:
-      "We are seeking a talented Website Designer and Front-End Developer to join our team. In this role, you will be responsible for creating visually appealing and user-friendly websites that meet our clients' needs. You",
-    budget: 1400,
-  };
+const OrderListItem = ({ job }: { job: Job }) => {
+  // Fixed placeholder tags 
+  const placeholderTags = ['Mixing', 'Singing', 'Jazz'];
+
+  // Ensure we always have exactly 3 tags to display
+  let displayTags: string[] = [];
+
+  // Add available skill_levels first
+  if (job.skill_levels && Array.isArray(job.skill_levels)) {
+    displayTags = [...job.skill_levels];
+  }
+
+  // If we have fewer than 3 tags, add placeholders until we have 3
+  while (displayTags.length < 3) {
+    const placeholderIndex = displayTags.length;
+    if (placeholderIndex < placeholderTags.length) {
+      displayTags.push(placeholderTags[placeholderIndex]);
+    } else {
+      // In case we run out of placeholders
+      displayTags.push(`Tag ${displayTags.length + 1}`);
+    }
+  }
+
+  // Log the tags we're displaying for debugging
+  console.log('Displaying tags:', displayTags);
 
   return (
     <div className='flex items-start justify-between gap-4 border-b border-stroke-soft-200 py-4'>
-
       <div className='flex-1 max-w-[80%]'>
         {/* Title */}
         <h3 className='mb-1 text-paragraph-lg font-medium text-text-strong-950'>
-          {order.title}
+          {job.title}
         </h3>
 
         {/* Tags */}
         <div className='mb-2 flex flex-wrap gap-1.5'>
-          {order.tags.map((tag, i) => (
-            <Badge.Root
-              key={tag}
-              variant='light'
-              size='small'
-              className={clsx(
-                'bg-white px-2 py-0.5 rounded-md',
-                i === 0
-                  ? 'border border-black text-text-strong-950'     // first tag: black border + text
-                  : 'border border-gray-300 text-text-secondary-600' // others: gray border + text
-              )}
+          {displayTags.map((tag, i) => (
+            <Tag.Root
+              key={i}
+              data-state={i === 0 ? "active" : "default"}
             >
               {tag}
-            </Badge.Root>
+            </Tag.Root>
           ))}
         </div>
 
         {/* Description */}
         <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm'>
-          {order.description}
+          {job.description || "No description provided."}
         </p>
       </div>
 
       <div className='shrink-0 text-right'>
         <div className='text-gray-600 text-label-sm'>Budget</div>
         <div className='mb-2 text-label-lg font-medium text-text-strong-950'>
-          ${order.budget.toLocaleString()}
+          {getCurrencySymbol(job.currency)}{job.budget.toLocaleString()}
         </div>
         <Button.Root variant='neutral' mode='stroke' size='small'>
           Apply
@@ -326,7 +347,9 @@ const ReviewListItem = () => {
 export default function UserProfilePage({ params }: { params: { id: string } }) {
   const [activeTab, setActiveTab] = useState('Order'); // Default to Order tab
   const [userData, setUserData] = useState<User | null>(null);
+  const [userJobs, setUserJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingJobs, setIsLoadingJobs] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const userId = params.id;
 
@@ -357,6 +380,33 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
 
     fetchUserData();
   }, [userId]);
+
+  // Fetch jobs when user data is available
+  useEffect(() => {
+    async function fetchUserJobs() {
+      if (!userData) return;
+
+      setIsLoadingJobs(true);
+      try {
+        console.log('Fetching jobs for buyer ID:', userId);
+        const jobs = await jobOperations.getJobsByBuyerId(userId);
+
+        if (jobs && jobs.length > 0) {
+          console.log('Jobs fetched successfully:', jobs);
+          setUserJobs(jobs);
+        } else {
+          console.log('No jobs found for this user');
+          setUserJobs([]);
+        }
+      } catch (err) {
+        console.error('Error fetching user jobs:', err);
+      } finally {
+        setIsLoadingJobs(false);
+      }
+    }
+
+    fetchUserJobs();
+  }, [userData, userId]);
 
   // Example data for multiple review items with different content
   const reviewsData = [
@@ -445,9 +495,31 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
           <div className="p-4">
             {activeTab === "Order" && (
               <div className="flex flex-col divide-y divide-stroke-soft-200">
-                <OrderListItem />
-                <OrderListItem />
-                <OrderListItem />
+                {isLoadingJobs ? (
+                  // Loading skeleton for jobs
+                  <>
+                    <div className="py-4 animate-pulse">
+                      <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    </div>
+                    <div className="py-4 animate-pulse">
+                      <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                    </div>
+                  </>
+                ) : userJobs.length > 0 ? (
+                  // Display actual jobs
+                  userJobs.map((job) => (
+                    <OrderListItem key={job.id} job={job} />
+                  ))
+                ) : (
+                  // No jobs found
+                  <div className="py-6 text-center">
+                    <p className="text-gray-500">No orders found for this user.</p>
+                  </div>
+                )}
               </div>
             )}
             {activeTab === "Review" && (
