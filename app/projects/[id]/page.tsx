@@ -2,19 +2,21 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { RiHomeLine, RiNotification4Line } from '@remixicon/react';
+import { RiHomeLine, RiNotification4Line, RiBookmarkLine, RiSendPlaneLine, RiShareLine, RiFileCopyLine, RiArrowRightSLine } from '@remixicon/react';
+import * as Button from '@/components/ui/button';
+import * as Input from '@/components/ui/input';
 
-// Import extracted components
+// Import existing components
 import ClientProfileCard from '@/components/projects/detail/ClientProfileCard';
 import ProjectInfoCard from '@/components/projects/detail/ProjectInfoCard';
-import ApplicantsList from '@/components/projects/detail/ApplicantsList';
+import ApplicantsList from '@/components/projects/detail/ApplicantsList'; // Assuming this will be adapted for seller view
 import ProjectHeader from '@/components/projects/detail/ProjectHeader';
 import ProjectDetailsSection from '@/components/projects/detail/ProjectDetailsSection';
 import SkillsSection from '@/components/projects/detail/SkillsSection';
 import AttachmentsSection from '@/components/projects/detail/AttachmentsSection';
 import FaqSection from '@/components/projects/detail/FaqSection';
 
-// Mock data (kept for now, replace with actual fetching later)
+// --- Mock Data (Keep using existing data structure) ---
 const projectData = {
   id: '1',
   title: 'Write professional resume, cover letter',
@@ -30,7 +32,7 @@ const projectData = {
     'Mauris commodo quis imperdiet massa tincidunt nunc pulvinar',
   ],
   skills: ['Mixing', 'Singing', 'Jazz', 'Hip hop', 'K pop', 'Western Music'],
-  attachments: [{ name: 'Audio_Script.mp3', type: 'audio', size: '2.4 MB' }],
+  attachments: [{ name: 'test.wav', type: 'audio', size: '2.4 MB' }], // Updated attachment name
   faqs: [
     {
       question: 'How to join the project?',
@@ -64,29 +66,20 @@ const projectData = {
   },
   budget: '$140',
   releaseTime: '3h ago',
-  deadline: '28 Feb 2025',
+  deadline: '03.25.2025', // Updated deadline format
   proposals: 5,
   applicants: [
-    {
+    { // Simplified applicant structure for seller list
       id: '1',
       name: 'James Brown',
       avatar: 'https://via.placeholder.com/40',
       rating: 4.9,
       reviews: 125,
       time: '1m ago',
-      hired: true,
-      replacedBy: 'Arthur T.',
+      // Removed hired/replacedBy for initial seller view
     },
     {
       id: '2',
-      name: 'James Brown',
-      avatar: 'https://via.placeholder.com/40',
-      rating: 4.9,
-      reviews: 125,
-      time: '1m ago',
-    },
-    {
-      id: '3',
       name: 'Sophia Williams',
       avatar: 'https://via.placeholder.com/40',
       rating: 4.9,
@@ -94,8 +87,16 @@ const projectData = {
       time: '1m ago',
     },
     {
-      id: '4',
+      id: '3',
       name: 'Arthur Taylor',
+      avatar: 'https://via.placeholder.com/40',
+      rating: 4.9,
+      reviews: 125,
+      time: '1m ago',
+    },
+    {
+      id: '4',
+      name: 'Emma Wright',
       avatar: 'https://via.placeholder.com/40',
       rating: 4.9,
       reviews: 125,
@@ -109,50 +110,80 @@ const projectData = {
       reviews: 125,
       time: '1m ago',
     },
-    {
-      id: '6',
-      name: 'Emma Wright',
-      avatar: 'https://via.placeholder.com/40',
-      rating: 4.9,
-      reviews: 125,
-      time: '1m ago',
-    },
+    // Removed duplicate applicant
   ],
+  projectLink: 'https://www.google.com/', // Added placeholder link
 };
 
+// --- Placeholder Seller Components ---
+// These can be extracted into separate files in components/projects/detail later
+
+const SellerActionButtons = () => (
+  <div className="flex items-center gap-3 p-4 pt-0"> {/* Added padding adjustment */}
+    <Button.Root variant="neutral" mode="stroke" className="flex-1"> {/* Changed hierarchy to variant/mode */}
+      <Button.Icon><RiSendPlaneLine /></Button.Icon>
+      Message {/* Removed Button.Label */}
+    </Button.Root>
+    <Button.Root variant="primary" mode="filled" className="flex-1"> {/* Assuming primary filled for Apply */}
+      Apply {/* Removed Button.Label */}
+      {/* Arrow Icon if needed */}
+    </Button.Root>
+  </div>
+);
+
+const ProjectLinkCard = ({ link }: { link: string }) => (
+  <div className="shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4">
+    <label htmlFor="project-link" className="mb-2 block text-label-md font-medium text-text-strong-950">Link</label>
+    <Input.Root>
+      <Input.Wrapper>
+        <Input.Input id="project-link" readOnly value={link} />
+        {/* Place button inside wrapper, likely styled with absolute/padding by Input styles */}
+        <button
+          onClick={() => navigator.clipboard.writeText(link)}
+          className="text-icon-secondary-400 hover:text-icon-primary-500 p-1"
+          aria-label="Copy link"
+        >
+          <RiFileCopyLine className="size-5" />
+        </button>
+      </Input.Wrapper>
+    </Input.Root>
+  </div>
+);
+
+// --- Main Page Component ---
+
 // TODO: Fetch actual project data based on params.id
-// export default async function ProjectDetailPage({ params }: { params: { id: string } }) {
 export default function ProjectDetailPage() {
   // const projectData = await fetchProjectData(params.id); // Replace mock data
 
-  // Removed FAQ state logic (moved to FaqSection)
+  // Determine user role (hardcoded for now, replace with actual logic)
+  const userRole: 'buyer' | 'seller' = 'seller';
+  const isSeller = userRole === 'seller'; // Derived boolean for checks
 
   return (
     <div className='container mx-auto px-4 py-6 lg:px-8'>
       {/* Header with Breadcrumbs */}
       <div className='mb-6 flex items-center justify-between'>
         <div className='text-sm flex flex-wrap items-center gap-2'>
-          {' '}
-          {/* Added flex-wrap */}
           <Link
-            href='/projects'
+            href={!isSeller ? '/projects' : '/jobs'} // Use isSeller
             className='text-icon-secondary-400 hover:text-icon-primary-500'
           >
             <RiHomeLine className='size-4' />
           </Link>
           <span className='text-text-secondary-400'>/</span>
           <Link
-            href='/projects'
+            href={!isSeller ? '/projects' : '/jobs'} // Use isSeller
             className='text-text-secondary-600 hover:text-text-strong-950'
           >
-            Find Project
+            {!isSeller ? 'Find Project' : 'Find Works'}
           </Link>
           <span className='text-text-secondary-400'>/</span>
           <span className='font-medium text-text-strong-950'>
             Project Detail
           </span>
         </div>
-        {/* Removed notification button, likely part of a main layout */}
+        {/* Optional: Right side elements like notifications, can be part of main layout */}
       </div>
 
       {/* Main Content Grid */}
@@ -163,6 +194,7 @@ export default function ProjectDetailPage() {
             <ProjectHeader
               title={projectData.title}
               category={projectData.category}
+              showBookmark={isSeller} // Use isSeller
             />
             <ProjectDetailsSection
               description={projectData.description}
@@ -174,21 +206,43 @@ export default function ProjectDetailPage() {
           </div>
         </div>
 
-        {/* Right Sidebar */}
+        {/* Right Sidebar - Conditionally Rendered */}
         <div className='flex flex-col gap-6 md:col-span-4'>
-          {/* Combined Client and Info Card */}
-          <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
-            <ClientProfileCard client={projectData.client} />
-            <ProjectInfoCard
-              budget={projectData.budget}
-              releaseTime={projectData.releaseTime}
-              deadline={projectData.deadline}
-              proposals={projectData.proposals}
-            />
-          </div>
-
-          {/* Applicants List Card */}
-          <ApplicantsList applicants={projectData.applicants} />
+          {!isSeller ? ( // Use !isSeller for buyer view
+            // Buyer Sidebar Layout
+            <>
+              <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+                <ClientProfileCard client={projectData.client} />
+                <ProjectInfoCard
+                  budget={projectData.budget}
+                  releaseTime={projectData.releaseTime}
+                  deadline={projectData.deadline}
+                  proposals={projectData.proposals}
+                />
+                {/* Buyer sees action buttons within the list */}
+              </div>
+              <ApplicantsList applicants={projectData.applicants} userRole={userRole} />
+            </>
+          ) : (
+            // Seller Sidebar Layout
+            <>
+              <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+                <ClientProfileCard client={projectData.client} />
+                {/* Seller sees Info + Actions first */}
+                <ProjectInfoCard
+                  budget={projectData.budget}
+                  releaseTime={projectData.releaseTime}
+                  deadline={projectData.deadline}
+                  proposals={projectData.proposals}
+                />
+                <SellerActionButtons />
+              </div>
+              {/* Seller sees simplified list */}
+              <ApplicantsList applicants={projectData.applicants} userRole={userRole} />
+              {/* Seller sees Link Card */}
+              <ProjectLinkCard link={projectData.projectLink} />
+            </>
+          )}
         </div>
       </div>
     </div>
