@@ -125,6 +125,41 @@ export const userOperations = {
       return null;
     }
   },
+
+  // Get recent workers (sellers)
+  async getRecentWorkers(limit: number = 3): Promise<User[]> {
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('user_type', 'seller')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) {
+        console.error('Error fetching recent workers:', error);
+        return [];
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No workers found');
+        return [];
+      }
+
+      console.log(`Found ${data.length} recent workers`);
+
+      try {
+        const users = data.map((user) => UserSchema.parse(user));
+        return users;
+      } catch (err) {
+        console.error('Error parsing worker data:', err);
+        return [];
+      }
+    } catch (err) {
+      console.error('Unexpected error in getRecentWorkers:', err);
+      return [];
+    }
+  },
 };
 
 /**
@@ -237,17 +272,67 @@ export const jobOperations = {
 export const serviceOperations = {
   // Get all services
   async getAllServices(): Promise<Service[]> {
-    const { data, error } = await supabase
-      .from('services')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error || !data) return [];
-
     try {
-      return data.map((service) => ServiceSchema.parse(service));
+      // Extended query with join to get seller information
+      const { data, error } = await supabase
+        .from('services')
+        .select(
+          `
+          *,
+          seller:seller_id (
+            full_name,
+            username
+          )
+        `,
+        )
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase error fetching services:', error);
+        return [];
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No services found or empty array returned');
+        return [];
+      }
+
+      console.log(
+        'Raw services data from Supabase with seller info:',
+        data.length,
+        'services found',
+      );
+
+      // Process services one by one to avoid failing all if one fails
+      const validServices: Service[] = [];
+
+      for (const service of data) {
+        try {
+          // Extract seller info from the join result
+          const sellerInfo = service.seller || {};
+
+          // Ensure created_at is a string (some types might cause issues)
+          const processedService = {
+            ...service,
+            seller_name:
+              sellerInfo.full_name || sellerInfo.username || 'Unknown Seller',
+            created_at: service.created_at ? String(service.created_at) : null,
+          };
+
+          const parsedService = ServiceSchema.parse(processedService);
+          validServices.push(parsedService);
+        } catch (err) {
+          console.error(`Error validating service ${service.id}:`, err);
+          // Continue with next service instead of failing the whole array
+        }
+      }
+
+      console.log(
+        `Successfully processed ${validServices.length} out of ${data.length} services`,
+      );
+      return validServices;
     } catch (err) {
-      console.error('Invalid service data:', err);
+      console.error('Unexpected error in getAllServices:', err);
       return [];
     }
   },

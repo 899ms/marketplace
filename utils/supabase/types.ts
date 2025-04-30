@@ -45,7 +45,7 @@ export type Job = z.infer<typeof JobSchema>;
 
 // --- Service Additional Service Schema ---
 const AdditionalServiceSchema = z.object({
-  title: z.string(),
+  name: z.string(),
   price: z.number(),
   // add other fields if known structure
 });
@@ -53,18 +53,19 @@ const AdditionalServiceSchema = z.object({
 // --- Service Schema (maps to public.services) ---
 export const ServiceSchema = z.object({
   id: z.string().uuid(), // UUID primary key default uuid_generate_v4()
-  created_at: z.string().datetime().optional().nullable(), // TIMESTAMPTZ default NOW(), nullable
+  created_at: z.string().optional().nullable(), // TIMESTAMPTZ default NOW(), nullable
   title: z.string(), // TEXT NOT NULL
   description: z.string(), // TEXT NOT NULL
   price: z.number(), // NUMERIC NOT NULL
   seller_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
+  seller_name: z.string().optional(), // Added field from join query
   audio_url: z.string().url().nullable(), // TEXT, nullable
   tags: z.array(z.string()).optional().nullable(), // ARRAY (text[]) default '{}'::text[], nullable
   lead_time: z.number().int().default(7), // INTEGER NOT NULL DEFAULT 7
   includes: z.array(z.string()).optional().nullable(), // ARRAY (text[]) default '{}'::text[], nullable
   currency: z.string().default('CNY'), // TEXT NOT NULL DEFAULT 'CNY'
   images: z.array(BaseFileSchema).optional().nullable(), // JSONB default '[]'::jsonb, nullable
-  additional_services: z.array(AdditionalServiceSchema).optional().nullable(), // JSONB, nullable - Assuming structure or use z.record(z.any()) or z.unknown()
+  additional_services: z.array(AdditionalServiceSchema).optional().nullable(), // JSONB, nullable
 });
 export type Service = z.infer<typeof ServiceSchema>;
 
