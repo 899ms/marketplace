@@ -9,6 +9,7 @@ import * as Button from '@/components/ui/button';
 import * as Badge from '@/components/ui/badge';
 import * as Tag from '@/components/ui/tag';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
+import * as Notification from '@/components/ui/notification';
 import {
   RiStarFill,
   RiStarSFill,
@@ -214,7 +215,10 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
 };
 
 // Order List Item Component
-const OrderListItem = ({ job }: { job: Job }) => {
+const OrderListItem = ({ job, userType }: { job: Job; userType?: string }) => {
+  // State for notification
+  const [showNotification, setShowNotification] = useState(false);
+
   // Fixed placeholder tags 
   const placeholderTags = ['Mixing', 'Singing', 'Jazz'];
 
@@ -237,8 +241,16 @@ const OrderListItem = ({ job }: { job: Job }) => {
     }
   }
 
-  // Log the tags we're displaying for debugging
-  console.log('Displaying tags:', displayTags);
+  // Handle apply button click
+  const handleApply = () => {
+    console.log(`Applying for job: ${job.title} (ID: ${job.id})`);
+    setShowNotification(true);
+
+    // Auto-hide notification after 3 seconds
+    setTimeout(() => {
+      setShowNotification(false);
+    }, 3000);
+  };
 
   return (
     <div className='flex items-start justify-between gap-4 border-b border-stroke-soft-200 py-4'>
@@ -271,11 +283,30 @@ const OrderListItem = ({ job }: { job: Job }) => {
         <div className='mb-2 text-label-lg font-medium text-text-strong-950'>
           {getCurrencySymbol(job.currency)}{job.budget.toLocaleString()}
         </div>
-        <Button.Root variant='neutral' mode='stroke' size='small'>
-          Apply
-          <Button.Icon as={RiArrowRightSLine} />
-        </Button.Root>
+        {userType === 'seller' && (
+          <Button.Root
+            variant='neutral'
+            mode='stroke'
+            size='small'
+            onClick={handleApply}
+          >
+            Apply
+            <Button.Icon as={RiArrowRightSLine} />
+          </Button.Root>
+        )}
       </div>
+
+      {/* Success notification */}
+      {showNotification && (
+        <Notification.Root
+          status="success"
+          variant="filled"
+          title="Application Sent"
+          description={`You've successfully applied to "${job.title}". The buyer will contact you soon.`}
+          open={showNotification}
+          onOpenChange={setShowNotification}
+        />
+      )}
     </div>
   );
 };
@@ -458,80 +489,87 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
   }
 
   return (
-    <div className='flex flex-1 gap-6 px-6 pt-6'>
-      <UserSidebar userData={userData} />
-      <main className="flex-1">
-        {/* center everything horizontally */}
-        <div className="w-full lg:max-w-[1000px] mx-auto px-4 sm:px-6">
-          {/* tab bar */}
-          <div className="mb-6 border-t-0">
-            <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
-              <TabMenuHorizontal.List className="flex items-center gap-2 border-none">
-                <TabMenuHorizontal.Trigger
-                  value="Order"
-                  className="
-                    px-4 pb-2 text-label-lg font-medium 
-                    text-gray-400 
-                    data-[state=active]:text-black
-                  "
-                >
-                  Order
-                </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger
-                  value="Review"
-                  className="
-                    px-4 pb-2 text-label-lg font-medium 
-                    text-gray-400 
-                    data-[state=active]:text-black
-                  "
-                >
-                  Review
-                </TabMenuHorizontal.Trigger>
-              </TabMenuHorizontal.List>
-            </TabMenuHorizontal.Root>
-          </div>
+    <Notification.Provider>
+      <div className='flex flex-1 gap-6 px-6 pt-6'>
+        <UserSidebar userData={userData} />
+        <main className="flex-1">
+          {/* center everything horizontally */}
+          <div className="w-full lg:max-w-[1000px] mx-auto px-4 sm:px-6">
+            {/* tab bar */}
+            <div className="mb-6 border-t-0">
+              <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
+                <TabMenuHorizontal.List className="flex items-center gap-2 border-none">
+                  <TabMenuHorizontal.Trigger
+                    value="Order"
+                    className="
+                      px-4 pb-2 text-label-lg font-medium 
+                      text-gray-400 
+                      data-[state=active]:text-black
+                    "
+                  >
+                    Order
+                  </TabMenuHorizontal.Trigger>
+                  <TabMenuHorizontal.Trigger
+                    value="Review"
+                    className="
+                      px-4 pb-2 text-label-lg font-medium 
+                      text-gray-400 
+                      data-[state=active]:text-black
+                    "
+                  >
+                    Review
+                  </TabMenuHorizontal.Trigger>
+                </TabMenuHorizontal.List>
+              </TabMenuHorizontal.Root>
+            </div>
 
-          {/* content panel */}
-          <div className="p-4">
-            {activeTab === "Order" && (
-              <div className="flex flex-col divide-y divide-stroke-soft-200">
-                {isLoadingJobs ? (
-                  // Loading skeleton for jobs
-                  <>
-                    <div className="py-4 animate-pulse">
-                      <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+            {/* content panel */}
+            <div className="p-4">
+              {activeTab === "Order" && (
+                <div className="flex flex-col divide-y divide-stroke-soft-200">
+                  {isLoadingJobs ? (
+                    // Loading skeleton for jobs
+                    <>
+                      <div className="py-4 animate-pulse">
+                        <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                      </div>
+                      <div className="py-4 animate-pulse">
+                        <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+                      </div>
+                    </>
+                  ) : userJobs.length > 0 ? (
+                    // Display actual jobs
+                    userJobs.map((job) => (
+                      <OrderListItem
+                        key={job.id}
+                        job={job}
+                        userType={userData?.user_type}
+                      />
+                    ))
+                  ) : (
+                    // No jobs found
+                    <div className="py-6 text-center">
+                      <p className="text-gray-500">No orders found for this user.</p>
                     </div>
-                    <div className="py-4 animate-pulse">
-                      <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                      <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                    </div>
-                  </>
-                ) : userJobs.length > 0 ? (
-                  // Display actual jobs
-                  userJobs.map((job) => (
-                    <OrderListItem key={job.id} job={job} />
-                  ))
-                ) : (
-                  // No jobs found
-                  <div className="py-6 text-center">
-                    <p className="text-gray-500">No orders found for this user.</p>
-                  </div>
-                )}
-              </div>
-            )}
-            {activeTab === "Review" && (
-              <div className="flex flex-col divide-y divide-stroke-soft-200">
-                {reviewsData.map((review, i) => (
-                  <ReviewListItem key={i} />
-                ))}
-              </div>
-            )}
+                  )}
+                </div>
+              )}
+              {activeTab === "Review" && (
+                <div className="flex flex-col divide-y divide-stroke-soft-200">
+                  {reviewsData.map((review, i) => (
+                    <ReviewListItem key={i} />
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
-      </main>
-    </div>
+        </main>
+        <Notification.Viewport />
+      </div>
+    </Notification.Provider>
   );
 } 
