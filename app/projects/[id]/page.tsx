@@ -1,143 +1,121 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import { RiHomeLine, RiNotification4Line, RiBookmarkLine, RiSendPlaneLine, RiShareLine, RiFileCopyLine, RiArrowRightSLine } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 
+// Import Supabase functions and types
+import {
+  jobOperations,
+  userOperations,
+} from '@/utils/supabase/database';
+import type { Job, User, BaseFileData } from '@/utils/supabase/types'; // Import types
+import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
+
 // Import existing components
 import ClientProfileCard from '@/components/projects/detail/ClientProfileCard';
 import ProjectInfoCard from '@/components/projects/detail/ProjectInfoCard';
-import ApplicantsList from '@/components/projects/detail/ApplicantsList'; // Assuming this will be adapted for seller view
+import ApplicantsList from '@/components/projects/detail/ApplicantsList';
 import ProjectHeader from '@/components/projects/detail/ProjectHeader';
 import ProjectDetailsSection from '@/components/projects/detail/ProjectDetailsSection';
 import SkillsSection from '@/components/projects/detail/SkillsSection';
 import AttachmentsSection from '@/components/projects/detail/AttachmentsSection';
 import FaqSection from '@/components/projects/detail/FaqSection';
 
-// --- Mock Data (Keep using existing data structure) ---
-const projectData = {
-  id: '1',
-  title: 'Write professional resume, cover letter',
-  category: 'Business',
-  description: [
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Tellus augue sagittis erat consectetur est. Blandit blandit nec mauris pulvinar. Lectus duis amet tortor, sit tincidunt. Rhoncus tincidunt imperdiet penatibus vitae risus, vitae. Blandit auctor justo nisi massa.',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus dictum ultrices lacus sodales nunc felis eu, consectetur arcu. Vitae nulla scelerisque id pellentesque feugiat vel eu.',
-    'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Lectus dictum ultrices lacus sodales nunc felis eu, consectetur arcu. Vitae nulla scelerisque id pellentesque feugiat vel eu.',
-  ],
-  requirements: [
-    'Neque sodales ut etiam sit amet nisi purus. Non tellus orci ac auctor.',
-    'Adipiscing elit ut aliquam purus sit amet. Viverra suspendisse potenti nullam ac.',
-    'Mauris commodo quis imperdiet massa tincidunt nunc pulvinar',
-  ],
-  skills: ['Mixing', 'Singing', 'Jazz', 'Hip hop', 'K pop', 'Western Music'],
-  attachments: [{ name: 'test.wav', type: 'audio', size: '2.4 MB' }], // Updated attachment name
-  faqs: [
-    {
-      question: 'How to join the project?',
-      answer: '',
-      isOpen: false,
-    },
-    {
-      question: 'What requirements must be met to participate in the project?',
-      answer:
-        'Insert the accordion description here. It would look better as two lines of text.',
-      isOpen: false, // Default to closed
-    },
-    {
-      question:
-        'How long does it take to receive payment after project completion?',
-      answer: '',
-      isOpen: false,
-    },
-    {
-      question: 'What requirements must be met to participate in the project?',
-      answer: '',
-      isOpen: false,
-    },
-  ],
-  client: {
-    name: 'Cleve Music',
-    avatar: 'https://via.placeholder.com/100',
+// --- Mock Data (Keep for sections not yet implemented with real data) ---
+const mockFaqs = [
+  {
+    question: 'How to join the project?',
+    answer: '',
+    isOpen: false,
+  },
+  {
+    question: 'What requirements must be met to participate in the project?',
+    answer:
+      'Insert the accordion description here. It would look better as two lines of text.',
+    isOpen: false,
+  },
+  {
+    question:
+      'How long does it take to receive payment after project completion?',
+    answer: '',
+    isOpen: false,
+  },
+  {
+    question: 'What requirements must be met to participate in the project?',
+    answer: '',
+    isOpen: false,
+  },
+];
+
+const mockApplicants = [
+  {
+    id: '1',
+    name: 'James Brown',
+    avatar: 'https://via.placeholder.com/40',
     rating: 4.9,
     reviews: 125,
-    isVerified: true,
+    time: '1m ago',
   },
-  budget: '$140',
-  releaseTime: '3h ago',
-  deadline: '03.25.2025', // Updated deadline format
-  proposals: 5,
-  applicants: [
-    { // Simplified applicant structure for seller list
-      id: '1',
-      name: 'James Brown',
-      avatar: 'https://via.placeholder.com/40',
-      rating: 4.9,
-      reviews: 125,
-      time: '1m ago',
-      // Removed hired/replacedBy for initial seller view
-    },
-    {
-      id: '2',
-      name: 'Sophia Williams',
-      avatar: 'https://via.placeholder.com/40',
-      rating: 4.9,
-      reviews: 125,
-      time: '1m ago',
-    },
-    {
-      id: '3',
-      name: 'Arthur Taylor',
-      avatar: 'https://via.placeholder.com/40',
-      rating: 4.9,
-      reviews: 125,
-      time: '1m ago',
-    },
-    {
-      id: '4',
-      name: 'Emma Wright',
-      avatar: 'https://via.placeholder.com/40',
-      rating: 4.9,
-      reviews: 125,
-      time: '1m ago',
-    },
-    {
-      id: '5',
-      name: 'Emma Wright',
-      avatar: 'https://via.placeholder.com/40',
-      rating: 4.9,
-      reviews: 125,
-      time: '1m ago',
-    },
-    // Removed duplicate applicant
-  ],
-  projectLink: 'https://www.google.com/', // Added placeholder link
-};
+  {
+    id: '2',
+    name: 'Sophia Williams',
+    avatar: 'https://via.placeholder.com/40',
+    rating: 4.9,
+    reviews: 125,
+    time: '1m ago',
+  },
+  {
+    id: '3',
+    name: 'Arthur Taylor',
+    avatar: 'https://via.placeholder.com/40',
+    rating: 4.9,
+    reviews: 125,
+    time: '1m ago',
+  },
+  {
+    id: '4',
+    name: 'Emma Wright',
+    avatar: 'https://via.placeholder.com/40',
+    rating: 4.9,
+    reviews: 125,
+    time: '1m ago',
+  },
+  {
+    id: '5',
+    name: 'Emma Wright',
+    avatar: 'https://via.placeholder.com/40',
+    rating: 4.9,
+    reviews: 125,
+    time: '1m ago',
+  },
+];
 
 // --- Placeholder Seller Components ---
-// These can be extracted into separate files in components/projects/detail later
-
 const SellerActionButtons = () => (
-  <div className="flex items-center gap-3 p-4 pt-0"> {/* Added padding adjustment */}
-    <Button.Root variant="neutral" mode="stroke" className="flex-1"> {/* Changed hierarchy to variant/mode */}
+  <div className="flex items-center gap-3 p-4 pt-0 border-t border-stroke-soft-200 mt-4">
+    <Button.Root variant="neutral" mode="stroke" className="flex-1">
       <Button.Icon><RiSendPlaneLine /></Button.Icon>
-      Message {/* Removed Button.Label */}
+      Message
     </Button.Root>
-    <Button.Root variant="primary" mode="filled" className="flex-1"> {/* Assuming primary filled for Apply */}
-      Apply {/* Removed Button.Label */}
-      {/* Arrow Icon if needed */}
+    <Button.Root variant="neutral" mode="filled" className="flex-1">
+      Apply
+      <Button.Icon><RiArrowRightSLine /></Button.Icon>
     </Button.Root>
   </div>
 );
 
+// NOTE: ProjectLinkCard requires a link - Job schema doesn't have one.
+// Using a placeholder for now.
 const ProjectLinkCard = ({ link }: { link: string }) => (
   <div className="shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4">
     <label htmlFor="project-link" className="mb-2 block text-label-md font-medium text-text-strong-950">Link</label>
     <Input.Root>
       <Input.Wrapper>
         <Input.Input id="project-link" readOnly value={link} />
-        {/* Place button inside wrapper, likely styled with absolute/padding by Input styles */}
         <button
           onClick={() => navigator.clipboard.writeText(link)}
           className="text-icon-secondary-400 hover:text-icon-primary-500 p-1"
@@ -152,13 +130,118 @@ const ProjectLinkCard = ({ link }: { link: string }) => (
 
 // --- Main Page Component ---
 
-// TODO: Fetch actual project data based on params.id
 export default function ProjectDetailPage() {
-  // const projectData = await fetchProjectData(params.id); // Replace mock data
+  const { id: projectId } = useParams<{ id: string }>(); // Get project ID from route
+  const authContext = useAuth();
 
-  // Determine user role (hardcoded for now, replace with actual logic)
-  const userRole: 'buyer' | 'seller' = 'seller';
-  const isSeller = userRole === 'seller'; // Derived boolean for checks
+  // State for fetched data
+  const [projectDataState, setProjectDataState] = useState<Job | null>(null);
+  const [clientDataState, setClientDataState] = useState<User | null>(null);
+  const [userRole, setUserRole] = useState<'buyer' | 'seller' | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!projectId || authContext.loading) return; // Wait for ID and auth loading
+
+    const fetchData = async () => {
+      setIsLoading(true);
+      setError(null);
+      setProjectDataState(null); // Clear previous data
+      setClientDataState(null);
+      setUserRole(null);
+
+      try {
+        // 1. Fetch Job data
+        const jobData = await jobOperations.getJobById(projectId);
+        if (!jobData) {
+          throw new Error('Project not found.');
+        }
+        setProjectDataState(jobData);
+
+        // 2. Fetch Client (Buyer) data
+        const clientData = await userOperations.getUserById(jobData.buyer_id);
+        if (!clientData) {
+          // Handle case where client data might be missing but job exists
+          console.warn(`Client data not found for buyer ID: ${jobData.buyer_id}`);
+          // Proceed without client data if needed, or throw error
+          // throw new Error('Client not found.');
+        }
+        setClientDataState(clientData);
+
+        // 3. Determine User Role
+        if (authContext.user) {
+          const role = authContext.user.id === jobData.buyer_id ? 'buyer' : 'seller';
+          setUserRole(role);
+        } else {
+          setUserRole('seller'); // Default to seller view if not logged in
+        }
+
+      } catch (err: any) {
+        console.error('Error fetching project details:', err);
+        setError(err.message || 'Failed to load project details.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+
+  }, [projectId, authContext.user?.id, authContext.loading]); // Re-run if ID or user changes
+
+  // Derived boolean for cleaner conditional rendering
+  const isSeller = userRole === 'seller';
+
+  // --- Render Logic ---
+  if (isLoading) {
+    return (
+      <div className="container mx-auto px-4 py-6 lg:px-8 text-center">
+        Loading project details...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-6 lg:px-8 text-center text-red-600">
+        Error: {error}
+      </div>
+    );
+  }
+
+  if (!projectDataState) {
+    // This case might occur if fetchData completes but projectData is null (e.g., not found)
+    return (
+      <div className="container mx-auto px-4 py-6 lg:px-8 text-center">
+        Project could not be loaded.
+      </div>
+    );
+  }
+
+  // Prepare data for child components, handling missing fields
+  const projectTitle = projectDataState.title ?? 'Untitled Project';
+  // Map usage_option or use default - check JobSchema for exact field/values
+  const projectCategory = projectDataState.usage_option === 'business' ? 'Business' : 'Private';
+  const projectDescription = projectDataState.description ? [projectDataState.description] : []; // Wrap in array if needed
+  // const projectRequirements = []; // Requirements field is not in JobSchema
+  const projectSkills = projectDataState.skill_levels ?? [];
+  // Adapt attachment structure if BaseFileData doesn't match AttachmentsSection expectation
+  const projectAttachments = (projectDataState.files ?? []).map(file => ({ name: file.name, type: 'file', size: `${(file.size / (1024 * 1024)).toFixed(1)} MB` }));
+
+  const clientName = clientDataState?.full_name ?? 'Unknown Client';
+  const clientAvatar = clientDataState?.avatar_url ?? 'https://via.placeholder.com/100'; // Placeholder avatar
+  // Rating, Reviews, isVerified are not in UserSchema - use placeholders
+  const clientRating = 4.9; // Placeholder
+  const clientReviews = 125; // Placeholder
+  const clientIsVerified = true; // Placeholder
+
+  const projectBudget = `$${projectDataState.budget ?? 0}`;
+  // Derive Release Time (Example: using raw date for now)
+  const projectReleaseTime = projectDataState.created_at ? new Date(projectDataState.created_at).toLocaleDateString() : 'N/A';
+  const projectDeadline = projectDataState.deadline ?? 'N/A';
+  const projectProposals = 5; // Placeholder - not in JobSchema
+  const projectLink = 'https://www.example.com'; // Placeholder - not in JobSchema
+
 
   return (
     <div className='container mx-auto px-4 py-6 lg:px-8'>
@@ -166,14 +249,14 @@ export default function ProjectDetailPage() {
       <div className='mb-6 flex items-center justify-between'>
         <div className='text-sm flex flex-wrap items-center gap-2'>
           <Link
-            href={!isSeller ? '/projects' : '/jobs'} // Use isSeller
+            href={!isSeller ? '/projects' : '/jobs'}
             className='text-icon-secondary-400 hover:text-icon-primary-500'
           >
             <RiHomeLine className='size-4' />
           </Link>
           <span className='text-text-secondary-400'>/</span>
           <Link
-            href={!isSeller ? '/projects' : '/jobs'} // Use isSeller
+            href={!isSeller ? '/projects' : '/jobs'}
             className='text-text-secondary-600 hover:text-text-strong-950'
           >
             {!isSeller ? 'Find Project' : 'Find Works'}
@@ -192,55 +275,65 @@ export default function ProjectDetailPage() {
         <div className='md:col-span-8'>
           <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
             <ProjectHeader
-              title={projectData.title}
-              category={projectData.category}
-              showBookmark={isSeller} // Use isSeller
+              title={projectTitle}
+              category={projectCategory}
+              showBookmark={isSeller}
             />
             <ProjectDetailsSection
-              description={projectData.description}
-              requirements={projectData.requirements}
+              description={projectDescription}
+              requirements={[]} // Pass empty array as requirements are not fetched
             />
-            <SkillsSection skills={projectData.skills} />
-            <AttachmentsSection attachments={projectData.attachments} />
-            <FaqSection initialFaqs={projectData.faqs} />
+            <SkillsSection skills={projectSkills} />
+            <AttachmentsSection attachments={projectAttachments} />
+            <FaqSection initialFaqs={mockFaqs} /> {/* Use mock FAQs */}
           </div>
         </div>
 
         {/* Right Sidebar - Conditionally Rendered */}
         <div className='flex flex-col gap-6 md:col-span-4'>
-          {!isSeller ? ( // Use !isSeller for buyer view
+          {!isSeller ? (
             // Buyer Sidebar Layout
             <>
               <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
-                <ClientProfileCard client={projectData.client} />
+                <ClientProfileCard client={{
+                  name: clientName,
+                  avatar: clientAvatar,
+                  rating: clientRating,
+                  reviews: clientReviews,
+                  isVerified: clientIsVerified
+                }} />
                 <ProjectInfoCard
-                  budget={projectData.budget}
-                  releaseTime={projectData.releaseTime}
-                  deadline={projectData.deadline}
-                  proposals={projectData.proposals}
+                  budget={projectBudget}
+                  releaseTime={projectReleaseTime}
+                  deadline={projectDeadline}
+                  proposals={projectProposals} // Use placeholder
                 />
-                {/* Buyer sees action buttons within the list */}
               </div>
-              <ApplicantsList applicants={projectData.applicants} userRole={userRole} />
+              {/* Pass userRole which is 'buyer' here */}
+              <ApplicantsList applicants={mockApplicants} userRole={'buyer'} />
             </>
           ) : (
             // Seller Sidebar Layout
             <>
               <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
-                <ClientProfileCard client={projectData.client} />
-                {/* Seller sees Info + Actions first */}
+                <ClientProfileCard client={{
+                  name: clientName,
+                  avatar: clientAvatar,
+                  rating: clientRating, // Placeholder
+                  reviews: clientReviews, // Placeholder
+                  isVerified: clientIsVerified // Placeholder
+                }} />
                 <ProjectInfoCard
-                  budget={projectData.budget}
-                  releaseTime={projectData.releaseTime}
-                  deadline={projectData.deadline}
-                  proposals={projectData.proposals}
+                  budget={projectBudget}
+                  releaseTime={projectReleaseTime}
+                  deadline={projectDeadline}
+                  proposals={projectProposals} // Use placeholder
                 />
                 <SellerActionButtons />
               </div>
-              {/* Seller sees simplified list */}
-              <ApplicantsList applicants={projectData.applicants} userRole={userRole} />
-              {/* Seller sees Link Card */}
-              <ProjectLinkCard link={projectData.projectLink} />
+              {/* Pass userRole which is 'seller' here */}
+              <ApplicantsList applicants={mockApplicants} userRole={'seller'} />
+              <ProjectLinkCard link={projectLink} /> {/* Use placeholder link */}
             </>
           )}
         </div>
