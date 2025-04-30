@@ -77,11 +77,13 @@ export const ContractSchema = z
     seller_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
     job_id: z.string().uuid().nullable(), // UUID REFERENCES jobs(id), nullable
     service_id: z.string().uuid().nullable(), // UUID REFERENCES services(id), nullable
+    title: z.string(), // Added: TEXT NOT NULL
+    contract_type: z.enum(['one-time', 'installment']), // Added: TEXT NOT NULL (Assuming these values)
     status: z
       .enum(['pending', 'accepted', 'rejected', 'completed'])
       .optional()
       .nullable(), // TEXT default 'pending' CHECK, nullable
-    amount: z.number(), // NUMERIC NOT NULL
+    amount: z.number(), // NUMERIC NOT NULL (Total amount)
     description: z.string(), // TEXT NOT NULL
     attachments: z.array(BaseFileSchema).optional().nullable(), // JSONB, nullable - Assuming structure like job files
     currency: z.string().length(3).default('USD'), // TEXT NOT NULL DEFAULT 'USD' (Assuming 3-letter codes)
@@ -110,7 +112,15 @@ export const MessageSchema = z.object({
   sender_id: z.string(),
   content: z.string().nullable(), // Allow content to be nullable if message is just an image/offer etc.
   message_type: z
-    .enum(['text', 'image', 'offer', 'milestone', 'system_event']) // Removed 'message'
+    .enum([
+      'text',
+      'image',
+      'offer',
+      'milestone',
+      'system_event',
+      'milestone_activated',
+      'milestone_completed',
+    ]) // Added new types
     .nullable()
     .default('text'),
   data: z.any().nullable().optional(), // Revert to z.any() for flexibility with different data structures

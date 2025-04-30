@@ -119,24 +119,54 @@ function ChatMessageRenderer({
     );
   };
 
-  const renderOfferMessage = () => {
-    const offerData = message.data as any;
+  const renderOfferMessage = (isCurrentUser: boolean) => {
+    // Define a type for the offer data structure for better type safety
+    interface OfferMessageData {
+      title: string;
+      description?: string;
+      price: number;
+      currency: string;
+      deliveryTime?: string | null; // Can be null if formatting failed or no date
+      contractId: string;
+    }
+
+    const offerData = message.data as OfferMessageData | null;
     if (!offerData) return <p className='italic text-xs text-gray-500'>[Offer data missing]</p>;
+
+    const truncatedDescription = offerData.description
+      ? (offerData.description.length > 80 ? offerData.description.substring(0, 80) + '...' : offerData.description)
+      : 'No description provided.';
+
+    // Determine if the current viewer is the recipient (seller)
+    const isRecipient = !isCurrentUser;
 
     return (
       <div className="border rounded-lg p-4 max-w-xs w-full bg-white dark:bg-gray-800 shadow-sm">
-        <div className="flex justify-between items-start mb-2">
-          <h4 className="font-semibold text-base">{offerData.title || "Offer"}</h4>
-          <span className="font-bold text-lg text-blue-600 dark:text-blue-400">{offerData.currency || 'US$'}{offerData.price || '0'}</span>
+        {/* Top section: Title and Price */}
+        <div className="flex justify-between items-center mb-3">
+          <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate pr-2" title={offerData.title}>{offerData.title || "Offer"}</h4>
+          <span className="font-bold text-sm text-gray-700 dark:text-gray-300 flex-shrink-0">{offerData.currency || 'US$'}{offerData.price?.toFixed(2) || '0.00'}</span>
         </div>
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{offerData.description || 'No description.'}</p>
+
+        {/* Description */}
+        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{truncatedDescription}</p>
+
+        {/* Delivery Time Section */}
+        <p className="text-xs font-medium text-gray-800 dark:text-gray-200 mb-1">Your offer includes</p>
         <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-4">
-          <Clock size={14} className="mr-1.5" /> Your offer includes {offerData.deliveryTime || '?'} Days Delivery
+          <Clock size={14} className="mr-1.5 flex-shrink-0" />
+          <span>{offerData.deliveryTime || 'Delivery time not specified'}</span>
         </div>
-        <div className="flex justify-end space-x-2">
-          <Button variant="neutral" mode="stroke" size="small">Decline</Button>
-          <Button variant="primary" mode="filled" size="small">Accept</Button>
-        </div>
+
+        {/* Action Buttons - Only show for the recipient (seller) */}
+        {isRecipient && (
+          <div className="flex justify-end space-x-2">
+            <Button variant="neutral" mode="stroke" size="small">Decline</Button>
+            <Button variant="primary" mode="filled" size="small">Accept</Button>
+          </div>
+        )}
+
+        {/* Display content (comment) below offer if it exists */}
         {message.content && <p className="text-sm mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">{message.content}</p>}
       </div>
     );
@@ -184,7 +214,7 @@ function ChatMessageRenderer({
       contentElement = renderImageMessage();
       break;
     case 'offer':
-      contentElement = renderOfferMessage();
+      contentElement = renderOfferMessage(isCurrentUser);
       break;
     case 'milestone':
       contentElement = renderMilestoneMessage();
