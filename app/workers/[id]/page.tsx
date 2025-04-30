@@ -8,7 +8,7 @@ import { ServiceCard } from '@/components/worker/profile/service-card';
 import { WorkItem } from '@/components/worker/profile/work-item';
 import { ReviewItem } from '@/components/worker/profile/review-item';
 import { AboutSection } from '@/components/worker/profile/AboutSection';
-import { RiUploadCloud2Line } from '@remixicon/react';
+import { RiArrowUpCircleLine, RiUploadCloud2Line } from '@remixicon/react';
 
 // Mock data for the worker profile
 const workerData = {
@@ -152,12 +152,35 @@ export default function WorkerDetailPage() {
             <AboutSection about={worker.about.description} />
 
             {/* 1) Work */}
-            <h3 className="inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Work</h3>
-            <div className='divide-y divide-stroke-soft-200'>
+            <div className="mt-8 flex items-center justify-between">
+              <h3 className="text-xl sm:text-xl font-semibold text-text-strong-950 pb-1 border-b-2 border-text-strong-950">
+                Work
+              </h3>
+              <button
+                className="
+                  flex items-center justify-center gap-[2px]
+                  w-[90px] h-[32px]
+                  rounded-lg
+                  shadow-[0_1px_2px_rgba(27,28,29,0.48),0_0_0_1px_#242628]
+                "
+                style={{
+                  background:
+                    'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%), #20232D'
+                }}
+                onClick={() => setIsUploadModalOpen(true)}
+              >
+                <RiArrowUpCircleLine className="size-5 text-white" />
+                <span className="text-[14px] font-medium leading-5 text-white">
+                  Upload
+                </span>
+              </button>
+            </div>
+            <div className="divide-y divide-stroke-soft-200">
               {worker.workItems.map((item, i) => (
                 <WorkItem key={i} item={item} />
               ))}
             </div>
+
 
             {/* 2) Services */}
             <h3 className="inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Service</h3>
