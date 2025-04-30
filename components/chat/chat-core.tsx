@@ -67,6 +67,15 @@ interface ChatMessageRendererProps {
   senderName: string;
 }
 
+// Define type for milestone event data structure
+interface MilestoneEventData {
+  milestoneSequence?: number;
+  milestoneDescription: string;
+  amount?: number | null;
+  currency?: string | null;
+  contractId?: string | null;
+}
+
 function ChatMessageRenderer({
   message,
   isCurrentUser,
@@ -172,17 +181,34 @@ function ChatMessageRenderer({
     );
   };
 
-  const renderMilestoneMessage = () => {
-    const milestoneData = message.data as any;
-    if (!milestoneData) return <p className='italic text-xs text-gray-500'>[Milestone data missing]</p>;
+  const renderMilestoneEventMessage = () => {
+    const eventData = message.data as MilestoneEventData | null;
+    if (!eventData) return <p className='italic text-xs text-gray-500'>[Milestone data missing]</p>;
+
+    // Truncate description
+    const truncatedDescription = eventData.milestoneDescription
+      ? (eventData.milestoneDescription.length > 40 ? eventData.milestoneDescription.substring(0, 40) + '...' : eventData.milestoneDescription)
+      : 'Milestone details';
+
     return (
-      <div className="border rounded-lg p-3 max-w-xs w-full bg-white dark:bg-gray-800 shadow-sm">
-        <h4 className="font-medium text-sm mb-1">{milestoneData.title || "Milestone"}</h4>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mb-2">Amount: {milestoneData.currency || '$'}{milestoneData.amount || '0.00'}</p>
+      // Styling similar to the image: light background, rounded corners
+      <div className="border rounded-lg p-3 max-w-xs w-full bg-gray-50 dark:bg-gray-700/50 shadow-sm">
+        <h4 className="font-medium text-sm mb-1 text-gray-800 dark:text-gray-200">
+          {eventData.milestoneSequence ? `Milestone ${eventData.milestoneSequence}: ` : ''}
+          &quot;{truncatedDescription}&quot;
+        </h4>
+        {eventData.amount !== null && eventData.amount !== undefined && (
+          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
+            Amount: {eventData.currency || '$'}{eventData.amount.toFixed(2)}
+          </p>
+        )}
+        {/* Assuming contract link comes from data or needs construction */}
         <LinkButton asChild variant="primary" size="small" className="p-0 h-auto">
-          <a href={milestoneData.contractLink || '#'}>View contract</a>
+          {/* TODO: Construct actual contract link based on eventData.contractId */}
+          <a href={eventData.contractId ? `/contracts/${eventData.contractId}` : '#'} target="_blank" rel="noopener noreferrer">
+            View contract
+          </a>
         </LinkButton>
-        {message.content && <p className="text-sm mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">{message.content}</p>}
       </div>
     );
   };
@@ -205,6 +231,8 @@ function ChatMessageRenderer({
   };
 
   let contentElement;
+  let preContentText: string | null = null; // Text to show above the main content bubble/card
+
   if (message.message_type === 'system_event') {
     return renderSystemEventMessage();
   }
@@ -216,8 +244,17 @@ function ChatMessageRenderer({
     case 'offer':
       contentElement = renderOfferMessage(isCurrentUser);
       break;
-    case 'milestone':
-      contentElement = renderMilestoneMessage();
+    case 'milestone_activated':
+      preContentText = "Activated the milestone"; // Text above card
+      contentElement = renderMilestoneEventMessage();
+      break;
+    case 'milestone_completed':
+      preContentText = "Completed the milestone"; // Text above card
+      contentElement = renderMilestoneEventMessage();
+      break;
+    case 'milestone': // Keep old 'milestone' type for now, maybe render similarly?
+      console.warn("Handling legacy 'milestone' type, consider migrating data/logic.");
+      contentElement = renderMilestoneEventMessage(); // Or a specific legacy handler
       break;
     case 'text':
     case null:
@@ -226,27 +263,30 @@ function ChatMessageRenderer({
       contentElement = renderTextMessage();
   }
 
+  // Render the standard message structure
   return (
     <div className={`flex flex-col w-full ${alignmentClass}`}>
+      {/* Render text above the main content if needed */}
+      {preContentText && (
+        <p className={`text-xs text-gray-500 dark:text-gray-400 mb-1 ${textAlignClass}`}>
+          {preContentText}
+        </p>
+      )}
       <div className={`flex gap-2 ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        {/* Avatars */}
         {!isCurrentUser && (
           <Avatar size="24" className="mt-auto mb-2 self-end">
-            <AvatarImage
-              src={senderProfile?.avatar_url ?? undefined}
-              alt={senderProfile?.username ?? 'User'}
-            />
+            <AvatarImage src={senderProfile?.avatar_url ?? undefined} alt={senderProfile?.username ?? 'User'} />
           </Avatar>
         )}
-        {contentElement}
+        {contentElement} {/* Render the determined element */}
         {isCurrentUser && (
           <Avatar size="24" className="mt-auto mb-2 self-end">
-            <AvatarImage
-              src={senderProfile?.avatar_url ?? undefined}
-              alt={senderProfile?.username ?? 'User'}
-            />
+            <AvatarImage src={senderProfile?.avatar_url ?? undefined} alt={senderProfile?.username ?? 'User'} />
           </Avatar>
         )}
       </div>
+      {/* Timestamp */}
       <p className={`text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 ${isCurrentUser ? 'text-right mr-8' : 'text-left ml-8'}`}>
         {senderName} {timestamp}
       </p>
