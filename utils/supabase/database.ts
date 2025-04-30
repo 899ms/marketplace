@@ -406,6 +406,89 @@ export const jobOperations = {
       return null;
     }
   },
+
+  // Get jobs with pagination and filtering
+  async getJobsWithPagination({
+    limit = 9,
+    offset = 0,
+    searchTerm = '',
+    skills = [], // Changed from skill_levels to skills for consistency
+    budgetRange = null,
+    sortBy = 'created_at',
+    sortOrder = 'desc',
+  }: {
+    limit?: number;
+    offset?: number;
+    searchTerm?: string;
+    skills?: string[];
+    budgetRange?: [number, number] | null;
+    sortBy?: string;
+    sortOrder?: 'asc' | 'desc';
+  } = {}): Promise<{ jobs: Job[]; total: number }> {
+    try {
+      let query = supabase.from('jobs').select('*', { count: 'exact' });
+
+      // Apply search term filter if provided (search in title or description)
+      if (searchTerm && searchTerm.trim() !== '') {
+        query = query.or(
+          `title.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`,
+        );
+      }
+
+      // Apply skills filter if provided
+      if (skills && skills.length > 0) {
+        // Assuming 'skill_levels' is the correct column name in your 'jobs' table
+        query = query.overlaps('skill_levels', skills);
+      }
+
+      // Apply budget range filter if provided
+      if (budgetRange && budgetRange.length === 2) {
+        const [minBudget, maxBudget] = budgetRange;
+        query = query.gte('budget', minBudget).lte('budget', maxBudget);
+      }
+
+      // Apply sorting
+      query = query.order(sortBy, { ascending: sortOrder === 'asc' });
+
+      // Apply pagination
+      query = query.range(offset, offset + limit - 1);
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        console.error('Supabase error fetching jobs:', error);
+        return { jobs: [], total: 0 };
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No jobs found or empty array returned');
+        return { jobs: [], total: 0 };
+      }
+
+      console.log(`Found ${data.length} jobs with pagination`);
+
+      // Process jobs one by one
+      const validJobs: Job[] = [];
+
+      for (const job of data) {
+        try {
+          const parsedJob = JobSchema.parse(job);
+          validJobs.push(parsedJob);
+        } catch (err) {
+          console.error(`Error validating job ${job.id}:`, err);
+          // Continue with next job
+        }
+      }
+
+      return {
+        jobs: validJobs,
+        total: count || validJobs.length,
+      };
+    } catch (err) {
+      console.error('Unexpected error in getJobsWithPagination:', err);
+      return { jobs: [], total: 0 };
+    }
+  },
 };
 
 /**

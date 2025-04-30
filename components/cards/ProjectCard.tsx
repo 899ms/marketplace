@@ -3,9 +3,10 @@
 import React from 'react';
 import * as Avatar from '@/components/ui/avatar';
 import * as Tag from '@/components/ui/tag';
-import * as Button from '@/components/ui/button'; // Import as namespace
+import * as Button from '@/components/ui/button';
 import { RiStarFill, RiArrowRightSLine } from '@remixicon/react';
 import { cn } from '@/utils/cn';
+import { useNotification, notification as notify } from '@/hooks/use-notification';
 
 // --- Interfaces --- //
 interface ProjectInfoBadge {
@@ -26,8 +27,9 @@ interface ProjectCardProps {
   description: string;
   client: ClientInfo;
   budget: number;
-  onApply?: () => void; // Optional handler for apply button
+  onApply?: () => void;
   className?: string;
+  projectId?: string;
 }
 
 // --- Project Card Component --- //
@@ -40,7 +42,23 @@ export function ProjectCard({
   budget,
   onApply,
   className,
+  projectId,
 }: ProjectCardProps) {
+  const handleApplyClick = () => {
+    if (onApply) {
+      onApply();
+    }
+
+    notify({
+      status: 'success',
+      title: 'Application Sent!',
+      description: `Successfully applied to project: ${title}`,
+      duration: 5000,
+    });
+
+    console.log('Apply button clicked for project ID:', projectId);
+  };
+
   return (
     <div
       className={cn(
@@ -106,17 +124,18 @@ export function ProjectCard({
               ${budget.toLocaleString()}
             </p>
           </div>
-          {onApply && (
-            <Button.Root
-              variant='neutral'
-              size='small'
-              className='mt-auto w-full md:w-auto'
-              onClick={onApply}
-            >
-              Apply
-              <RiArrowRightSLine className='ml-1 size-4' />
-            </Button.Root>
-          )}
+          <Button.Root
+            variant='neutral'
+            mode='stroke'
+            size='small'
+            className={cn(
+              'mt-auto w-full md:w-auto',
+            )}
+            onClick={handleApplyClick}
+          >
+            Apply
+            <RiArrowRightSLine className='ml-1 size-4' />
+          </Button.Root>
         </div>
       </div>
     </div>

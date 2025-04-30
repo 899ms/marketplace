@@ -16,8 +16,8 @@ import ServiceFilterSidebar from '@/components/services/list/ServiceFilterSideba
 import { ServiceSearchBar } from '@/components/services/list/ServiceSearchBar';
 import { ProjectSearchBar } from '@/components/services/list/ProjectSearchBar';
 import WorkerProfileDrawer from '@/components/worker/WorkerProfileDrawer';
-import { serviceOperations, userOperations } from '@/utils/supabase/database';
-import { Service, User } from '@/utils/supabase/types';
+import { serviceOperations, userOperations, jobOperations } from '@/utils/supabase/database';
+import { Service, User, Job } from '@/utils/supabase/types';
 
 // Define the possible tab values
 type ActiveTabValue = 'Service' | 'Worker' | 'Project';
@@ -41,8 +41,21 @@ export default function ServicesSearchPage() {
   // Define default filters state for workers
   const defaultWorkerFilters = {
     searchTerm: '',
+    skills: [] as string[], // Note: skills filter is not implemented in DB query yet
     isAvailable: false,
     isProfessional: false,
+    sortBy: 'created_at' as string,
+    sortOrder: 'desc' as 'asc' | 'desc',
+  };
+
+  // Define default filters state for projects
+  const defaultProjectFilters = {
+    searchTerm: '',
+    skills: [] as string[],
+    budgetRange: null as [number, number] | null,
+    deadline: null as string | null,
+    purpose: null as string | null,
+    postingDate: null as string | null,
     sortBy: 'created_at' as string,
     sortOrder: 'desc' as 'asc' | 'desc',
   };
@@ -60,6 +73,13 @@ export default function ServicesSearchPage() {
   const [workerIsLoading, setWorkerIsLoading] = useState(true);
   const [workerPage, setWorkerPage] = useState(1);
   const [workerFilters, setWorkerFilters] = useState(defaultWorkerFilters);
+
+  // Project data state
+  const [projects, setProjects] = useState<Job[]>([]);
+  const [totalProjects, setTotalProjects] = useState(0);
+  const [projectIsLoading, setProjectIsLoading] = useState(true);
+  const [projectPage, setProjectPage] = useState(1);
+  const [projectFilters, setProjectFilters] = useState(defaultProjectFilters);
 
   const [resetKey, setResetKey] = useState(0);
   const itemsPerPage = 9;
@@ -115,13 +135,14 @@ export default function ServicesSearchPage() {
         const offset = (workerPage - 1) * itemsPerPage;
 
         // Extract filters for query
-        const { searchTerm, isAvailable, isProfessional, sortBy, sortOrder } = workerFilters;
+        const { searchTerm, skills, isAvailable, isProfessional, sortBy, sortOrder } = workerFilters;
 
         // Fetch workers with all filters
         const result = await userOperations.getWorkersWithPagination({
           limit: itemsPerPage,
           offset,
           searchTerm,
+          skills,
           isAvailable,
           isProfessional,
           sortBy,
@@ -142,6 +163,43 @@ export default function ServicesSearchPage() {
     loadWorkers();
   }, [activeTab, workerPage, workerFilters]);
 
+  // Fetch projects with current filters and pagination
+  useEffect(() => {
+    if (activeTab !== 'Project') return;
+
+    async function loadProjects() {
+      setProjectIsLoading(true);
+      try {
+        const offset = (projectPage - 1) * itemsPerPage;
+
+        // Extract filters for query
+        const { searchTerm, skills, budgetRange, sortBy, sortOrder } = projectFilters;
+
+        // Fetch projects with all filters
+        const result = await jobOperations.getJobsWithPagination({
+          limit: itemsPerPage,
+          offset,
+          searchTerm,
+          skills,
+          budgetRange,
+          sortBy,
+          sortOrder,
+        });
+
+        setProjects(result.jobs);
+        setTotalProjects(result.total);
+      } catch (error) {
+        console.error('Error loading projects:', error);
+        setProjects([]);
+        setTotalProjects(0);
+      } finally {
+        setProjectIsLoading(false);
+      }
+    }
+
+    loadProjects();
+  }, [activeTab, projectPage, projectFilters]);
+
   // Handle service search term changes
   const handleServiceSearch = (term: string) => {
     setServiceFilters(prev => ({ ...prev, searchTerm: term }));
@@ -152,6 +210,19 @@ export default function ServicesSearchPage() {
   const handleWorkerSearch = (term: string) => {
     setWorkerFilters(prev => ({ ...prev, searchTerm: term }));
     setWorkerPage(1); // Reset to page 1 when search changes
+  };
+
+  // Handle project search term changes
+  const handleProjectSearch = (term: string) => {
+    setProjectFilters(prev => ({ ...prev, searchTerm: term }));
+    setProjectPage(1);
+  };
+
+  // Handle general filter changes from ProjectSearchBar (Deadline, Purpose, etc.)
+  const handleProjectFilterChange = (filterType: string, value: string | null) => {
+    setProjectFilters(prev => ({ ...prev, [filterType]: value }));
+    setProjectPage(1);
+    // TODO: Add logic to map these filters to DB query parameters if needed
   };
 
   // Handle service filter changes from search bar
@@ -196,6 +267,18 @@ export default function ServicesSearchPage() {
     setServicePage(1);
   };
 
+  // Handle project skills change from sidebar
+  const handleProjectSkillsChange = (skills: string[]) => {
+    setProjectFilters(prev => ({ ...prev, skills }));
+    setProjectPage(1);
+  };
+
+  // Handle project budget change from sidebar
+  const handleProjectBudgetRangeChange = (range: [number, number]) => {
+    setProjectFilters(prev => ({ ...prev, budgetRange: range }));
+    setProjectPage(1);
+  };
+
   // Handle toggle changes from sidebar
   const handleToggleChange = (option: string, value: boolean) => {
     if (activeTab === 'Service') {
@@ -212,6 +295,10 @@ export default function ServicesSearchPage() {
         setWorkerFilters(prev => ({ ...prev, isProfessional: value }));
       }
       setWorkerPage(1);
+    } else if (activeTab === 'Project') {
+      // Toggle logic for project filters
+      setProjectFilters(prev => ({ ...prev, [option]: value }));
+      setProjectPage(1);
     }
   };
 
@@ -223,13 +310,17 @@ export default function ServicesSearchPage() {
     } else if (activeTab === 'Worker') {
       setWorkerFilters(defaultWorkerFilters);
       setWorkerPage(1);
+    } else if (activeTab === 'Project') {
+      setProjectFilters(defaultProjectFilters);
+      setProjectPage(1);
     }
     setResetKey(prev => prev + 1);
   };
 
-  // Calculate total pages for services and workers
+  // Calculate total pages for services, workers, and projects
   const totalServicePages = Math.max(1, Math.ceil(totalServices / itemsPerPage));
   const totalWorkerPages = Math.max(1, Math.ceil(totalWorkers / itemsPerPage));
+  const totalProjectPages = Math.max(1, Math.ceil(totalProjects / itemsPerPage));
 
   // Service pagination handlers
   const handleServicePrevPage = () => {
@@ -249,6 +340,15 @@ export default function ServicesSearchPage() {
     if (workerPage < totalWorkerPages) setWorkerPage(prev => prev + 1);
   };
 
+  // Project pagination handlers
+  const handleProjectPrevPage = () => {
+    if (projectPage > 1) setProjectPage(prev => prev - 1);
+  };
+
+  const handleProjectNextPage = () => {
+    if (projectPage < totalProjectPages) setProjectPage(prev => prev + 1);
+  };
+
   // Handle tab change
   const handleTabChange = (value: string) => {
     setActiveTab(value as ActiveTabValue);
@@ -257,6 +357,8 @@ export default function ServicesSearchPage() {
       setServiceIsLoading(true);
     } else if (value === 'Worker') {
       setWorkerIsLoading(true);
+    } else if (value === 'Project') {
+      setProjectIsLoading(true);
     }
   };
 
@@ -285,15 +387,21 @@ export default function ServicesSearchPage() {
             </TabMenuHorizontal.Root>
           </div>
 
-          {/* Filters Sidebar */}
+          {/* Filters Sidebar - Pass specific props based on tab */}
           <ServiceFilterSidebar
             activeTab={activeTab}
-            onPriceRangeChange={handleServicePriceRangeChange}
-            onSkillsChange={activeTab === 'Service' ? handleServiceSkillsChange : undefined}
-            onToggleChange={handleToggleChange}
-            onClearAllFilters={handleClearAllFilters}
+            // Service props
+            onServicePriceRangeChange={handleServicePriceRangeChange}
+            onServiceSkillsChange={handleServiceSkillsChange}
+            // Worker props
             onWorkerSearch={handleWorkerSearch}
+            onWorkerToggleChange={handleToggleChange}
             workerSearchTerm={workerFilters.searchTerm}
+            // Project props
+            onProjectBudgetRangeChange={handleProjectBudgetRangeChange}
+            onProjectSkillsChange={handleProjectSkillsChange}
+            // Shared props
+            onClearAllFilters={handleClearAllFilters}
             resetKey={resetKey}
           />
         </div>
@@ -309,7 +417,14 @@ export default function ServicesSearchPage() {
               resetKey={resetKey}
             />
           )}
-          {activeTab === 'Project' && <ProjectSearchBar />}
+          {activeTab === 'Project' && (
+            <ProjectSearchBar
+              onSearch={handleProjectSearch}
+              onFilterChange={handleProjectFilterChange}
+              searchTerm={projectFilters.searchTerm}
+              resetKey={resetKey}
+            />
+          )}
 
           {/* Services Grid with Loading State */}
           {activeTab === 'Service' && (
@@ -440,30 +555,95 @@ export default function ServicesSearchPage() {
 
           {/* Project Tab */}
           {activeTab === 'Project' && (
-            <div className='flex flex-col space-y-4'>
-              {[...Array(5)].map((_, i) => {
-                const mockProjectData = {
-                  title: `Write professional resume, cover letter ${i + 1}`,
-                  infoBadges: [
-                    { label: 'Deadline date' },
-                    { label: `${i + 1} sent proposal` },
-                    { label: 'Business' },
-                  ],
-                  skillTags: ['Mixing', 'Singing', 'Jazz', 'Hip hop', 'K pop'],
-                  description:
-                    'We are seeking a talented Website Designer and Front-End Developer to join our team. In this role, you will be responsible for designing and implementing user-friendly...',
-                  client: {
-                    avatarUrl: 'https://placekitten.com/24/24?image=' + (i + 10),
-                    name: 'Cleve Music',
-                    rating: 4.8 + Math.random() * 0.1,
-                    reviewCount: Math.floor(Math.random() * 50) + 100,
-                  },
-                  budget: 1000 + Math.floor(Math.random() * 1000),
-                  onApply: () => console.log('Apply clicked for project', i + 1),
-                };
-                return <ProjectCard key={i} {...mockProjectData} />;
-              })}
-            </div>
+            <>
+              {projectIsLoading ? (
+                <div className='flex flex-col space-y-4'>
+                  {/* Skeleton loaders for projects */}
+                  {[...Array(5)].map((_, i) => (
+                    <div key={i} className='animate-pulse overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm'>
+                      <div className='grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]'>
+                        <div className='flex flex-col gap-3'>
+                          <div className='h-6 bg-gray-200 rounded w-3/4'></div>
+                          <div className='flex flex-wrap gap-1.5'>
+                            <div className='h-5 bg-gray-200 rounded w-20'></div>
+                            <div className='h-5 bg-gray-200 rounded w-24'></div>
+                          </div>
+                          <div className='h-4 bg-gray-200 rounded w-full'></div>
+                          <div className='h-4 bg-gray-200 rounded w-5/6'></div>
+                          <div className='flex items-center gap-2 pt-2'>
+                            <div className='h-6 w-6 rounded-full bg-gray-200'></div>
+                            <div className='h-4 bg-gray-200 rounded w-24'></div>
+                          </div>
+                        </div>
+                        <div className='flex flex-col items-end justify-between gap-4 md:justify-start'>
+                          <div className='text-right'>
+                            <div className='h-4 bg-gray-200 rounded w-12 mb-1'></div>
+                            <div className='h-6 bg-gray-200 rounded w-20'></div>
+                          </div>
+                          <div className='h-8 bg-gray-200 rounded w-24 mt-auto'></div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : projects.length > 0 ? (
+                <>
+                  <div className='flex flex-col space-y-4'>
+                    {projects.map((project) => (
+                      <ProjectCard
+                        key={project.id}
+                        title={project.title}
+                        infoBadges={[
+                          { label: project.status || 'Open' },
+                          { label: project.usage_option || 'Private' },
+                          { label: project.privacy_option || 'Public' },
+                          // Add more relevant badges based on job data
+                        ]}
+                        skillTags={project.skill_levels || []}
+                        description={project.description || 'No description available.'}
+                        client={{
+                          // Fetch client data separately or join in query if needed
+                          avatarUrl: 'https://placekitten.com/24/24?image=' + project.id.substring(0, 2), // Placeholder
+                          name: 'Placeholder Client Name', // Placeholder
+                          rating: 4.5, // Placeholder
+                          reviewCount: 10 // Placeholder
+                        }}
+                        budget={project.budget}
+                        onApply={() => console.log('Apply clicked for project', project.id)}
+                      />
+                    ))}
+                  </div>
+
+                  {/* Pagination Controls */}
+                  {totalProjectPages > 1 && (
+                    <div className='flex justify-center gap-2 mt-6'>
+                      <button
+                        onClick={handleProjectPrevPage}
+                        disabled={projectPage === 1}
+                        className='px-3 py-1 rounded-md border border-gray-300 disabled:opacity-50'
+                      >
+                        Previous
+                      </button>
+                      <span className='px-4 py-1'>
+                        Page {projectPage} of {totalProjectPages}
+                      </span>
+                      <button
+                        onClick={handleProjectNextPage}
+                        disabled={projectPage === totalProjectPages}
+                        className='px-3 py-1 rounded-md border border-gray-300 disabled:opacity-50'
+                      >
+                        Next
+                      </button>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className='flex flex-col items-center justify-center py-12 text-center'>
+                  <p className='text-lg font-medium mb-2'>No projects found</p>
+                  <p className='text-gray-500'>Try adjusting your search filters</p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>
