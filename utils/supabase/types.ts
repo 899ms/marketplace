@@ -104,17 +104,17 @@ export type Chat = z.infer<typeof ChatSchema>;
 
 // --- Message Schema (maps to public.messages) ---
 export const MessageSchema = z.object({
-  id: z.string().uuid(), // UUID primary key default uuid_generate_v4()
+  id: z.string().uuid(),
   created_at: z.string().optional().nullable(),
-  chat_id: z.string().uuid(), // UUID NOT NULL REFERENCES chats(id)
-  sender_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
-  content: z.string(), // TEXT NOT NULL (For text messages or caption)
+  chat_id: z.string().uuid(),
+  sender_id: z.string(),
+  content: z.string().nullable(), // Allow content to be nullable if message is just an image/offer etc.
   message_type: z
-    .enum(['text', 'image', 'offer', 'milestone', 'system_event', 'message']) // Added 'message' for attachments
+    .enum(['text', 'image', 'offer', 'milestone', 'system_event']) // Removed 'message'
     .nullable()
     .default('text'),
-  data: z.array(BaseFileSchema).nullable().optional(), // Expect data to be an array of BaseFileData or null/undefined
-  read: z.boolean().optional().nullable(), // BOOLEAN default FALSE, nullable
+  data: z.any().nullable().optional(), // Revert to z.any() for flexibility with different data structures
+  read: z.boolean().optional().nullable(),
 });
 export type Message = z.infer<typeof MessageSchema>;
 

@@ -86,7 +86,7 @@ function ChatMessageRenderer({
 
   const renderTextMessage = () => (
     <div className={`max-w-[70%] px-3 py-2 ${bubbleClass}`}>
-      <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+      <p className="text-sm whitespace-pre-wrap">{message.content || ''}</p>
     </div>
   );
 
@@ -95,8 +95,8 @@ function ChatMessageRenderer({
     if (!imageData || imageData.length === 0) return <p className='italic text-xs text-gray-500'>[Attachment data missing]</p>;
 
     return (
-      <div className={`p-1 ${bubbleClass} max-w-[70%]`}>
-        <div className="grid gap-2">
+      <div className={`${bubbleClass} max-w-[70%] overflow-hidden`}>
+        <div className="grid gap-0.5 p-1">
           {imageData.map((file, index) => (
             <a
               key={index}
@@ -108,13 +108,13 @@ function ChatMessageRenderer({
             >
               <FileImage size={24} className="text-gray-700 dark:text-gray-300 flex-shrink-0" />
               <div className="text-xs overflow-hidden">
-                <p className="font-medium truncate text-gray-900 dark:text-gray-100">{file.name}</p>
-                <p className="opacity-70 text-gray-600 dark:text-gray-300">{(file.size / 1024).toFixed(1)} KB</p>
+                <p className={`font-medium truncate ${isCurrentUser ? 'text-white' : 'text-gray-900 dark:text-gray-100'}`}>{file.name}</p>
+                <p className={`opacity-80 ${isCurrentUser ? 'text-blue-100' : 'text-gray-600 dark:text-gray-300'}`}>{(file.size / 1024).toFixed(1)} KB</p>
               </div>
             </a>
           ))}
         </div>
-        {message.content && <p className="text-sm mt-1.5 px-2 pb-1">{message.content}</p>}
+        {message.content && <p className="text-sm px-2.5 py-1.5 border-t border-black/10 dark:border-white/10">{message.content}</p>}
       </div>
     );
   };
@@ -137,6 +137,7 @@ function ChatMessageRenderer({
           <Button variant="neutral" mode="stroke" size="small">Decline</Button>
           <Button variant="primary" mode="filled" size="small">Accept</Button>
         </div>
+        {message.content && <p className="text-sm mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">{message.content}</p>}
       </div>
     );
   };
@@ -151,6 +152,7 @@ function ChatMessageRenderer({
         <LinkButton asChild variant="primary" size="small" className="p-0 h-auto">
           <a href={milestoneData.contractLink || '#'}>View contract</a>
         </LinkButton>
+        {message.content && <p className="text-sm mt-2 pt-2 border-t border-gray-200 dark:border-gray-700">{message.content}</p>}
       </div>
     );
   };
@@ -172,41 +174,42 @@ function ChatMessageRenderer({
     );
   };
 
-  let content;
+  let contentElement;
+  if (message.message_type === 'system_event') {
+    return renderSystemEventMessage();
+  }
+
   switch (message.message_type) {
     case 'image':
-    case 'message':
-      content = renderImageMessage();
+      contentElement = renderImageMessage();
       break;
     case 'offer':
-      content = renderOfferMessage();
+      contentElement = renderOfferMessage();
       break;
     case 'milestone':
-      content = renderMilestoneMessage();
+      contentElement = renderMilestoneMessage();
       break;
-    case 'system_event':
-      return renderSystemEventMessage();
     case 'text':
     case null:
     case undefined:
     default:
-      content = renderTextMessage();
+      contentElement = renderTextMessage();
   }
 
   return (
     <div className={`flex flex-col w-full ${alignmentClass}`}>
       <div className={`flex gap-2 ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
         {!isCurrentUser && (
-          <Avatar size="24" className="mt-auto mb-2">
+          <Avatar size="24" className="mt-auto mb-2 self-end">
             <AvatarImage
               src={senderProfile?.avatar_url ?? undefined}
               alt={senderProfile?.username ?? 'User'}
             />
           </Avatar>
         )}
-        {content}
+        {contentElement}
         {isCurrentUser && (
-          <Avatar size="24" className="mt-auto mb-2">
+          <Avatar size="24" className="mt-auto mb-2 self-end">
             <AvatarImage
               src={senderProfile?.avatar_url ?? undefined}
               alt={senderProfile?.username ?? 'User'}
@@ -349,7 +352,7 @@ export default function ChatCore({
         chat_id: chat.id,
         sender_id: currentUserId,
         content: textContent,
-        message_type: attachmentData ? 'message' : 'text',
+        message_type: attachmentData ? 'image' : 'text',
         data: attachmentData,
       });
 
