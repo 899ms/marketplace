@@ -33,21 +33,21 @@ export function AgreementSection({ form }: AgreementSectionProps) {
           />
         )}
       />
-      <div className='grid gap-1.5 leading-none'>
-        <Label htmlFor='agreeToTerms' id='agreeToTerms-description'>
+      <div className='grid gap-1.5 leading-none mt-1'>
+        <Label htmlFor='agreeToTerms' id='agreeToTerms-description' className='text-[#525866] text-[14px] whitespace-pre-wrap'>
           I agree to the{' '}
           <a
             href='/terms'
             target='_blank'
-            className='font-medium text-blue-600 underline hover:text-blue-800'
+            className='font-medium text-[#0E121B] text-[14px] underline hover:text-[#0E121B]'
           >
             Terms & Conditions
-          </a>{' '}
-          and{' '}
+          </a>
+          {' and '}
           <a
             href='/privacy'
             target='_blank'
-            className='font-medium text-blue-600 underline hover:text-blue-800'
+            className='font-medium text-[#0E121B] text-[14px] underline hover:text-[#0E121B]'
           >
             Privacy Policy
           </a>
