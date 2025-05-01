@@ -54,6 +54,7 @@ const mockFaqs = [
   },
 ];
 
+// --- Mock Applicants (Buyer vs. Seller views) ---
 const mockApplicants = [
   {
     id: '1',
@@ -62,6 +63,10 @@ const mockApplicants = [
     rating: 4.9,
     reviews: 125,
     time: '1m ago',
+    // for buyer view: this one was already hired & replaced
+    hired: true,
+    replacedBy: 'Arthur Taylor',
+    unreadMessages: 0,
   },
   {
     id: '2',
@@ -70,6 +75,9 @@ const mockApplicants = [
     rating: 4.9,
     reviews: 125,
     time: '1m ago',
+    // not hired, but has unread messages
+    hired: false,
+    unreadMessages: 2,
   },
   {
     id: '3',
@@ -78,6 +86,8 @@ const mockApplicants = [
     rating: 4.9,
     reviews: 125,
     time: '1m ago',
+    hired: false,
+    unreadMessages: 0,
   },
   {
     id: '4',
@@ -86,6 +96,8 @@ const mockApplicants = [
     rating: 4.9,
     reviews: 125,
     time: '1m ago',
+    hired: false,
+    unreadMessages: 0,
   },
   {
     id: '5',
@@ -94,8 +106,11 @@ const mockApplicants = [
     rating: 4.9,
     reviews: 125,
     time: '1m ago',
+    hired: false,
+    unreadMessages: 0,
   },
 ];
+
 
 // --- Placeholder Seller Components ---
 const SellerActionButtons = ({ onApply }: { onApply: () => void }) => (
@@ -193,7 +208,7 @@ export default function ProjectDetailPage() {
         // 3. Determine User Role
         if (authContext.user) {
           const role = authContext.user.id === jobData.buyer_id ? 'buyer' : 'seller';
-          setUserRole('buyer');
+          setUserRole(role);
         } else {
           setUserRole('seller'); // Default to seller view if not logged in
         }
