@@ -34,6 +34,9 @@ import * as Tabs from '@/components/ui/tabs';
 import * as Table from '@/components/ui/table';
 import * as Pagination from '@/components/ui/pagination';
 import { cn } from '@/utils/cn';
+import { useAuth } from '@/utils/supabase/AuthContext';
+import { contractOperations, jobOperations, userOperations, contractMilestoneOperations } from '@/utils/supabase/database';
+import type { Contract, Job, User as AppUser, ContractMilestone } from '@/utils/supabase/types';
 
 // Order Page Sidebar Component
 const OrderSidebar = () => {
@@ -371,23 +374,21 @@ function SummaryCard({ title, value, icon, actions }: SummaryCardProps) {
   );
 }
 
-// --- Interfaces --- 
+// --- Local View Model Interfaces --- 
+// (Keep local definitions for mapping clarity)
 interface PersonInfo {
   name: string;
   avatarUrl: string;
 }
-
-interface BuyerOrder {
+interface BuyerEngagement {
   id: string;
+  type: 'job' | 'contract';
   subject: string;
   price: number;
   deadline: string;
-  proposals: number | null;
-  worker: PersonInfo;
+  worker: PersonInfo | null;
   status: string;
-  // Add a type discriminant if needed, e.g., userType: 'buyer';
 }
-
 interface SellerOrder {
   id: string;
   from: PersonInfo;
@@ -396,129 +397,10 @@ interface SellerOrder {
   deadline: string;
   rating: number | null;
   status: string;
-  // Add a type discriminant if needed, e.g., userType: 'seller';
 }
 
-// --- Mock Data --- 
-
-// Mock data for BUYER VIEW
-const mockBuyerOrders: BuyerOrder[] = [
-  {
-    id: '1',
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    proposals: 5,
-    worker: { name: 'James Brown', avatarUrl: 'https://i.pravatar.cc/40?img=1' },
-    status: 'active',
-  },
-  {
-    id: '2',
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    proposals: null,
-    worker: { name: 'Arthur Taylor', avatarUrl: 'https://i.pravatar.cc/40?img=2' },
-    status: 'pending',
-  },
-  {
-    id: '3',
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    proposals: 1,
-    worker: { name: 'Matthew Johnson', avatarUrl: 'https://i.pravatar.cc/40?img=3' },
-    status: 'active',
-  },
-  {
-    id: '4',
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    proposals: 6,
-    worker: { name: 'Emma Wright', avatarUrl: 'https://i.pravatar.cc/40?img=4' },
-    status: 'close',
-  },
-  {
-    id: '5',
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    proposals: 5,
-    worker: { name: 'Natalia Nowak', avatarUrl: 'https://i.pravatar.cc/40?img=5' },
-    status: 'dispute',
-  },
-  {
-    id: '6',
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    proposals: 5,
-    worker: { name: 'Wei Chen', avatarUrl: 'https://i.pravatar.cc/40?img=6' },
-    status: 'overdue',
-  },
-];
-
-// Mock data for SELLER VIEW
-const mockSellerOrders: SellerOrder[] = [
-  {
-    id: '1',
-    from: { name: 'James Brown', avatarUrl: 'https://i.pravatar.cc/40?img=1' },
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    rating: null,
-    status: 'active',
-  },
-  {
-    id: '2',
-    from: { name: 'Arthur Taylor', avatarUrl: 'https://i.pravatar.cc/40?img=2' },
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    rating: 4.5,
-    status: 'pending',
-  },
-  {
-    id: '3',
-    from: { name: 'Matthew Johnson', avatarUrl: 'https://i.pravatar.cc/40?img=3' },
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    rating: 4.5,
-    status: 'active',
-  },
-  {
-    id: '4',
-    from: { name: 'Emma Wright', avatarUrl: 'https://i.pravatar.cc/40?img=4' },
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    rating: 4.5,
-    status: 'active',
-  },
-  {
-    id: '5',
-    from: { name: 'Natalia Nowak', avatarUrl: 'https://i.pravatar.cc/40?img=5' },
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    rating: 4.5,
-    status: 'active',
-  },
-  {
-    id: '6',
-    from: { name: 'Wei Chen', avatarUrl: 'https://i.pravatar.cc/40?img=6' },
-    subject: 'Subject name',
-    price: 1598,
-    deadline: '05.26.2025',
-    rating: 4.5,
-    status: 'active',
-  },
-];
-
 // Helper to render status badges based on the image and available Badge props
-function renderStatusBadge(status: string) {
+function renderStatusBadge(status: string, type: 'job' | 'contract' | 'seller_order') {
   switch (status.toLowerCase()) {
     case 'active':
       // Use lighter variant with green text/bg hint
@@ -561,25 +443,149 @@ function renderStatusBadge(status: string) {
 
 // Right Content Area Component
 function OrdersContent() {
+  // --- Auth Context --- 
+  const { user, userProfile, loading: authLoading, profileLoading } = useAuth();
+
   // --- State --- 
-  // TODO: Replace this with actual user type determination logic
-  const [userType, setUserType] = React.useState<'buyer' | 'seller'>('seller'); // Default to seller for now
+  const [ordersData, setOrdersData] = React.useState<(BuyerEngagement | SellerOrder)[]>([]);
+  const [dataLoading, setDataLoading] = React.useState(true); // Separate state for data fetching
+  const [error, setError] = React.useState<string | null>(null);
 
   const [activeTab, setActiveTab] = React.useState('all');
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(undefined); // Needed for buyer
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(undefined);
   const [sortOption, setSortOption] = React.useState('default');
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
 
-  // --- Conditional Data & Logic --- 
-
+  // --- Determine User Type --- 
+  const userType = userProfile?.user_type; // Get type from profile
   const isBuyer = userType === 'buyer';
 
-  // Select mock data with appropriate type
-  const currentMockData: (BuyerOrder | SellerOrder)[] = isBuyer ? mockBuyerOrders : mockSellerOrders;
+  // --- Data Fetching Effect (Added Seller Logic) --- 
+  React.useEffect(() => {
+    if (authLoading || profileLoading || !user || !userType) {
+      setDataLoading(false);
+      return;
+    }
+    const fetchOrders = async () => {
+      setDataLoading(true);
+      setError(null);
+      console.log(`Fetching orders for ${userType} ID: ${user.id}`);
+      try {
+        let fetchedData: (BuyerEngagement | SellerOrder)[] = [];
 
-  // TODO: Update summaryData based on user type and fetched data
+        if (isBuyer) {
+          // --- Buyer Logic (remains the same) --- 
+          const [jobs, contracts] = await Promise.all([
+            jobOperations.getJobsByBuyerId(user.id),
+            contractOperations.getUserContracts(user.id)
+          ]);
+          const contractsByJobId = new Map<string, Contract>();
+          contracts.forEach(contract => { if (contract.job_id) { contractsByJobId.set(contract.job_id, contract); } });
+
+          const buyerEngagementsPromises = jobs.map(async (job): Promise<BuyerEngagement | null> => {
+            const relatedContract = contractsByJobId.get(job.id);
+            if (relatedContract && relatedContract.seller_id) {
+              const sellerProfile = await userOperations.getUserById(relatedContract.seller_id);
+              const workerInfo = sellerProfile ? { name: sellerProfile.full_name, avatarUrl: sellerProfile.avatar_url || 'https://via.placeholder.com/40' } : null;
+              return {
+                id: job.id,
+                type: 'contract',
+                subject: job.title,
+                price: relatedContract.amount,
+                deadline: job.deadline || 'N/A',
+                worker: workerInfo,
+                status: relatedContract.status || 'pending',
+              };
+            } else {
+              return {
+                id: job.id,
+                type: 'job',
+                subject: job.title,
+                price: job.budget,
+                deadline: job.deadline || 'N/A',
+                worker: null,
+                status: job.status || 'open',
+              };
+            }
+          });
+          const resolvedEngagements = await Promise.all(buyerEngagementsPromises);
+          fetchedData = resolvedEngagements.filter(e => e !== null) as BuyerEngagement[];
+          console.log(`Buyer: Fetched ${jobs.length} jobs, found ${contractsByJobId.size} contracts linked to jobs, mapped ${fetchedData.length} engagements.`);
+
+        } else {
+          // --- Seller Logic --- 
+          const contracts = await contractOperations.getUserContracts(user.id);
+          const sellerContracts = contracts.filter(c => c.seller_id === user.id);
+          console.log(`Seller: Fetched ${contracts.length} total contracts, ${sellerContracts.length} are seller contracts.`);
+
+          const sellerOrdersPromises = sellerContracts.map(async (contract): Promise<SellerOrder | null> => {
+            // Ensure buyer_id exists before trying to fetch
+            if (!contract.buyer_id) {
+              console.warn(`Contract ${contract.id} is missing buyer_id.`);
+              return null;
+            }
+            const buyerProfile = await userOperations.getUserById(contract.buyer_id);
+            // Decide how to handle orders if buyer profile isn't found
+            if (!buyerProfile) {
+              console.warn(`Buyer profile not found for ID: ${contract.buyer_id} on contract ${contract.id}`);
+              // Option: Skip this order
+              return null;
+              // Option: Use placeholder data
+              // buyerInfo = { name: 'Unknown Buyer', avatarUrl: '...' }; 
+            }
+
+            const buyerInfo = {
+              name: buyerProfile.full_name,
+              avatarUrl: buyerProfile.avatar_url || 'https://via.placeholder.com/40',
+            };
+
+            // TODO: Determine rating for the seller on this contract (requires rating system)
+            const ratingPlaceholder = 4.5; // Placeholder rating
+            // TODO: Determine deadline for seller (might come from job or milestones?)
+            const deadlinePlaceholder = 'N/A'; // Placeholder deadline
+
+            return {
+              id: contract.id, // Use contract ID for seller orders
+              from: buyerInfo,
+              subject: contract.title || 'Contract Title Missing',
+              price: contract.amount,
+              deadline: deadlinePlaceholder, // Use placeholder or fetch logic
+              rating: ratingPlaceholder, // Use placeholder or fetch logic
+              status: contract.status || 'pending',
+            };
+          });
+
+          const resolvedSellerOrders = await Promise.all(sellerOrdersPromises);
+          fetchedData = resolvedSellerOrders.filter(order => order !== null) as SellerOrder[];
+          console.log(`Seller: Mapped ${fetchedData.length} valid seller orders.`);
+        }
+        setOrdersData(fetchedData);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+        setError("Failed to load orders.");
+        setOrdersData([]);
+      } finally {
+        setDataLoading(false);
+      }
+    };
+    fetchOrders();
+  }, [user, userType, authLoading, profileLoading, isBuyer]);
+
+  // --- Conditional Data & Logic (using fetched data) --- 
+
+  // TODO: Implement filtering & sorting on fetched `ordersData`
+  const filteredAndSortedOrders = ordersData; // Placeholder
+
+  const totalItems = filteredAndSortedOrders.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const currentTableData = filteredAndSortedOrders.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  // ... summaryData (can be updated based on fetched data later) ...
   const summaryData = {
     milestone: {
       title: 'Milestone',
@@ -589,8 +595,8 @@ function OrdersContent() {
     },
     totalAmount: {
       title: 'Total Amount',
-      value: isBuyer ? '$500.00' : '$50110.00', // Conditional value
-      actions: isBuyer ? ( // Conditional actions
+      value: isBuyer ? '$500.00' : '$50110.00',
+      actions: isBuyer ? (
         <div className="flex gap-2 text-sm">
           <button className="text-text-brand-900 hover:underline">Top up</button>
           <button className="text-text-brand-900 hover:underline">Withdraw</button>
@@ -607,23 +613,31 @@ function OrdersContent() {
     },
   };
 
-  // TODO: Implement filtering & sorting based on userType and state
-  const filteredAndSortedOrders = currentMockData; // Placeholder
+  // ... handlers ...
+  const handlePreviousPage = () => { setCurrentPage((prev) => Math.max(prev - 1, 1)); };
+  const handleNextPage = () => { setCurrentPage((prev) => Math.min(prev + 1, totalPages)); };
 
-  const totalItems = filteredAndSortedOrders.length;
-  const totalPages = Math.ceil(totalItems / itemsPerPage);
-  const currentTableData = filteredAndSortedOrders.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+  // --- Render Logic --- 
 
-  const handlePreviousPage = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
+  // Handle initial auth loading
+  if (authLoading || profileLoading) {
+    return (
+      <main className="flex-1 bg-bg-alt-white-100 p-6 flex items-center justify-center">
+        <p>Loading user information...</p>
+        {/* TODO: Add a spinner component */}
+      </main>
+    );
+  }
 
-  const handleNextPage = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  };
+  // Handle case where user is not logged in or profile couldn't load
+  if (!user || !userProfile || !userType) {
+    return (
+      <main className="flex-1 bg-bg-alt-white-100 p-6 flex items-center justify-center">
+        <p>Please log in to view your orders.</p>
+        {/* Optionally link to login page */}
+      </main>
+    );
+  }
 
   return (
     <main className="flex-1 bg-bg-alt-white-100 p-6">
@@ -736,145 +750,166 @@ function OrdersContent() {
 
       {/* Table Section - Conditional Headers and Body */}
       <div className="overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-sm">
-        <Table.Root className="min-w-full divide-y divide-stroke-soft-200">
-          {/* Conditional Table Header */}
-          <Table.Header className="bg-bg-alt-white-100">
-            <Table.Row>
-              {isBuyer ? (
-                <>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Details</Table.Head>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Final deadline</Table.Head>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Proposals</Table.Head>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Worker</Table.Head>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Status</Table.Head>
-                </>
-              ) : (
-                <>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">From</Table.Head>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Details</Table.Head>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Final deadline</Table.Head>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Rating</Table.Head>
-                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Status</Table.Head>
-                </>
-              )}
-              <Table.Head className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-sub-500"></Table.Head> {/* Actions Column (Common) */}
-            </Table.Row>
-          </Table.Header>
-          {/* Conditional Table Body with Type Narrowing */}
-          <Table.Body className="divide-y divide-stroke-soft-200 bg-bg-white-0">
-            {currentTableData.map((order) => (
-              <Table.Row key={order.id}>
+        {/* Handle Data Loading / Error / Empty States */}
+        {dataLoading ? (
+          <div className="p-4 text-center">Loading orders...</div>
+          // TODO: Add spinner
+        ) : error ? (
+          <div className="p-4 text-center text-red-600">{error}</div>
+        ) : currentTableData.length === 0 ? (
+          <div className="p-4 text-center text-gray-500">No orders found.</div>
+        ) : (
+          <Table.Root className="min-w-full divide-y divide-stroke-soft-200">
+            {/* Conditional Table Header */}
+            <Table.Header className="bg-bg-alt-white-100">
+              <Table.Row>
                 {isBuyer ? (
-                  // Buyer Row Structure - order is narrowed to BuyerOrder here
-                  (() => {
-                    const buyerOrder = order as BuyerOrder; // Explicit assertion
-                    return (
-                      <>
-                        <Table.Cell className="px-4 py-3 align-top">
-                          <div className="text-sm font-medium text-text-strong-950">{buyerOrder.subject}</div>
-                          <div className="text-sm text-text-secondary-600">${buyerOrder.price.toLocaleString()}</div>
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{buyerOrder.deadline}</Table.Cell>
-                        <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">
-                          {buyerOrder.proposals !== null ? buyerOrder.proposals : '-'}
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <Avatar.Root size="32">
-                              <Avatar.Image src={buyerOrder.worker.avatarUrl} alt={buyerOrder.worker.name} />
-                            </Avatar.Root>
-                            <span className="text-sm font-medium text-text-strong-950">{buyerOrder.worker.name}</span>
-                          </div>
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                          {renderStatusBadge(buyerOrder.status)}
-                        </Table.Cell>
-                      </>
-                    );
-                  })()
+                  <>
+                    <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Details</Table.Head>
+                    <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Final deadline</Table.Head>
+                    <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Worker / Job</Table.Head>
+                    <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Status</Table.Head>
+                  </>
                 ) : (
-                  // Seller Row Structure - order is narrowed to SellerOrder here
-                  (() => {
-                    const sellerOrder = order as SellerOrder; // Explicit assertion
-                    return (
-                      <>
-                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                          <div className="flex items-center gap-2">
-                            <Avatar.Root size="32">
-                              <Avatar.Image src={sellerOrder.from.avatarUrl} alt={sellerOrder.from.name} />
-                            </Avatar.Root>
-                            <span className="text-sm font-medium text-text-strong-950">{sellerOrder.from.name}</span>
-                          </div>
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-3 align-top">
-                          <div className="text-sm font-medium text-text-strong-950">{sellerOrder.subject}</div>
-                          <div className="text-sm text-text-secondary-600">${sellerOrder.price.toLocaleString()}</div>
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{sellerOrder.deadline}</Table.Cell>
-                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                          {sellerOrder.rating !== null ? (
-                            <div className="flex items-center gap-1 text-sm text-text-secondary-600">
-                              <RiStarFill className='size-4 text-yellow-400' />
-                              <span>{sellerOrder.rating.toFixed(1)}</span>
-                            </div>
-                          ) : (
-                            <span className="text-sm text-text-sub-400">-</span>
-                          )}
-                        </Table.Cell>
-                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                          {renderStatusBadge(sellerOrder.status)}
-                        </Table.Cell>
-                      </>
-                    );
-                  })()
+                  <>
+                    <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">From</Table.Head>
+                    <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Details</Table.Head>
+                    <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Final deadline</Table.Head>
+                    <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Rating</Table.Head>
+                    <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Status</Table.Head>
+                  </>
                 )}
-                {/* Actions Column (Common) */}
-                <Table.Cell className="px-4 py-3 text-right align-top whitespace-nowrap">
-                  <Dropdown.Root>
-                    <Dropdown.Trigger asChild>
-                      <button className="p-1 text-text-sub-400 hover:text-text-strong-950 focus:outline-none">
-                        <RiMore2Fill className="size-5" />
-                      </button>
-                    </Dropdown.Trigger>
-                    <Dropdown.Content align="end">
-                      <Dropdown.Item>View Details</Dropdown.Item>
-                      <Dropdown.Item>{isBuyer ? 'Message Worker' : 'Message Buyer'}</Dropdown.Item>
-                      <Dropdown.Separator />
-                      <Dropdown.Item className="text-text-danger-500">Cancel Order</Dropdown.Item>
-                    </Dropdown.Content>
-                  </Dropdown.Root>
-                </Table.Cell>
+                <Table.Head className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-sub-500"></Table.Head> {/* Actions Column (Common) */}
               </Table.Row>
-            ))}
-          </Table.Body>
-        </Table.Root>
+            </Table.Header>
+            {/* Conditional Table Body with Type Narrowing and Safer Rendering */}
+            <Table.Body className="divide-y divide-stroke-soft-200 bg-bg-white-0">
+              {currentTableData.map((order) => (
+                <Table.Row key={order.id}>
+                  {isBuyer ? (
+                    (() => {
+                      const engagement = order as BuyerEngagement;
+                      return (
+                        <>
+                          <Table.Cell className="px-4 py-3 align-top">
+                            <div className="text-sm font-medium text-text-strong-950">{engagement.subject}</div>
+                            <div className="text-sm text-text-secondary-600">${engagement.price.toLocaleString()}</div>
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{engagement.deadline}</Table.Cell>
+                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                            {engagement.worker ? (
+                              <div className="flex items-center gap-2">
+                                <Avatar.Root size="32">
+                                  <Avatar.Image
+                                    src={engagement.worker.avatarUrl || 'https://via.placeholder.com/40'}
+                                    alt={engagement.worker.name}
+                                  />
+                                </Avatar.Root>
+                                <span className="text-sm font-medium text-text-strong-950">{engagement.worker.name}</span>
+                              </div>
+                            ) : (
+                              <span className="text-sm text-text-sub-400 italic">Job Posting</span>
+                            )}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                            {renderStatusBadge(engagement.status, engagement.type)}
+                          </Table.Cell>
+                        </>
+                      );
+                    })()
+                  ) : (
+                    (() => {
+                      const sellerOrder = order as SellerOrder;
+                      return (
+                        <>
+                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                            <div className="flex items-center gap-2">
+                              <Avatar.Root size="32">
+                                {sellerOrder.from && (
+                                  <Avatar.Image
+                                    src={sellerOrder.from.avatarUrl || 'https://via.placeholder.com/40'}
+                                    alt={sellerOrder.from.name}
+                                  />
+                                )}
+                              </Avatar.Root>
+                              <span className="text-sm font-medium text-text-strong-950">
+                                {sellerOrder.from ? sellerOrder.from.name : 'Unknown Buyer'}
+                              </span>
+                            </div>
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 align-top">
+                            <div className="text-sm font-medium text-text-strong-950">{sellerOrder.subject}</div>
+                            <div className="text-sm text-text-secondary-600">${sellerOrder.price.toLocaleString()}</div>
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{sellerOrder.deadline}</Table.Cell>
+                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                            {sellerOrder.rating !== null ? (
+                              <div className="flex items-center gap-1 text-sm text-text-secondary-600">
+                                <RiStarFill className='size-4 text-yellow-400' />
+                                <span>{sellerOrder.rating.toFixed(1)}</span>
+                              </div>
+                            ) : (
+                              <span className="text-sm text-text-sub-400">-</span>
+                            )}
+                          </Table.Cell>
+                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                            {renderStatusBadge(sellerOrder.status, 'seller_order')}
+                          </Table.Cell>
+                        </>
+                      );
+                    })()
+                  )}
+                  {/* Actions Column (Common) */}
+                  <Table.Cell className="px-4 py-3 text-right align-top whitespace-nowrap">
+                    <Dropdown.Root>
+                      <Dropdown.Trigger asChild>
+                        <button className="p-1 text-text-sub-400 hover:text-text-strong-950 focus:outline-none">
+                          <RiMore2Fill className="size-5" />
+                        </button>
+                      </Dropdown.Trigger>
+                      <Dropdown.Content align="end">
+                        <Dropdown.Item>View Details</Dropdown.Item>
+                        <Dropdown.Item>{isBuyer ? 'Message Worker' : 'Message Buyer'}</Dropdown.Item>
+                        <Dropdown.Separator />
+                        <Dropdown.Item className="text-text-danger-500">Cancel Order</Dropdown.Item>
+                      </Dropdown.Content>
+                    </Dropdown.Root>
+                  </Table.Cell>
+                </Table.Row>
+              ))}
+            </Table.Body>
+          </Table.Root>
+        )}
       </div>
 
       {/* Pagination Section (Common) */}
-      <div className="mt-4 flex items-center justify-center border-t border-stroke-soft-200 pt-4">
-        <Pagination.Root variant="basic">
-          <Pagination.NavButton
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-            aria-label="Go to previous page"
-          >
-            <Pagination.NavIcon as={RiArrowLeftSLine} />
-          </Pagination.NavButton>
-          <Pagination.Item
-            current
-            aria-label={`Page ${currentPage}`}
-          >
-            {currentPage}
-          </Pagination.Item>
-          <Pagination.NavButton
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            aria-label="Go to next page"
-          >
-            <Pagination.NavIcon as={RiArrowRightSLine} />
-          </Pagination.NavButton>
-        </Pagination.Root>
-      </div>
+      {/* Only show pagination if there are multiple pages */}
+      {totalPages > 1 && (
+        <div className="mt-4 flex items-center justify-center border-t border-stroke-soft-200 pt-4">
+          <Pagination.Root variant="basic">
+            <Pagination.NavButton
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              aria-label="Go to previous page"
+            >
+              <Pagination.NavIcon as={RiArrowLeftSLine} />
+            </Pagination.NavButton>
+            <Pagination.Item
+              current
+              aria-label={`Page ${currentPage}`}
+            >
+              {currentPage}
+            </Pagination.Item>
+            <Pagination.NavButton
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              aria-label="Go to next page"
+            >
+              <Pagination.NavIcon as={RiArrowRightSLine} />
+            </Pagination.NavButton>
+          </Pagination.Root>
+        </div>
+      )}
     </main>
   );
 }
