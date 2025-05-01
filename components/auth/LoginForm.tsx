@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { authOperations, SignInSchema, userOperations } from '@/utils/supabase';
 import { z } from 'zod';
 import * as Input from '@/components/ui/input';
@@ -44,6 +44,7 @@ export default function LoginForm() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
   const searchParams = useSearchParams();
   const redirectedFrom = searchParams.get('redirectedFrom');
