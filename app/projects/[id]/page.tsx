@@ -99,10 +99,10 @@ const mockApplicants = [
 
 // --- Placeholder Seller Components ---
 const SellerActionButtons = ({ onApply }: { onApply: () => void }) => (
-  <div className="flex items-center gap-3 p-4 pt-0 border-t border-stroke-soft-200 mt-4">
+  <div className="flex items-center gap-3 p-4 pt-0 mt-4">
     <Button.Root variant="neutral" mode="stroke" className="flex-1">
-      <Button.Icon><RiSendPlaneLine /></Button.Icon>
       Message
+      <Button.Icon><RiSendPlaneLine /></Button.Icon>
     </Button.Root>
     <Button.Root
       variant="neutral"
@@ -181,7 +181,7 @@ export default function ProjectDetailPage() {
         // 3. Determine User Role
         if (authContext.user) {
           const role = authContext.user.id === jobData.buyer_id ? 'buyer' : 'seller';
-          setUserRole(role);
+          setUserRole('seller');
         } else {
           setUserRole('seller'); // Default to seller view if not logged in
         }
@@ -324,6 +324,7 @@ export default function ProjectDetailPage() {
                   reviews: clientReviews,
                   isVerified: clientIsVerified
                 }} />
+                <div className="w-[90%] mx-auto my-4 h-[2px] bg-stroke-soft-200" />
                 <ProjectInfoCard
                   budget={projectBudget}
                   releaseTime={projectReleaseTime}
@@ -345,6 +346,7 @@ export default function ProjectDetailPage() {
                   reviews: clientReviews, // Placeholder
                   isVerified: clientIsVerified // Placeholder
                 }} />
+                <div className="w-[90%] mx-auto my-4 h-[2px] bg-stroke-soft-200" />
                 <ProjectInfoCard
                   budget={projectBudget}
                   releaseTime={projectReleaseTime}
