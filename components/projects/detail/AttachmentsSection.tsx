@@ -37,7 +37,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
         Attachments
       </h2>
 
-      <div className="inline-block rounded-xl border border-stroke-soft-200 p-4">
+      <div className="inline-block rounded-xl border border-stroke-soft-200 p-2">
         <div className="flex items-center justify-between gap-6">
           {/* Attachment name & size */}
           <div>
