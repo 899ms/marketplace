@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { RiHomeLine, RiNotification4Line, RiBookmarkLine, RiSendPlaneLine, RiShareLine, RiFileCopyLine, RiArrowRightSLine } from '@remixicon/react';
+import { RiHomeLine, RiLinksLine, RiBookmarkLine, RiSendPlaneLine, RiShareLine, RiFileCopyLine, RiArrowRightSLine } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 
@@ -117,13 +117,25 @@ const SellerActionButtons = ({ onApply }: { onApply: () => void }) => (
 );
 
 // NOTE: ProjectLinkCard requires a link - Job schema doesn't have one.
-// Using a placeholder for now.
 const ProjectLinkCard = ({ link }: { link: string }) => (
-  <div className="shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4">
-    <label htmlFor="project-link" className="mb-2 block text-label-md font-medium text-text-strong-950">Link</label>
+  <div className="shadow-sm rounded-xl bg-bg-white-0 p-4">
+    <label
+      htmlFor="project-link"
+      className="mb-2 block text-label-md font-medium text-text-strong-950"
+    >
+      Link
+    </label>
     <Input.Root>
-      <Input.Wrapper>
-        <Input.Input id="project-link" readOnly value={link} />
+      <Input.Wrapper className="flex items-center bg-white border border-gray-300 rounded-md px-2 py-1">
+        {/* link icon */}
+        <RiLinksLine className="size-5 text-gray-400 mr-2" />
+        {/* read-only input */}
+        <Input.Input
+          id="project-link"
+          readOnly
+          value={link}
+          className="bg-transparent text-gray-400 flex-1 focus:outline-none"
+        />
         <button
           onClick={() => navigator.clipboard.writeText(link)}
           className="text-icon-secondary-400 hover:text-icon-primary-500 p-1"
