@@ -19,6 +19,7 @@ import {
   RiGoogleFill,
   RiArrowRightSLine,
 } from '@remixicon/react';
+import { clsx } from 'clsx';
 
 // Order Page Sidebar Component
 const OrderSidebar = () => {
@@ -45,7 +46,7 @@ const OrderSidebar = () => {
   ];
 
   return (
-    <aside className='hidden w-64 shrink-0 lg:block xl:w-72'>
+    <aside className='hidden max-w-[352px] w-full shrink-0 lg:block'>
       <div className='shadow-sm sticky top-20 flex flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4'>
         {/* Profile Section */}
         <div className='flex flex-col items-center gap-3 text-center'>
@@ -67,13 +68,13 @@ const OrderSidebar = () => {
             </div>
           </div>
           <div className='flex items-center justify-center gap-2'>
-            <RiGoogleFill className='size-5 text-text-sub-600' />
-            <RiGoogleFill className='size-5 text-text-sub-600' />
+            <RiGoogleFill className='size-5 text-text-sub-600' /> Google
+            <RiGoogleFill className='size-5 text-text-sub-600' /> Google
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-center gap-2">
+        <div className="flex items-center justify-center gap-2 mb-4">
           {/* Follow Button */}
           <Button.Root
             variant="neutral"
@@ -98,44 +99,51 @@ const OrderSidebar = () => {
         </div>
 
 
-
-        <Divider.Root />
-
         {/* Recent Reviews */}
         <div>
-          <div className='mb-2 flex items-center gap-1 text-label-md font-medium text-text-strong-950'>
-            <RiStarSFill className='size-4' />
-            Recent reviews
-          </div>
-          <div className='flex items-center gap-2'>
-            <AvatarGroup.Root size='24'>
-              {reviewAvatars.map((src, i) => (
-                <Avatar.Root key={i} size='24'>
-                  <Avatar.Image src={src} />
-                </Avatar.Root>
-              ))}
-            </AvatarGroup.Root>
-            <span className='text-text-secondary-600 text-paragraph-xs'>
-              +4
-            </span>
+          <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            {/* Left section - Star and text */}
+            <div className="flex items-center gap-1 text-label-md font-medium text-text-strong-950">
+              <RiStarSFill className="size-6" /> {/* Slightly bigger */}
+              <span>Recent reviews</span>
+            </div>
+
+            {/* Right section - Avatars */}
+            <div className="mt-1 sm:mt-0 flex items-center gap-2">
+              <AvatarGroup.Root size="24">
+                {reviewAvatars.map((src, i) => (
+                  <Avatar.Root key={i} size="24">
+                    <Avatar.Image src={src} />
+                  </Avatar.Root>
+                ))}
+              </AvatarGroup.Root>
+              <span className="text-text-secondary-600 text-paragraph-xs">+4</span>
+            </div>
           </div>
         </div>
+
 
         <Divider.Root />
 
         {/* Tags Section */}
         <div>
-          <h3 className='mb-2 text-label-md font-medium text-text-strong-950'>
+          <h3 className="mb-2 text-label-md font-medium text-text-strong-950">
             Tags
           </h3>
-          <div className='flex flex-wrap gap-1.5'>
+          <div className="flex flex-wrap gap-1.5">
             {tags.map((tag) => (
-              <Badge.Root key={tag} variant='light' size='medium'>
+              <Badge.Root
+                key={tag}
+                variant="light"
+                size="medium"
+                className="bg-white rounded-md border border-stroke-soft-300 text-gray-600 px-2 py-0.5"
+              >
                 {tag}
               </Badge.Root>
             ))}
           </div>
         </div>
+
 
         <Divider.Root />
 
@@ -149,7 +157,7 @@ const OrderSidebar = () => {
               <RiPencilLine className='size-4' />
             </button>
           </div>
-          <p className='text-text-secondary-600 line-clamp-5 text-paragraph-sm'>
+          <p className='text-gray-600 line-clamp-5 text-paragraph-sm'>
             {user.about}
           </p>
         </div>
@@ -192,13 +200,9 @@ const OrderListItem = () => {
   };
 
   return (
-    <div className='flex items-start gap-4 border-b border-stroke-soft-200 py-4'>
-      {/* Blue J Indicator - Placeholder */}
-      <Avatar.Root size='32' color='blue' className='mt-1 shrink-0'>
-        <span className='text-label-sm font-medium'>J</span>
-      </Avatar.Root>
+    <div className='flex items-start justify-between gap-4 border-b border-stroke-soft-200 py-4'>
 
-      <div className='flex-1'>
+      <div className='flex-1 max-w-[80%]'>
         {/* Title */}
         <h3 className='mb-1 text-paragraph-lg font-medium text-text-strong-950'>
           {order.title}
@@ -206,8 +210,18 @@ const OrderListItem = () => {
 
         {/* Tags */}
         <div className='mb-2 flex flex-wrap gap-1.5'>
-          {order.tags.map((tag) => (
-            <Badge.Root key={tag} variant='light' size='small'>
+          {order.tags.map((tag, i) => (
+            <Badge.Root
+              key={tag}
+              variant='light'
+              size='small'
+              className={clsx(
+                'bg-white px-2 py-0.5 rounded-md',
+                i === 0
+                  ? 'border border-black text-text-strong-950'     // first tag: black border + text
+                  : 'border border-gray-300 text-text-secondary-600' // others: gray border + text
+              )}
+            >
               {tag}
             </Badge.Root>
           ))}
@@ -220,7 +234,7 @@ const OrderListItem = () => {
       </div>
 
       <div className='shrink-0 text-right'>
-        <div className='text-text-secondary-600 text-label-sm'>Budget</div>
+        <div className='text-gray-600 text-label-sm'>Budget</div>
         <div className='mb-2 text-label-lg font-medium text-text-strong-950'>
           ${order.budget.toLocaleString()}
         </div>
@@ -248,41 +262,49 @@ const ReviewListItem = () => {
 
   return (
     <div className='border-b border-stroke-soft-200 py-4'>
-      <div className='flex items-start gap-3'>
-        {/* Avatar and User Info */}
-        <Avatar.Root size='40' className='mt-1 shrink-0'>
-          <Avatar.Image src={review.avatarUrl} alt={review.name} />
-        </Avatar.Root>
+      {/* Top row with user info and amount */}
+      <div className='flex items-start justify-between mb-3'>
+        {/* LEFT SIDE: Avatar + User Info */}
+        <div className='flex items-start gap-3'>
+          <Avatar.Root size='40' className='shrink-0'>
+            <Avatar.Image src={review.avatarUrl} alt={review.name} />
+          </Avatar.Root>
 
-        <div className='flex-1'>
-          <div className='mb-1 flex items-center gap-1.5'>
+          <div className='flex flex-col'>
+            {/* Row 1: Name */}
             <div className='text-text-secondary-600 text-label-sm font-medium'>
               {review.name}
             </div>
-            <div className='flex items-center gap-0.5'>
-              <RiStarFill className='size-3.5 text-yellow-400' />
-              <span className='text-text-secondary-600 text-paragraph-xs'>
-                {review.rating}
+
+            {/* Row 2: Rating and Date */}
+            <div className='flex items-center gap-1.5'>
+              <div className='flex items-center gap-0.5'>
+                <RiStarFill className='size-3.5 text-yellow-400' />
+                <span className='text-gray-600 text-paragraph-xs'>
+                  {review.rating}
+                </span>
+              </div>
+              <span className='text-gray-600 text-paragraph-xs'>
+                {review.date}
               </span>
             </div>
-            <span className='text-text-secondary-600 text-paragraph-xs'>
-              {review.date}
-            </span>
           </div>
-
-          {/* Review Title and Description */}
-          <h3 className='mb-1 text-paragraph-md font-medium text-text-strong-950'>
-            {review.title}
-          </h3>
-          <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm'>
-            {review.description}
-          </p>
         </div>
 
-        {/* Amount */}
+        {/* RIGHT SIDE: Amount */}
         <div className='shrink-0 text-right text-label-lg font-medium text-text-strong-950'>
           ${review.amount.toFixed(2)}
         </div>
+      </div>
+
+      {/* Bottom row with title and description */}
+      <div>
+        <h3 className='mb-1 text-paragraph-lg font-medium text-text-strong-950'>
+          {review.title}
+        </h3>
+        <p className='text-gray-600 line-clamp-2 text-paragraph-sm'>
+          {review.description}
+        </p>
       </div>
     </div>
   );
@@ -349,39 +371,57 @@ export default function OrderPage() {
   return (
     <div className='flex flex-1 gap-6 px-6 pt-6'>
       <OrderSidebar />
-      <main className='flex-1'>
-        <div className='mb-6'>
-          <TabMenuHorizontal.Root
-            value={activeTab}
-            onValueChange={setActiveTab}
-          >
-            <TabMenuHorizontal.List>
-              <TabMenuHorizontal.Trigger value='Order'>
-                Order
-              </TabMenuHorizontal.Trigger>
-              <TabMenuHorizontal.Trigger value='Review'>
-                Review
-              </TabMenuHorizontal.Trigger>
-            </TabMenuHorizontal.List>
-          </TabMenuHorizontal.Root>
-        </div>
-        <div className='shadow-sm rounded-xl border-b border-l border-r border-stroke-soft-200 bg-bg-white-0 p-4'>
-          {activeTab === 'Order' && (
-            <div className='flex flex-col divide-y divide-stroke-soft-200'>
-              <OrderListItem />
-              <OrderListItem />
-              <OrderListItem />
-            </div>
-          )}
-          {activeTab === 'Review' && (
-            <div className='flex flex-col'>
-              {reviewsData.map((review, index) => (
-                <ReviewListItem key={index} />
-              ))}
-            </div>
-          )}
+      <main className="flex-1">
+        {/* center everything horizontally */}
+        <div className="w-full lg:max-w-[1000px] mx-auto px-4 sm:px-6">
+          {/* tab bar */}
+          <div className="mb-6 border-t-0">
+            <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
+              <TabMenuHorizontal.List className="flex items-center gap-2 border-none">
+                <TabMenuHorizontal.Trigger
+                  value="Order"
+                  className="
+                    px-4 pb-2 text-label-lg font-medium 
+                    text-gray-400 
+                    data-[state=active]:text-black
+                  "
+                >
+                  Order
+                </TabMenuHorizontal.Trigger>
+                <TabMenuHorizontal.Trigger
+                  value="Review"
+                  className="
+                    px-4 pb-2 text-label-lg font-medium 
+                    text-gray-400 
+                    data-[state=active]:text-black
+                  "
+                >
+                  Review
+                </TabMenuHorizontal.Trigger>
+              </TabMenuHorizontal.List>
+            </TabMenuHorizontal.Root>
+          </div>
+
+          {/* content panel */}
+          <div className="p-4">
+            {activeTab === "Order" && (
+              <div className="flex flex-col divide-y divide-stroke-soft-200">
+                <OrderListItem />
+                <OrderListItem />
+                <OrderListItem />
+              </div>
+            )}
+            {activeTab === "Review" && (
+              <div className="flex flex-col divide-y divide-stroke-soft-200">
+                {reviewsData.map((review, i) => (
+                  <ReviewListItem key={i} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </main>
+
     </div>
   );
 }

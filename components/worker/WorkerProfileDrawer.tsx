@@ -3,376 +3,322 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import * as Avatar from '@/components/ui/avatar';
-import * as Badge from '@/components/ui/badge';
 import * as Drawer from '@/components/ui/drawer';
 import * as Tabs from '@/components/ui/tabs';
 import {
   RiCloseLine,
-  RiExternalLinkLine,
+  RiSendPlaneLine,
   RiStarFill,
   RiGoogleFill,
-  RiArrowRightLine,
+  RiArrowDropRightLine,
   RiHeartLine,
-  RiPlayLine,
-  RiBookmarkLine,
+  RiArrowUpCircleLine,
+  RiLoader4Line,
 } from '@remixicon/react';
-// Assuming ServiceCardSmall is a variant or separate component for the drawer
-// import ServiceCardSmall from '@/components/cards/ServiceCardSmall';
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 
-// Define necessary types (replace with actual types if available)
-interface Service {
-  id: number | string;
-  title: string;
-  rating: number;
-  reviews: number;
-  price: number | string;
-  image?: string; // Optional image for the card
-}
-interface Review {
-  id: number | string;
-  reviewerName: string;
-  reviewerAvatar: string;
-  rating: number;
-  date: string;
-  contractTitle: string;
-  content: string;
-  amount: string | number;
-}
-interface WorkItem {
-  id: number | string;
-  title: string;
-  remarks: string;
-  tags: string[];
-  duration: string;
-  bpm: string;
-}
+import BlockFileUploadDialog from '@/components/blocks/block-file-upload-dialog';
+import { AboutSection } from '@/components/worker/profile/AboutSection';
+import { WorkItem } from '@/components/worker/profile/work-item';
+import { ServiceCard } from '@/components/worker/profile/service-card';
+import { ReviewItem } from '@/components/worker/profile/review-item';
+import { User, Service } from '@/utils/supabase/types';
 
 interface WorkerProfileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  // workerData?: Worker; // Pass actual worker data later
+  worker: User | null;
+  services: Service[] | null;
+  isLoading: boolean;
 }
+
+const placeholderWorkerData = {
+  name: 'Cleve Music',
+  avatar: 'https://via.placeholder.com/64',
+  rating: 4.9,
+  reviewCount: 125,
+  specialty: 'Next.js & TypeScript Specialist',
+  about: '...',
+  workItems: [
+    {
+      title: 'Funky Bounce Logo',
+      description: 'Worker remarks text',
+      duration: '0:22',
+      bpm: '112 BPM',
+      genres: ['Mixing', 'Singing', 'Jazz'],
+    },
+    {
+      title: 'Another Track',
+      description: 'Some details',
+      duration: '3:15',
+      bpm: '120 BPM',
+      genres: ['Pop', 'Mastering'],
+    },
+  ],
+  reviews: [
+    {
+      id: '1',
+      reviewer: 'Cleve Music',
+      reviewerAvatar: 'https://via.placeholder.com/32',
+      rating: 4.9,
+      date: 'Jan 8 2023',
+      contractTitle: 'Contract title text here…',
+      content:
+        'Great communication, quick turnaround and high-quality delivery. Would definitely work again!',
+      price: 1000,
+    },
+    {
+      id: '2',
+      reviewer: 'Another Client',
+      reviewerAvatar: 'https://via.placeholder.com/32',
+      rating: 4.5,
+      date: 'Feb 15 2023',
+      contractTitle: 'Different contract…',
+      content: 'Good work, delivered on time.',
+      price: 500,
+    },
+  ],
+};
 
 const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   isOpen,
   onClose,
-  // workerData
+  worker,
+  services,
+  isLoading,
 }) => {
-  const [activeTab, setActiveTab] = useState('About');
+  const [activeTab, setActiveTab] = useState<'about' | 'work' | 'services' | 'reviews'>('about');
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  // Mock data within the component for now
-  const mockWorkerData = {
-    name: 'Cleve Music',
-    avatar: 'https://via.placeholder.com/48',
-    rating: 4.9,
-    reviews: 125,
-    specialty: 'Specialist',
-    about:
-      'TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & 5+ Years Experience in Frontend Development Next.js & TypeScript Specialist Next.js & TypeScript...',
-    workItems: [
-      {
-        id: 1,
-        title: 'Funky Bounce Logo',
-        remarks: 'Worker Remarks Text',
-        tags: ['Mixing', 'Singing', 'Jazz'],
-        duration: '0:22',
-        bpm: '112 BPM',
-      },
-      {
-        id: 2,
-        title: 'Another Track',
-        remarks: 'Some details',
-        tags: ['Pop', 'Mastering'],
-        duration: '3:15',
-        bpm: '120 BPM',
-      },
-      // Add more work items...
-    ] as WorkItem[],
-    services: [
-      {
-        id: 1,
-        title: 'Draw catchy illustrations anime',
-        rating: 4.9,
-        reviews: 125,
-        price: '$101',
-      },
-      {
-        id: 2,
-        title: 'Professional Voice Over',
-        rating: 5.0,
-        reviews: 80,
-        price: '$50',
-      },
-      // Add more services...
-    ] as Service[],
-    reviewsData: [
-      {
-        id: 1,
-        reviewerName: 'Cleve Music',
-        reviewerAvatar: 'https://via.placeholder.com/32',
-        rating: 4.9,
-        date: 'Jan 8, 2023',
-        contractTitle: 'Contract title text here...',
-        content:
-          'idence.123confidence.123confidence.123cidence.123confidence.123confidence.123cidence.123confidence.123confidence.123 e.123 idence.123confidence.123confidence.123cidence.123confidence.123confidence.',
-        amount: '$1000.00',
-      },
-      {
-        id: 2,
-        reviewerName: 'Another Client',
-        reviewerAvatar: 'https://via.placeholder.com/32',
-        rating: 4.5,
-        date: 'Feb 15, 2023',
-        contractTitle: 'Different contract...',
-        content: 'Good work, delivered on time.',
-        amount: '$500.00',
-      },
-      // Add more reviews...
-    ] as Review[],
-  };
+  const displayName = worker?.full_name || worker?.username || (isLoading ? 'Loading...' : 'Worker');
+  const displayAvatar = worker?.avatar_url ?? undefined;
+  const displayBio = worker?.bio || (isLoading ? 'Loading bio...' : 'No bio provided.');
 
-  // Replace mockWorkerData with workerData when passed as prop
-  const displayData = mockWorkerData; // workerData || mockWorkerData;
-
-  // Use useEffect to handle focus when the drawer is closed
   useEffect(() => {
-    if (!isOpen) {
-      // Remove focus from any element when drawer closes
-      if (document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur();
-      }
+    if (!isOpen && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
     }
-  }, [isOpen]);
+    if (isOpen && !isLoading && worker) {
+      setActiveTab('about');
+    }
+  }, [isOpen, isLoading, worker]);
 
   return (
     <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      {/* Overlay is typically handled by Drawer.Root or Drawer.Content in libraries like vaul */}
-      {/* {isOpen && (
-        <Drawer.Overlay className='fixed inset-0 z-40 bg-black/40' />
-      )} */}
-      <Drawer.Content className='shadow-xl fixed inset-y-0 right-0 z-50 h-[100dvh] w-full max-w-md overflow-hidden bg-white sm:max-w-lg md:max-w-xl lg:max-w-2xl'>
-        <div className='flex h-full flex-col'>
-          {/* Header with Close Button and External Link */}
-          <div className='border-b border-stroke-soft-200 px-5 py-4'>
-            <div className='flex items-center justify-between'>
+      <Drawer.Content
+        className="fixed inset-y-0 right-0 z-50 h-[100dvh] w-full shadow-xl overflow-hidden bg-white"
+        style={{ maxWidth: '800px' }}
+      >
+        <DialogPrimitive.Title className="sr-only">
+          {`Worker Profile: ${displayName}`}
+        </DialogPrimitive.Title>
+
+        <div className="flex h-full flex-col">
+          {/* header */}
+          <div className="px-5 py-4">
+            <div className="flex items-center justify-between">
               <Drawer.Close asChild>
-                <button className='focus-visible:ring-ring rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'>
-                  <RiCloseLine className='text-text-secondary-600 size-5' />
-                  <span className='sr-only'>Close</span>
+                <button className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                  <RiCloseLine className="size-5 text-text-secondary-600" />
+                  <span className="sr-only">Close</span>
                 </button>
               </Drawer.Close>
+
               <Link
-                href='#' // TODO: Link to actual worker profile page
-                className='text-text-primary-600 text-sm flex items-center gap-1.5 font-medium'
-              >
-                Open in new tab <RiExternalLinkLine className='size-4' />
+                href={worker ? `/workers/${worker.id}` : '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center gap-1.5 text-sm font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700 ${!worker || isLoading ? 'pointer-events-none opacity-50' : ''}`}>
+                Open in new tab <RiSendPlaneLine className="size-4" />
               </Link>
             </div>
 
-            {/* Profile Information */}
-            <div className='mt-5 flex items-start justify-between'>
-              <div className='flex items-center gap-4'>
-                <Avatar.Root size='48'>
-                  <Avatar.Image
-                    src={displayData.avatar}
-                    alt={displayData.name}
-                  />
-                </Avatar.Root>
-                <div>
-                  <div className='flex flex-wrap items-center gap-x-2 gap-y-1'>
-                    {' '}
-                    {/* Added flex-wrap */}
-                    <h2 className='text-xl font-semibold text-text-strong-950'>
-                      {displayData.name}
-                    </h2>
-                    <div className='text-sm flex items-center gap-0.5'>
-                      <RiStarFill className='size-4 text-yellow-400' />
-                      <span className='text-text-secondary-600'>
-                        {displayData.rating} ({displayData.reviews})
-                      </span>
+            {isLoading ? (
+              <div className="mt-5 flex h-[88px] items-center justify-center px-5">
+                <RiLoader4Line className="size-8 animate-spin text-text-secondary-600" />
+              </div>
+            ) : worker ? (
+              <div className="mt-5 flex items-start justify-between px-5">
+                <div className="flex items-center gap-4">
+                  <Avatar.Root size="64">
+                    <Avatar.Image src={displayAvatar ? displayAvatar : undefined} alt={displayName} />
+                  </Avatar.Root>
+
+                  <div>
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                      <h2 className="text-xl font-semibold text-text-strong-950">
+                        {displayName}
+                      </h2>
+                      <div className="flex items-center gap-0.5 text-sm text-text-secondary-600">
+                        <RiStarFill className="size-4 text-yellow-400" />
+                        <span> 4.8 (100+)</span>
+                      </div>
                     </div>
-                  </div>
-                  <div className='text-sm text-text-secondary-600 mt-1 flex gap-1'>
-                    <RiGoogleFill className='size-4' />
-                    <RiGoogleFill className='size-4' />
-                    <RiGoogleFill className='size-4' />
-                    <span>{displayData.specialty}</span>
+                    <div className="mt-1 flex gap-1 text-sm text-text-secondary-600">
+                      <RiGoogleFill className="size-4" />
+                      <RiGoogleFill className="size-4" />
+                      <RiGoogleFill className="size-4" />
+                      <span>Music Producer</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className='flex items-center gap-3'>
-                <button className='text-sm rounded-md border border-stroke-soft-200 px-3.5 py-2 font-medium text-text-strong-950 transition-colors hover:bg-bg-weak-50'>
-                  Hire <RiArrowRightLine className='ml-1.5 inline size-3.5' />
-                </button>
-                <button className='text-sm hover:bg-text-strong-900 flex items-center justify-center rounded-md bg-text-strong-950 px-3.5 py-2 font-medium text-white transition-colors'>
-                  Touch{' '}
-                  <RiExternalLinkLine className='ml-1.5 inline size-3.5' />
-                </button>
-                <button className='text-text-secondary-600 flex items-center justify-center rounded-full p-1.5 transition-colors hover:bg-bg-weak-50 hover:text-red-500'>
-                  <RiHeartLine className='size-5' />
-                </button>
-              </div>
-            </div>
-          </div>
 
-          {/* Navigation Tabs */}
-          <div className='border-b border-stroke-soft-200'>
-            <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
-              <Tabs.List className='flex border-0 bg-transparent p-0'>
-                {['About', 'Work', 'Service', 'Review'].map((tabName) => (
-                  <Tabs.Trigger
-                    key={tabName}
-                    value={tabName}
-                    className='text-sm text-text-secondary-600 flex-1 border-b-2 border-transparent px-4 py-3 text-center font-medium transition-colors data-[state=active]:border-primary-base data-[state=active]:text-text-strong-950'
-                  >
-                    {tabName}
-                  </Tabs.Trigger>
-                ))}
-              </Tabs.List>
-            </Tabs.Root>
-          </div>
-
-          {/* Content Area - scrollable */}
-          <div className='flex-1 overflow-y-auto overflow-x-hidden'>
-            {/* About Tab Content */}
-            {activeTab === 'About' && (
-              <div className='p-5'>
-                <p className='text-text-secondary-600 whitespace-pre-wrap text-paragraph-sm leading-relaxed'>
-                  {' '}
-                  {/* Added whitespace-pre-wrap */}
-                  {displayData.about}
-                </p>
-                {/* Consider adding a 'More' button if content is very long */}
+                <div className="flex items-center gap-3">
+                  <button className="w-[96px] rounded-md border border-stroke-soft-200 px-3.5 py-2 text-sm font-medium text-text-strong-950 transition-colors hover:bg-bg-weak-50">
+                    Hire <RiArrowDropRightLine className="ml-.5 inline size-7" />
+                  </button>
+                  <button className="w-[96px] flex items-center justify-center rounded-md bg-text-strong-950 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-text-strong-900">
+                    Touch <RiSendPlaneLine className="ml-1.5 inline size-3.5" />
+                  </button>
+                  <button className="rounded-full p-1.5 text-text-secondary-600 transition-colors hover:bg-bg-weak-50 hover:text-red-500">
+                    <RiHeartLine className="size-5" />
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <div className="mt-5 flex h-[88px] items-center justify-center px-5 text-text-secondary-600">
+                Could not load worker profile.
               </div>
             )}
+          </div>
 
-            {/* Work Tab Content */}
-            {activeTab === 'Work' && (
-              <div className='divide-y divide-stroke-soft-200'>
-                {displayData.workItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className='flex items-center justify-between gap-3 p-5'
-                  >
-                    <div className='flex items-center gap-3.5'>
-                      <button className='bg-bg-subtle-100 hover:bg-bg-subtle-200 flex size-11 items-center justify-center rounded-full transition-colors'>
-                        <RiPlayLine className='size-5 text-text-strong-950' />
-                      </button>
-                      <div>
-                        <p className='font-medium text-text-strong-950'>
-                          {item.title}
-                        </p>
-                        <p className='text-xs text-text-secondary-600'>
-                          {item.remarks}
-                        </p>
-                      </div>
+          <div className="mt-2 h-px bg-stroke-soft-200 w-[95%] mx-auto" />
+
+          {!isLoading && worker && (
+            <div className="px-5 pt-4">
+              <Tabs.Root value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+                <Tabs.List className="flex justify-start gap-4">
+                  {[
+                    { key: 'about', label: 'About' },
+                    { key: 'work', label: 'Work' },
+                    { key: 'services', label: `Service` },
+                    { key: 'reviews', label: 'Review' },
+                  ].map(({ key, label }) => (
+                    <Tabs.Trigger
+                      key={key}
+                      value={key}
+                      className="inline-flex justify-start border-b-2 border-transparent bg-transparent px-4 py-3 text-sm font-medium text-text-secondary-600 transition-colors data-[state=active]:border-black data-[state=active]:text-text-strong-950 data-[state=active]:bg-transparent"
+                    >
+                      {label}
+                    </Tabs.Trigger>
+                  ))}
+                </Tabs.List>
+              </Tabs.Root>
+            </div>
+          )}
+
+          <div className="flex-1 overflow-x-hidden overflow-y-auto px-5 py-5">
+            {isLoading ? (
+              <div className="flex h-full items-center justify-center">
+                <RiLoader4Line className="size-10 animate-spin text-text-secondary-600" />
+              </div>
+            ) : worker ? (
+              <>
+                {activeTab === 'about' && (
+                  <>
+                    <AboutSection about={displayBio} />
+
+                    <div className="mt-8 flex items-center justify-between">
+                      <h3 className="text-lg font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
+                        Work
+                      </h3>
                     </div>
-                    <div className='flex items-center gap-4'>
-                      <div className='hidden gap-1 lg:flex'>
-                        {item.tags.map((tag) => (
-                          <Badge.Root key={tag} variant='light' size='small'>
-                            {tag}
-                          </Badge.Root>
+                    <div className="divide-y divide-stroke-soft-200">
+                      {placeholderWorkerData.workItems.map((item, i) => (
+                        <WorkItem key={i} item={item} />
+                      ))}
+                    </div>
+
+                    <h3 className="mt-8 inline-block text-lg font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
+                      Service
+                    </h3>
+                    <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                      {services && services.length > 0 ? (
+                        services.slice(0, 3).map((svc) => (
+                          <ServiceCard
+                            key={svc.id}
+                            service={svc}
+                            sellerAvatarUrl={displayAvatar ? displayAvatar : undefined}
+                            sellerName={displayName}
+                          />
+                        ))
+                      ) : (
+                        <p className="text-sm text-text-secondary-600 col-span-full">No services found for this worker.</p>
+                      )}
+                    </div>
+
+                    <h3 className="mt-8 inline-block text-lg font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
+                      Review
+                    </h3>
+                    <div className="mt-4 space-y-5">
+                      {placeholderWorkerData.reviews.map((r) => (
+                        <ReviewItem key={r.id} review={r} />
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {activeTab === 'work' && (
+                  <div className="divide-y divide-stroke-soft-200">
+                    {placeholderWorkerData.workItems.length > 0 ? (
+                      placeholderWorkerData.workItems.map((item, i) => (
+                        <WorkItem key={i} item={item} />
+                      ))
+                    ) : (
+                      <div className="text-center text-text-secondary-600 py-10">
+                        <p>No work samples available yet.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {activeTab === 'services' && (
+                  <>
+                    {services && services.length > 0 ? (
+                      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-2">
+                        {services.map((svc) => (
+                          <ServiceCard
+                            key={svc.id}
+                            service={svc}
+                            sellerAvatarUrl={displayAvatar ? displayAvatar : undefined}
+                            sellerName={displayName}
+                          />
                         ))}
                       </div>
-                      <div className='text-right'>
-                        <p className='font-medium text-text-strong-950'>
-                          {item.duration}
-                        </p>
-                        <p className='text-xs text-text-secondary-600'>
-                          {item.bpm}
-                        </p>
+                    ) : (
+                      <div className="text-center text-text-secondary-600 py-10">
+                        <p>This worker currently has no services listed.</p>
                       </div>
-                      <button className='text-text-secondary-600 hover:text-text-primary-600 rounded-full p-1.5 transition-colors hover:bg-bg-weak-50'>
-                        <RiBookmarkLine className='size-5' />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
+                    )}
+                  </>
+                )}
 
-            {/* Service Tab Content */}
-            {activeTab === 'Service' && (
-              <div className='grid grid-cols-1 gap-5 p-5 sm:grid-cols-2 md:grid-cols-3'>
-                {displayData.services.map((service) => (
-                  // Use a dedicated Service Card component here if available
-                  // For now, duplicating the simple card structure
-                  <div
-                    key={service.id}
-                    className='shadow-sm hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all'
-                  >
-                    <div className='relative h-40 w-full bg-gradient-to-br from-blue-400 to-purple-500'>
-                      {/* Placeholder image or based on service.image */}
-                    </div>
-                    <div className='p-3.5'>
-                      <p className='mb-2.5 line-clamp-2 text-paragraph-sm font-medium text-text-strong-950'>
-                        {service.title}
-                      </p>
-                      <div className='flex items-center justify-between text-paragraph-sm'>
-                        <div className='text-text-secondary-600 flex items-center gap-0.5'>
-                          <RiStarFill className='size-3.5 text-yellow-400' />
-                          <span>
-                            {service.rating} ({service.reviews})
-                          </span>
-                        </div>
-                        <span className='font-medium text-text-strong-950'>
-                          {service.price}
-                        </span>
+                {activeTab === 'reviews' && (
+                  <div className="space-y-5 divide-y divide-stroke-soft-200">
+                    {placeholderWorkerData.reviews.length > 0 ? (
+                      placeholderWorkerData.reviews.map((review) => (
+                        <ReviewItem key={review.id} review={review} />
+                      ))
+                    ) : (
+                      <div className="text-center text-text-secondary-600 py-10">
+                        <p>No reviews available yet.</p>
                       </div>
-                    </div>
+                    )}
                   </div>
-                ))}
-              </div>
-            )}
-
-            {/* Review Tab Content */}
-            {activeTab === 'Review' && (
-              <div className='divide-y divide-stroke-soft-200'>
-                {displayData.reviewsData.map((review) => (
-                  <div key={review.id} className='p-5'>
-                    <div className='mb-3 flex items-start justify-between'>
-                      <div className='flex items-center gap-3'>
-                        <Avatar.Root size='32'>
-                          <Avatar.Image
-                            src={review.reviewerAvatar}
-                            alt={review.reviewerName}
-                          />
-                        </Avatar.Root>
-                        <div>
-                          <p className='font-medium text-text-strong-950'>
-                            {review.reviewerName}
-                          </p>
-                          <div className='text-xs text-text-secondary-600 flex items-center gap-2'>
-                            <div className='flex items-center'>
-                              <RiStarFill className='size-3.5 text-yellow-400' />
-                              <span>{review.rating}</span>
-                            </div>
-                            <span>{review.date}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <span className='font-medium text-text-strong-950'>
-                        {review.amount}
-                      </span>
-                    </div>
-                    <h3 className='mb-2 font-medium text-text-strong-950'>
-                      {review.contractTitle}
-                    </h3>
-                    <p className='text-sm text-text-secondary-600 mb-2.5 line-clamp-3 leading-relaxed'>
-                      {' '}
-                      {/* Added line-clamp */}
-                      {review.content}
-                    </p>
-                    <button className='text-sm text-text-primary-600 hover:text-text-primary-700 font-medium transition-colors'>
-                      More
-                    </button>
-                  </div>
-                ))}
+                )}
+              </>
+            ) : (
+              <div className="flex h-full items-center justify-center text-text-secondary-600">
+                Could not load worker profile content.
               </div>
             )}
           </div>
         </div>
+
+        <BlockFileUploadDialog
+          open={isUploadModalOpen}
+          onOpenChange={setIsUploadModalOpen}
+        />
       </Drawer.Content>
     </Drawer.Root>
   );

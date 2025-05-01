@@ -74,5 +74,9 @@ export function isStep2Complete(data: Partial<CreateServiceFormData>): boolean {
       service.price > 0,
   );
 
+  console.log(data.additionalServices);
+  console.log(mainFieldsComplete);
+  console.log(additionalServicesValid);
+
   return mainFieldsComplete && additionalServicesValid;
 }

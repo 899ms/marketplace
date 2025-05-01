@@ -28,14 +28,14 @@ const CreateJobMainContent = ({
   };
 
   return (
-    <main className='mx-auto flex-1 px-4 py-6 md:px-10'>
+    <main className='mx-auto flex-1 px-4 py-6 md:px-10 flex flex-col items-center'>
       {' '}
       {/* Added flex-1 */}
-      <h1 className='text-3xl mb-2 font-semibold text-text-strong-950'>
+      <h1 className='text-[32px] mb-1 font-semibold text-[#0A0D14]'>
         Create job
       </h1>
-      <p className='text-text-secondary-600 mb-8'>
-        Define details, set the budget and outline preferences
+      <p className='text-[#525866] text-[18px] mb-8'>
+        Define details, set the budget
       </p>
       <Accordion.Root
         type='single'
@@ -50,23 +50,25 @@ const CreateJobMainContent = ({
             <Accordion.Item
               value={`item-${stepNumber}`}
               key={stepNumber}
-              className='shadow-sm overflow-hidden rounded-xl border border-stroke-soft-200 bg-bg-white-0 data-[state=open]:border-stroke-strong-950'
+              className='shadow-sm overflow-hidden rounded-3xl border !bg-white !border-[#E1E4EA] !px-0'
             >
-              <Accordion.Trigger className='group/trigger flex w-full items-center justify-between p-4 text-left hover:bg-bg-weak-50'>
+              <Accordion.Trigger className='!p-4 !mx-0 group/trigger flex w-full items-center justify-between p-4 text-left hover:bg-bg-weak-50 w-full'>
                 {' '}
                 {/* Added group */}
                 <div className='flex items-center gap-3'>
-                  <div className='text-text-secondary-600 flex size-6 items-center justify-center rounded-full bg-bg-soft-200 text-label-xs font-medium'>
+                  <div className='flex size-10 items-center justify-center rounded-full bg-white text-[#0E121B] text-[14px] font-medium border border-[border-[#E1E4EA]'>
                     {String(stepNumber).padStart(2, '0')}
                   </div>
-                  <span className='text-label-md font-medium text-text-strong-950'>
+                  <span className='text-[14px] font-medium text-[#0E121B]'>
                     {step.title}
                   </span>
                 </div>
-                <RiArrowDownSLine className='text-text-secondary-600 size-5 transition-transform duration-200 group-data-[state=open]/trigger:rotate-180' />{' '}
+                <div className='flex items-center justify-center size-6 rounded-md border border-[#E1E4EA]'>
+                  <RiArrowDownSLine className='text-[#525866] size-5 transition-transform duration-200 group-data-[state=open]/trigger:rotate-180' />{' '}
+                </div>
                 {/* Use group state */}
               </Accordion.Trigger>
-              <Accordion.Content className='border-t border-stroke-soft-200 p-6'>
+              <Accordion.Content className='py-4 mt-2 border-t border-[#E1E4EA] '>
                 {step.content || <p>Content for {step.title} goes here...</p>}
               </Accordion.Content>
             </Accordion.Item>

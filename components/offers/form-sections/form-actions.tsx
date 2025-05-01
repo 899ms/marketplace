@@ -3,6 +3,7 @@
 import React from 'react';
 import { Root as Button } from '@/components/ui/button';
 // import { Loader2 } from 'lucide-react'; // Or your preferred spinner
+import * as FancyButton from '@/components/ui/fancy-button';
 
 interface FormActionsProps {
   isSubmitting: boolean;
@@ -11,19 +12,19 @@ interface FormActionsProps {
 
 export function FormActions({ isSubmitting, onCancel }: FormActionsProps) {
   return (
-    <div className='flex justify-end space-x-4'>
+    <div className='flex gap-2 w-full'>
       <Button
         type='button'
         disabled={isSubmitting}
-        className='rounded-md border border-gray-300 bg-white px-4 py-2 hover:bg-gray-50'
+        className='text-black w-1/2 rounded-md border border-gray-300 bg-white px-4 py-2 hover:bg-gray-50'
         onClick={onCancel} // Add cancel handler if provided
       >
         Cancel
       </Button>
-      <Button
+      <FancyButton.Root
         type='submit'
         disabled={isSubmitting}
-        className='min-w-[100px] rounded-md bg-gray-900 px-4 py-2 text-white hover:bg-gray-700 disabled:bg-gray-400' // Added min-width
+        className='w-1/2 min-w-[100px] rounded-md bg-gray-900 px-4 py-2 text-white hover:bg-gray-700 disabled:bg-gray-400' // Added min-width
       >
         {isSubmitting ? (
           <>
@@ -33,7 +34,7 @@ export function FormActions({ isSubmitting, onCancel }: FormActionsProps) {
         ) : (
           'Continue'
         )}
-      </Button>
+      </FancyButton.Root>
     </div>
   );
 }

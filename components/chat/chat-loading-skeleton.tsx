@@ -1,8 +1,20 @@
 import React from 'react';
 
-export default function ChatLoadingSkeleton() {
+interface ChatLoadingSkeletonProps {
+  isPopup?: boolean;
+}
+
+export default function ChatLoadingSkeleton({ isPopup = false }: ChatLoadingSkeletonProps) {
+  // Base class for both modes
+  const containerClass = 'flex animate-pulse flex-col';
+
+  // Mode specific classes
+  const containerModeClass = isPopup
+    ? 'rounded-lg shadow-lg h-[500px] w-[350px]'
+    : 'h-full';
+
   return (
-    <div className='flex h-full animate-pulse flex-col'>
+    <div className={`${containerClass} ${containerModeClass}`}>
       {/* Header Skeleton */}
       <div className='border-b p-4'>
         <div className='flex items-center space-x-3'>

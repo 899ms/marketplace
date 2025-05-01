@@ -47,16 +47,17 @@ export default function SendOfferPage() {
 
   return (
     <div className='container mx-auto px-4 py-8'>
-      <h1 className='text-3xl mb-8 font-bold'>Send an offer</h1>
-      <div className='grid grid-cols-1 gap-8 lg:grid-cols-3'>
+      <h1 className='text-[40px] text-[#0E121B] mb-8 font-bold'>Send an offer</h1>
+      <div className='grid grid-cols-1 gap-8 lg:grid-cols-7'>
         {/* Left Column: Form */}
-        <div className='lg:col-span-2'>
+        <div className='lg:col-span-5'>
           <SendOfferForm offerId={offerid} />
         </div>
 
         {/* Right Column: Offer Profile Sidebar */}
-        <div className='lg:col-span-1'>
-          <div className='sticky top-8'>
+
+        <div className='lg:col-span-2 rounded-xl border border-stroke-soft-200'>
+          <div className='sticky top-20 space-y-2 '>
             {/* 
               TODO: Fetch actual worker data instead of using mock data. 
               The data might come from the offerid, recipient selection, or related entities.

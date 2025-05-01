@@ -9,6 +9,7 @@ import supabase from '@/utils/supabase/client';
 import { SendOfferSchema, SendOfferFormData } from '@/components/offers/schema';
 import { User, Job, BaseFileData } from '@/utils/supabase/types';
 import { chatOperations } from '@/utils/supabase/database';
+import { format, parseISO, isValid } from 'date-fns';
 
 export interface UseSendOfferFormReturn {
   formMethods: UseFormReturn<SendOfferFormData>;
@@ -22,6 +23,26 @@ export interface UseSendOfferFormReturn {
   jobs: Pick<Job, 'id' | 'title'>[];
   isUploadingFiles: boolean;
   setIsUploadingFiles: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+// Helper function to format date string safely
+function formatDueDate(
+  dateString: string | Date | null | undefined,
+): string | null {
+  if (!dateString) return null;
+  try {
+    const date =
+      typeof dateString === 'string' ? parseISO(dateString) : dateString;
+    // Check if the date is valid after parsing
+    if (!isValid(date)) {
+      console.warn('Invalid date provided for formatting:', dateString);
+      return null; // Return null for invalid dates
+    }
+    return `Due ${format(date, 'PP')}`;
+  } catch (e) {
+    console.error('Error formatting due date:', e);
+    return null;
+  }
 }
 
 export function useSendOfferForm(): UseSendOfferFormReturn {
@@ -44,6 +65,7 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
     mode: 'onBlur',
     defaultValues: {
       sendTo: '',
+      skillLevels: [],
       selectOrder: '',
       contractTitle: '',
       description: '',
@@ -122,93 +144,69 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
     try {
       const validatedData = data;
 
+      // --- Calculate Total Amount ---
       let totalAmount = 0;
       if (validatedData.paymentType === 'one-time') {
-        totalAmount = validatedData.amount!;
+        totalAmount = validatedData.amount!; // Ensure amount is present for one-time
       } else if (validatedData.milestones?.length) {
         totalAmount = validatedData.milestones.reduce(
-          (sum, m) => sum + m.amount,
+          (sum, m) => sum + (m.amount || 0),
           0,
         );
+      } else {
+        throw new Error('Cannot determine offer amount.'); // Should be caught by validation, but good safety check
       }
 
+      // --- Create Contract ---
       const contractData = {
         buyer_id: user.id,
         seller_id: validatedData.sendTo,
         job_id: validatedData.selectOrder || null,
-        service_id: null,
+        service_id: null, // Assuming offers are always for jobs in this context
+        title: validatedData.contractTitle, // Add title
+        contract_type: validatedData.paymentType, // Add contract type
         status: 'pending',
         amount: totalAmount,
-        description: `Title: ${validatedData.contractTitle}\n\n${validatedData.description}`,
+        description: validatedData.description,
         attachments: validatedData.attachments || null,
         currency: validatedData.currency,
       };
 
+
       const { data: newContract, error: contractError } = await supabase
         .from('contracts')
         .insert(contractData)
-        .select('id, buyer_id, seller_id')
+        .select('id, buyer_id, seller_id') // Select necessary fields
         .single();
 
-      // --- DEBUG LOGGING START ---
-      console.log('Contract creation attempt complete.');
-      if (contractError) {
-        console.error('Contract creation FAILED:', contractError);
-      } else {
-        console.log('Contract created successfully:', newContract);
-      }
-      // --- DEBUG LOGGING END ---
-
       if (contractError || !newContract) {
+        console.error('Contract creation failed:', contractError);
         throw contractError || new Error('Failed to create contract record');
       }
+      console.log('Contract created successfully:', newContract);
 
-      // --- DEBUG LOGGING START ---
-      console.log('Attempting to create chat with data:', {
-        buyer_id: newContract.buyer_id,
-        seller_id: newContract.seller_id,
-        contract_id: newContract.id,
-      });
-      // --- DEBUG LOGGING END ---
-      try {
-        const newChat = await chatOperations.createChat({
-          buyer_id: newContract.buyer_id,
-          seller_id: newContract.seller_id,
+      // --- Create Milestones (Always create at least one) ---
+      let milestoneInsertError: any = null;
+      if (validatedData.paymentType === 'one-time') {
+        console.log('Creating single milestone for one-time payment.');
+        // Create a single milestone for one-time payment
+        const singleMilestoneData = {
           contract_id: newContract.id,
-        });
-
-        // --- DEBUG LOGGING START ---
-        console.log('chatOperations.createChat call finished.');
-        // --- DEBUG LOGGING END ---
-
-        if (!newChat) {
-          console.error(
-            `Offer sent (Contract ID: ${newContract.id}), but failed to create associated chat. createChat returned null.`,
-          );
-          setError(
-            `Offer sent, but couldn't initiate chat. Please contact support if needed.`,
-          );
-        } else {
-          console.log(
-            `Chat created successfully (Chat ID: ${newChat.id}) for Contract ID: ${newContract.id}`,
-          );
-        }
-      } catch (chatErr: any) {
-        // --- DEBUG LOGGING START ---
-        console.error(
-          `Error caught during chatOperations.createChat call for contract ${newContract.id}:`,
-          chatErr,
+          description: validatedData.contractTitle, // Use contract title or description
+          amount: totalAmount,
+          due_date: validatedData.deadline?.toISOString() || null,
+          status: 'pending',
+          sequence: 1,
+        };
+        const { error } = await supabase
+          .from('contract_milestones')
+          .insert(singleMilestoneData);
+        milestoneInsertError = error;
+      } else if (validatedData.milestones?.length) {
+        console.log(
+          `Creating ${validatedData.milestones.length} milestones for installment payment.`,
         );
-        // --- DEBUG LOGGING END ---
-        setError(
-          `Offer sent, but failed to create chat: ${chatErr.message || 'Unknown error'}.`,
-        );
-      }
-
-      if (
-        validatedData.paymentType === 'installment' &&
-        validatedData.milestones?.length
-      ) {
+        // Create milestones from form for installment payment
         const milestoneData = validatedData.milestones.map((m, index) => ({
           contract_id: newContract.id,
           description: m.description,
@@ -217,25 +215,106 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
           status: 'pending',
           sequence: index + 1,
         }));
-
-        const { error: milestoneError } = await supabase
+        const { error } = await supabase
           .from('contract_milestones')
           .insert(milestoneData);
+        milestoneInsertError = error;
+      } else {
+        // This case should ideally not happen if validation is correct
+        console.warn('No milestones provided for installment payment type.');
+      }
 
-        if (milestoneError) {
-          console.error('Failed to insert milestones:', milestoneError);
-          const currentError = error ? `${error} ` : '';
+      if (milestoneInsertError) {
+        console.error('Failed to insert milestones:', milestoneInsertError);
+        // Decide how critical this is. Maybe proceed but add to error state?
+        const currentError = error ? `${error} ` : '';
+        setError(
+          `${currentError}Offer created, but failed to save milestones: ${milestoneInsertError.message}`,
+        );
+        // Do not throw here, let the offer message proceed if possible
+      }
+
+      // --- Create Chat ---
+      let newChat;
+      try {
+        console.log('Attempting to create/get chat...');
+        newChat = await chatOperations.createChat({
+          buyer_id: newContract.buyer_id,
+          seller_id: newContract.seller_id,
+          contract_id: newContract.id, // Link chat to the contract
+        });
+        if (!newChat) {
+          console.error('Failed to create/get chat. createChat returned null.');
           setError(
-            `${currentError}Offer & chat created, but failed to save milestones: ${milestoneError.message}`,
+            (prevError) =>
+              `${prevError || ''} Offer sent, but couldn't initiate chat.`,
+          );
+        } else {
+          console.log(
+            `Chat created/retrieved successfully (Chat ID: ${newChat.id})`,
+          );
+        }
+      } catch (chatErr: any) {
+        console.error('Error during chat creation/retrieval:', chatErr);
+        setError(
+          (prevError) =>
+            `${prevError || ''} Offer sent, but failed to create/get chat: ${chatErr.message || 'Unknown error'}.`,
+        );
+      }
+
+      // --- Send Offer Message to Chat ---
+      if (newChat) {
+        try {
+          // Determine and format delivery time
+          let deliveryDueDate: string | Date | null | undefined = null;
+          if (validatedData.paymentType === 'one-time') {
+            deliveryDueDate = validatedData.deadline;
+          } else if (validatedData.milestones?.length) {
+            // Use the due date of the *last* milestone for installment contracts
+            deliveryDueDate =
+              validatedData.milestones[validatedData.milestones.length - 1]
+                .dueDate;
+          }
+          const formattedDeliveryTime = formatDueDate(deliveryDueDate);
+
+          const offerMessageData = {
+            title: validatedData.contractTitle,
+            description: validatedData.description,
+            price: totalAmount,
+            currency: validatedData.currency,
+            deliveryTime: formattedDeliveryTime,
+            contractId: newContract.id,
+          };
+
+          console.log('Sending offer message to chat:', offerMessageData);
+          await chatOperations.sendMessage({
+            chat_id: newChat.id,
+            sender_id: user!.id,
+            content: '',
+            message_type: 'offer',
+            data: offerMessageData,
+          });
+          console.log(`Offer message sent to chat ${newChat.id}`);
+        } catch (messageError: any) {
+          console.error(
+            `Failed to send offer message to chat ${newChat.id}:`,
+            messageError,
+          );
+          setError(
+            (prevError) =>
+              `${prevError || ''} Offer created, but failed to send offer details into chat.`,
           );
         }
       }
 
+      // Final success state check
       if (!error) {
+        console.log('Offer submission process completed successfully.');
         setSuccess(true);
       }
     } catch (err: any) {
-      console.error('Send Offer error:', err);
+      // Catch errors from contract creation or other unexpected issues
+      console.error('Overall Send Offer error:', err);
       setError(err.message || 'Failed to send offer. Please try again.');
       setSuccess(false);
     } finally {

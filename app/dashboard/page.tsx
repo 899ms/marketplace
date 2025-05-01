@@ -1,10 +1,10 @@
-import { createServerClient } from '@/utils/supabase/server';
+import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
 export default async function DashboardPage() {
-  const supabase = await createServerClient();
+  const supabase = await createSupabaseServerClient();
 
   // Check if the user is authenticated
   const { data } = await supabase.auth.getSession();

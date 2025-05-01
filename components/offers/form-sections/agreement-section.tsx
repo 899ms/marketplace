@@ -1,55 +1,62 @@
 'use client';
 
 import React from 'react';
-// import { UseFormReturn } from 'react-hook-form'; // Remove unused import
-import { Controller, useFormContext } from 'react-hook-form'; // Add Controller
-import { Root as Checkbox } from '@/components/ui/checkbox'; // Correct import
+import { UseFormReturn, Controller } from 'react-hook-form';
+import { Root as Checkbox } from '@/components/ui/checkbox';
 import { Root as Label } from '@/components/ui/label';
 import { SendOfferFormData } from '../schema';
 
-// Remove form prop
-// type FormMethods = Omit<UseFormReturn<SendOfferFormData>, 'handleSubmit'>;
-// interface AgreementSectionProps {
-//   form: FormMethods;
-// }
+type FormMethods = Omit<UseFormReturn<SendOfferFormData>, 'handleSubmit'>;
 
-export function AgreementSection(/* { form }: AgreementSectionProps */) {
-  // Get methods from context
+interface AgreementSectionProps {
+  form: FormMethods;
+}
+
+export function AgreementSection({ form }: AgreementSectionProps) {
   const {
-    control, // Add control
+    control,
     formState: { errors },
-  } = useFormContext<SendOfferFormData>();
+  } = form;
 
   return (
-    <div className='space-y-4 rounded-md border p-4'>
-      <h3 className='text-lg font-semibold'>Agreement</h3>
-      <div className='flex items-start space-x-3'>
-        {/* Use Controller for Checkbox */}
-        <Controller
-          name='agreeToTerms'
-          control={control}
-          render={({ field }) => (
-            <Checkbox
-              id='agreeToTerms'
-              checked={field.value}
-              onCheckedChange={field.onChange}
-              aria-describedby='agreeToTerms-description'
-              className='mt-0.5'
-            />
-          )}
-        />
-        <div className='grid gap-1.5 leading-none'>
-          <Label htmlFor='agreeToTerms' className='font-medium'>
-            Agree to terms and conditions
-          </Label>
-          <p id='agreeToTerms-description' className='text-sm text-gray-500'>
-            You agree to our Terms of Service and Privacy Policy.
-          </p>
-        </div>
+    <div className='flex items-start space-x-3'>
+      <Controller
+        name='agreeToTerms'
+        control={control}
+        render={({ field }) => (
+          <Checkbox
+            id='agreeToTerms'
+            checked={field.value}
+            onCheckedChange={field.onChange}
+            aria-describedby='agreeToTerms-description'
+            className='mt-0.5'
+          />
+        )}
+      />
+      <div className='grid gap-1.5 leading-none mt-1'>
+        <Label htmlFor='agreeToTerms' id='agreeToTerms-description' className='text-[#525866] text-[14px] whitespace-pre-wrap'>
+          I agree to the{' '}
+          <a
+            href='/terms'
+            target='_blank'
+            className='font-medium text-[#0E121B] text-[14px] underline hover:text-[#0E121B]'
+          >
+            Terms & Conditions
+          </a>
+          {' and '}
+          <a
+            href='/privacy'
+            target='_blank'
+            className='font-medium text-[#0E121B] text-[14px] underline hover:text-[#0E121B]'
+          >
+            Privacy Policy
+          </a>
+          .
+        </Label>
+        {errors.agreeToTerms && (
+          <p className='text-sm text-red-500'>{errors.agreeToTerms.message}</p>
+        )}
       </div>
-      {errors.agreeToTerms && (
-        <p className='text-sm text-red-500'>{errors.agreeToTerms.message}</p>
-      )}
     </div>
   );
 }

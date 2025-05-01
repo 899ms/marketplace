@@ -60,6 +60,10 @@ export const SendOfferSchema = z
     agreeToTerms: z.boolean().refine((val) => val === true, {
       message: 'You must agree to the terms and conditions',
     }),
+
+    skillLevels: z
+    .array(z.enum(['Trainee', 'Director', 'Skilled', 'Expert']))
+    .min(0, 'At least one skill level is required'),
   })
   .refine(
     (data) => {

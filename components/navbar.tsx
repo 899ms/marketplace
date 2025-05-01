@@ -28,7 +28,7 @@ import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 
 export default function Navbar() {
   // --- Get Auth State using useAuth hook ---
-  const { user, signOut, loading } = useAuth();
+  const { user, userProfile, signOut, loading } = useAuth();
   // Replace the placeholder isLoggedIn with the actual user state
   // const isLoggedIn = true; // Remove this line
   // -----------------------------------------
@@ -67,12 +67,12 @@ export default function Navbar() {
 
   return (
     <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-sm'>
-      <div className='flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8'>
+      <div className='mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8'>
         {/* Left Section: Logo and Nav Links */}
         <div className='flex items-center gap-8'>
           {/* Logo */}
           <Link
-            href='/'
+            href='/home'
             className='text-lg flex items-center gap-2 font-semibold text-text-strong-950'
           >
             {/* Placeholder for actual logo - assuming an SVG or Image component */}
@@ -92,13 +92,13 @@ export default function Navbar() {
           </Link>
           {/* Navigation Links */}
           <div className='text-text-secondary-600 hidden items-center gap-6 text-label-md lg:flex'>
-            <Link href='/services' className='hover:text-text-strong-950'>
+            <Link href='/services/search?tab=Service' className='hover:text-text-strong-950'>
               Find Services
             </Link>
-            <Link href='/workers' className='hover:text-text-strong-950'>
+            <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950'>
               Find Workers
             </Link>
-            <Link href='/projects' className='hover:text-text-strong-950'>
+            <Link href='/services/search?tab=Project' className='hover:text-text-strong-950'>
               Find Projects
             </Link>
             <Link href='/bonus' className='hover:text-text-strong-950'>
@@ -133,11 +133,20 @@ export default function Navbar() {
 
           {user ? ( // Use user !== null for checking login status
             <>
-              {/* Create Button */}
-              <Button.Root variant='neutral' mode='filled' size='medium'>
-                Create
-                <Button.Icon as={RiAddLine} />
-              </Button.Root>
+              {/* Create Button - Updated with conditional link */}
+              <Link
+                href={
+                  userProfile?.user_type === 'seller'
+                    ? '/worker/services/create'
+                    : '/jobs/create'
+                }
+                passHref
+              >
+                <Button.Root variant='neutral' mode='filled' size='medium'>
+                  Create
+                  <Button.Icon as={RiAddLine} />
+                </Button.Root>
+              </Link>
 
               {/* Notifications Button */}
               <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 relative rounded-md p-2'>
@@ -163,8 +172,8 @@ export default function Navbar() {
                           'User Avatar'
                         } // Use name or email for alt text
                       />
-                    </Avatar.Root>:
-                    <Avatar.Root size='40' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
+                    </Avatar.Root> :
+                      <Avatar.Root size='40' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
                     <span className='hidden md:inline'>Account</span>
                     <RiArrowDownSLine className='text-icon-sub-500 hidden size-4 md:inline' />
                   </button>
