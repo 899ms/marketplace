@@ -14,7 +14,6 @@ import {
   RiCloseLine,
   RiArrowLeftSLine,
   RiArrowRightSLine,
-  RiInformationLine,
   RiAddLine,
   RiDeleteBinLine,
 } from '@remixicon/react';

@@ -16,7 +16,7 @@ import {
   RiLoader4Line,
 } from '@remixicon/react';
 import { CreateJobFormData } from '@/app/jobs/create/schema';
-import FormFieldError from './FormFieldError';
+
 import { useCreateJobForm } from '@/hooks/useCreateJobForm';
 import * as FancyButton from '@/components/ui/fancy-button';
 
@@ -36,7 +36,7 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
   prevStep,
 }) => {
   const {
-    register,
+    // register,
     formState: { errors },
     control,
     setValue,
@@ -210,7 +210,11 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
         <Controller
           name='skill_levels'
           control={control}
-          render={({ field }) => (
+          render={(
+            {
+              /* field */
+            },
+          ) => (
             <div>
               <Select.Root value='' onValueChange={handleSkillLevelSelect}>
                 <Select.Trigger className='w-full'>
@@ -268,7 +272,11 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
         <Controller
           name='candidate_sources'
           control={control}
-          render={({ field }) => (
+          render={(
+            {
+              /* field */
+            },
+          ) => (
             <div>
               <Select.Root value='' onValueChange={handleCandidateSourceSelect}>
                 <Select.Trigger className='w-full'>

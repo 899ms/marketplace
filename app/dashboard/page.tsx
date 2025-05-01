@@ -1,6 +1,5 @@
 import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
-import { userOperations } from '@/utils/supabase';
 
 export const dynamic = 'force-dynamic';
 

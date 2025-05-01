@@ -22,7 +22,7 @@ import {
   RiQuestionLine, // Added for Help Center
   RiChat1Line, // Added for Live Chat
 } from '@remixicon/react';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 

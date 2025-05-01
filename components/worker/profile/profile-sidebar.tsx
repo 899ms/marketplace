@@ -7,7 +7,6 @@ import * as Badge from '@/components/ui/badge'; // Assuming Badge is used for aw
 import {
   RiStarFill,
   RiGoogleFill,
-  RiExternalLinkLine,
   RiTwitchFill,
   RiTwitterXFill,
   // Add other icons if needed for social links

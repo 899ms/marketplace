@@ -101,7 +101,7 @@ export default function SignupForm() {
             Sign Up Successful!
           </h2>
           <p className='mt-4 text-paragraph-sm text-text-sub-600'>
-            We've sent you an email to confirm your account. Please check your
+            Weve sent you an email to confirm your account. Please check your
             inbox.
           </p>
           <div className='mt-6'>

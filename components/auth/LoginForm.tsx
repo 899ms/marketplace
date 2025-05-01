@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { authOperations, SignInSchema, userOperations } from '@/utils/supabase';
 import { z } from 'zod';
 import * as Input from '@/components/ui/input';
@@ -45,6 +45,7 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
   const searchParams = useSearchParams();
   const redirectedFrom = searchParams.get('redirectedFrom');
 
@@ -216,7 +217,7 @@ export default function LoginForm() {
 
       <div className='text-center text-paragraph-sm'>
         <p className='text-text-sub-600'>
-          Don't have an account?{' '}
+          Dont have an account?{' '}
           <a href='/auth/signup' className='text-primary-base hover:underline'>
             Sign up
           </a>
