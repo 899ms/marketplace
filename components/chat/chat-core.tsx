@@ -8,7 +8,7 @@ import {
   MilestoneEventData,
   SystemEventData,
 } from '@/utils/supabase/message-data-types';
-import { format, isSameDay, formatRelative, parseISO } from 'date-fns';
+import { format, isSameDay, formatRelative, parseISO, isToday, isYesterday } from 'date-fns';
 import { Root as Avatar, Image as AvatarImage } from '@/components/ui/avatar';
 import { Root as Button } from '@/components/ui/button';
 import { Root as Textarea } from '@/components/ui/textarea';
@@ -28,11 +28,19 @@ function formatMessageTimestamp(timestamp: string | null | undefined): string {
   }
 }
 
-function formatDateSeparator(timestamp: string | null | undefined): string {
-  if (!timestamp) return 'Date Unknown';
+function formatDateSeparator(dateKey: string | null | undefined): string {
+  if (!dateKey) return 'Date Unknown';
   try {
-    const date = parseISO(timestamp);
-    return formatRelative(date, new Date()).split(' at')[0];
+    const date = parseISO(dateKey);
+
+    if (isToday(date)) {
+      return 'Today';
+    }
+    if (isYesterday(date)) {
+      return 'Yesterday';
+    }
+    return format(date, 'MMM d, yyyy');
+
   } catch (error) {
     console.error('Error formatting date separator:', error);
     return 'Date Error';
@@ -236,7 +244,7 @@ function ChatMessageRenderer({
     return (
       <div className="text-center w-full my-4 px-4">
         <span className="text-xs text-gray-500 dark:text-gray-400">
-          {textToShow} — {formatMessageTimestamp(message.created_at)}
+          {textToShow} — {timestamp}
         </span>
       </div>
     );
