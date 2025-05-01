@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { userOperations } from '@/utils/supabase/database';
 import { redirect } from 'next/navigation';
@@ -16,7 +18,7 @@ function BuyerHome({ userProfile }: { userProfile: User }) {
   return (
     <div className='flex flex-1 gap-6 px-6 pt-6'>
       <Sidebar userProfile={userProfile} />
-      <MainContent userProfile={userProfile} />
+      <MainContent />
     </div>
   );
 }
