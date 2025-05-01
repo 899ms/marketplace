@@ -5,7 +5,11 @@ import * as Button from "@/components/ui/button";
 import * as Avatar from "@/components/ui/avatar";
 import { RiStarFill, RiGoogleFill, RiMoreLine } from '@remixicon/react';
 
+// Import UserRole type (assuming it's defined elsewhere or define here)
+type UserRole = 'buyer' | 'seller';
+
 interface ProfileSectionProps {
+  userRole: UserRole; // Add userRole prop
   name: string;
   rating: number;
   totalReviews: number;
@@ -15,6 +19,7 @@ interface ProfileSectionProps {
 }
 
 export function ProfileSection({
+  userRole, // Destructure userRole
   name,
   rating,
   totalReviews,
@@ -57,7 +62,10 @@ export function ProfileSection({
       </div>
       <div className="flex items-center gap-2">
         <Button.Root variant="neutral" mode="stroke" size="medium">Message</Button.Root>
-        <Button.Root variant="neutral" mode="filled" size="medium">Rehire</Button.Root>
+        {/* Conditionally render Rehire button only for buyers */}
+        {userRole === 'buyer' && (
+          <Button.Root variant="neutral" mode="filled" size="medium">Rehire</Button.Root>
+        )}
         <Button.Root variant="neutral" mode="stroke" size="medium" className="p-2">
           <Button.Icon as={RiMoreLine} className="size-5" />
         </Button.Root>
