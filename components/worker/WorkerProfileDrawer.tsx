@@ -141,7 +141,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
               <div className="mt-5 flex items-start justify-between px-5">
                 <div className="flex items-center gap-4">
                   <Avatar.Root size="64">
-                    <Avatar.Image src={displayAvatar} alt={displayName} />
+                    <Avatar.Image src={displayAvatar ? displayAvatar : undefined} alt={displayName} />
                   </Avatar.Root>
 
                   <div>
