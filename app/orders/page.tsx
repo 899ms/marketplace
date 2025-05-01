@@ -311,117 +311,111 @@ const ReviewListItem = () => {
 };
 
 // Order/Review Page Component
-export default function OrderPage() {
-  const [activeTab, setActiveTab] = useState('Order'); // Default to Order tab
-
-  // Example data for multiple review items with different content
-  const reviewsData = [
+export default function OrdersPage() {
+  // Dummy orders data for demonstration
+  const orders = [
     {
-      avatarUrl: 'https://via.placeholder.com/40',
-      name: 'Cleve Music',
-      rating: 4.9,
-      date: 'Jan 8, 2023',
-      title: 'Contract title text here...Contract title text here..ntr',
-      description:
-        "Working with Ralph on a UX audit for our website was a game-changer. Ralph didn't just identify pain points-he offered innovative solutions that empowered me to make key business decisions with confidence.",
-      amount: 1000.0,
+      id: "order-123",
+      title: "Music Production",
+      seller: "Cleve Music",
+      date: "23 Jan 2025",
+      amount: "$558.00",
+      status: "in-progress",
     },
     {
-      avatarUrl: 'https://via.placeholder.com/40',
-      name: 'Cleve Music',
-      rating: 4.9,
-      date: 'Jan 8, 2023',
-      title: 'Contract title text here...',
-      description:
-        "Working with Ralph on a UX audit for our website was a game-changer. Ralph didn't just identify pain points-he offered innovative solutions that empowered me to make key business decisions with confidence.",
-      amount: 1000.0,
+      id: "order-456",
+      title: "Vocal Engineering",
+      seller: "Sound Wave Studios",
+      date: "15 Jan 2025",
+      amount: "$320.00",
+      status: "completed",
     },
     {
-      avatarUrl: 'https://via.placeholder.com/40',
-      name: 'Cleve Music',
-      rating: 4.9,
-      date: 'Jan 8, 2023',
-      title: 'Contract title text here...',
-      description:
-        "Working with Ralph on a UX audit for our website was a game-changer. Ralph didn't just identify pain points-he offered innovative solutions that empowered me to make key business decisions with confidence.",
-      amount: 1000.0,
-    },
-    {
-      avatarUrl: 'https://via.placeholder.com/40',
-      name: 'Cleve Music',
-      rating: 4.9,
-      date: 'Jan 8, 2023',
-      title: 'Contract title text here...',
-      description:
-        "Working with Ralph on a UX audit for our website was a game-changer. Ralph didn't just identify pain points-he offered innovative solutions that empowered me to make key business decisions with confidence.",
-      amount: 1000.0,
-    },
-    {
-      avatarUrl: 'https://via.placeholder.com/40',
-      name: 'Cleve Music',
-      rating: 4.9,
-      date: 'Jan 8, 2023',
-      title: 'Contract title text here...',
-      description:
-        "Working with Ralph on a UX audit for our website was a game-changer. Ralph didn't just identify pain points-he offered innovative solutions that empowered me to make key business decisions with confidence.",
-      amount: 1000.0,
+      id: "order-789",
+      title: "Mastering Service",
+      seller: "MasterCraft Audio",
+      date: "10 Jan 2025",
+      amount: "$250.00",
+      status: "pending",
     },
   ];
 
   return (
-    <div className='flex flex-1 gap-6 px-6 pt-6'>
-      <OrderSidebar />
-      <main className="flex-1">
-        {/* center everything horizontally */}
-        <div className="w-full lg:max-w-[1000px] mx-auto px-4 sm:px-6">
-          {/* tab bar */}
-          <div className="mb-6 border-t-0">
-            <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
-              <TabMenuHorizontal.List className="flex items-center gap-2 border-none">
-                <TabMenuHorizontal.Trigger
-                  value="Order"
-                  className="
-                    px-4 pb-2 text-label-lg font-medium 
-                    text-gray-400 
-                    data-[state=active]:text-black
-                  "
-                >
-                  Order
-                </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger
-                  value="Review"
-                  className="
-                    px-4 pb-2 text-label-lg font-medium 
-                    text-gray-400 
-                    data-[state=active]:text-black
-                  "
-                >
-                  Review
-                </TabMenuHorizontal.Trigger>
-              </TabMenuHorizontal.List>
-            </TabMenuHorizontal.Root>
-          </div>
-
-          {/* content panel */}
-          <div className="p-4">
-            {activeTab === "Order" && (
-              <div className="flex flex-col divide-y divide-stroke-soft-200">
-                <OrderListItem />
-                <OrderListItem />
-                <OrderListItem />
-              </div>
-            )}
-            {activeTab === "Review" && (
-              <div className="flex flex-col divide-y divide-stroke-soft-200">
-                {reviewsData.map((review, i) => (
-                  <ReviewListItem key={i} />
-                ))}
-              </div>
-            )}
-          </div>
+    <div className="container mx-auto py-8 px-4">
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-2xl font-bold">My Orders</h1>
+        <div className="flex gap-2">
+          <select className="border border-gray-300 rounded px-3 py-2 text-sm">
+            <option>All orders</option>
+            <option>Completed</option>
+            <option>In Progress</option>
+            <option>Pending</option>
+          </select>
+          <button className="bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm">
+            Filter
+          </button>
         </div>
-      </main>
+      </div>
 
+      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Order
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Seller
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Date
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Amount
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Status
+              </th>
+              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+              </th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {orders.map((order) => (
+              <tr key={order.id}>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm font-medium text-gray-900">{order.title}</div>
+                  <div className="text-sm text-gray-500">#{order.id}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{order.seller}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900">{order.date}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-900 font-medium">{order.amount}</div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                    ${order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                      order.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
+                        'bg-yellow-100 text-yellow-800'}`}>
+                    {order.status === 'in-progress' ? 'In Progress' :
+                      order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                  </span>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <Link href={`/orders/detail/${order.id}`} className="text-blue-600 hover:text-blue-800">
+                    View Details
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
