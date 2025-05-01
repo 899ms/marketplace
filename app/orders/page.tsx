@@ -371,9 +371,96 @@ function SummaryCard({ title, value, icon, actions }: SummaryCardProps) {
   );
 }
 
-// Mock data matching the SELLER VIEW image structure
-// TODO: Replace with actual data fetched from API/Supabase
-const mockOrders = [
+// --- Interfaces --- 
+interface PersonInfo {
+  name: string;
+  avatarUrl: string;
+}
+
+interface BuyerOrder {
+  id: string;
+  subject: string;
+  price: number;
+  deadline: string;
+  proposals: number | null;
+  worker: PersonInfo;
+  status: string;
+  // Add a type discriminant if needed, e.g., userType: 'buyer';
+}
+
+interface SellerOrder {
+  id: string;
+  from: PersonInfo;
+  subject: string;
+  price: number;
+  deadline: string;
+  rating: number | null;
+  status: string;
+  // Add a type discriminant if needed, e.g., userType: 'seller';
+}
+
+// --- Mock Data --- 
+
+// Mock data for BUYER VIEW
+const mockBuyerOrders: BuyerOrder[] = [
+  {
+    id: '1',
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    proposals: 5,
+    worker: { name: 'James Brown', avatarUrl: 'https://i.pravatar.cc/40?img=1' },
+    status: 'active',
+  },
+  {
+    id: '2',
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    proposals: null,
+    worker: { name: 'Arthur Taylor', avatarUrl: 'https://i.pravatar.cc/40?img=2' },
+    status: 'pending',
+  },
+  {
+    id: '3',
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    proposals: 1,
+    worker: { name: 'Matthew Johnson', avatarUrl: 'https://i.pravatar.cc/40?img=3' },
+    status: 'active',
+  },
+  {
+    id: '4',
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    proposals: 6,
+    worker: { name: 'Emma Wright', avatarUrl: 'https://i.pravatar.cc/40?img=4' },
+    status: 'close',
+  },
+  {
+    id: '5',
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    proposals: 5,
+    worker: { name: 'Natalia Nowak', avatarUrl: 'https://i.pravatar.cc/40?img=5' },
+    status: 'dispute',
+  },
+  {
+    id: '6',
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    proposals: 5,
+    worker: { name: 'Wei Chen', avatarUrl: 'https://i.pravatar.cc/40?img=6' },
+    status: 'overdue',
+  },
+];
+
+// Mock data for SELLER VIEW
+const mockSellerOrders: SellerOrder[] = [
   {
     id: '1',
     from: { name: 'James Brown', avatarUrl: 'https://i.pravatar.cc/40?img=1' },
@@ -428,7 +515,6 @@ const mockOrders = [
     rating: 4.5,
     status: 'active',
   },
-  // Add more mock data mirroring the seller view...
 ];
 
 // Helper to render status badges based on the image and available Badge props
@@ -475,12 +561,25 @@ function renderStatusBadge(status: string) {
 
 // Right Content Area Component
 function OrdersContent() {
+  // --- State --- 
+  // TODO: Replace this with actual user type determination logic
+  const [userType, setUserType] = React.useState<'buyer' | 'seller'>('seller'); // Default to seller for now
+
   const [activeTab, setActiveTab] = React.useState('all');
   const [searchTerm, setSearchTerm] = React.useState('');
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(undefined); // Needed for buyer
   const [sortOption, setSortOption] = React.useState('default');
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
 
+  // --- Conditional Data & Logic --- 
+
+  const isBuyer = userType === 'buyer';
+
+  // Select mock data with appropriate type
+  const currentMockData: (BuyerOrder | SellerOrder)[] = isBuyer ? mockBuyerOrders : mockSellerOrders;
+
+  // TODO: Update summaryData based on user type and fetched data
   const summaryData = {
     milestone: {
       title: 'Milestone',
@@ -490,19 +589,27 @@ function OrdersContent() {
     },
     totalAmount: {
       title: 'Total Amount',
-      value: '$50110.00',
+      value: isBuyer ? '$500.00' : '$50110.00', // Conditional value
+      actions: isBuyer ? ( // Conditional actions
+        <div className="flex gap-2 text-sm">
+          <button className="text-text-brand-900 hover:underline">Top up</button>
+          <button className="text-text-brand-900 hover:underline">Withdraw</button>
+        </div>
+      ) : null,
     },
     settled: {
       title: 'Settled',
-      value: '$11500.00',
+      value: isBuyer ? '$5100.00' : '$11500.00',
     },
     inEscrow: {
       title: 'In Escrow',
-      value: '$111.00',
+      value: isBuyer ? '$110.00' : '$111.00',
     },
   };
 
-  const filteredAndSortedOrders = mockOrders;
+  // TODO: Implement filtering & sorting based on userType and state
+  const filteredAndSortedOrders = currentMockData; // Placeholder
+
   const totalItems = filteredAndSortedOrders.length;
   const totalPages = Math.ceil(totalItems / itemsPerPage);
   const currentTableData = filteredAndSortedOrders.slice(
@@ -520,9 +627,9 @@ function OrdersContent() {
 
   return (
     <main className="flex-1 bg-bg-alt-white-100 p-6">
-      {/* Top Summary Section */}
+      {/* Top Summary Section - Now uses conditional summaryData */}
       <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {/* Milestone Card */}
+        {/* Milestone Card (assuming same for both) */}
         <div className="rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm md:col-span-1 lg:col-span-1">
           <div className="flex items-start gap-2">
             {summaryData.milestone.icon}
@@ -541,36 +648,73 @@ function OrdersContent() {
         <SummaryCard
           title={summaryData.totalAmount.title}
           value={summaryData.totalAmount.value}
+          actions={summaryData.totalAmount.actions} // Pass conditional actions
         />
         <SummaryCard title={summaryData.settled.title} value={summaryData.settled.value} />
         <SummaryCard title={summaryData.inEscrow.title} value={summaryData.inEscrow.value} />
       </div>
 
-      {/* Tabs and Filters Section */}
+      {/* Tabs and Filters Section - Conditional Rendering */}
       <div className="mb-4 rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm">
         <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
           <div className="flex flex-wrap items-center justify-between gap-4">
+            {/* Conditional Tabs */}
             <Tabs.List className="flex-wrap">
               <Tabs.Trigger value="all">All</Tabs.Trigger>
-              <Tabs.Trigger value="active">Active</Tabs.Trigger>
-              <Tabs.Trigger value="inactive">Inactive</Tabs.Trigger>
+              {isBuyer ? (
+                <>
+                  <Tabs.Trigger value="inProgress">In progress</Tabs.Trigger>
+                  <Tabs.Trigger value="completed">Completed</Tabs.Trigger>
+                </>
+              ) : (
+                <>
+                  <Tabs.Trigger value="active">Active</Tabs.Trigger>
+                  <Tabs.Trigger value="inactive">Inactive</Tabs.Trigger>
+                </>
+              )}
             </Tabs.List>
+
+            {/* Conditional Filters/Controls */}
             <div className="flex flex-wrap items-center gap-2">
               <Input
                 placeholder="Search..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="h-9 w-full rounded-md border border-stroke-soft-200 bg-bg-white-0 px-3 text-sm placeholder:text-text-sub-400 focus:outline-none focus:ring-1 focus:ring-ring sm:w-[200px]"
+              // TODO: Add search icon prefix if Input component supports it easily
               />
-              <Button.Root
-                variant="neutral"
-                mode="stroke"
-                size="small"
-                className="h-9 w-full sm:w-auto"
-              >
-                <Button.Icon as={RiFilter3Line} className="size-4" />
-                Filter
-              </Button.Root>
+              {isBuyer ? (
+                // Buyer: Date Picker
+                <Dropdown.Root>
+                  <Dropdown.Trigger asChild>
+                    <button className="inline-flex h-9 w-full items-center justify-center gap-1 whitespace-nowrap rounded-md border border-stroke-soft-200 bg-bg-white-0 px-3 text-sm font-medium text-text-secondary-600 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 sm:w-auto">
+                      <RiCalendarLine className="size-4" />
+                      <span>{selectedDate ? selectedDate.toLocaleDateString() : 'Select Date'}</span>
+                    </button>
+                  </Dropdown.Trigger>
+                  <Dropdown.Content align="start" className="w-auto p-0">
+                    <DatePicker.Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={setSelectedDate} // Make sure setSelectedDate is available
+                      initialFocus
+                    />
+                  </Dropdown.Content>
+                </Dropdown.Root>
+              ) : (
+                // Seller: Filter Button
+                <Button.Root
+                  variant="neutral"
+                  mode="stroke"
+                  size="small"
+                  className="h-9 w-full sm:w-auto"
+                // TODO: Add onClick handler for filtering
+                >
+                  <Button.Icon as={RiFilter3Line} className="size-4" />
+                  Filter
+                </Button.Root>
+              )}
+              {/* Sort Dropdown (Common for both) */}
               <Dropdown.Root>
                 <Dropdown.Trigger asChild>
                   <button className="inline-flex h-9 items-center justify-center gap-1 whitespace-nowrap rounded-md border border-stroke-soft-200 bg-bg-white-0 px-3 text-sm font-medium text-text-secondary-600 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
@@ -579,6 +723,7 @@ function OrdersContent() {
                   </button>
                 </Dropdown.Trigger>
                 <Dropdown.Content align="end">
+                  {/* TODO: Adjust sort options based on view if needed */}
                   <Dropdown.Item onSelect={() => setSortOption('date_asc')}>Date Ascending</Dropdown.Item>
                   <Dropdown.Item onSelect={() => setSortOption('date_desc')}>Date Descending</Dropdown.Item>
                   <Dropdown.Item onSelect={() => setSortOption('name_asc')}>Name Ascending</Dropdown.Item>
@@ -589,48 +734,101 @@ function OrdersContent() {
         </Tabs.Root>
       </div>
 
-      {/* Table Section */}
+      {/* Table Section - Conditional Headers and Body */}
       <div className="overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-sm">
         <Table.Root className="min-w-full divide-y divide-stroke-soft-200">
+          {/* Conditional Table Header */}
           <Table.Header className="bg-bg-alt-white-100">
             <Table.Row>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">From</Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Details</Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Final deadline</Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Rating</Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Status</Table.Head>
-              <Table.Head className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-sub-500"></Table.Head> {/* Actions */}
+              {isBuyer ? (
+                <>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Details</Table.Head>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Final deadline</Table.Head>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Proposals</Table.Head>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Worker</Table.Head>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Status</Table.Head>
+                </>
+              ) : (
+                <>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">From</Table.Head>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Details</Table.Head>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Final deadline</Table.Head>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Rating</Table.Head>
+                  <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Status</Table.Head>
+                </>
+              )}
+              <Table.Head className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-sub-500"></Table.Head> {/* Actions Column (Common) */}
             </Table.Row>
           </Table.Header>
+          {/* Conditional Table Body with Type Narrowing */}
           <Table.Body className="divide-y divide-stroke-soft-200 bg-bg-white-0">
             {currentTableData.map((order) => (
               <Table.Row key={order.id}>
-                <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                  <div className="flex items-center gap-2">
-                    <Avatar.Root size="32">
-                      <Avatar.Image src={order.from.avatarUrl} alt={order.from.name} />
-                    </Avatar.Root>
-                    <span className="text-sm font-medium text-text-strong-950">{order.from.name}</span>
-                  </div>
-                </Table.Cell>
-                <Table.Cell className="px-4 py-3 align-top">
-                  <div className="text-sm font-medium text-text-strong-950">{order.subject}</div>
-                  <div className="text-sm text-text-secondary-600">${order.price.toLocaleString()}</div>
-                </Table.Cell>
-                <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{order.deadline}</Table.Cell>
-                <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                  {order.rating !== null ? (
-                    <div className="flex items-center gap-1 text-sm text-text-secondary-600">
-                      <RiStarFill className='size-4 text-yellow-400' />
-                      <span>{order.rating.toFixed(1)}</span>
-                    </div>
-                  ) : (
-                    <span className="text-sm text-text-sub-400">-</span> // Or leave empty
-                  )}
-                </Table.Cell>
-                <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                  {renderStatusBadge(order.status)}
-                </Table.Cell>
+                {isBuyer ? (
+                  // Buyer Row Structure - order is narrowed to BuyerOrder here
+                  (() => {
+                    const buyerOrder = order as BuyerOrder; // Explicit assertion
+                    return (
+                      <>
+                        <Table.Cell className="px-4 py-3 align-top">
+                          <div className="text-sm font-medium text-text-strong-950">{buyerOrder.subject}</div>
+                          <div className="text-sm text-text-secondary-600">${buyerOrder.price.toLocaleString()}</div>
+                        </Table.Cell>
+                        <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{buyerOrder.deadline}</Table.Cell>
+                        <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">
+                          {buyerOrder.proposals !== null ? buyerOrder.proposals : '-'}
+                        </Table.Cell>
+                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <Avatar.Root size="32">
+                              <Avatar.Image src={buyerOrder.worker.avatarUrl} alt={buyerOrder.worker.name} />
+                            </Avatar.Root>
+                            <span className="text-sm font-medium text-text-strong-950">{buyerOrder.worker.name}</span>
+                          </div>
+                        </Table.Cell>
+                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                          {renderStatusBadge(buyerOrder.status)}
+                        </Table.Cell>
+                      </>
+                    );
+                  })()
+                ) : (
+                  // Seller Row Structure - order is narrowed to SellerOrder here
+                  (() => {
+                    const sellerOrder = order as SellerOrder; // Explicit assertion
+                    return (
+                      <>
+                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                          <div className="flex items-center gap-2">
+                            <Avatar.Root size="32">
+                              <Avatar.Image src={sellerOrder.from.avatarUrl} alt={sellerOrder.from.name} />
+                            </Avatar.Root>
+                            <span className="text-sm font-medium text-text-strong-950">{sellerOrder.from.name}</span>
+                          </div>
+                        </Table.Cell>
+                        <Table.Cell className="px-4 py-3 align-top">
+                          <div className="text-sm font-medium text-text-strong-950">{sellerOrder.subject}</div>
+                          <div className="text-sm text-text-secondary-600">${sellerOrder.price.toLocaleString()}</div>
+                        </Table.Cell>
+                        <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{sellerOrder.deadline}</Table.Cell>
+                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                          {sellerOrder.rating !== null ? (
+                            <div className="flex items-center gap-1 text-sm text-text-secondary-600">
+                              <RiStarFill className='size-4 text-yellow-400' />
+                              <span>{sellerOrder.rating.toFixed(1)}</span>
+                            </div>
+                          ) : (
+                            <span className="text-sm text-text-sub-400">-</span>
+                          )}
+                        </Table.Cell>
+                        <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                          {renderStatusBadge(sellerOrder.status)}
+                        </Table.Cell>
+                      </>
+                    );
+                  })()
+                )}
+                {/* Actions Column (Common) */}
                 <Table.Cell className="px-4 py-3 text-right align-top whitespace-nowrap">
                   <Dropdown.Root>
                     <Dropdown.Trigger asChild>
@@ -639,9 +837,8 @@ function OrdersContent() {
                       </button>
                     </Dropdown.Trigger>
                     <Dropdown.Content align="end">
-                      {/* TODO: Update actions based on seller view */}
                       <Dropdown.Item>View Details</Dropdown.Item>
-                      <Dropdown.Item>Message Buyer</Dropdown.Item>
+                      <Dropdown.Item>{isBuyer ? 'Message Worker' : 'Message Buyer'}</Dropdown.Item>
                       <Dropdown.Separator />
                       <Dropdown.Item className="text-text-danger-500">Cancel Order</Dropdown.Item>
                     </Dropdown.Content>
@@ -653,7 +850,7 @@ function OrdersContent() {
         </Table.Root>
       </div>
 
-      {/* Pagination Section */}
+      {/* Pagination Section (Common) */}
       <div className="mt-4 flex items-center justify-center border-t border-stroke-soft-200 pt-4">
         <Pagination.Root variant="basic">
           <Pagination.NavButton
