@@ -2,13 +2,20 @@ import React, { useState, useEffect, useRef, useCallback, Fragment } from 'react
 import supabase from '@/utils/supabase/client';
 import { chatOperations } from '@/utils/supabase/database';
 import { Chat, Message, User, MessageSchema, BaseFileData } from '@/utils/supabase/types';
+import {
+  ImageMessageData,
+  OfferMessageData,
+  MilestoneEventData,
+  SystemEventData,
+} from '@/utils/supabase/message-data-types';
 import { format, isSameDay, formatRelative, parseISO } from 'date-fns';
 import { Root as Avatar, Image as AvatarImage } from '@/components/ui/avatar';
 import { Root as Button } from '@/components/ui/button';
 import { Root as Textarea } from '@/components/ui/textarea';
 import { Root as CompactButton } from '@/components/ui/compact-button';
 import { Root as LinkButton } from '@/components/ui/link-button';
-import { Paperclip, Send, Smile, MoreVertical, Clock, XCircle, FileImage } from 'lucide-react';
+import { Paperclip, Send, Smile, MoreVertical, Clock, XCircle, FileImage, CheckCircle } from 'lucide-react';
+import Link from 'next/link';
 
 function formatMessageTimestamp(timestamp: string | null | undefined): string {
   if (!timestamp) return '';
@@ -67,15 +74,6 @@ interface ChatMessageRendererProps {
   senderName: string;
 }
 
-// Define type for milestone event data structure
-interface MilestoneEventData {
-  milestoneSequence?: number;
-  milestoneDescription: string;
-  amount?: number | null;
-  currency?: string | null;
-  contractId?: string | null;
-}
-
 function ChatMessageRenderer({
   message,
   isCurrentUser,
@@ -83,62 +81,54 @@ function ChatMessageRenderer({
   timestamp,
   senderName,
 }: ChatMessageRendererProps) {
-  console.log(`ChatMessageRenderer: Rendering message ID ${message.id}`);
-  console.log(`  Type: ${message.message_type}`);
-  console.log(`  Data:`, message.data);
+  const alignmentContainerClass = isCurrentUser ? 'justify-end' : 'justify-start';
+  const alignmentItemsClass = isCurrentUser ? 'items-end' : 'items-start';
+  const bubbleBaseClass = 'p-3 rounded-xl shadow-sm';
+  const userBubbleClass = 'bg-blue-500 text-white rounded-br-none';
+  const otherBubbleClass = 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-bl-none';
 
-  const alignmentClass = isCurrentUser ? 'items-end' : 'items-start';
-  const bubbleClass = isCurrentUser
-    ? 'bg-blue-500 text-white rounded-l-lg rounded-tr-lg'
-    : 'bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-r-lg rounded-tl-lg';
-  const textAlignClass = isCurrentUser ? 'text-right' : 'text-left';
+  const bubbleClass = isCurrentUser ? userBubbleClass : otherBubbleClass;
+  const cardClass = 'border dark:border-gray-600 rounded-lg p-3 max-w-xs w-full bg-white dark:bg-gray-800 shadow-md';
+  const cardTextColor = 'text-gray-900 dark:text-gray-100';
+  const cardSubTextColor = 'text-gray-600 dark:text-gray-400';
 
   const renderTextMessage = () => (
-    <div className={`max-w-[70%] px-3 py-2 ${bubbleClass}`}>
-      <p className="text-sm whitespace-pre-wrap">{message.content || ''}</p>
+    <div className={`${bubbleBaseClass} ${bubbleClass}`}>
+      <p className="text-sm whitespace-pre-wrap break-words">{message.content || ''}</p>
     </div>
   );
 
   const renderImageMessage = () => {
-    const imageData = message.data as BaseFileData[] | null;
-    if (!imageData || imageData.length === 0) return <p className='italic text-xs text-gray-500'>[Attachment data missing]</p>;
+    const imageData = message.data as ImageMessageData | null;
+    const firstImage = imageData?.[0];
+
+    if (!firstImage) return <p className='italic text-xs text-gray-500'>[Image data missing]</p>;
 
     return (
-      <div className={`${bubbleClass} max-w-[70%] overflow-hidden`}>
-        <div className="grid gap-0.5 p-1">
-          {imageData.map((file, index) => (
-            <a
-              key={index}
-              href={file.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center space-x-2 p-1.5 bg-black/10 dark:bg-white/10 rounded hover:bg-black/20 dark:hover:bg-white/20 transition-colors cursor-pointer"
-              title={`Open ${file.name}`}
-            >
-              <FileImage size={24} className="text-gray-700 dark:text-gray-300 flex-shrink-0" />
-              <div className="text-xs overflow-hidden">
-                <p className={`font-medium truncate ${isCurrentUser ? 'text-white' : 'text-gray-900 dark:text-gray-100'}`}>{file.name}</p>
-                <p className={`opacity-80 ${isCurrentUser ? 'text-blue-100' : 'text-gray-600 dark:text-gray-300'}`}>{(file.size / 1024).toFixed(1)} KB</p>
-              </div>
-            </a>
-          ))}
-        </div>
-        {message.content && <p className="text-sm px-2.5 py-1.5 border-t border-black/10 dark:border-white/10">{message.content}</p>}
+      <div className={`${bubbleBaseClass} ${bubbleClass} p-0 overflow-hidden`}>
+        <a
+          href={firstImage.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block group"
+          title={`View image: ${firstImage.name}`}
+        >
+          <img
+            src={firstImage.url}
+            alt={firstImage.name || 'Chat attachment'}
+            className="max-w-full h-auto max-h-64 object-contain transition-opacity group-hover:opacity-90"
+          />
+        </a>
+        {message.content && (
+          <p className={`text-sm whitespace-pre-wrap break-words p-3 pt-2 ${isCurrentUser ? 'text-white' : cardSubTextColor}`}>
+            {message.content}
+          </p>
+        )}
       </div>
     );
   };
 
   const renderOfferMessage = (isCurrentUser: boolean) => {
-    // Define a type for the offer data structure for better type safety
-    interface OfferMessageData {
-      title: string;
-      description?: string;
-      price: number;
-      currency: string;
-      deliveryTime?: string | null; // Can be null if formatting failed or no date
-      contractId: string;
-    }
-
     const offerData = message.data as OfferMessageData | null;
     if (!offerData) return <p className='italic text-xs text-gray-500'>[Offer data missing]</p>;
 
@@ -146,37 +136,53 @@ function ChatMessageRenderer({
       ? (offerData.description.length > 80 ? offerData.description.substring(0, 80) + '...' : offerData.description)
       : 'No description provided.';
 
-    // Determine if the current viewer is the recipient (seller)
     const isRecipient = !isCurrentUser;
 
     return (
-      <div className="border rounded-lg p-4 max-w-xs w-full bg-white dark:bg-gray-800 shadow-sm">
-        {/* Top section: Title and Price */}
-        <div className="flex justify-between items-center mb-3">
-          <h4 className="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate pr-2" title={offerData.title}>{offerData.title || "Offer"}</h4>
-          <span className="font-bold text-sm text-gray-700 dark:text-gray-300 flex-shrink-0">{offerData.currency || 'US$'}{offerData.price?.toFixed(2) || '0.00'}</span>
+      <div className={cardClass}>
+        <div className="flex justify-between items-start mb-2">
+          <h4 className={`font-semibold text-base mr-2 ${cardTextColor}`} title={offerData.title}>
+            {offerData.title || "Custom Offer"}
+          </h4>
+          <span className="font-bold text-base text-blue-600 dark:text-blue-400 flex-shrink-0">
+            {offerData.currency || '$'}{offerData.price?.toFixed(2) ?? '0.00'}
+          </span>
         </div>
 
-        {/* Description */}
-        <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">{truncatedDescription}</p>
+        <p className={`text-sm mb-3 ${cardSubTextColor}`}>
+          {truncatedDescription}
+        </p>
 
-        {/* Delivery Time Section */}
-        <p className="text-xs font-medium text-gray-800 dark:text-gray-200 mb-1">Your offer includes</p>
-        <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-4">
-          <Clock size={14} className="mr-1.5 flex-shrink-0" />
-          <span>{offerData.deliveryTime || 'Delivery time not specified'}</span>
+        <div className={`flex items-center text-sm mb-4 ${cardSubTextColor}`}>
+          <Clock size={16} className="mr-2 flex-shrink-0" />
+          <span>Delivery: {offerData.deliveryTime || 'Not specified'}</span>
         </div>
 
-        {/* Action Buttons - Only show for the recipient (seller) */}
-        {isRecipient && (
-          <div className="flex justify-end space-x-2">
-            <Button variant="neutral" mode="stroke" size="small">Decline</Button>
-            <Button variant="primary" mode="filled" size="small">Accept</Button>
-          </div>
+        <div className="flex flex-col space-y-2">
+          <LinkButton
+            asChild
+            variant="primary"
+            size="small"
+            className="w-full justify-center"
+          >
+            <Link href={`/offers/${offerData.contractId}`}>
+              View Offer Details
+            </Link>
+          </LinkButton>
+
+          {isRecipient && (
+            <div className="flex justify-end space-x-2 pt-2 border-t dark:border-gray-600">
+              <Button variant="neutral" mode="stroke" size="small">Decline</Button>
+              <Button variant="primary" mode="filled" size="small">Accept</Button>
+            </div>
+          )}
+        </div>
+
+        {message.content && (
+          <p className={`text-sm mt-3 pt-3 border-t dark:border-gray-600 whitespace-pre-wrap ${cardTextColor}`}>
+            {message.content}
+          </p>
         )}
-
-        {/* Display content (comment) below offer if it exists */}
-        {message.content && <p className="text-sm mt-3 pt-3 border-t border-gray-200 dark:border-gray-700">{message.content}</p>}
       </div>
     );
   };
@@ -185,53 +191,59 @@ function ChatMessageRenderer({
     const eventData = message.data as MilestoneEventData | null;
     if (!eventData) return <p className='italic text-xs text-gray-500'>[Milestone data missing]</p>;
 
-    // Truncate description
-    const truncatedDescription = eventData.milestoneDescription
-      ? (eventData.milestoneDescription.length > 40 ? eventData.milestoneDescription.substring(0, 40) + '...' : eventData.milestoneDescription)
+    const truncatedDescription = eventData.description
+      ? (eventData.description.length > 50 ? eventData.description.substring(0, 50) + '...' : eventData.description)
       : 'Milestone details';
 
+    const isCompleted = eventData.status === 'completed';
+    const Icon = isCompleted ? CheckCircle : Clock;
+    const iconColor = isCompleted ? 'text-green-500' : 'text-blue-500';
+
     return (
-      // Styling similar to the image: light background, rounded corners
-      <div className="border rounded-lg p-3 max-w-xs w-full bg-gray-50 dark:bg-gray-700/50 shadow-sm">
-        <h4 className="font-medium text-sm mb-1 text-gray-800 dark:text-gray-200">
-          {eventData.milestoneSequence ? `Milestone ${eventData.milestoneSequence}: ` : ''}
-          &quot;{truncatedDescription}&quot;
-        </h4>
-        {eventData.amount !== null && eventData.amount !== undefined && (
-          <p className="text-sm text-gray-600 dark:text-gray-400 mb-2">
-            Amount: {eventData.currency || '$'}{eventData.amount.toFixed(2)}
-          </p>
-        )}
-        {/* Assuming contract link comes from data or needs construction */}
-        <LinkButton asChild variant="primary" size="small" className="p-0 h-auto">
-          {/* TODO: Construct actual contract link based on eventData.contractId */}
-          <a href={eventData.contractId ? `/contracts/${eventData.contractId}` : '#'} target="_blank" rel="noopener noreferrer">
-            View contract
-          </a>
+      <div className={cardClass}>
+        <div className="flex items-start mb-2">
+          <Icon size={18} className={`mr-2 mt-0.5 flex-shrink-0 ${iconColor}`} />
+          <div>
+            <h4 className={`font-medium text-base ${cardTextColor}`} title={eventData.description}>
+              Milestone: &quot;{truncatedDescription}&quot;
+            </h4>
+            {eventData.amount != null && (
+              <p className={`text-sm mt-1 ${cardSubTextColor}`}>
+                Amount: {eventData.currency || '$'}{eventData.amount.toFixed(2)}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <LinkButton
+          asChild
+          variant="primary"
+          size="small"
+          className="w-full justify-center mt-2"
+        >
+          <Link href={`/orders/detail/${eventData.contractId}`}>
+            View Contract
+          </Link>
         </LinkButton>
       </div>
     );
   };
 
   const renderSystemEventMessage = () => {
-    const eventData = message.data as any;
-    if (!eventData) return <p className='italic text-xs text-gray-500'>[System event data missing]</p>;
+    const eventData = message.data as SystemEventData | null;
+    const textToShow = eventData?.eventText || message.content || '[System Event]';
 
     return (
-      <div className="text-center w-full my-2">
-        <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">{eventData.text || message.content}</p>
-        {eventData.buttonLabel && (
-          <Button asChild variant="neutral" mode="stroke" size="small">
-            <a href={eventData.buttonLink || '#'}>{eventData.buttonLabel}</a>
-          </Button>
-        )}
-        <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{senderName} {timestamp}</p>
+      <div className="text-center w-full my-4 px-4">
+        <span className="text-xs text-gray-500 dark:text-gray-400">
+          {textToShow} — {formatMessageTimestamp(message.created_at)}
+        </span>
       </div>
     );
   };
 
   let contentElement;
-  let preContentText: string | null = null; // Text to show above the main content bubble/card
+  let preContentText: string | null = null;
 
   if (message.message_type === 'system_event') {
     return renderSystemEventMessage();
@@ -245,51 +257,38 @@ function ChatMessageRenderer({
       contentElement = renderOfferMessage(isCurrentUser);
       break;
     case 'milestone_activated':
-      preContentText = "Activated the milestone"; // Text above card
       contentElement = renderMilestoneEventMessage();
       break;
     case 'milestone_completed':
-      preContentText = "Completed the milestone"; // Text above card
       contentElement = renderMilestoneEventMessage();
       break;
-    case 'milestone': // Keep old 'milestone' type for now, maybe render similarly?
-      console.warn("Handling legacy 'milestone' type, consider migrating data/logic.");
-      contentElement = renderMilestoneEventMessage(); // Or a specific legacy handler
-      break;
     case 'text':
-    case null:
-    case undefined:
     default:
       contentElement = renderTextMessage();
+      break;
   }
 
-  // Render the standard message structure
   return (
-    <div className={`flex flex-col w-full ${alignmentClass}`}>
-      {/* Render text above the main content if needed */}
-      {preContentText && (
-        <p className={`text-xs text-gray-500 dark:text-gray-400 mb-1 ${textAlignClass}`}>
-          {preContentText}
-        </p>
-      )}
-      <div className={`flex gap-2 ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
-        {/* Avatars */}
+    <div className={`flex w-full mb-4 ${alignmentContainerClass}`}>
+      <div className={`flex items-end gap-2 max-w-[90%] ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
         {!isCurrentUser && (
-          <Avatar size="24" className="mt-auto mb-2 self-end">
-            <AvatarImage src={senderProfile?.avatar_url ?? undefined} alt={senderProfile?.username ?? 'User'} />
+          <Avatar className="w-8 h-8 flex-shrink-0 mb-1">
+            {senderProfile?.avatar_url ? (
+              <AvatarImage src={senderProfile.avatar_url} alt={senderName} />
+            ) : (
+              <div className="w-full h-full rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-sm font-semibold text-gray-600 dark:text-gray-300">
+                {senderName?.charAt(0).toUpperCase()}
+              </div>
+            )}
           </Avatar>
         )}
-        {contentElement} {/* Render the determined element */}
-        {isCurrentUser && (
-          <Avatar size="24" className="mt-auto mb-2 self-end">
-            <AvatarImage src={senderProfile?.avatar_url ?? undefined} alt={senderProfile?.username ?? 'User'} />
-          </Avatar>
-        )}
+        <div className={`flex flex-col ${alignmentItemsClass}`}>
+          {contentElement}
+          <p className={`text-[10px] text-gray-400 dark:text-gray-500 mt-1`}>
+            {timestamp}
+          </p>
+        </div>
       </div>
-      {/* Timestamp */}
-      <p className={`text-[10px] text-gray-400 dark:text-gray-500 mt-0.5 ${isCurrentUser ? 'text-right mr-8' : 'text-left ml-8'}`}>
-        {senderName} {timestamp}
-      </p>
     </div>
   );
 }
@@ -478,7 +477,7 @@ export default function ChatCore({
 
   const containerClass = 'flex flex-col bg-white dark:bg-gray-800';
   const containerModeClass = isPopup
-    ? 'rounded-lg shadow-lg h-[500px] w-[350px] border dark:border-gray-700 overflow-hidden'
+    ? 'rounded-lg shadow-xl border dark:border-gray-700 overflow-hidden w-[800px] fixed bottom-4 right-4 z-50'
     : 'h-screen';
 
   return (
@@ -513,7 +512,7 @@ export default function ChatCore({
         </div>
       </div>
 
-      <div className='flex-1 overflow-y-auto p-4 space-y-4'>
+      <div className='flex-1 overflow-y-auto p-4 md:px-6 space-y-0'>
         {sortedDateKeys.map((dateKey) => (
           <Fragment key={dateKey}>
             <div className="relative my-4">
