@@ -7,7 +7,7 @@ interface ContractDetail {
 }
 
 interface ContractDetailsProps {
-  contractName?: string;
+  contractName?: string | null;
   details: ContractDetail[];
 }
 

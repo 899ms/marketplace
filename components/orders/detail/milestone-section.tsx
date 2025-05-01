@@ -13,42 +13,73 @@ import {
 } from '@remixicon/react';
 
 interface Milestone {
-  id: number;
+  id: string;
   title: string;
   amount: string;
   status: 'completed' | 'pending' | 'in-progress';
   date?: string;
+  sequence?: number;
 }
 
 interface MilestoneSectionProps {
+  contractId: string;
   milestones: Milestone[];
-  onConfirmPayment?: (milestoneId: number) => void;
+  onConfirmPayment?: (milestoneId: string) => void;
+  isConfirmingId?: string | null;
 }
 
 export function MilestoneSection({
+  contractId,
   milestones: initialMilestones,
-  onConfirmPayment
+  onConfirmPayment,
+  isConfirmingId
 }: MilestoneSectionProps) {
+  // Log initial props
+  console.log('MilestoneSection received initialMilestones:', initialMilestones);
+
   const [milestones, setMilestones] = React.useState<Milestone[]>(initialMilestones);
   const [showAddMilestone, setShowAddMilestone] = React.useState(false);
   const [newMilestoneTitle, setNewMilestoneTitle] = React.useState("");
   const [newMilestoneAmount, setNewMilestoneAmount] = React.useState("");
+  const [newMilestoneDueDate, setNewMilestoneDueDate] = React.useState("");
+  const [isSaving, setIsSaving] = React.useState(false);
 
-  const handleSaveMilestone = () => {
-    if (!newMilestoneTitle || !newMilestoneAmount) return;
+  // Log state after initialization
+  React.useEffect(() => {
+    console.log('MilestoneSection milestones state initialized:', milestones);
+  }, []); // Run only once on mount
 
-    const newMilestone: Milestone = {
-      id: Date.now(),
-      title: newMilestoneTitle,
-      amount: newMilestoneAmount,
-      status: 'pending',
-    };
-    setMilestones([...milestones, newMilestone]);
-    setNewMilestoneTitle("");
-    setNewMilestoneAmount("");
-    setShowAddMilestone(false);
-    console.log("Saving milestone:", newMilestone);
+  // Update local state if initialMilestones prop changes
+  React.useEffect(() => {
+    setMilestones(initialMilestones);
+  }, [initialMilestones]);
+
+  const handleAddFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (isSaving) return;
+    setIsSaving(true);
+
+    const formData = new FormData(event.currentTarget);
+    const nextSequence = (milestones.length > 0 ? Math.max(...milestones.map((m, i) => m.sequence ?? i)) : 0) + 1;
+
+    const { addMilestone } = await import('@/app/actions/milestone-actions');
+    const result = await addMilestone(contractId, nextSequence, formData);
+
+    if (result.success && result.milestone) {
+      setNewMilestoneTitle("");
+      setNewMilestoneAmount("");
+      setShowAddMilestone(false);
+      setNewMilestoneDueDate("");
+    } else {
+      console.error("Failed to add milestone:", result.error);
+      const { notification } = await import('@/hooks/use-notification');
+      notification({ status: 'error', title: 'Error', description: result.error || 'Failed to add milestone.' });
+    }
+    setIsSaving(false);
   };
+
+  // Log state just before rendering
+  console.log('MilestoneSection rendering with milestones state:', milestones);
 
   return (
     <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-lg shadow-sm my-4 border border-stroke-soft-200">
@@ -87,9 +118,9 @@ export function MilestoneSection({
                   {milestone.status === 'pending' && (
                     <Tag.Root
                       onClick={() => onConfirmPayment?.(milestone.id)}
-                      className="ml-4 flex-shrink-0 cursor-pointer text-text-strong-950"
+                      className={`ml-4 flex-shrink-0 cursor-pointer text-text-strong-950 ${isConfirmingId === milestone.id ? 'opacity-50 pointer-events-none' : ''}`}
                     >
-                      Confirm Payment
+                      {isConfirmingId === milestone.id ? 'Confirming...' : 'Confirm Payment'}
                     </Tag.Root>
                   )}
                 </div>
@@ -98,29 +129,49 @@ export function MilestoneSection({
           </div>
 
           {showAddMilestone && (
-            <div className="flex items-end gap-2 mt-4 ml-9">
+            <form onSubmit={handleAddFormSubmit} className="flex items-end gap-2 mt-4 ml-9">
               <div className="flex-1">
                 <InputRoot size="small">
                   <InputField
+                    name="description"
                     placeholder="Milestone title"
                     value={newMilestoneTitle}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneTitle(e.target.value)}
+                    required
                   />
                 </InputRoot>
               </div>
               <div className="w-24">
                 <InputRoot size="small">
                   <InputField
+                    name="amount"
                     placeholder="Amount"
                     type="number"
                     value={newMilestoneAmount}
                     onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneAmount(e.target.value)}
+                    required
+                    step="0.01"
                   />
                 </InputRoot>
               </div>
-              <Button.Root size="small" onClick={handleSaveMilestone}>Save</Button.Root>
-              <Button.Root variant="neutral" mode="ghost" size="small" onClick={() => setShowAddMilestone(false)}>Cancel</Button.Root>
-            </div>
+              <div className="w-36">
+                <InputRoot size="small">
+                  <InputField
+                    name="dueDate"
+                    placeholder="Due Date (Optional)"
+                    type="date"
+                    value={newMilestoneDueDate}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneDueDate(e.target.value)}
+                  />
+                </InputRoot>
+              </div>
+              <Button.Root type="submit" size="small" disabled={isSaving}>
+                {isSaving ? 'Saving...' : 'Save'}
+              </Button.Root>
+              <Button.Root variant="neutral" mode="ghost" size="small" type="button" onClick={() => setShowAddMilestone(false)} disabled={isSaving}>
+                Cancel
+              </Button.Root>
+            </form>
           )}
 
           {!showAddMilestone && (
