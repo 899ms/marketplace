@@ -23,45 +23,50 @@ interface ApplicantCardProps {
 
 const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) => {
   const isSeller = userRole === 'seller';
+  const showReplaced = userRole === 'buyer' && applicant.hired && applicant.replacedBy;
+  const showMessage = userRole === 'buyer' && !applicant.hired;
 
   return (
-    <div className='p-4'>
-      <div className='flex items-center justify-between'>
+    <div className="p-4">
+      <div className="flex items-center justify-between">
         {/* Avatar + Info */}
-        <div className='flex items-center gap-3'>
-          <Avatar.Root size='48'>
+        <div className="flex items-center gap-3">
+          <Avatar.Root size="48">
             <Avatar.Image src={applicant.avatar} alt={applicant.name} />
-            <Avatar.Indicator position='bottom'>
-              <div className='size-3 rounded-full bg-green-500 ring-2 ring-white' />
+            <Avatar.Indicator position="bottom">
+              <div className="size-3 rounded-full bg-green-500 ring-2 ring-white" />
             </Avatar.Indicator>
           </Avatar.Root>
 
           <div>
-            {userRole === 'buyer' && applicant.hired && applicant.replacedBy && (
-              <p className='text-xs text-gray-600'>
+            {/* “Replaced by …” line (buyer + hired) */}
+            {showReplaced && (
+              <p className="text-xs text-gray-600 mb-1">
                 Replaced by {applicant.replacedBy}
               </p>
             )}
 
-            <div className='flex items-center gap-1'>
-              <p className='text-label-md font-medium text-text-strong-950'>
+            {/* Name + optional “Hired” pill */}
+            <div className="flex items-center gap-2">
+              <p className="text-label-md font-medium text-text-strong-950">
                 {applicant.name}
               </p>
-              {userRole === 'buyer' && applicant.hired && (
-                <span className='text-xs rounded-full bg-green-100 px-2 py-0.5 font-medium text-green-600'>
+              {showReplaced && (
+                <span className="text-xs rounded-full bg-green-100 px-2 py-0.5 font-medium text-green-600">
                   Hired
                 </span>
               )}
             </div>
 
-            {(!applicant.hired || isSeller) && (
-              <div className='mt-1 flex items-center gap-2'>
-                <div className='flex items-center gap-1 text-gray-600'>
-                  <RiStarFill className='size-3 text-yellow-400' />
-                  <span className='text-xs'>
-                    {applicant.rating} ({applicant.reviews})
-                  </span>
-                </div>
+            {/* Rating + [time pill if buyer & not hired] */}
+            <div className="mt-1 flex items-center gap-2">
+              <div className="flex items-center gap-1 text-gray-600">
+                <RiStarFill className="size-5 text-yellow-400" />
+                <span className="text-xs">
+                  {applicant.rating} ({applicant.reviews})
+                </span>
+              </div>
+              {showMessage && (
                 <span className="
                   text-xs text-gray-600
                   bg-[var(--state-faded-lighter,#F2F5F8)]
@@ -69,20 +74,21 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
                 ">
                   {applicant.time}
                 </span>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         </div>
 
-        {/* Larger, borderless message icon */}
-        <Button.Root
-          variant="neutral"
-          mode="ghost"
-          size="medium"
-          className="p-0"
-        >
-          <RiMessage3Line className="text-icon-secondary-400 text-2xl hover:text-icon-primary-500" />
-        </Button.Root>
+        {/* Action (view / message) */}
+        {isSeller ? (
+          <Button.Root variant="neutral" mode="stroke" size="small">
+            view
+          </Button.Root>
+        ) : showMessage ? (
+          <Button.Root variant="neutral" mode="ghost" size="small" className="p-0">
+            <RiMessage3Line className="size-8 text-icon-secondary-400 hover:text-icon-primary-500" />
+          </Button.Root>
+        ) : null}
       </div>
     </div>
   );

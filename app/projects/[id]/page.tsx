@@ -193,7 +193,7 @@ export default function ProjectDetailPage() {
         // 3. Determine User Role
         if (authContext.user) {
           const role = authContext.user.id === jobData.buyer_id ? 'buyer' : 'seller';
-          setUserRole('seller');
+          setUserRole('buyer');
         } else {
           setUserRole('seller'); // Default to seller view if not logged in
         }
