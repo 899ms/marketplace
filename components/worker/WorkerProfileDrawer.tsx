@@ -7,10 +7,10 @@ import * as Drawer from '@/components/ui/drawer';
 import * as Tabs from '@/components/ui/tabs';
 import {
   RiCloseLine,
-  RiExternalLinkLine,
+  RiSendPlaneLine,
   RiStarFill,
   RiGoogleFill,
-  RiArrowRightLine,
+  RiArrowDropRightLine,
   RiHeartLine,
   RiArrowUpCircleLine,
   RiLoader4Line,
@@ -91,7 +91,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
   const displayName = worker?.full_name || worker?.username || (isLoading ? 'Loading...' : 'Worker');
-  const displayAvatar = worker?.avatar_url;
+  const displayAvatar = worker?.avatar_url ?? undefined;
   const displayBio = worker?.bio || (isLoading ? 'Loading bio...' : 'No bio provided.');
 
   useEffect(() => {
@@ -115,7 +115,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
 
         <div className="flex h-full flex-col">
           {/* header */}
-          <div className="border-b border-stroke-soft-200 px-5 py-4">
+          <div className="px-5 py-4">
             <div className="flex items-center justify-between">
               <Drawer.Close asChild>
                 <button className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
@@ -129,7 +129,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`flex items-center gap-1.5 text-sm font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700 ${!worker || isLoading ? 'pointer-events-none opacity-50' : ''}`}>
-                Open in new tab <RiExternalLinkLine className="size-4" />
+                Open in new tab <RiSendPlaneLine className="size-4" />
               </Link>
             </div>
 
@@ -165,10 +165,10 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
 
                 <div className="flex items-center gap-3">
                   <button className="w-[96px] rounded-md border border-stroke-soft-200 px-3.5 py-2 text-sm font-medium text-text-strong-950 transition-colors hover:bg-bg-weak-50">
-                    Hire <RiArrowRightLine className="ml-1.5 inline size-3.5" />
+                    Hire <RiArrowDropRightLine className="ml-.5 inline size-7" />
                   </button>
                   <button className="w-[96px] flex items-center justify-center rounded-md bg-text-strong-950 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-text-strong-900">
-                    Touch <RiExternalLinkLine className="ml-1.5 inline size-3.5" />
+                    Touch <RiSendPlaneLine className="ml-1.5 inline size-3.5" />
                   </button>
                   <button className="rounded-full p-1.5 text-text-secondary-600 transition-colors hover:bg-bg-weak-50 hover:text-red-500">
                     <RiHeartLine className="size-5" />
@@ -182,10 +182,12 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
             )}
           </div>
 
+          <div className="mt-2 h-px bg-stroke-soft-200 w-[95%] mx-auto" />
+
           {!isLoading && worker && (
-            <div className="border-b border-stroke-soft-200 px-5">
+            <div className="px-5 pt-4">
               <Tabs.Root value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-                <Tabs.List className="flex p-0">
+                <Tabs.List className="flex justify-start gap-4">
                   {[
                     { key: 'about', label: 'About' },
                     { key: 'work', label: 'Work' },
@@ -195,7 +197,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     <Tabs.Trigger
                       key={key}
                       value={key}
-                      className="flex-1 border-b-2 border-transparent bg-transparent px-4 py-3 text-center text-sm font-medium text-text-secondary-600 transition-colors data-[state=active]:border-black data-[state=active]:text-text-strong-950 data-[state=active]:bg-transparent"
+                      className="inline-flex justify-start border-b-2 border-transparent bg-transparent px-4 py-3 text-sm font-medium text-text-secondary-600 transition-colors data-[state=active]:border-black data-[state=active]:text-text-strong-950 data-[state=active]:bg-transparent"
                     >
                       {label}
                     </Tabs.Trigger>
@@ -248,7 +250,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     <h3 className="mt-8 inline-block text-lg font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
                       Review
                     </h3>
-                    <div className="mt-4 space-y-5 divide-y divide-stroke-soft-200">
+                    <div className="mt-4 space-y-5">
                       {placeholderWorkerData.reviews.map((r) => (
                         <ReviewItem key={r.id} review={r} />
                       ))}
