@@ -12,6 +12,7 @@ interface ChatPopupWrapperProps {
   buttonLabel?: string;
   position?: 'bottom-right' | 'bottom-left';
   isLoadingMessages?: boolean;
+  onClose?: () => void;
 }
 
 export default function ChatPopupWrapper({
@@ -22,6 +23,7 @@ export default function ChatPopupWrapper({
   currentUserId,
   position = 'bottom-right',
   isLoadingMessages = false,
+  onClose,
 }: ChatPopupWrapperProps) {
   return (
     <>
@@ -38,6 +40,7 @@ export default function ChatPopupWrapper({
           currentUserId={currentUserId}
           mode="popup"
           position={position}
+          onClose={onClose}
         />
       )}
     </>

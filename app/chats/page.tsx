@@ -103,6 +103,12 @@ export default function ChatsPage() {
     setSelectedChatId(chatId === selectedChatId ? null : chatId);
   };
 
+  // --- Add function to close the chat popup ---
+  const handleCloseChat = () => {
+    setSelectedChatId(null);
+  };
+  // --- End added function ---
+
   const getSelectedChat = () => {
     if (!selectedChatId) return null;
     return chats.find(c => c.id === selectedChatId);
@@ -159,6 +165,7 @@ export default function ChatsPage() {
           currentUserId={currentUser.id}
           isLoadingMessages={isLoadingMessages}
           position="bottom-right"
+          onClose={handleCloseChat}
         />
       )}
     </div>

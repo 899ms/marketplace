@@ -488,13 +488,15 @@ export default function ChatCore({
             <Avatar size="32">
               <AvatarImage
                 src={otherUserProfile?.avatar_url ?? undefined}
-                alt={otherUserProfile?.username ?? 'U'}
+                alt={otherUserProfile?.username ?? 'User'}
               />
             </Avatar>
             <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white dark:ring-gray-800" title="Online"></span>
           </div>
           <div>
-            <p className='font-medium text-sm text-gray-900 dark:text-gray-100'>{otherUserProfile?.username ?? 'User'}</p>
+            <p className='font-medium text-sm text-gray-900 dark:text-gray-100'>
+              {otherUserProfile?.full_name ?? otherUserProfile?.username ?? 'User'}
+            </p>
             <p className='text-xs text-green-600 dark:text-green-400'>Online</p>
           </div>
         </div>
