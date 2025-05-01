@@ -14,6 +14,8 @@ import {
   Contract,
   Chat,
   Message,
+  ContractMilestoneSchema,
+  ContractMilestone,
 } from './types';
 import { z } from 'zod';
 
@@ -1013,5 +1015,193 @@ export const chatOperations = {
     }
 
     return true;
+  },
+};
+
+/**
+ * Contract Milestone operations
+ */
+export const contractMilestoneOperations = {
+  // Get milestones for a specific contract
+  async getMilestonesByContractId(
+    contractId: string,
+  ): Promise<ContractMilestone[]> {
+    console.log(`Fetching milestones for contract ID: ${contractId}`);
+    if (!contractId) {
+      console.error('getMilestonesByContractId: contractId is required.');
+      return [];
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('contract_milestones')
+        .select('*')
+        .eq('contract_id', contractId)
+        .order('sequence', { ascending: true });
+
+      // Log the raw response from Supabase
+      console.log(
+        `Raw Supabase response for milestones (contract ${contractId}):`,
+        { data, error },
+      );
+
+      if (error) {
+        console.error(
+          `Supabase error fetching milestones for contract ${contractId}:`,
+          error,
+        );
+        return [];
+      }
+
+      if (!data || !Array.isArray(data)) {
+        console.log(`No milestones found for contract ${contractId}`);
+        return [];
+      }
+
+      console.log(`Found ${data.length} milestones for contract ${contractId}`);
+
+      // Validate each milestone
+      const validMilestones: ContractMilestone[] = [];
+      for (const milestone of data) {
+        try {
+          // Ensure all required fields have appropriate values before parsing
+          const processedMilestone = {
+            ...milestone,
+            id: String(milestone.id),
+            contract_id: String(milestone.contract_id),
+            description: String(milestone.description || ''),
+            due_date: milestone.due_date ? String(milestone.due_date) : null,
+            amount:
+              typeof milestone.amount === 'number' ? milestone.amount : null,
+            status: ['pending', 'approved', 'rejected', 'paid'].includes(
+              milestone.status,
+            )
+              ? milestone.status
+              : 'pending',
+            sequence:
+              typeof milestone.sequence === 'number' ? milestone.sequence : 1,
+            created_at: milestone.created_at
+              ? String(milestone.created_at)
+              : undefined,
+            updated_at: milestone.updated_at
+              ? String(milestone.updated_at)
+              : undefined,
+          };
+          const parsedMilestone =
+            ContractMilestoneSchema.parse(processedMilestone);
+          validMilestones.push(parsedMilestone);
+        } catch (validationErr) {
+          console.error(
+            `Error validating milestone ${milestone.id}:`,
+            validationErr,
+          );
+          // Continue with the next milestone
+        }
+      }
+      return validMilestones;
+    } catch (err) {
+      console.error(
+        `Unexpected error in getMilestonesByContractId for ${contractId}:`,
+        err,
+      );
+      return [];
+    }
+  },
+
+  // Add other milestone operations here (create, update, delete) if needed later
+  // Update milestone status
+  async updateMilestoneStatus(
+    milestoneId: string,
+    status: ContractMilestone['status'],
+  ): Promise<ContractMilestone | null> {
+    console.log(`Updating milestone ${milestoneId} to status: ${status}`);
+    if (!milestoneId || !status) {
+      console.error(
+        'updateMilestoneStatus: milestoneId and status are required.',
+      );
+      return null;
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('contract_milestones')
+        .update({ status: status, updated_at: new Date().toISOString() }) // Also update updated_at
+        .eq('id', milestoneId)
+        .select()
+        .single();
+
+      if (error) {
+        console.error(
+          `Supabase error updating milestone ${milestoneId}:`,
+          error,
+        );
+        return null;
+      }
+      if (!data) {
+        console.error(
+          `No data returned after updating milestone ${milestoneId}.`,
+        );
+        return null;
+      }
+
+      console.log(`Milestone ${milestoneId} status updated successfully.`);
+      // Validate the returned data
+      const parsedMilestone = ContractMilestoneSchema.parse(data);
+      return parsedMilestone;
+    } catch (err) {
+      console.error(
+        `Unexpected error in updateMilestoneStatus for ${milestoneId}:`,
+        err,
+      );
+      if (err instanceof z.ZodError) {
+        console.error('Zod validation errors:', err.errors);
+      }
+      return null;
+    }
+  },
+
+  // Create a new milestone
+  async createMilestone(
+    milestoneData: Omit<ContractMilestone, 'id' | 'created_at' | 'updated_at'>,
+  ): Promise<ContractMilestone | null> {
+    console.log(
+      'Creating new milestone for contract:',
+      milestoneData.contract_id,
+    );
+
+    try {
+      // Default status to pending if not provided
+      const dataToInsert = {
+        ...milestoneData,
+        status: milestoneData.status || 'pending',
+        // created_at and updated_at will be set by the database or triggers
+      };
+
+      const { data, error } = await supabase
+        .from('contract_milestones')
+        .insert(dataToInsert)
+        .select()
+        .single();
+
+      if (error) {
+        console.error('Supabase error creating milestone:', error);
+        return null;
+      }
+      if (!data) {
+        console.error('No data returned after creating milestone.');
+        return null;
+      }
+
+      console.log('Milestone created successfully:', data.id);
+      // Validate the returned data
+      const parsedMilestone = ContractMilestoneSchema.parse(data);
+      return parsedMilestone;
+    } catch (err) {
+      console.error('Unexpected error in createMilestone:', err);
+      if (err instanceof z.ZodError) {
+        console.error('Zod validation errors:', err.errors);
+      }
+      return null;
+    }
   },
 };

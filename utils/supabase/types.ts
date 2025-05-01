@@ -80,7 +80,7 @@ export const ContractSchema = z
     seller_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
     job_id: z.string().uuid().nullable(), // UUID REFERENCES jobs(id), nullable
     service_id: z.string().uuid().nullable(), // UUID REFERENCES services(id), nullable
-    title: z.string(), // Added: TEXT NOT NULL
+    title: z.string().nullable(), // Added: TEXT NOT NULL -> Changed to nullable
     contract_type: z.enum(['one-time', 'installment']), // Added: TEXT NOT NULL (Assuming these values)
     status: z
       .enum(['pending', 'accepted', 'rejected', 'completed'])
