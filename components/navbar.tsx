@@ -28,7 +28,7 @@ import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 
 export default function Navbar() {
   // --- Get Auth State using useAuth hook ---
-  const { user, signOut, loading } = useAuth();
+  const { user, userProfile, signOut, loading } = useAuth();
   // Replace the placeholder isLoggedIn with the actual user state
   // const isLoggedIn = true; // Remove this line
   // -----------------------------------------
@@ -92,13 +92,13 @@ export default function Navbar() {
           </Link>
           {/* Navigation Links */}
           <div className='text-text-secondary-600 hidden items-center gap-6 text-label-md lg:flex'>
-            <Link href='/services' className='hover:text-text-strong-950'>
+            <Link href='/services/search?tab=Service' className='hover:text-text-strong-950'>
               Find Services
             </Link>
-            <Link href='/workers' className='hover:text-text-strong-950'>
+            <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950'>
               Find Workers
             </Link>
-            <Link href='/projects' className='hover:text-text-strong-950'>
+            <Link href='/services/search?tab=Project' className='hover:text-text-strong-950'>
               Find Projects
             </Link>
             <Link href='/bonus' className='hover:text-text-strong-950'>
@@ -133,11 +133,20 @@ export default function Navbar() {
 
           {user ? ( // Use user !== null for checking login status
             <>
-              {/* Create Button */}
-              <Button.Root variant='neutral' mode='filled' size='medium'>
-                Create
-                <Button.Icon as={RiAddLine} />
-              </Button.Root>
+              {/* Create Button - Updated with conditional link */}
+              <Link
+                href={
+                  userProfile?.user_type === 'seller'
+                    ? '/worker/services/create'
+                    : '/jobs/create'
+                }
+                passHref
+              >
+                <Button.Root variant='neutral' mode='filled' size='medium'>
+                  Create
+                  <Button.Icon as={RiAddLine} />
+                </Button.Root>
+              </Link>
 
               {/* Notifications Button */}
               <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 relative rounded-md p-2'>

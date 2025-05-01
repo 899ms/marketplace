@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link'; // Added import for Link
+import { useSearchParams } from 'next/navigation'; // Import useSearchParams
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 // Removed unused Input, Select, RiSearchLine imports
 
@@ -22,8 +23,17 @@ import { Service, User, Job } from '@/utils/supabase/types';
 // Define the possible tab values
 type ActiveTabValue = 'Service' | 'Worker' | 'Project';
 
+// Helper function to validate tab value
+function isValidTabValue(value: string | null): value is ActiveTabValue {
+  return value === 'Service' || value === 'Worker' || value === 'Project';
+}
+
 export default function ServicesSearchPage() {
-  const [activeTab, setActiveTab] = useState<ActiveTabValue>('Service');
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get('tab');
+  const validatedInitialTab = isValidTabValue(initialTab) ? initialTab : 'Service'; // Default to 'Service'
+
+  const [activeTab, setActiveTab] = useState<ActiveTabValue>(validatedInitialTab);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [selectedWorkerDetails, setSelectedWorkerDetails] = useState<User | null>(null);
   const [selectedWorkerServices, setSelectedWorkerServices] = useState<Service[] | null>(null);
