@@ -4,6 +4,7 @@ import * as React from 'react';
 import * as Accordion from "@/components/ui/accordion";
 import * as Button from "@/components/ui/button";
 import { Input as InputField, Root as InputRoot } from "@/components/ui/input";
+import * as Tag from "@/components/ui/tag";
 import {
   RiCheckFill,
   RiTimeLine,
@@ -84,13 +85,12 @@ export function MilestoneSection({
                   </div>
 
                   {milestone.status === 'pending' && (
-                    <a
-                      href="#"
+                    <Tag.Root
                       onClick={() => onConfirmPayment?.(milestone.id)}
-                      className="ml-4 flex-shrink-0 px-3 py-1.5 bg-primary-base text-white rounded-md text-xs font-medium hover:bg-primary-darker transition-colors duration-200"
+                      className="ml-4 flex-shrink-0 cursor-pointer text-text-strong-950"
                     >
                       Confirm Payment
-                    </a>
+                    </Tag.Root>
                   )}
                 </div>
               </div>

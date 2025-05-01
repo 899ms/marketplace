@@ -16,7 +16,7 @@ export function ContractDetails({
   details
 }: ContractDetailsProps) {
   return (
-    <Accordion.Root type="single" collapsible className="w-full bg-white rounded-lg shadow-sm my-4 border border-stroke-soft-200">
+    <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-lg shadow-sm my-4 border border-stroke-soft-200">
       <Accordion.Item value="item-1" className="border-b border-stroke-soft-200 p-0 rounded-none ring-0 hover:bg-white data-[state=open]:bg-white">
         <Accordion.Header className="px-4 py-3">
           <Accordion.Trigger className="w-full text-lg font-semibold text-text-strong-950 p-0 m-0 flex justify-between items-center hover:no-underline">
