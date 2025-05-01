@@ -129,8 +129,19 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
           </Button.Root>
         </div>
 
-        {/* Remove About Provider section - maybe just link to profile? */}
-        {/* <div className='mb-4'> ... </div> */}
+        {/* About Seller Section */}
+        {service.seller_bio && (
+          <div className='mb-4'>
+            <h3 className='mb-2 text-label-md font-medium text-text-strong-950'>
+              About Seller
+            </h3>
+            <p className='text-text-secondary-600 line-clamp-3 text-paragraph-xs'>
+              {service.seller_bio}
+            </p>
+          </div>
+        )}
+
+        {/* View Seller Profile Link */}
         <div className='mb-4 text-center'>
           <Link
             href={`/workers/${service.seller_id}`}
@@ -139,7 +150,6 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             View Seller Profile
           </Link>
         </div>
-
 
         {/* Tags Section - Use service.tags and Tag component */}
         {service.tags && service.tags.length > 0 && (

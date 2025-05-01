@@ -574,7 +574,8 @@ export const serviceOperations = {
           id,
           full_name,
           username,
-          avatar_url
+          avatar_url,
+          bio
         )
         `,
       )
@@ -601,6 +602,7 @@ export const serviceOperations = {
         seller_name:
           sellerInfo.full_name || sellerInfo.username || 'Unknown Seller',
         seller_avatar_url: sellerInfo.avatar_url || null, // Add avatar URL
+        seller_bio: sellerInfo.bio || null, // Add seller bio
         created_at: data.created_at ? String(data.created_at) : null,
       };
       // Remove the nested seller object as it's not part of ServiceSchema
