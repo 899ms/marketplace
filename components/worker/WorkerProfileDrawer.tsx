@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import * as Avatar from '@/components/ui/avatar';
-import * as Badge from '@/components/ui/badge';
 import * as Drawer from '@/components/ui/drawer';
 import * as Tabs from '@/components/ui/tabs';
 import {
@@ -13,367 +12,273 @@ import {
   RiGoogleFill,
   RiArrowRightLine,
   RiHeartLine,
-  RiPlayLine,
-  RiBookmarkLine,
+  RiArrowUpCircleLine,
 } from '@remixicon/react';
-// Assuming ServiceCardSmall is a variant or separate component for the drawer
-// import ServiceCardSmall from '@/components/cards/ServiceCardSmall';
 
-// Define necessary types (replace with actual types if available)
-interface Service {
-  id: number | string;
-  title: string;
-  rating: number;
-  reviews: number;
-  price: number | string;
-  image?: string; // Optional image for the card
-}
-interface Review {
-  id: number | string;
-  reviewerName: string;
-  reviewerAvatar: string;
-  rating: number;
-  date: string;
-  contractTitle: string;
-  content: string;
-  amount: string | number;
-}
-interface WorkItem {
-  id: number | string;
-  title: string;
-  remarks: string;
-  tags: string[];
-  duration: string;
-  bpm: string;
-}
+import BlockFileUploadDialog from '@/components/blocks/block-file-upload-dialog';
+import { AboutSection } from '@/components/worker/profile/AboutSection';
+import { WorkItem } from '@/components/worker/profile/work-item';
+import { ServiceCard } from '@/components/worker/profile/service-card';
+import { ReviewItem } from '@/components/worker/profile/review-item';
 
 interface WorkerProfileDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  // workerData?: Worker; // Pass actual worker data later
 }
 
 const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   isOpen,
   onClose,
-  // workerData
 }) => {
-  const [activeTab, setActiveTab] = useState('About');
+  const [activeTab, setActiveTab] = useState<'about' | 'work' | 'services' | 'reviews'>('about');
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
 
-  // Mock data within the component for now
-  const mockWorkerData = {
+  const worker = {
     name: 'Cleve Music',
-    avatar: 'https://via.placeholder.com/48',
+    avatar: 'https://via.placeholder.com/64',   // bigger avatar placeholder
     rating: 4.9,
-    reviews: 125,
-    specialty: 'Specialist',
+    reviewCount: 125,
+    specialty: 'Next.js & TypeScript Specialist',
     about:
-      'TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & TypeScript Specialist Next.js & 5+ Years Experience in Frontend Development Next.js & TypeScript Specialist Next.js & TypeScript...',
+      'Next.js & TypeScript Specialist\n5+ Years Experience in Front-end Development\nReal-time Web Applications\nFreelance & Startup Experience\nProblem Solving, High-Performance UIs',
     workItems: [
       {
-        id: 1,
         title: 'Funky Bounce Logo',
-        remarks: 'Worker Remarks Text',
-        tags: ['Mixing', 'Singing', 'Jazz'],
+        description: 'Worker remarks text',
         duration: '0:22',
         bpm: '112 BPM',
+        genres: ['Mixing', 'Singing', 'Jazz'],
       },
       {
-        id: 2,
         title: 'Another Track',
-        remarks: 'Some details',
-        tags: ['Pop', 'Mastering'],
+        description: 'Some details',
         duration: '3:15',
         bpm: '120 BPM',
+        genres: ['Pop', 'Mastering'],
       },
-      // Add more work items...
-    ] as WorkItem[],
+    ],
     services: [
       {
-        id: 1,
+        id: '1',
         title: 'Draw catchy illustrations anime',
+        image: 'bg-gradient-to-br from-blue-400 to-purple-500',
+        price: 101,
         rating: 4.9,
-        reviews: 125,
-        price: '$101',
+        reviewCount: 125,
       },
       {
-        id: 2,
+        id: '2',
         title: 'Professional Voice Over',
+        image: 'bg-gradient-to-br from-blue-400 to-purple-500',
+        price: 50,
         rating: 5.0,
-        reviews: 80,
-        price: '$50',
+        reviewCount: 80,
       },
-      // Add more services...
-    ] as Service[],
-    reviewsData: [
+    ],
+    reviews: [
       {
-        id: 1,
-        reviewerName: 'Cleve Music',
+        id: '1',
+        reviewer: 'Cleve Music',
         reviewerAvatar: 'https://via.placeholder.com/32',
         rating: 4.9,
-        date: 'Jan 8, 2023',
-        contractTitle: 'Contract title text here...',
+        date: 'Jan 8 2023',
+        contractTitle: 'Contract title text here…',
         content:
-          'idence.123confidence.123confidence.123cidence.123confidence.123confidence.123cidence.123confidence.123confidence.123 e.123 idence.123confidence.123confidence.123cidence.123confidence.123confidence.',
-        amount: '$1000.00',
+          'Great communication, quick turnaround and high-quality delivery. Would definitely work again!',
+        price: 1000,
       },
       {
-        id: 2,
-        reviewerName: 'Another Client',
+        id: '2',
+        reviewer: 'Another Client',
         reviewerAvatar: 'https://via.placeholder.com/32',
         rating: 4.5,
-        date: 'Feb 15, 2023',
-        contractTitle: 'Different contract...',
+        date: 'Feb 15 2023',
+        contractTitle: 'Different contract…',
         content: 'Good work, delivered on time.',
-        amount: '$500.00',
+        price: 500,
       },
-      // Add more reviews...
-    ] as Review[],
+    ],
   };
 
-  // Replace mockWorkerData with workerData when passed as prop
-  const displayData = mockWorkerData; // workerData || mockWorkerData;
-
-  // Use useEffect to handle focus when the drawer is closed
   useEffect(() => {
-    if (!isOpen) {
-      // Remove focus from any element when drawer closes
-      if (document.activeElement instanceof HTMLElement) {
-        document.activeElement.blur();
-      }
+    if (!isOpen && document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
     }
   }, [isOpen]);
 
   return (
     <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      {/* Overlay is typically handled by Drawer.Root or Drawer.Content in libraries like vaul */}
-      {/* {isOpen && (
-        <Drawer.Overlay className='fixed inset-0 z-40 bg-black/40' />
-      )} */}
-      <Drawer.Content className='shadow-xl fixed inset-y-0 right-0 z-50 h-[100dvh] w-full max-w-md overflow-hidden bg-white sm:max-w-lg md:max-w-xl lg:max-w-2xl'>
-        <div className='flex h-full flex-col'>
-          {/* Header with Close Button and External Link */}
-          <div className='border-b border-stroke-soft-200 px-5 py-4'>
-            <div className='flex items-center justify-between'>
+      <Drawer.Content className="fixed inset-y-0 right-0 z-50 h-[100dvh] w-full max-w-md shadow-xl overflow-hidden bg-white sm:max-w-lg md:max-w-xl lg:max-w-2xl">
+        <div className="flex h-full flex-col">
+          {/* header */}
+          <div className="border-b border-stroke-soft-200 px-5 py-4">
+            <div className="flex items-center justify-between">
               <Drawer.Close asChild>
-                <button className='focus-visible:ring-ring rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2'>
-                  <RiCloseLine className='text-text-secondary-600 size-5' />
-                  <span className='sr-only'>Close</span>
+                <button className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                  <RiCloseLine className="size-5 text-text-secondary-600" />
+                  <span className="sr-only">Close</span>
                 </button>
               </Drawer.Close>
+
+              {/* “Open in new tab” link – blue & underlined */}
               <Link
-                href='#' // TODO: Link to actual worker profile page
-                className='text-text-primary-600 text-sm flex items-center gap-1.5 font-medium'
+                href="#"
+                className="flex items-center gap-1.5 text-sm font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700"
               >
-                Open in new tab <RiExternalLinkLine className='size-4' />
+                Open in new tab <RiExternalLinkLine className="size-4" />
               </Link>
             </div>
 
-            {/* Profile Information */}
-            <div className='mt-5 flex items-start justify-between'>
-              <div className='flex items-center gap-4'>
-                <Avatar.Root size='48'>
-                  <Avatar.Image
-                    src={displayData.avatar}
-                    alt={displayData.name}
-                  />
+            <div className="mt-5 flex items-start justify-between px-5">
+              <div className="flex items-center gap-4">
+                {/* bigger avatar */}
+                <Avatar.Root size="64">
+                  <Avatar.Image src={worker.avatar} alt={worker.name} />
                 </Avatar.Root>
+
                 <div>
-                  <div className='flex flex-wrap items-center gap-x-2 gap-y-1'>
-                    {' '}
-                    {/* Added flex-wrap */}
-                    <h2 className='text-xl font-semibold text-text-strong-950'>
-                      {displayData.name}
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <h2 className="text-xl font-semibold text-text-strong-950">
+                      {worker.name}
                     </h2>
-                    <div className='text-sm flex items-center gap-0.5'>
-                      <RiStarFill className='size-4 text-yellow-400' />
-                      <span className='text-text-secondary-600'>
-                        {displayData.rating} ({displayData.reviews})
+                    <div className="flex items-center gap-0.5 text-sm text-text-secondary-600">
+                      <RiStarFill className="size-4 text-yellow-400" />
+                      <span>
+                        {worker.rating} ({worker.reviewCount})
                       </span>
                     </div>
                   </div>
-                  <div className='text-sm text-text-secondary-600 mt-1 flex gap-1'>
-                    <RiGoogleFill className='size-4' />
-                    <RiGoogleFill className='size-4' />
-                    <RiGoogleFill className='size-4' />
-                    <span>{displayData.specialty}</span>
+                  <div className="mt-1 flex gap-1 text-sm text-text-secondary-600">
+                    <RiGoogleFill className="size-4" />
+                    <RiGoogleFill className="size-4" />
+                    <RiGoogleFill className="size-4" />
+                    <span>{worker.specialty}</span>
                   </div>
                 </div>
               </div>
-              <div className='flex items-center gap-3'>
-                <button className='text-sm rounded-md border border-stroke-soft-200 px-3.5 py-2 font-medium text-text-strong-950 transition-colors hover:bg-bg-weak-50'>
-                  Hire <RiArrowRightLine className='ml-1.5 inline size-3.5' />
+
+              {/* equal-width buttons */}
+              <div className="flex items-center gap-3">
+                <button className="w-[96px] rounded-md border border-stroke-soft-200 px-3.5 py-2 text-sm font-medium text-text-strong-950 transition-colors hover:bg-bg-weak-50">
+                  Hire <RiArrowRightLine className="ml-1.5 inline size-3.5" />
                 </button>
-                <button className='text-sm hover:bg-text-strong-900 flex items-center justify-center rounded-md bg-text-strong-950 px-3.5 py-2 font-medium text-white transition-colors'>
-                  Touch{' '}
-                  <RiExternalLinkLine className='ml-1.5 inline size-3.5' />
+                <button className="w-[96px] flex items-center justify-center rounded-md bg-text-strong-950 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-text-strong-900">
+                  Touch <RiExternalLinkLine className="ml-1.5 inline size-3.5" />
                 </button>
-                <button className='text-text-secondary-600 flex items-center justify-center rounded-full p-1.5 transition-colors hover:bg-bg-weak-50 hover:text-red-500'>
-                  <RiHeartLine className='size-5' />
+                <button className="rounded-full p-1.5 text-text-secondary-600 transition-colors hover:bg-bg-weak-50 hover:text-red-500">
+                  <RiHeartLine className="size-5" />
                 </button>
               </div>
             </div>
           </div>
 
-          {/* Navigation Tabs */}
-          <div className='border-b border-stroke-soft-200'>
-            <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
-              <Tabs.List className='flex border-0 bg-transparent p-0'>
-                {['About', 'Work', 'Service', 'Review'].map((tabName) => (
+          {/* tabs */}
+          <div className="border-b border-stroke-soft-200 px-5">
+            <Tabs.Root value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
+              <Tabs.List className="flex p-0">
+                {[
+                  { key: 'about', label: 'About' },
+                  { key: 'work', label: 'Work' },
+                  { key: 'services', label: 'Service' },
+                  { key: 'reviews', label: 'Review' },
+                ].map(({ key, label }) => (
                   <Tabs.Trigger
-                    key={tabName}
-                    value={tabName}
-                    className='text-sm text-text-secondary-600 flex-1 border-b-2 border-transparent px-4 py-3 text-center font-medium transition-colors data-[state=active]:border-primary-base data-[state=active]:text-text-strong-950'
+                    key={key}
+                    value={key}
+                    className="flex-1 border-b-2 border-transparent bg-transparent px-4 py-3 text-center text-sm font-medium text-text-secondary-600 transition-colors data-[state=active]:border-primary-base data-[state=active]:text-text-strong-950 data-[state=active]:bg-transparent"
                   >
-                    {tabName}
+                    {label}
                   </Tabs.Trigger>
                 ))}
               </Tabs.List>
             </Tabs.Root>
           </div>
 
-          {/* Content Area - scrollable */}
-          <div className='flex-1 overflow-y-auto overflow-x-hidden'>
-            {/* About Tab Content */}
-            {activeTab === 'About' && (
-              <div className='p-5'>
-                <p className='text-text-secondary-600 whitespace-pre-wrap text-paragraph-sm leading-relaxed'>
-                  {' '}
-                  {/* Added whitespace-pre-wrap */}
-                  {displayData.about}
-                </p>
-                {/* Consider adding a 'More' button if content is very long */}
-              </div>
+          {/* content */}
+          <div className="flex-1 overflow-x-hidden overflow-y-auto px-5 py-5">
+            {activeTab === 'about' && (
+              <>
+                <AboutSection about={worker.about} />
+
+                {/* Work section */}
+                <div className="mt-8 flex items-center justify-between">
+                  <h3 className="text-xl font-semibold text-text-strong-950 pb-1 border-b-2 border-text-strong-950">
+                    Work
+                  </h3>
+                  <button
+                    className="flex h-[32px] w-[90px] items-center justify-center gap-[2px] rounded-lg shadow-[0_1px_2px_rgba(27,28,29,0.48),0_0_0_1px_#242628]"
+                    style={{
+                      background:
+                        'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%), #20232D',
+                    }}
+                    onClick={() => setIsUploadModalOpen(true)}
+                  >
+                    <RiArrowUpCircleLine className="size-5 text-white" />
+                    <span className="text-[14px] font-medium leading-5 text-white">
+                      Upload
+                    </span>
+                  </button>
+                </div>
+
+                <div className="divide-y divide-stroke-soft-200">
+                  {worker.workItems.map((item, i) => (
+                    <WorkItem key={i} item={item} />
+                  ))}
+                </div>
+
+                {/* Services */}
+                <h3 className="mt-8 inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 pb-1 border-b-2 border-text-strong-950">
+                  Service
+                </h3>
+                <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {worker.services.map((svc) => (
+                    <ServiceCard key={svc.id} service={svc} />
+                  ))}
+                </div>
+
+                {/* Reviews */}
+                <h3 className="mt-8 inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 pb-1 border-b-2 border-text-strong-950">
+                  Review
+                </h3>
+                <div className="mt-8 space-y-5 divide-y divide-stroke-soft-200">
+                  {worker.reviews.map((r) => (
+                    <ReviewItem key={r.id} review={r} />
+                  ))}
+                </div>
+              </>
             )}
 
-            {/* Work Tab Content */}
-            {activeTab === 'Work' && (
-              <div className='divide-y divide-stroke-soft-200'>
-                {displayData.workItems.map((item) => (
-                  <div
-                    key={item.id}
-                    className='flex items-center justify-between gap-3 p-5'
-                  >
-                    <div className='flex items-center gap-3.5'>
-                      <button className='bg-bg-subtle-100 hover:bg-bg-subtle-200 flex size-11 items-center justify-center rounded-full transition-colors'>
-                        <RiPlayLine className='size-5 text-text-strong-950' />
-                      </button>
-                      <div>
-                        <p className='font-medium text-text-strong-950'>
-                          {item.title}
-                        </p>
-                        <p className='text-xs text-text-secondary-600'>
-                          {item.remarks}
-                        </p>
-                      </div>
-                    </div>
-                    <div className='flex items-center gap-4'>
-                      <div className='hidden gap-1 lg:flex'>
-                        {item.tags.map((tag) => (
-                          <Badge.Root key={tag} variant='light' size='small'>
-                            {tag}
-                          </Badge.Root>
-                        ))}
-                      </div>
-                      <div className='text-right'>
-                        <p className='font-medium text-text-strong-950'>
-                          {item.duration}
-                        </p>
-                        <p className='text-xs text-text-secondary-600'>
-                          {item.bpm}
-                        </p>
-                      </div>
-                      <button className='text-text-secondary-600 hover:text-text-primary-600 rounded-full p-1.5 transition-colors hover:bg-bg-weak-50'>
-                        <RiBookmarkLine className='size-5' />
-                      </button>
-                    </div>
-                  </div>
+            {activeTab === 'work' && (
+              <div className="divide-y divide-stroke-soft-200">
+                {worker.workItems.map((item, i) => (
+                  <WorkItem key={i} item={item} />
                 ))}
               </div>
             )}
 
-            {/* Service Tab Content */}
-            {activeTab === 'Service' && (
-              <div className='grid grid-cols-1 gap-5 p-5 sm:grid-cols-2 md:grid-cols-3'>
-                {displayData.services.map((service) => (
-                  // Use a dedicated Service Card component here if available
-                  // For now, duplicating the simple card structure
-                  <div
-                    key={service.id}
-                    className='shadow-sm hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all'
-                  >
-                    <div className='relative h-40 w-full bg-gradient-to-br from-blue-400 to-purple-500'>
-                      {/* Placeholder image or based on service.image */}
-                    </div>
-                    <div className='p-3.5'>
-                      <p className='mb-2.5 line-clamp-2 text-paragraph-sm font-medium text-text-strong-950'>
-                        {service.title}
-                      </p>
-                      <div className='flex items-center justify-between text-paragraph-sm'>
-                        <div className='text-text-secondary-600 flex items-center gap-0.5'>
-                          <RiStarFill className='size-3.5 text-yellow-400' />
-                          <span>
-                            {service.rating} ({service.reviews})
-                          </span>
-                        </div>
-                        <span className='font-medium text-text-strong-950'>
-                          {service.price}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+            {activeTab === 'services' && (
+              <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-3">
+                {worker.services.map((svc) => (
+                  <ServiceCard key={svc.id} service={svc} />
                 ))}
               </div>
             )}
 
-            {/* Review Tab Content */}
-            {activeTab === 'Review' && (
-              <div className='divide-y divide-stroke-soft-200'>
-                {displayData.reviewsData.map((review) => (
-                  <div key={review.id} className='p-5'>
-                    <div className='mb-3 flex items-start justify-between'>
-                      <div className='flex items-center gap-3'>
-                        <Avatar.Root size='32'>
-                          <Avatar.Image
-                            src={review.reviewerAvatar}
-                            alt={review.reviewerName}
-                          />
-                        </Avatar.Root>
-                        <div>
-                          <p className='font-medium text-text-strong-950'>
-                            {review.reviewerName}
-                          </p>
-                          <div className='text-xs text-text-secondary-600 flex items-center gap-2'>
-                            <div className='flex items-center'>
-                              <RiStarFill className='size-3.5 text-yellow-400' />
-                              <span>{review.rating}</span>
-                            </div>
-                            <span>{review.date}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <span className='font-medium text-text-strong-950'>
-                        {review.amount}
-                      </span>
-                    </div>
-                    <h3 className='mb-2 font-medium text-text-strong-950'>
-                      {review.contractTitle}
-                    </h3>
-                    <p className='text-sm text-text-secondary-600 mb-2.5 line-clamp-3 leading-relaxed'>
-                      {' '}
-                      {/* Added line-clamp */}
-                      {review.content}
-                    </p>
-                    <button className='text-sm text-text-primary-600 hover:text-text-primary-700 font-medium transition-colors'>
-                      More
-                    </button>
-                  </div>
+            {activeTab === 'reviews' && (
+              <div className="divide-y divide-stroke-soft-200">
+                {worker.reviews.map((r) => (
+                  <ReviewItem key={r.id} review={r} />
                 ))}
               </div>
             )}
           </div>
         </div>
       </Drawer.Content>
+
+      <BlockFileUploadDialog
+        open={isUploadModalOpen}
+        onOpenChange={setIsUploadModalOpen}
+      />
     </Drawer.Root>
   );
 };

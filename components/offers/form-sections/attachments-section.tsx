@@ -3,13 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import { UseFormReturn, useFieldArray, Control } from 'react-hook-form';
 import { Root as Label } from '@/components/ui/label';
-import { Root as Button } from '@/components/ui/button';
+import * as Button from '@/components/ui/button';
 import {
   RiDeleteBinLine,
   RiUploadCloud2Line,
   RiErrorWarningLine,
   RiCheckLine,
   RiLoader4Line,
+  RiCheckboxCircleFill,
 } from '@remixicon/react';
 import { SendOfferFormData } from '../schema';
 import type { BaseFileData } from '@/utils/supabase/types';
@@ -242,116 +243,77 @@ export function AttachmentsSection({
   const renderUploadStatusIcon = (status: UploadStatus | undefined) => {
     switch (status) {
       case 'uploading':
-        return <RiLoader4Line className='h-4 w-4 animate-spin text-blue-500' />;
+        return <RiLoader4Line className='size-6 animate-spin text-blue-500' />;
       case 'success':
-        return <RiCheckLine className='h-4 w-4 text-green-500' />;
+        return <RiCheckLine className='size-6 text-green-500' />;
       case 'error':
-        return <RiErrorWarningLine className='h-4 w-4 text-red-500' />;
+        return <RiErrorWarningLine className='size-6 text-red-500' />;
       default:
-        return <div className='h-4 w-4' />; // Placeholder for idle
+        return <div className='size-6' />; // Placeholder for idle
     }
   };
 
-  return (
-    <div className='rounded-md border border-stroke-soft-200 p-4'>
-      <Label>Attach file(s)</Label>
-      <div
-        onDragOver={handleDragOver}
-        onDragLeave={handleDragLeave}
-        onDrop={handleDrop}
-        className={cn(
-          'mt-2 flex flex-col items-center justify-center rounded-md border-2 border-dashed border-stroke-soft-200 px-6 py-10 transition-colors',
-          isDraggingOver ? 'border-indigo-500 bg-indigo-50' : '',
-        )}
-      >
-        <RiUploadCloud2Line
-          className={cn(
-            'h-12 w-12 transition-colors',
-            isDraggingOver ? 'text-indigo-600' : 'text-text-placeholder-400',
-          )}
-          aria-hidden='true'
-        />
-        <div className='text-sm text-text-secondary-600 mt-4 text-center'>
-          <Label
-            htmlFor='contract-file-upload'
-            className='text-indigo-600 hover:text-indigo-500 focus-within:ring-indigo-500 relative cursor-pointer rounded-md bg-transparent font-medium focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2'
-          >
-            <span>Click to upload</span>
-            <input
-              id='contract-file-upload'
-              name='contract-file-upload-input'
-              type='file'
-              className='sr-only'
-              multiple
-              onChange={handleFileChange}
-              accept='.pdf,.doc,.docx,.png,.jpg,.jpeg'
-            />
-          </Label>
-          <p className='inline pl-1'>or drag and drop</p>
-        </div>
-        <p className='text-xs text-text-tertiary-500 mt-1'>
-          Max 10MB per file. PDF, DOCX, PNG, JPG supported.
-        </p>
-      </div>
+  const formatFileSize = (bytes: number): string => {
+    if (bytes < 1024) return bytes + ' B';
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+    return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+  };
 
-      {managedFiles.length > 0 && (
-        <div className='mt-4 space-y-2'>
-          <p className='text-sm text-text-primary-900 font-medium'>
-            Attached files:
-          </p>
-          {managedFiles.map((item) => (
-            <div
-              key={item.localId}
-              className={cn(
-                'bg-bg-surface-0 flex items-center justify-between rounded border p-2',
-                item.status === 'error'
-                  ? 'border-red-300'
-                  : 'border-stroke-soft-200',
-              )}
-            >
-              <div className='flex items-center space-x-2'>
-                <div className='h-4 w-4 flex-shrink-0'>
-                  {renderUploadStatusIcon(item.status)}
-                </div>
-                <div className='flex flex-col'>
-                  <span
-                    className='text-sm text-text-primary-900 truncate font-medium'
-                    title={item.name}
-                  >
-                    {item.name ?? 'Unnamed file'}
-                  </span>
-                  <span className='text-xs text-text-tertiary-500'>
-                    {formatBytes(item.size ?? 0)}
-                    {item.status === 'error' && item.errorMessage && (
-                      <span className='ml-2 text-red-600'>
-                        {' '}
-                        - Error: {item.errorMessage}
-                      </span>
-                    )}
-                  </span>
+  return (
+
+    <div className='flex flex-col gap-3 w-full items-start'>
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 w-full'>
+        {managedFiles.length > 0 ? managedFiles.map((file, index) => (
+
+          <div
+            key={index}
+            className='flex items-center justify-between rounded-md border border-stroke-soft-200 p-2'
+          >
+            <div className='flex items-center justify-between w-full'>
+              <div className='flex gap-2 items-center'>
+                {renderUploadStatusIcon(file.status)}
+                <div className='flex flex-col gap-0.5'>
+                  <p className='text-[14px] font-medium text-[#525866]'>
+                    {file.name}
+                  </p>
+                  <div className='flex items-center gap-1'>
+                    <p className='text-[12px] text-[#525866]'>
+                      {formatFileSize(file.size) + ' ∙ '}
+                    </p>
+
+                  </div>
                 </div>
               </div>
-              <Button
-                type='button'
-                variant='neutral'
-                size='small'
-                className='text-red-600 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50'
-                onClick={() => handleRemoveFile(item.localId)}
-                aria-label={`Remove ${item.name}`}
-                disabled={item.status === 'uploading'}
-              >
-                <RiDeleteBinLine className='h-4 w-4' />
-              </Button>
-            </div>
-          ))}
-        </div>
-      )}
+              <RiDeleteBinLine className='text-[#525866] w-5 h-7 cursor-pointer' onClick={() => handleRemoveFile(file.localId)} />
 
-      {errors.attachments?.root && (
-        <p className='text-sm mt-1 text-red-500'>
-          {errors.attachments.root.message}
-        </p>
-      )}
+
+            </div>
+
+          </div>
+        )) :
+          <div className='flex items-center justify-start w-full h-full'>
+            <span className='text-[#525866] text-[14px]'>No files attached</span>
+          </div>
+
+        }
+      </div>
+      <Label
+        htmlFor='contract-file-upload'
+        className='text-indigo-600 hover:text-indigo-500 focus-within:ring-indigo-500 relative cursor-pointer rounded-md bg-transparent font-medium focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2'
+      >
+        <span className='rounded-md px-2 py-1 border border[#E1E4EA] text-[#525866] text-[14px]'>Attach File</span>
+        <input
+          id='contract-file-upload'
+          name='contract-file-upload-input'
+          type='file'
+          className='sr-only'
+          multiple
+          onChange={handleFileChange}
+          accept='.pdf,.doc,.docx,.png,.jpg,.jpeg'
+        />
+      </Label>
     </div>
+
+
   );
 }

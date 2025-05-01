@@ -72,7 +72,7 @@ export default function BlockFileUploadDialog({
 
   return (
     <Modal.Root open={open} onOpenChange={onOpenChange}>
-      <Modal.Content className='max-w-[440px] shadow-custom-md'>
+      <Modal.Content className='max-w-[440px] shadow-custom-md max-h-[80vh] overflow-auto'>
         <Modal.Header
           icon={RiUploadCloud2Line}
           title='Upload files'
