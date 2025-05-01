@@ -486,7 +486,11 @@ export default function ServicesSearchPage() {
                 <>
                   <div className='grid grid-cols-3 gap-4'>
                     {services.map((service) => (
-                      <ServiceCard key={service.id} service={service} />
+                      <Link key={service.id} href={`/services/${service.id}`} passHref legacyBehavior>
+                        <a className="block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg">
+                          <ServiceCard service={service} />
+                        </a>
+                      </Link>
                     ))}
                   </div>
 
