@@ -9,14 +9,14 @@ import * as Tag from '@/components/ui/tag'; // Import Tag
 import {
   RiStarFill,
   RiHeartLine,
-  RiPriceTag3Line,
-  RiTimeLine,
   RiSendPlaneLine,
   RiArrowRightSLine,
-  RiFileTextLine,
-  RiGoogleFill, // Keep if used for potential future social links
-  RiTwitchFill, // Keep if used
-  RiTwitterXFill, // Keep if used
+  RiGoogleFill,
+  RiTwitchFill,
+  RiTwitterXFill,
+  RiMoneyCnyCircleLine,
+  RiGroupLine,
+  RiCalendarLine,
 } from '@remixicon/react';
 
 // Remove the old specific data interfaces
@@ -99,7 +99,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         <div className='mb-4 space-y-3'>
           <div className='flex items-center justify-between'>
             <div className='text-text-secondary-600 flex items-center gap-2'>
-              <RiPriceTag3Line className='size-4' />
+              <RiMoneyCnyCircleLine className='size-4' />
               <span className='text-paragraph-sm'>Price</span>
             </div>
             <span className='text-[24px] text-text-strong-950'>
@@ -108,20 +108,20 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
           </div>
           <div className='flex items-center justify-between'>
             <div className='text-text-secondary-600 flex items-center gap-2'>
-              <RiTimeLine className='size-4' />
-              <span className='text-paragraph-sm'>Delivery Time</span>
+              <RiGroupLine className='size-4' />
+              <span className='text-paragraph-sm'>Sold</span>
             </div>
             <span className='font-medium text-text-strong-950'>
-              {service.lead_time} {service.lead_time === 1 ? 'Day' : 'Days'}
+              5
             </span>
           </div>
           <div className='flex items-center justify-between'>
             <div className='text-text-secondary-600 flex items-center gap-2'>
-              <RiFileTextLine className='size-4' />
-              <span className='text-paragraph-sm'>Proposals</span>
+              <RiCalendarLine className='size-4' />
+              <span className='text-paragraph-sm'>Deadline</span>
             </div>
             <span className='font-medium text-text-strong-950'>
-              15 {/* Placeholder number */}
+              05.25.2025
             </span>
           </div>
         </div>
