@@ -100,6 +100,7 @@ function ChatMessageRenderer({
   const cardTextColor = 'text-gray-900 dark:text-gray-100';
   const cardSubTextColor = 'text-gray-600 dark:text-gray-400';
   const plainTextColor = 'text-gray-800 dark:text-gray-100';
+  const messageContentMaxWidth = 'max-w-[85%]';
 
   const renderImageMessage = () => {
     const imageData = message.data as ImageMessageData | null;
@@ -278,19 +279,20 @@ function ChatMessageRenderer({
 
   return (
     <div className={`flex w-full mb-4 ${alignmentContainerClass}`}>
-      <div className={`flex items-end gap-2 max-w-[90%] ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
-        {!isCurrentUser && (
-          <Avatar className="w-8 h-8 flex-shrink-0 mb-1">
-            {senderProfile?.avatar_url ? (
-              <AvatarImage src={senderProfile.avatar_url} alt={senderName} />
-            ) : (
-              <div className="w-full h-full rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-sm font-semibold text-gray-600 dark:text-gray-300">
-                {senderName?.charAt(0).toUpperCase()}
-              </div>
-            )}
-          </Avatar>
-        )}
-        <div className={`flex flex-col ${alignmentItemsClass}`}>
+      <div className={`flex items-end gap-2 ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
+        <Avatar className="w-8 h-8 flex-shrink-0 mb-1">
+          {senderProfile?.avatar_url ? (
+            <AvatarImage src={senderProfile.avatar_url} alt={senderName} />
+          ) : (
+            <div className="w-full h-full rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-sm font-semibold text-gray-600 dark:text-gray-300">
+              {senderName?.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </Avatar>
+        <div className={`flex flex-col ${alignmentItemsClass} ${messageContentMaxWidth}`}>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">
+            {senderName}
+          </p>
           {message.message_type === 'text' ? (
             <p className={`text-sm whitespace-pre-wrap break-words ${plainTextColor}`}>
               {message.content || ''}
@@ -555,7 +557,9 @@ export default function ChatCore({
             {groupedMessages[dateKey].map((message) => {
               const isCurrentUser = message.sender_id === currentUserId;
               const senderProfile = isCurrentUser ? currentUserProfile : otherUserProfile;
-              const senderName = isCurrentUser ? 'Me' : senderProfile?.username ?? 'User';
+              const senderName = isCurrentUser
+                ? 'Me'
+                : senderProfile?.full_name ?? senderProfile?.username ?? 'User';
               return (
                 <ChatMessageRenderer
                   key={message.id}
