@@ -13,12 +13,31 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
 }) => {
   return (
     <div className='border-b border-stroke-soft-200 p-6'>
-      <h2 className='text-lg mb-4 font-semibold text-text-strong-950'>
+      <h2
+        className="
+          text-base
+          font-semibold
+          leading-6
+          tracking-[-0.015em]
+          text-[#161922]
+          mb-4
+        "
+      >
         Project Details
       </h2>
 
       {description.map((paragraph, idx) => (
-        <p key={idx} className='text-sm text-text-secondary-600 mb-4'>
+        <p
+          key={idx}
+          className="
+            text-sm
+            font-medium
+            leading-5
+            tracking-[-0.006em]
+            text-[#525866]
+            mb-4
+          "
+        >
           {paragraph}
         </p>
       ))}

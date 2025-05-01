@@ -14,14 +14,23 @@ interface ProjectHeaderProps {
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({ title, category, showBookmark }) => {
   return (
     <div className='border-b border-stroke-soft-200 p-6'>
-      <div className='flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between'>
-        <h1 className='text-heading-md font-semibold text-text-strong-950'>{title}</h1>
+      <div className='flex flex-col items-start gap-2 sm:flex-row sm:items-center'>
+        <h1 className='font-medium text-[24px] leading-[32px] tracking-normal text-text-strong-950'>{title}</h1>
         <div className="flex items-center gap-2">
           <Badge.Root
-            variant='stroke'
-            size='medium'
-            className='text-text-secondary-600 shrink-0'
+            variant="light"
+            size="small"
             color="gray"
+            className="
+              shrink-0
+              w-[81px] h-[20px]
+              px-4 py-1
+              gap-[2px]
+              rounded-full
+              bg-neutral-100 border border-neutral-200
+              flex items-center justify-center
+              text-text-secondary-600
+            "
           >
             {category}
           </Badge.Root>

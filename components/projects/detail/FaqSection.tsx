@@ -1,9 +1,8 @@
-'use client'; // Needs to be a client component due to state
+'use client';
 
 import React, { useState } from 'react';
-import { RiAddLine, RiCloseLine } from '@remixicon/react';
+import { RiAddLine, RiSubtractLine, RiQuestionMark } from '@remixicon/react';
 
-// Define FAQ item type
 interface FaqItem {
   question: string;
   answer: string;
@@ -18,52 +17,57 @@ const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
   const [faqs, setFaqs] = useState(initialFaqs);
 
   const toggleFaq = (index: number) => {
-    // Create a new array with updated isOpen state for the clicked item
-    setFaqs((currentFaqs) =>
-      currentFaqs.map((faq, i) => {
-        if (i === index) {
-          return { ...faq, isOpen: !faq.isOpen };
-        }
-        return faq; // Keep other items unchanged
-      }),
+    setFaqs(current =>
+      current.map((faq, i) =>
+        i === index ? { ...faq, isOpen: !faq.isOpen } : faq
+      )
     );
   };
 
-  if (!faqs || faqs.length === 0) return null;
+  if (!faqs.length) return null;
 
   return (
-    <div className='p-6'>
-      <h2 className='text-lg mb-4 font-semibold text-text-strong-950'>
+    <div className="p-6">
+      {/* Header */}
+      <h2 className="text-base font-semibold leading-6 tracking-[-0.015em] text-[#161922] mb-4">
         Frequently Asked Questions
       </h2>
 
-      <div className='space-y-4'>
+      <div className="space-y-4">
         {faqs.map((faq, idx) => (
           <div
             key={idx}
-            className='overflow-hidden rounded-lg border border-stroke-soft-200'
+            className={`
+              overflow-hidden
+              rounded-lg
+              border border-stroke-soft-200
+              ${faq.isOpen ? 'bg-bg-weak-50' : ''}
+            `}
           >
+            {/* Question row */}
             <button
               onClick={() => toggleFaq(idx)}
-              className='flex w-full items-center justify-between p-4 text-left font-medium text-text-strong-950'
+              className="flex w-full items-center justify-between p-4 text-left font-medium text-text-strong-950"
             >
-              <div className='flex items-center gap-3'>
-                <div className='bg-bg-subtle-100 text-text-secondary-600 text-xs flex size-6 shrink-0 items-center justify-center rounded-full'>
-                  {idx + 1}
+              <div className="flex items-center gap-3">
+                {/* Black-bordered question mark */}
+                <div className="border border-black rounded-full p-1 flex items-center justify-center">
+                  <RiQuestionMark className="size-3 text-text-secondary-600" />
                 </div>
                 {faq.question}
               </div>
-              <div className='text-text-secondary-600'>
-                {faq.isOpen ? (
-                  <RiCloseLine className='size-5' />
-                ) : (
-                  <RiAddLine className='size-5' />
-                )}
-              </div>
+
+              {/* Plus/minus icon */}
+              {faq.isOpen ? (
+                <RiSubtractLine className="size-5 text-text-secondary-600" />
+              ) : (
+                <RiAddLine className="size-5 text-text-secondary-600" />
+              )}
             </button>
 
+            {/* Answer, flush under question text */}
             {faq.isOpen && faq.answer && (
-              <div className='text-sm text-text-secondary-600 border-t border-stroke-soft-200 p-4'>
+              <div className="text-sm text-[#525866] pb-4 pl-[56px]">
                 {faq.answer}
               </div>
             )}
