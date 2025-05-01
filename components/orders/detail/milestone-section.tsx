@@ -12,6 +12,9 @@ import {
   RiArrowDownSLine
 } from '@remixicon/react';
 
+// Import UserRole type
+type UserRole = 'buyer' | 'seller';
+
 interface Milestone {
   id: string;
   title: string;
@@ -22,6 +25,7 @@ interface Milestone {
 }
 
 interface MilestoneSectionProps {
+  userRole: UserRole; // Add userRole prop
   contractId: string;
   milestones: Milestone[];
   onConfirmPayment?: (milestoneId: string) => void;
@@ -29,6 +33,7 @@ interface MilestoneSectionProps {
 }
 
 export function MilestoneSection({
+  userRole, // Destructure userRole
   contractId,
   milestones: initialMilestones,
   onConfirmPayment,
@@ -56,7 +61,7 @@ export function MilestoneSection({
 
   const handleAddFormSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (isSaving) return;
+    if (isSaving || userRole !== 'buyer') return; // Prevent saving if not buyer or already saving
     setIsSaving(true);
 
     const formData = new FormData(event.currentTarget);
@@ -70,6 +75,7 @@ export function MilestoneSection({
       setNewMilestoneAmount("");
       setShowAddMilestone(false);
       setNewMilestoneDueDate("");
+      // TODO: Optimistically update or refetch milestones
     } else {
       console.error("Failed to add milestone:", result.error);
       const { notification } = await import('@/hooks/use-notification');
@@ -115,7 +121,8 @@ export function MilestoneSection({
                     )}
                   </div>
 
-                  {milestone.status === 'pending' && (
+                  {/* Only show Confirm Payment button for buyers on pending milestones */}
+                  {userRole === 'buyer' && milestone.status === 'pending' && (
                     <Tag.Root
                       onClick={() => onConfirmPayment?.(milestone.id)}
                       className={`ml-4 flex-shrink-0 cursor-pointer text-text-strong-950 ${isConfirmingId === milestone.id ? 'opacity-50 pointer-events-none' : ''}`}
@@ -128,60 +135,65 @@ export function MilestoneSection({
             ))}
           </div>
 
-          {showAddMilestone && (
-            <form onSubmit={handleAddFormSubmit} className="flex items-end gap-2 mt-4 ml-9">
-              <div className="flex-1">
-                <InputRoot size="small">
-                  <InputField
-                    name="description"
-                    placeholder="Milestone title"
-                    value={newMilestoneTitle}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneTitle(e.target.value)}
-                    required
-                  />
-                </InputRoot>
-              </div>
-              <div className="w-24">
-                <InputRoot size="small">
-                  <InputField
-                    name="amount"
-                    placeholder="Amount"
-                    type="number"
-                    value={newMilestoneAmount}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneAmount(e.target.value)}
-                    required
-                    step="0.01"
-                  />
-                </InputRoot>
-              </div>
-              <div className="w-36">
-                <InputRoot size="small">
-                  <InputField
-                    name="dueDate"
-                    placeholder="Due Date (Optional)"
-                    type="date"
-                    value={newMilestoneDueDate}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneDueDate(e.target.value)}
-                  />
-                </InputRoot>
-              </div>
-              <Button.Root type="submit" size="small" disabled={isSaving}>
-                {isSaving ? 'Saving...' : 'Save'}
-              </Button.Root>
-              <Button.Root variant="neutral" mode="ghost" size="small" type="button" onClick={() => setShowAddMilestone(false)} disabled={isSaving}>
-                Cancel
-              </Button.Root>
-            </form>
-          )}
+          {/* Only show Add Milestone form/button for buyers */}
+          {userRole === 'buyer' && (
+            <>
+              {showAddMilestone && (
+                <form onSubmit={handleAddFormSubmit} className="flex items-end gap-2 mt-4 ml-9">
+                  <div className="flex-1">
+                    <InputRoot size="small">
+                      <InputField
+                        name="description"
+                        placeholder="Milestone title"
+                        value={newMilestoneTitle}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneTitle(e.target.value)}
+                        required
+                      />
+                    </InputRoot>
+                  </div>
+                  <div className="w-24">
+                    <InputRoot size="small">
+                      <InputField
+                        name="amount"
+                        placeholder="Amount"
+                        type="number"
+                        value={newMilestoneAmount}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneAmount(e.target.value)}
+                        required
+                        step="0.01"
+                      />
+                    </InputRoot>
+                  </div>
+                  <div className="w-36">
+                    <InputRoot size="small">
+                      <InputField
+                        name="dueDate"
+                        placeholder="Due Date (Optional)"
+                        type="date"
+                        value={newMilestoneDueDate}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneDueDate(e.target.value)}
+                      />
+                    </InputRoot>
+                  </div>
+                  <Button.Root type="submit" size="small" disabled={isSaving}>
+                    {isSaving ? 'Saving...' : 'Save'}
+                  </Button.Root>
+                  <Button.Root variant="neutral" mode="ghost" size="small" type="button" onClick={() => setShowAddMilestone(false)} disabled={isSaving}>
+                    Cancel
+                  </Button.Root>
+                </form>
+              )}
 
-          {!showAddMilestone && (
-            <button
-              onClick={() => setShowAddMilestone(true)}
-              className="flex items-center gap-1 text-text-strong-950 hover:text-text-secondary-600 mt-6 ml-9 text-sm font-medium"
-            >
-              <RiAddLine className="h-5 w-5" />
-              <span>Add a new milestone</span>
-            </button>
+              {!showAddMilestone && (
+                <button
+                  onClick={() => setShowAddMilestone(true)}
+                  className="flex items-center gap-1 text-text-strong-950 hover:text-text-secondary-600 mt-6 ml-9 text-sm font-medium"
+                >
+                  <RiAddLine className="h-5 w-5" />
+                  <span>Add a new milestone</span>
+                </button>
+              )}
+            </>
           )}
         </Accordion.Content>
       </Accordion.Item>

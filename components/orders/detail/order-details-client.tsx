@@ -12,28 +12,48 @@ import { MilestoneSection } from "./milestone-section";
 import { ContractDetails } from "./contract-details";
 import { WorkFiles } from "./work-files";
 import { confirmMilestonePayment } from '@/app/actions/milestone-actions'; // Import the server action
+import { uploadContractAttachments } from '@/app/actions/contract-actions'; // Import the new server action
 import { useNotification } from '@/hooks/use-notification'; // Import custom notification hook
+
+// Define user role type
+type UserRole = 'buyer' | 'seller';
 
 // Define props for the Client Component
 interface OrderDetailsClientProps {
   contract: Contract;
   seller: User;
+  buyer: User; // Add buyer prop
   milestones: ContractMilestone[];
+  currentUserId: string; // Add current user ID prop
 }
 
 export function OrderDetailsClient({
   contract,
   seller,
-  milestones: initialMilestonesData, // Renamed for clarity
+  buyer,
+  milestones: initialMilestonesData,
+  currentUserId,
 }: OrderDetailsClientProps) {
   const [isConfirming, setIsConfirming] = React.useState<string | null>(null); // Track which milestone is being confirmed
   const { notification } = useNotification(); // Use the custom hook
+
+  // Determine the role of the current user
+  const userRole: UserRole = currentUserId === seller.id ? 'seller' : 'buyer';
+  const otherParty = userRole === 'seller' ? buyer : seller;
+
+  console.log(`Current user role: ${userRole}`);
+  console.log('Other party details:', otherParty);
 
   // Log received milestones
   console.log('OrderDetailsClient received milestones:', initialMilestonesData);
 
   // --- Event Handlers (moved from old page.tsx) ---
   const handleConfirmPayment = async (milestoneId: string) => {
+    // Only allow buyer to confirm payment
+    if (userRole !== 'buyer') {
+      notification({ status: 'error', title: 'Action Denied', description: 'Only the buyer can confirm payments.' });
+      return;
+    }
     if (isConfirming) return; // Prevent double clicks
     setIsConfirming(milestoneId);
     console.log(`Calling server action to confirm payment for milestone ${milestoneId}`);
@@ -47,6 +67,7 @@ export function OrderDetailsClient({
         title: 'Success',
         description: 'Milestone payment confirmed!',
       });
+      // TODO: Add optimistic update or refetch milestones
     } else {
       // Use custom notification
       notification({
@@ -63,8 +84,47 @@ export function OrderDetailsClient({
     window.open(fileUrl, '_blank'); // Simple download trigger
   };
 
-  // TODO: Move the add milestone state/logic from MilestoneSection here 
-  //       if needed at this higher level, or keep it encapsulated there.
+  // --- Upload Handler --- 
+  const handleUpload = async (files: File[]) => {
+    console.log(`handleUpload called with ${files.length} files`);
+    if (userRole !== 'seller') {
+      notification({ status: 'error', title: 'Action Denied', description: 'Only the seller can upload files.' });
+      return; // Should not happen if UI is correct, but double-check
+    }
+
+    if (!files || files.length === 0) {
+      notification({ status: 'warning', title: 'No Files', description: 'Please select files to upload.' });
+      return;
+    }
+
+    const formData = new FormData();
+    files.forEach(file => {
+      formData.append('files', file, file.name);
+    });
+
+    try {
+      const result = await uploadContractAttachments(contract.id, formData);
+      if (result.success) {
+        notification({
+          status: 'success',
+          title: 'Upload Successful',
+          description: result.message || `${files.length} file(s) uploaded.`
+        });
+        // Revalidation is handled by the server action, so the updated files
+        // should appear on the next page render/navigation. 
+        // Optionally, could add optimistic update here if immediate feedback is desired without full refresh.
+      } else {
+        throw new Error(result.error || 'Upload failed');
+      }
+    } catch (error: any) {
+      console.error("Upload failed:", error);
+      notification({
+        status: 'error',
+        title: 'Upload Failed',
+        description: error.message || 'Could not upload files.',
+      });
+    }
+  };
 
   // --- Prepare data for child components --- 
 
@@ -131,11 +191,12 @@ export function OrderDetailsClient({
     <div className="container mx-auto py-8 px-4">
 
       <ProfileSection
-        name={seller.full_name}
+        userRole={userRole}
+        name={otherParty.full_name}
         rating={4.9} // Placeholder: Rating needs to come from user or reviews data
         totalReviews={125} // Placeholder: Total reviews needed
-        specialty={seller.bio || 'Seller'} // Using bio as specialty for now
-        avatarUrl={seller.avatar_url || undefined}
+        specialty={otherParty.bio || (otherParty.user_type === 'seller' ? 'Seller' : 'Buyer')}
+        avatarUrl={otherParty.avatar_url || undefined}
       // status={seller.status || 'online'} // Placeholder: Add user status if available
       />
 
@@ -144,6 +205,7 @@ export function OrderDetailsClient({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="max-w-[614px]">
           <MilestoneSection
+            userRole={userRole}
             contractId={contract.id}
             milestones={mappedMilestones}
             onConfirmPayment={handleConfirmPayment}
@@ -156,8 +218,10 @@ export function OrderDetailsClient({
             details={contractDetailItems}
           />
           <WorkFiles
+            userRole={userRole}
             files={workFileItems}
             onDownload={handleDownload}
+            onUpload={handleUpload}
           />
         </div>
       </div>
