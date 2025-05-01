@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-// import Link from 'next/link'; // Keep if ProjectCard needs it
+import Link from 'next/link'; // Added import for Link
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 // Removed unused Input, Select, RiSearchLine imports
 
@@ -626,27 +626,28 @@ export default function ServicesSearchPage() {
                 <>
                   <div className='flex flex-col space-y-4'>
                     {projects.map((project) => (
-                      <ProjectCard
-                        key={project.id}
-                        title={project.title}
-                        infoBadges={[
-                          { label: project.status || 'Open' },
-                          { label: project.usage_option || 'Private' },
-                          { label: project.privacy_option || 'Public' },
-                          // Add more relevant badges based on job data
-                        ]}
-                        skillTags={project.skill_levels || []}
-                        description={project.description || 'No description available.'}
-                        client={{
-                          // Fetch client data separately or join in query if needed
-                          avatarUrl: 'https://placekitten.com/24/24?image=' + project.id.substring(0, 2), // Placeholder
-                          name: 'Placeholder Client Name', // Placeholder
-                          rating: 4.5, // Placeholder
-                          reviewCount: 10 // Placeholder
-                        }}
-                        budget={project.budget}
-                        onApply={() => console.log('Apply clicked for project', project.id)}
-                      />
+                      <Link key={project.id} href={`/projects/${project.id}`} passHref legacyBehavior>
+                        <a className="block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg">
+                          <ProjectCard
+                            title={project.title}
+                            infoBadges={[
+                              { label: project.status || 'Open' },
+                              { label: project.usage_option || 'Private' },
+                              { label: project.privacy_option || 'Public' },
+                            ]}
+                            skillTags={project.skill_levels || []}
+                            description={project.description || 'No description available.'}
+                            client={{
+                              avatarUrl: 'https://placekitten.com/24/24?image=' + project.id.substring(0, 2),
+                              name: 'Placeholder Client Name',
+                              rating: 4.5,
+                              reviewCount: 10
+                            }}
+                            budget={project.budget || 0}
+                            projectId={project.id}
+                          />
+                        </a>
+                      </Link>
                     ))}
                   </div>
 
