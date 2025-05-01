@@ -184,13 +184,13 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                   {[
                     { key: 'about', label: 'About' },
                     { key: 'work', label: 'Work' },
-                    { key: 'services', label: `Service (${services?.length ?? 0})` },
+                    { key: 'services', label: `Service` },
                     { key: 'reviews', label: 'Review' },
                   ].map(({ key, label }) => (
                     <Tabs.Trigger
                       key={key}
                       value={key}
-                      className="flex-1 border-b-2 border-transparent bg-transparent px-4 py-3 text-center text-sm font-medium text-text-secondary-600 transition-colors data-[state=active]:border-primary-base data-[state=active]:text-text-strong-950 data-[state=active]:bg-transparent"
+                      className="flex-1 border-b-2 border-transparent bg-transparent px-4 py-3 text-center text-sm font-medium text-text-secondary-600 transition-colors data-[state=active]:border-black data-[state=active]:text-text-strong-950 data-[state=active]:bg-transparent"
                     >
                       {label}
                     </Tabs.Trigger>
