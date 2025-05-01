@@ -18,8 +18,22 @@ import {
   RiTwitterXFill,
   RiGoogleFill,
   RiArrowRightSLine,
+  RiHeartLine,
+  RiSearchLine,
+  RiCalendarLine,
+  RiSortAsc,
+  RiMore2Fill,
+  RiArrowLeftSLine,
+  RiFilter3Line,
 } from '@remixicon/react';
 import { clsx } from 'clsx';
+import { Input } from '@/components/ui/input';
+import * as DatePicker from '@/components/ui/datepicker';
+import * as Dropdown from '@/components/ui/dropdown';
+import * as Tabs from '@/components/ui/tabs';
+import * as Table from '@/components/ui/table';
+import * as Pagination from '@/components/ui/pagination';
+import { cn } from '@/utils/cn';
 
 // Order Page Sidebar Component
 const OrderSidebar = () => {
@@ -310,112 +324,370 @@ const ReviewListItem = () => {
   );
 };
 
-// Order/Review Page Component
-export default function OrdersPage() {
-  // Dummy orders data for demonstration
-  const orders = [
-    {
-      id: "order-123",
-      title: "Music Production",
-      seller: "Cleve Music",
-      date: "23 Jan 2025",
-      amount: "$558.00",
-      status: "in-progress",
+// Left Sidebar Component
+function OrdersSidebar() {
+  return (
+    <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-4 pt-6">
+      <nav className="flex flex-col gap-1">
+        {/* Active link styling example */}
+        <Link
+          href="/orders"
+          className="flex items-center gap-2 rounded-md bg-bg-brand-subtle-100 px-3 py-2 font-medium text-text-brand-900"
+        >
+          <span>Orders</span>
+          <span className="ml-auto text-xs font-normal text-text-brand-secondary-600">{/* Counter */}</span>
+        </Link>
+        <Link
+          href="/billing"
+          className="flex items-center gap-2 rounded-md px-3 py-2 text-text-secondary-600 hover:bg-bg-neutral-subtle-100 hover:text-text-strong-950"
+        >
+          <span>Billing</span>
+        </Link>
+      </nav>
+    </aside>
+  );
+}
+
+// Summary Card Component (Helper)
+interface SummaryCardProps {
+  title: string;
+  value: string;
+  icon?: React.ReactNode;
+  actions?: React.ReactNode;
+}
+
+function SummaryCard({ title, value, icon, actions }: SummaryCardProps) {
+  return (
+    <div className="rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm">
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
+          {icon}
+          <span className="text-sm text-text-secondary-600">{title}</span>
+        </div>
+        {actions}
+      </div>
+      <p className="mt-1 text-xl font-semibold text-text-strong-950">{value}</p>
+    </div>
+  );
+}
+
+// Mock data matching the SELLER VIEW image structure
+// TODO: Replace with actual data fetched from API/Supabase
+const mockOrders = [
+  {
+    id: '1',
+    from: { name: 'James Brown', avatarUrl: 'https://i.pravatar.cc/40?img=1' },
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    rating: null,
+    status: 'active',
+  },
+  {
+    id: '2',
+    from: { name: 'Arthur Taylor', avatarUrl: 'https://i.pravatar.cc/40?img=2' },
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    rating: 4.5,
+    status: 'pending',
+  },
+  {
+    id: '3',
+    from: { name: 'Matthew Johnson', avatarUrl: 'https://i.pravatar.cc/40?img=3' },
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    rating: 4.5,
+    status: 'active',
+  },
+  {
+    id: '4',
+    from: { name: 'Emma Wright', avatarUrl: 'https://i.pravatar.cc/40?img=4' },
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    rating: 4.5,
+    status: 'active',
+  },
+  {
+    id: '5',
+    from: { name: 'Natalia Nowak', avatarUrl: 'https://i.pravatar.cc/40?img=5' },
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    rating: 4.5,
+    status: 'active',
+  },
+  {
+    id: '6',
+    from: { name: 'Wei Chen', avatarUrl: 'https://i.pravatar.cc/40?img=6' },
+    subject: 'Subject name',
+    price: 1598,
+    deadline: '05.26.2025',
+    rating: 4.5,
+    status: 'active',
+  },
+  // Add more mock data mirroring the seller view...
+];
+
+// Helper to render status badges based on the image and available Badge props
+function renderStatusBadge(status: string) {
+  switch (status.toLowerCase()) {
+    case 'active':
+      // Use lighter variant with green text/bg hint
+      return (
+        <Badge.Root variant="lighter" size="medium" className="bg-green-100 text-green-700">
+          Active
+        </Badge.Root>
+      );
+    case 'pending':
+      // Use lighter variant with orange/yellow text/bg hint
+      return (
+        <Badge.Root variant="lighter" size="medium" className="bg-orange-100 text-orange-700">
+          Pending
+        </Badge.Root>
+      );
+    case 'close':
+      // Use stroke variant with neutral colors for the outlined style
+      return (
+        <Badge.Root variant="stroke" size="medium" className="border-gray-300 text-gray-600">
+          Close
+        </Badge.Root>
+      );
+    case 'dispute':
+    case 'overdue':
+      // Use lighter variant with red text/bg hint
+      return (
+        <Badge.Root variant="lighter" size="medium" className="bg-red-100 text-red-700 capitalize">
+          {status} {/* Display original status text (Dispute/Overdue) */}
+        </Badge.Root>
+      );
+    default:
+      // Default neutral badge
+      return (
+        <Badge.Root variant="light" size="medium" className="bg-gray-100 text-gray-600">
+          {status}
+        </Badge.Root>
+      );
+  }
+}
+
+// Right Content Area Component
+function OrdersContent() {
+  const [activeTab, setActiveTab] = React.useState('all');
+  const [searchTerm, setSearchTerm] = React.useState('');
+  const [sortOption, setSortOption] = React.useState('default');
+  const [currentPage, setCurrentPage] = React.useState(1);
+  const itemsPerPage = 10;
+
+  const summaryData = {
+    milestone: {
+      title: 'Milestone',
+      description: 'For only $4.99 per month!',
+      learnMoreLink: '#',
+      icon: <RiHeartLine className="size-5 text-icon-brand-500" />,
     },
-    {
-      id: "order-456",
-      title: "Vocal Engineering",
-      seller: "Sound Wave Studios",
-      date: "15 Jan 2025",
-      amount: "$320.00",
-      status: "completed",
+    totalAmount: {
+      title: 'Total Amount',
+      value: '$50110.00',
     },
-    {
-      id: "order-789",
-      title: "Mastering Service",
-      seller: "MasterCraft Audio",
-      date: "10 Jan 2025",
-      amount: "$250.00",
-      status: "pending",
+    settled: {
+      title: 'Settled',
+      value: '$11500.00',
     },
-  ];
+    inEscrow: {
+      title: 'In Escrow',
+      value: '$111.00',
+    },
+  };
+
+  const filteredAndSortedOrders = mockOrders;
+  const totalItems = filteredAndSortedOrders.length;
+  const totalPages = Math.ceil(totalItems / itemsPerPage);
+  const currentTableData = filteredAndSortedOrders.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const handlePreviousPage = () => {
+    setCurrentPage((prev) => Math.max(prev - 1, 1));
+  };
+
+  const handleNextPage = () => {
+    setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  };
 
   return (
-    <div className="container mx-auto py-8 px-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">My Orders</h1>
-        <div className="flex gap-2">
-          <select className="border border-gray-300 rounded px-3 py-2 text-sm">
-            <option>All orders</option>
-            <option>Completed</option>
-            <option>In Progress</option>
-            <option>Pending</option>
-          </select>
-          <button className="bg-gray-100 text-gray-700 px-3 py-2 rounded text-sm">
-            Filter
-          </button>
+    <main className="flex-1 bg-bg-alt-white-100 p-6">
+      {/* Top Summary Section */}
+      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Milestone Card */}
+        <div className="rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm md:col-span-1 lg:col-span-1">
+          <div className="flex items-start gap-2">
+            {summaryData.milestone.icon}
+            <div>
+              <span className="text-sm font-medium text-text-strong-950">{summaryData.milestone.title}</span>
+              <p className="mt-1 text-xs text-text-secondary-600">
+                {summaryData.milestone.description}{' '}
+                <Link href={summaryData.milestone.learnMoreLink} className="font-medium text-text-brand-900 hover:underline">
+                  Learn More
+                </Link>
+              </p>
+            </div>
+          </div>
         </div>
+        {/* Other Summary Cards */}
+        <SummaryCard
+          title={summaryData.totalAmount.title}
+          value={summaryData.totalAmount.value}
+        />
+        <SummaryCard title={summaryData.settled.title} value={summaryData.settled.value} />
+        <SummaryCard title={summaryData.inEscrow.title} value={summaryData.inEscrow.value} />
       </div>
 
-      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Order
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Seller
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Date
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Amount
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {orders.map((order) => (
-              <tr key={order.id}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{order.title}</div>
-                  <div className="text-sm text-gray-500">#{order.id}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{order.seller}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{order.date}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900 font-medium">{order.amount}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                    ${order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                      order.status === 'in-progress' ? 'bg-blue-100 text-blue-800' :
-                        'bg-yellow-100 text-yellow-800'}`}>
-                    {order.status === 'in-progress' ? 'In Progress' :
-                      order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <Link href={`/orders/detail/${order.id}`} className="text-blue-600 hover:text-blue-800">
-                    View Details
-                  </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {/* Tabs and Filters Section */}
+      <div className="mb-4 rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm">
+        <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <Tabs.List className="flex-wrap">
+              <Tabs.Trigger value="all">All</Tabs.Trigger>
+              <Tabs.Trigger value="active">Active</Tabs.Trigger>
+              <Tabs.Trigger value="inactive">Inactive</Tabs.Trigger>
+            </Tabs.List>
+            <div className="flex flex-wrap items-center gap-2">
+              <Input
+                placeholder="Search..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="h-9 w-full rounded-md border border-stroke-soft-200 bg-bg-white-0 px-3 text-sm placeholder:text-text-sub-400 focus:outline-none focus:ring-1 focus:ring-ring sm:w-[200px]"
+              />
+              <Button.Root
+                variant="neutral"
+                mode="stroke"
+                size="small"
+                className="h-9 w-full sm:w-auto"
+              >
+                <Button.Icon as={RiFilter3Line} className="size-4" />
+                Filter
+              </Button.Root>
+              <Dropdown.Root>
+                <Dropdown.Trigger asChild>
+                  <button className="inline-flex h-9 items-center justify-center gap-1 whitespace-nowrap rounded-md border border-stroke-soft-200 bg-bg-white-0 px-3 text-sm font-medium text-text-secondary-600 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50">
+                    <RiSortAsc className="size-4" />
+                    Sort by
+                  </button>
+                </Dropdown.Trigger>
+                <Dropdown.Content align="end">
+                  <Dropdown.Item onSelect={() => setSortOption('date_asc')}>Date Ascending</Dropdown.Item>
+                  <Dropdown.Item onSelect={() => setSortOption('date_desc')}>Date Descending</Dropdown.Item>
+                  <Dropdown.Item onSelect={() => setSortOption('name_asc')}>Name Ascending</Dropdown.Item>
+                </Dropdown.Content>
+              </Dropdown.Root>
+            </div>
+          </div>
+        </Tabs.Root>
       </div>
+
+      {/* Table Section */}
+      <div className="overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-sm">
+        <Table.Root className="min-w-full divide-y divide-stroke-soft-200">
+          <Table.Header className="bg-bg-alt-white-100">
+            <Table.Row>
+              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">From</Table.Head>
+              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Details</Table.Head>
+              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Final deadline</Table.Head>
+              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Rating</Table.Head>
+              <Table.Head className="px-4 py-3 text-left text-xs font-medium uppercase tracking-wider text-text-sub-500">Status</Table.Head>
+              <Table.Head className="px-4 py-3 text-right text-xs font-medium uppercase tracking-wider text-text-sub-500"></Table.Head> {/* Actions */}
+            </Table.Row>
+          </Table.Header>
+          <Table.Body className="divide-y divide-stroke-soft-200 bg-bg-white-0">
+            {currentTableData.map((order) => (
+              <Table.Row key={order.id}>
+                <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                  <div className="flex items-center gap-2">
+                    <Avatar.Root size="32">
+                      <Avatar.Image src={order.from.avatarUrl} alt={order.from.name} />
+                    </Avatar.Root>
+                    <span className="text-sm font-medium text-text-strong-950">{order.from.name}</span>
+                  </div>
+                </Table.Cell>
+                <Table.Cell className="px-4 py-3 align-top">
+                  <div className="text-sm font-medium text-text-strong-950">{order.subject}</div>
+                  <div className="text-sm text-text-secondary-600">${order.price.toLocaleString()}</div>
+                </Table.Cell>
+                <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{order.deadline}</Table.Cell>
+                <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                  {order.rating !== null ? (
+                    <div className="flex items-center gap-1 text-sm text-text-secondary-600">
+                      <RiStarFill className='size-4 text-yellow-400' />
+                      <span>{order.rating.toFixed(1)}</span>
+                    </div>
+                  ) : (
+                    <span className="text-sm text-text-sub-400">-</span> // Or leave empty
+                  )}
+                </Table.Cell>
+                <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                  {renderStatusBadge(order.status)}
+                </Table.Cell>
+                <Table.Cell className="px-4 py-3 text-right align-top whitespace-nowrap">
+                  <Dropdown.Root>
+                    <Dropdown.Trigger asChild>
+                      <button className="p-1 text-text-sub-400 hover:text-text-strong-950 focus:outline-none">
+                        <RiMore2Fill className="size-5" />
+                      </button>
+                    </Dropdown.Trigger>
+                    <Dropdown.Content align="end">
+                      {/* TODO: Update actions based on seller view */}
+                      <Dropdown.Item>View Details</Dropdown.Item>
+                      <Dropdown.Item>Message Buyer</Dropdown.Item>
+                      <Dropdown.Separator />
+                      <Dropdown.Item className="text-text-danger-500">Cancel Order</Dropdown.Item>
+                    </Dropdown.Content>
+                  </Dropdown.Root>
+                </Table.Cell>
+              </Table.Row>
+            ))}
+          </Table.Body>
+        </Table.Root>
+      </div>
+
+      {/* Pagination Section */}
+      <div className="mt-4 flex items-center justify-center border-t border-stroke-soft-200 pt-4">
+        <Pagination.Root variant="basic">
+          <Pagination.NavButton
+            onClick={handlePreviousPage}
+            disabled={currentPage === 1}
+            aria-label="Go to previous page"
+          >
+            <Pagination.NavIcon as={RiArrowLeftSLine} />
+          </Pagination.NavButton>
+          <Pagination.Item
+            current
+            aria-label={`Page ${currentPage}`}
+          >
+            {currentPage}
+          </Pagination.Item>
+          <Pagination.NavButton
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            aria-label="Go to next page"
+          >
+            <Pagination.NavIcon as={RiArrowRightSLine} />
+          </Pagination.NavButton>
+        </Pagination.Root>
+      </div>
+    </main>
+  );
+}
+
+// Main Orders Page Component
+export default function OrdersPage() {
+  return (
+    <div className="flex min-h-screen bg-bg-alt-white-100">
+      <OrdersSidebar />
+      <OrdersContent />
     </div>
   );
 }
