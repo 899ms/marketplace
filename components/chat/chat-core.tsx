@@ -102,36 +102,6 @@ function ChatMessageRenderer({
   const plainTextColor = 'text-gray-800 dark:text-gray-100';
   const messageContentMaxWidth = 'max-w-[85%]';
 
-  const renderImageMessage = () => {
-    const imageData = message.data as ImageMessageData | null;
-    const firstImage = imageData?.[0];
-
-    if (!firstImage) return <p className='italic text-xs text-gray-500'>[Image data missing]</p>;
-
-    return (
-      <div className={`${bubbleBaseClass} ${bubbleClass} p-0 overflow-hidden`}>
-        <a
-          href={firstImage.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block group"
-          title={`View image: ${firstImage.name}`}
-        >
-          <img
-            src={firstImage.url}
-            alt={firstImage.name || 'Chat attachment'}
-            className="max-w-full h-auto max-h-64 object-contain transition-opacity group-hover:opacity-90"
-          />
-        </a>
-        {message.content && (
-          <p className={`text-sm whitespace-pre-wrap break-words p-3 pt-2 ${isCurrentUser ? 'text-white' : cardSubTextColor}`}>
-            {message.content}
-          </p>
-        )}
-      </div>
-    );
-  };
-
   const renderOfferMessage = (isCurrentUser: boolean) => {
     const offerData = message.data as OfferMessageData | null;
     if (!offerData) return <p className='italic text-xs text-gray-500'>[Offer data missing]</p>;
@@ -247,23 +217,17 @@ function ChatMessageRenderer({
   };
 
   let contentElement = null;
-  let preContentText: string | null = null;
 
   if (message.message_type === 'system_event') {
     return renderSystemEventMessage();
   }
 
-  if (message.message_type !== 'text') {
+  if (message.message_type !== 'text' && message.message_type !== 'image') {
     switch (message.message_type) {
-      case 'image':
-        contentElement = renderImageMessage();
-        break;
       case 'offer':
         contentElement = renderOfferMessage(isCurrentUser);
         break;
       case 'milestone_activated':
-        contentElement = renderMilestoneEventMessage();
-        break;
       case 'milestone_completed':
         contentElement = renderMilestoneEventMessage();
         break;
@@ -297,8 +261,39 @@ function ChatMessageRenderer({
             <p className={`text-sm whitespace-pre-wrap break-words ${plainTextColor}`}>
               {message.content || ''}
             </p>
+          ) : message.message_type === 'image' ? (
+            <div className="mt-1">
+              {(() => {
+                const imageData = message.data as ImageMessageData | null;
+                const firstImage = imageData?.[0];
+                if (!firstImage) return <p className='italic text-xs text-gray-500'>[Image data missing]</p>;
+
+                return (
+                  <>
+                    <a
+                      href={firstImage.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block group relative overflow-hidden rounded-lg border dark:border-gray-600"
+                      title={`View image: ${firstImage.name}`}
+                    >
+                      <img
+                        src={firstImage.url}
+                        alt={firstImage.name || 'Chat attachment'}
+                        className="max-w-full h-auto max-h-64 object-contain transition-opacity group-hover:opacity-90"
+                      />
+                    </a>
+                    {message.content && (
+                      <p className={`text-sm mt-1 whitespace-pre-wrap break-words ${plainTextColor}`}>
+                        {message.content}
+                      </p>
+                    )}
+                  </>
+                );
+              })()}
+            </div>
           ) : (
-            contentElement // Render the bubble/card for non-text types
+            contentElement
           )}
           <p className={`text-[10px] text-gray-400 dark:text-gray-500 mt-1`}>
             {timestamp}
