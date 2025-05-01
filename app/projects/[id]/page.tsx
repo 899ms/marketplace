@@ -15,6 +15,9 @@ import {
 import type { Job, User, BaseFileData } from '@/utils/supabase/types'; // Import types
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 
+// Import Notification hook
+import { useNotification } from '@/hooks/use-notification';
+
 // Import existing components
 import ClientProfileCard from '@/components/projects/detail/ClientProfileCard';
 import ProjectInfoCard from '@/components/projects/detail/ProjectInfoCard';
@@ -95,13 +98,18 @@ const mockApplicants = [
 ];
 
 // --- Placeholder Seller Components ---
-const SellerActionButtons = () => (
+const SellerActionButtons = ({ onApply }: { onApply: () => void }) => (
   <div className="flex items-center gap-3 p-4 pt-0 border-t border-stroke-soft-200 mt-4">
     <Button.Root variant="neutral" mode="stroke" className="flex-1">
       <Button.Icon><RiSendPlaneLine /></Button.Icon>
       Message
     </Button.Root>
-    <Button.Root variant="neutral" mode="filled" className="flex-1">
+    <Button.Root
+      variant="neutral"
+      mode="filled"
+      className="flex-1"
+      onClick={onApply}
+    >
       Apply
       <Button.Icon><RiArrowRightSLine /></Button.Icon>
     </Button.Root>
@@ -133,6 +141,7 @@ const ProjectLinkCard = ({ link }: { link: string }) => (
 export default function ProjectDetailPage() {
   const { id: projectId } = useParams<{ id: string }>(); // Get project ID from route
   const authContext = useAuth();
+  const { notification } = useNotification(); // Use the notification hook
 
   // State for fetched data
   const [projectDataState, setProjectDataState] = useState<Job | null>(null);
@@ -191,6 +200,19 @@ export default function ProjectDetailPage() {
 
   // Derived boolean for cleaner conditional rendering
   const isSeller = userRole === 'seller';
+
+  // Handler for the Apply button click
+  const handleApplyClick = () => {
+    // TODO: Add actual application logic here (e.g., API call)
+    console.log('Apply button clicked');
+
+    // Show success notification
+    notification({
+      status: 'success',
+      title: 'Application Sent',
+      description: 'Your application for this project has been submitted successfully.',
+    });
+  };
 
   // --- Render Logic ---
   if (isLoading) {
@@ -329,7 +351,7 @@ export default function ProjectDetailPage() {
                   deadline={projectDeadline}
                   proposals={projectProposals} // Use placeholder
                 />
-                <SellerActionButtons />
+                <SellerActionButtons onApply={handleApplyClick} />
               </div>
               {/* Pass userRole which is 'seller' here */}
               <ApplicantsList applicants={mockApplicants} userRole={'seller'} />
