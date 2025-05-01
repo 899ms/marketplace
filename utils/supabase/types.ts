@@ -59,6 +59,8 @@ export const ServiceSchema = z.object({
   price: z.number(), // NUMERIC NOT NULL
   seller_id: z.string(), // TEXT NOT NULL REFERENCES users(id)
   seller_name: z.string().optional(), // Added field from join query
+  seller_avatar_url: z.string().url().nullable().optional(), // Added field from join query
+  seller_bio: z.string().nullable().optional(), // Added field from join query
   audio_url: z.string().url().nullable(), // TEXT, nullable
   tags: z.array(z.string()).optional().nullable(), // ARRAY (text[]) default '{}'::text[], nullable
   lead_time: z.number().int().default(7), // INTEGER NOT NULL DEFAULT 7

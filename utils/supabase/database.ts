@@ -564,18 +564,59 @@ export const serviceOperations = {
 
   // Get service by ID
   async getServiceById(id: string): Promise<Service | null> {
+    // Modified select query to join with users table
     const { data, error } = await supabase
       .from('services')
-      .select('*')
+      .select(
+        `
+        *,
+        seller:users!services_seller_id_fkey (
+          id,
+          full_name,
+          username,
+          avatar_url,
+          bio
+        )
+        `,
+      )
       .eq('id', id)
-      .single();
+      .maybeSingle(); // Use maybeSingle to handle not found gracefully
 
-    if (error || !data) return null;
+    if (error) {
+      console.error(`Error fetching service ${id}:`, error);
+      return null;
+    }
+
+    if (!data) {
+      console.log(`Service with ID ${id} not found.`);
+      return null;
+    }
+
+    console.log(`Raw service data for ${id}:`, data);
 
     try {
-      return ServiceSchema.parse(data);
+      // Process the data to match the ServiceSchema, including seller info
+      const sellerInfo = data.seller || {};
+      const processedService = {
+        ...data,
+        seller_name:
+          sellerInfo.full_name || sellerInfo.username || 'Unknown Seller',
+        seller_avatar_url: sellerInfo.avatar_url || null, // Add avatar URL
+        seller_bio: sellerInfo.bio || null, // Add seller bio
+        created_at: data.created_at ? String(data.created_at) : null,
+      };
+      // Remove the nested seller object as it's not part of ServiceSchema
+      delete processedService.seller;
+
+      // Validate with ServiceSchema
+      const parsedService = ServiceSchema.parse(processedService);
+      console.log(`Successfully parsed service ${id}`);
+      return parsedService;
     } catch (err) {
-      console.error('Invalid service data:', err);
+      console.error(`Invalid service data for ID ${id}:`, err);
+      if (err instanceof z.ZodError) {
+        console.error('Zod validation errors:', err.errors);
+      }
       return null;
     }
   },

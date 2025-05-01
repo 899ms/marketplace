@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-// import Link from 'next/link'; // Keep if ProjectCard needs it
+import Link from 'next/link'; // Added import for Link
+import { useSearchParams } from 'next/navigation'; // Import useSearchParams
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 // Removed unused Input, Select, RiSearchLine imports
 
@@ -22,8 +23,17 @@ import { Service, User, Job } from '@/utils/supabase/types';
 // Define the possible tab values
 type ActiveTabValue = 'Service' | 'Worker' | 'Project';
 
+// Helper function to validate tab value
+function isValidTabValue(value: string | null): value is ActiveTabValue {
+  return value === 'Service' || value === 'Worker' || value === 'Project';
+}
+
 export default function ServicesSearchPage() {
-  const [activeTab, setActiveTab] = useState<ActiveTabValue>('Service');
+  const searchParams = useSearchParams();
+  const initialTab = searchParams.get('tab');
+  const validatedInitialTab = isValidTabValue(initialTab) ? initialTab : 'Service'; // Default to 'Service'
+
+  const [activeTab, setActiveTab] = useState<ActiveTabValue>(validatedInitialTab);
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
   const [selectedWorkerDetails, setSelectedWorkerDetails] = useState<User | null>(null);
   const [selectedWorkerServices, setSelectedWorkerServices] = useState<Service[] | null>(null);
@@ -486,7 +496,11 @@ export default function ServicesSearchPage() {
                 <>
                   <div className='grid grid-cols-3 gap-4'>
                     {services.map((service) => (
-                      <ServiceCard key={service.id} service={service} />
+                      <Link key={service.id} href={`/services/${service.id}`} passHref legacyBehavior>
+                        <a className="block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg">
+                          <ServiceCard service={service} />
+                        </a>
+                      </Link>
                     ))}
                   </div>
 
@@ -626,27 +640,28 @@ export default function ServicesSearchPage() {
                 <>
                   <div className='flex flex-col space-y-4'>
                     {projects.map((project) => (
-                      <ProjectCard
-                        key={project.id}
-                        title={project.title}
-                        infoBadges={[
-                          { label: project.status || 'Open' },
-                          { label: project.usage_option || 'Private' },
-                          { label: project.privacy_option || 'Public' },
-                          // Add more relevant badges based on job data
-                        ]}
-                        skillTags={project.skill_levels || []}
-                        description={project.description || 'No description available.'}
-                        client={{
-                          // Fetch client data separately or join in query if needed
-                          avatarUrl: 'https://placekitten.com/24/24?image=' + project.id.substring(0, 2), // Placeholder
-                          name: 'Placeholder Client Name', // Placeholder
-                          rating: 4.5, // Placeholder
-                          reviewCount: 10 // Placeholder
-                        }}
-                        budget={project.budget}
-                        onApply={() => console.log('Apply clicked for project', project.id)}
-                      />
+                      <Link key={project.id} href={`/projects/${project.id}`} passHref legacyBehavior>
+                        <a className="block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg">
+                          <ProjectCard
+                            title={project.title}
+                            infoBadges={[
+                              { label: project.status || 'Open' },
+                              { label: project.usage_option || 'Private' },
+                              { label: project.privacy_option || 'Public' },
+                            ]}
+                            skillTags={project.skill_levels || []}
+                            description={project.description || 'No description available.'}
+                            client={{
+                              avatarUrl: 'https://placekitten.com/24/24?image=' + project.id.substring(0, 2),
+                              name: 'Placeholder Client Name',
+                              rating: 4.5,
+                              reviewCount: 10
+                            }}
+                            budget={project.budget || 0}
+                            projectId={project.id}
+                          />
+                        </a>
+                      </Link>
                     ))}
                   </div>
 

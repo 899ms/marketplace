@@ -7,62 +7,94 @@ import React, {
   useEffect,
   ReactNode,
 } from 'react';
-import { User } from '@supabase/supabase-js';
+import { User as SupabaseUser } from '@supabase/supabase-js';
 import {
   supabase,
   authOperations,
+  userOperations,
   type SignUpCredentials,
   type SignInCredentials,
 } from './index';
+import type { User as AppUser } from './types';
 
 interface AuthContextType {
-  user: User | null;
+  user: SupabaseUser | null;
+  userProfile: AppUser | null;
   loading: boolean;
   signIn: (
     credentials: SignInCredentials,
-  ) => Promise<{ user: User | null; error: string | null }>;
+  ) => Promise<{ user: SupabaseUser | null; error: string | null }>;
   signUp: (
     credentials: SignUpCredentials,
-  ) => Promise<{ user: User | null; error: string | null }>;
+  ) => Promise<{ user: SupabaseUser | null; error: string | null }>;
   signOut: () => Promise<{ error: string | null }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<SupabaseUser | null>(null);
+  const [userProfile, setUserProfile] = useState<AppUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check active session and set user
-    const checkSession = async () => {
+    let isMounted = true;
+
+    const fetchProfile = async (userId: string) => {
       try {
-        const { user } = await authOperations.getUser();
-        setUser(user);
+        const profile = await userOperations.getUserById(userId);
+        if (isMounted) {
+          setUserProfile(profile);
+        }
       } catch (error) {
-        console.error('Error checking session:', error);
-      } finally {
-        setLoading(false);
+        console.error('Error fetching user profile:', error);
+        if (isMounted) {
+          setUserProfile(null);
+        }
       }
     };
 
-    // Set up auth state listener
+    const checkSession = async () => {
+      try {
+        const { user: sessionUser } = await authOperations.getUser();
+        if (isMounted) {
+          setUser(sessionUser);
+          if (sessionUser) {
+            await fetchProfile(sessionUser.id);
+          }
+        }
+      } catch (error) {
+        console.error('Error checking session:', error);
+      }
+    };
+
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-      setLoading(false);
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      const sessionUser = session?.user ?? null;
+      if (isMounted) {
+        setUser(sessionUser);
+        if (sessionUser) {
+          await fetchProfile(sessionUser.id);
+        } else {
+          setUserProfile(null);
+        }
+        setLoading(false);
+      }
     });
 
-    checkSession();
+    checkSession().finally(() => {
+      if (isMounted) {
+        setLoading(false);
+      }
+    });
 
-    // Cleanup subscription on unmount
     return () => {
+      isMounted = false;
       subscription.unsubscribe();
     };
   }, []);
 
-  // Create wrapper functions to ensure correct return types
   const signIn = async (credentials: SignInCredentials) => {
     return await authOperations.signIn(credentials);
   };
@@ -73,11 +105,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     const { error } = await authOperations.signOut();
+    setUserProfile(null);
     return { error: error ? error.toString() : null };
   };
 
   const value = {
     user,
+    userProfile,
     loading,
     signIn,
     signUp,

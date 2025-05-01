@@ -98,36 +98,14 @@ export default function LoginForm() {
         const profile = await userOperations.getUserById(user.id);
 
         if (profile && profile.user_type) {
-          // If we have a redirectedFrom URL and it matches the user's role, go there
+          // If we have a redirectedFrom URL, log it but ignore it for redirection
           if (redirectedFrom) {
-            // Check that the redirect URL is appropriate for the user's role
-            const isBuyerRedirect = redirectedFrom.startsWith('/app/home');
-            const isSellerRedirect =
-              redirectedFrom.startsWith('/app/worker/home');
-
-            if (
-              (profile.user_type === 'buyer' && isBuyerRedirect) ||
-              (profile.user_type === 'seller' && isSellerRedirect)
-            ) {
-              console.log(`Redirecting to: ${redirectedFrom}`);
-              window.location.href = redirectedFrom;
-              return;
-            }
+            console.log(`Login originated from: ${redirectedFrom}, but redirecting to /home`);
           }
 
-          // Otherwise, redirect based on user_type
-          if (profile.user_type === 'seller') {
-            console.log('Redirecting to seller home');
-            window.location.href = '/home';
-          } else if (profile.user_type === 'buyer') {
-            console.log('Redirecting to buyer home');
-            window.location.href = '/home'; // Changed from router.push to window.location
-          } else {
-            // Fallback if user_type is somehow invalid (shouldn't happen with CHECK constraint)
-            console.warn('Invalid user_type found:', profile.user_type);
-            setError('Login successful, but could not determine user role.');
-            window.location.href = '/'; // Redirect to generic home or dashboard
-          }
+          // Always redirect to /home on successful login
+          console.log('Login successful, redirecting to /home');
+          router.push('/home');
         } else {
           // Handle case where profile data couldn't be fetched
           console.error(
