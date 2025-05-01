@@ -114,7 +114,10 @@ export function WorkFiles({
             </div>
           )}
 
-          <div className="space-y-4 mt-4 border-t border-gray-100 pt-4">
+          <div
+            className={`space-y-4 mt-4 pt-4 ${userRole === 'seller' ? 'border-t border-gray-100' : ''
+              }`}
+          >
             {files.length === 0 && userRole === 'buyer' && (
               <p className="text-sm text-gray-500 text-center py-4">No work files have been uploaded yet.</p>
             )}

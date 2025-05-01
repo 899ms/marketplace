@@ -41,6 +41,7 @@ export function OrderDetailsClient({
   const userRole: UserRole = currentUserId === seller.id ? 'seller' : 'buyer';
   const otherParty = userRole === 'seller' ? buyer : seller;
 
+
   console.log(`Current user role: ${userRole}`);
   console.log('Other party details:', otherParty);
 

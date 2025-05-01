@@ -18,7 +18,7 @@ export function ContractDetails({
   return (
     <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-lg shadow-sm my-4 border border-stroke-soft-200">
       <Accordion.Item value="item-1" className="border-b border-stroke-soft-200 p-0 rounded-none ring-0 hover:bg-white data-[state=open]:bg-white">
-        <Accordion.Header className="px-4 py-3">
+        <Accordion.Header className="px-4 py-3 bg-[var(--bg-weak-50)]">
           <Accordion.Trigger className="w-full text-lg font-semibold text-text-strong-950 p-0 m-0 flex justify-between items-center hover:no-underline">
             Details
             <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
@@ -39,6 +39,13 @@ export function ContractDetails({
                 <span className="text-sm font-medium text-text-strong-950">{detail.value}</span>
               </div>
             ))}
+
+            <div className="flex justify-between py-2 border-b border-gray-100 last:border-b-0">
+              <span className="text-sm text-text-secondary-600">Deadline</span>
+              <span className="text-sm font-medium text-text-strong-950">
+                15 March, 2025
+              </span>
+            </div>
           </div>
         </Accordion.Content>
       </Accordion.Item>

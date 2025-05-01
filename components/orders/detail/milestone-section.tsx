@@ -90,7 +90,7 @@ export function MilestoneSection({
   return (
     <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-lg shadow-sm my-4 border border-stroke-soft-200">
       <Accordion.Item value="item-1" className="p-0 rounded-none ring-0 hover:bg-white data-[state=open]:bg-white">
-        <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200">
+        <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200 bg-[var(--bg-weak-50)]">
           <Accordion.Trigger className="w-full text-lg font-semibold text-text-strong-950 p-0 m-0 flex justify-between items-center hover:no-underline">
             Timeline
             <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
@@ -100,6 +100,7 @@ export function MilestoneSection({
           <div className="space-y-4 mt-4">
             {milestones.map((milestone) => (
               <div key={milestone.id} className="flex items-start gap-3">
+                {/* status icon */}
                 <div className="mt-1 flex-shrink-0">
                   {milestone.status === 'completed' ? (
                     <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600">
@@ -112,25 +113,33 @@ export function MilestoneSection({
                   )}
                 </div>
 
+                {/* title+amount on the left, date on the far right */}
                 <div className="flex-1 flex justify-between items-center min-w-0">
                   <div className="min-w-0">
-                    <h4 className="text-sm font-medium text-text-strong-950 truncate">{milestone.title}</h4>
-                    <p className="text-sm text-text-secondary-600 mt-0.5">${milestone.amount}</p>
-                    {milestone.date && (
-                      <p className="text-xs text-gray-400 mt-0.5">{milestone.date}</p>
-                    )}
+                    <h4 className="text-sm font-medium text-text-strong-950 truncate">
+                      {milestone.title}
+                    </h4>
+                    <p className="text-sm text-text-secondary-600 mt-0.5">
+                      ${milestone.amount}
+                    </p>
                   </div>
-
-                  {/* Only show Confirm Payment button for buyers on pending milestones */}
-                  {userRole === 'buyer' && milestone.status === 'pending' && (
-                    <Tag.Root
-                      onClick={() => onConfirmPayment?.(milestone.id)}
-                      className={`ml-4 flex-shrink-0 cursor-pointer text-text-strong-950 ${isConfirmingId === milestone.id ? 'opacity-50 pointer-events-none' : ''}`}
-                    >
-                      {isConfirmingId === milestone.id ? 'Confirming...' : 'Confirm Payment'}
-                    </Tag.Root>
+                  {milestone.date && (
+                    <p className="text-xs text-gray-400">
+                      {milestone.date}
+                    </p>
                   )}
                 </div>
+
+                {/* only buyers see “Confirm Payment” on pending items */}
+                {userRole === 'buyer' && milestone.status === 'pending' && (
+                  <Tag.Root
+                    onClick={() => onConfirmPayment?.(milestone.id)}
+                    className={`ml-4 flex-shrink-0 cursor-pointer text-text-strong-950 ${isConfirmingId === milestone.id ? 'opacity-50 pointer-events-none' : ''
+                      }`}
+                  >
+                    {isConfirmingId === milestone.id ? 'Confirming...' : 'Confirm Payment'}
+                  </Tag.Root>
+                )}
               </div>
             ))}
           </div>
@@ -148,6 +157,7 @@ export function MilestoneSection({
                         value={newMilestoneTitle}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneTitle(e.target.value)}
                         required
+                        className="p-2"
                       />
                     </InputRoot>
                   </div>
@@ -161,6 +171,7 @@ export function MilestoneSection({
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneAmount(e.target.value)}
                         required
                         step="0.01"
+                        className="p-2"
                       />
                     </InputRoot>
                   </div>
@@ -172,6 +183,7 @@ export function MilestoneSection({
                         type="date"
                         value={newMilestoneDueDate}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneDueDate(e.target.value)}
+                        className="p-2"
                       />
                     </InputRoot>
                   </div>
