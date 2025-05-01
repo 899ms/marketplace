@@ -24,7 +24,10 @@ type ActiveTabValue = 'Service' | 'Worker' | 'Project';
 
 export default function ServicesSearchPage() {
   const [activeTab, setActiveTab] = useState<ActiveTabValue>('Service');
-  const [selectedWorker, setSelectedWorker] = useState<boolean>(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false);
+  const [selectedWorkerDetails, setSelectedWorkerDetails] = useState<User | null>(null);
+  const [selectedWorkerServices, setSelectedWorkerServices] = useState<Service[] | null>(null);
+  const [isDrawerLoading, setIsDrawerLoading] = useState<boolean>(false);
 
   // Define default filters state for services
   const defaultServiceFilters = {
@@ -85,8 +88,41 @@ export default function ServicesSearchPage() {
   const itemsPerPage = 9;
 
   // Worker profile handlers
-  const openWorkerProfile = () => setSelectedWorker(true);
-  const closeWorkerProfile = () => setSelectedWorker(false);
+  const openWorkerProfile = async (workerId: string) => {
+    setIsDrawerOpen(true);
+    setIsDrawerLoading(true);
+    setSelectedWorkerDetails(null);
+    setSelectedWorkerServices(null);
+
+    console.log(`Fetching data for worker: ${workerId}`);
+
+    try {
+      const [workerResult, servicesResult] = await Promise.all([
+        userOperations.getUserById(workerId),
+        serviceOperations.getServicesBySellerId(workerId),
+      ]);
+
+      console.log('Worker fetch result:', workerResult);
+      console.log('Services fetch result:', servicesResult);
+
+      if (workerResult) {
+        setSelectedWorkerDetails(workerResult);
+      } else {
+        console.error(`Failed to fetch details for worker ${workerId}`);
+      }
+
+      setSelectedWorkerServices(servicesResult || []);
+
+    } catch (error) {
+      console.error(`Error fetching worker data or services for ${workerId}:`, error);
+    } finally {
+      setIsDrawerLoading(false);
+    }
+  };
+
+  const closeWorkerProfile = () => {
+    setIsDrawerOpen(false);
+  };
 
   // Fetch services with current filters and pagination
   useEffect(() => {
@@ -516,7 +552,7 @@ export default function ServicesSearchPage() {
                       <WorkerCard
                         key={worker.id}
                         worker={worker}
-                        onClick={openWorkerProfile}
+                        onClick={() => openWorkerProfile(worker.id)}
                       />
                     ))}
                   </div>
@@ -648,10 +684,13 @@ export default function ServicesSearchPage() {
         </div>
       </div>
 
-      {/* Worker Profile Drawer */}
+      {/* Worker Profile Drawer - Pass new props */}
       <WorkerProfileDrawer
-        isOpen={selectedWorker}
+        isOpen={isDrawerOpen}
         onClose={closeWorkerProfile}
+        worker={selectedWorkerDetails}
+        services={selectedWorkerServices}
+        isLoading={isDrawerLoading}
       />
     </>
   );
