@@ -99,12 +99,7 @@ function ChatMessageRenderer({
   const cardClass = 'border dark:border-gray-600 rounded-lg p-3 max-w-xs w-full bg-white dark:bg-gray-800 shadow-md';
   const cardTextColor = 'text-gray-900 dark:text-gray-100';
   const cardSubTextColor = 'text-gray-600 dark:text-gray-400';
-
-  const renderTextMessage = () => (
-    <div className={`${bubbleBaseClass} ${bubbleClass}`}>
-      <p className="text-sm whitespace-pre-wrap break-words">{message.content || ''}</p>
-    </div>
-  );
+  const plainTextColor = 'text-gray-800 dark:text-gray-100';
 
   const renderImageMessage = () => {
     const imageData = message.data as ImageMessageData | null;
@@ -250,30 +245,35 @@ function ChatMessageRenderer({
     );
   };
 
-  let contentElement;
+  let contentElement = null;
   let preContentText: string | null = null;
 
   if (message.message_type === 'system_event') {
     return renderSystemEventMessage();
   }
 
-  switch (message.message_type) {
-    case 'image':
-      contentElement = renderImageMessage();
-      break;
-    case 'offer':
-      contentElement = renderOfferMessage(isCurrentUser);
-      break;
-    case 'milestone_activated':
-      contentElement = renderMilestoneEventMessage();
-      break;
-    case 'milestone_completed':
-      contentElement = renderMilestoneEventMessage();
-      break;
-    case 'text':
-    default:
-      contentElement = renderTextMessage();
-      break;
+  if (message.message_type !== 'text') {
+    switch (message.message_type) {
+      case 'image':
+        contentElement = renderImageMessage();
+        break;
+      case 'offer':
+        contentElement = renderOfferMessage(isCurrentUser);
+        break;
+      case 'milestone_activated':
+        contentElement = renderMilestoneEventMessage();
+        break;
+      case 'milestone_completed':
+        contentElement = renderMilestoneEventMessage();
+        break;
+      default:
+        contentElement = (
+          <p className={`text-sm italic ${plainTextColor}`}>
+            [Unsupported message type: {message.message_type}] {message.content || ''}
+          </p>
+        );
+        break;
+    }
   }
 
   return (
@@ -291,7 +291,13 @@ function ChatMessageRenderer({
           </Avatar>
         )}
         <div className={`flex flex-col ${alignmentItemsClass}`}>
-          {contentElement}
+          {message.message_type === 'text' ? (
+            <p className={`text-sm whitespace-pre-wrap break-words ${plainTextColor}`}>
+              {message.content || ''}
+            </p>
+          ) : (
+            contentElement // Render the bubble/card for non-text types
+          )}
           <p className={`text-[10px] text-gray-400 dark:text-gray-500 mt-1`}>
             {timestamp}
           </p>
