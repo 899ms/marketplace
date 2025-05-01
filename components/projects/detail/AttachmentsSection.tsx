@@ -23,7 +23,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
   const attachment = attachments[0];
 
   return (
-    <div className="border-b border-stroke-soft-200 p-6">
+    <div className='p-4'>
       <h2
         className="
           text-base
@@ -52,6 +52,9 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
           </div>
         </div>
       </div>
+
+      {/* underline */}
+      <div className="w-[99%] h-[2px] bg-stroke-soft-200 mx-auto mt-8" />
     </div>
   );
 };

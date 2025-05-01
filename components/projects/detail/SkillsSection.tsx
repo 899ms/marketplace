@@ -11,7 +11,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
   if (!skills || skills.length === 0) return null;
 
   return (
-    <div className='border-b border-stroke-soft-200 p-6'>
+    <div className='p-4'>
       <h2
         className='
           text-base
@@ -45,6 +45,9 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
           </Badge.Root>
         ))}
       </div>
+
+      {/* underline */}
+      <div className="w-[99%] h-[2px] bg-stroke-soft-200 mx-auto mt-8" />
     </div>
   );
 };

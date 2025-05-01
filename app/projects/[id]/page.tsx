@@ -307,7 +307,7 @@ export default function ProjectDetailPage() {
       <div className='grid grid-cols-1 gap-6 md:grid-cols-12'>
         {/* Left Content Area (Project Details) */}
         <div className='md:col-span-8'>
-          <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+          <div className='shadow-[0px_16px_32px_-12px_#0E121B1A] rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
             <ProjectHeader
               title={projectTitle}
               category={projectCategory}

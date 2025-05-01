@@ -12,7 +12,7 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
   requirements,
 }) => {
   return (
-    <div className='border-b border-stroke-soft-200 p-6'>
+    <div className='p-4'>
       <h2
         className="
           text-base
@@ -59,6 +59,9 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
           </ul>
         </>
       )}
+
+      {/* underline */}
+      <div className="w-[99%] h-[2px] bg-stroke-soft-200 mx-auto mt-8" />
     </div>
   );
 };
