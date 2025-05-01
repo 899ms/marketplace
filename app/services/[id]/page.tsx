@@ -60,14 +60,14 @@ export default async function ServiceDetailPage({
       </h1>
 
       <div className='grid grid-cols-1 gap-8 md:grid-cols-12'>
-        <div className='md:col-span-8'>
+        <div className='md:col-span-8 max-w-[824px]'>
           <ServiceInfoLeft
             service={service}
             portfolioServices={portfolioServices}
           />
         </div>
 
-        <div className='md:col-span-4'>
+        <div className='md:col-span-4 max-w-[324px]'>
           <ServiceInfoRight service={service} />
         </div>
       </div>
