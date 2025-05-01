@@ -12,7 +12,6 @@ import { format, isSameDay, formatRelative, parseISO, isToday, isYesterday } fro
 import { Root as Avatar, Image as AvatarImage } from '@/components/ui/avatar';
 import { Root as Button } from '@/components/ui/button';
 import { Root as Textarea } from '@/components/ui/textarea';
-import { Root as CompactButton } from '@/components/ui/compact-button';
 import { Root as LinkButton } from '@/components/ui/link-button';
 import * as FancyButtonModule from '@/components/ui/fancy-button';
 import { Paperclip, Send, Smile, MoreVertical, Clock, XCircle, FileImage, CheckCircle } from 'lucide-react';
@@ -511,15 +510,26 @@ export default function ChatCore({
         </div>
         <div className="flex items-center space-x-1">
           {isPopup && onClose && (
-            <CompactButton variant="ghost" size="medium" onClick={onClose} aria-label="Close chat">
+            <Button
+              variant="neutral"
+              mode="ghost"
+              size="medium"
+              onClick={onClose}
+              aria-label="Close chat"
+            >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
               </svg>
-            </CompactButton>
+            </Button>
           )}
-          <CompactButton variant="ghost" size="medium" aria-label="More options">
+          <Button
+            variant="neutral"
+            mode="ghost"
+            size="medium"
+            aria-label="More options"
+          >
             <MoreVertical size={18} />
-          </CompactButton>
+          </Button>
         </div>
       </div>
 
@@ -564,8 +574,9 @@ export default function ChatCore({
               <span className="truncate text-gray-700 dark:text-gray-200" title={selectedFile.name}>{selectedFile.name}</span>
               <span className="ml-auto text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">({(selectedFile.size / 1024).toFixed(1)} KB)</span>
             </div>
-            <CompactButton
-              variant="ghost"
+            <Button
+              variant="neutral"
+              mode="ghost"
               size="medium"
               type="button"
               onClick={clearSelectedFile}
@@ -573,7 +584,7 @@ export default function ChatCore({
               className="ml-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/50"
             >
               <XCircle size={18} />
-            </CompactButton>
+            </Button>
           </div>
         )}
         <form onSubmit={handleSendMessage} className='flex flex-col space-y-2'>
@@ -591,15 +602,16 @@ export default function ChatCore({
           </div>
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-1">
-              <CompactButton
-                variant="ghost"
-                size="medium"
+              <Button
+                variant="neutral"
+                mode="ghost"
+                size="xsmall"
                 type="button"
                 aria-label="Emoji"
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
-                <Smile size={20} />
-              </CompactButton>
+                <Smile />
+              </Button>
               <input
                 type="file"
                 ref={fileInputRef}
@@ -607,17 +619,18 @@ export default function ChatCore({
                 className="hidden"
                 accept="image/*"
               />
-              <CompactButton
-                variant="ghost"
-                size="medium"
+              <Button
+                variant="neutral"
+                mode="ghost"
+                size="xsmall"
                 type="button"
                 aria-label="Attach file"
                 onClick={handleAttachmentClick}
                 disabled={isSending}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 p-2"
+                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
               >
-                <Paperclip size={20} />
-              </CompactButton>
+                <Paperclip />
+              </Button>
             </div>
             <div>
               <FancyButtonModule.Root
