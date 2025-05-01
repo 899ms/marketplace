@@ -37,15 +37,6 @@ export function ReviewItem({ review }: ReviewItemProps) {
           <span className="text-label-lg font-medium text-text-strong-950">
             ${review.price.toFixed(2)}
           </span>
-          <Button.Root
-            variant="neutral"
-            mode="ghost"
-            size="small"
-            className="mt-1"
-          >
-            <Button.Icon as={RiHeartLine} />
-            Like
-          </Button.Root>
         </div>
       </div>
 
