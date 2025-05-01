@@ -88,7 +88,6 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
         const additionalServices = service.additional_services;
         return (
           <div className='divide-y divide-stroke-soft-200 rounded-lg border border-stroke-soft-200'>
-            <h3 className='text-lg font-semibold p-4 border-b border-stroke-soft-200'>Additional Options</h3>
             {additionalServices && additionalServices.length > 0 ? (
               additionalServices.map((option, index) => (
                 <div
@@ -100,7 +99,7 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
                   </span>
                   <span className='text-sm font-medium text-text-strong-950'>
                     {/* TODO: Consider currency formatting based on service.currency */}
-                    +${option.price}
+                    ${option.price}
                   </span>
                 </div>
               ))
@@ -160,23 +159,20 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
         altPrefix={service.title}
       />
 
-
-
-
       {/* Tabs Navigation */}
-      <div className='mb-6 border-b border-stroke-soft-200'>
+      <div className='mb-6 border-t-0 border-b-0'>
         <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
-          <TabMenuHorizontal.List>
-            <TabMenuHorizontal.Trigger value='Details'>
+          <TabMenuHorizontal.List className="border-0 border-t-0 border-b-0">
+            <TabMenuHorizontal.Trigger value='Details' className="text-[24px] font-medium">
               Details
             </TabMenuHorizontal.Trigger>
-            <TabMenuHorizontal.Trigger value='Options'>
+            <TabMenuHorizontal.Trigger value='Options' className="text-[24px] font-medium">
               Options
             </TabMenuHorizontal.Trigger>
-            <TabMenuHorizontal.Trigger value='Portfolio'>
+            <TabMenuHorizontal.Trigger value='Portfolio' className="text-[24px] font-medium">
               Portfolio
             </TabMenuHorizontal.Trigger>
-            <TabMenuHorizontal.Trigger value='Review'>
+            <TabMenuHorizontal.Trigger value='Review' className="text-[24px] font-medium">
               Review {/* Restore placeholder comment */}
             </TabMenuHorizontal.Trigger>
           </TabMenuHorizontal.List>

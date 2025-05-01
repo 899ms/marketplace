@@ -3,34 +3,11 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { serviceOperations } from '@/utils/supabase/database';
 import { Service } from '@/utils/supabase/types';
-import * as Avatar from '@/components/ui/avatar';
-import * as Badge from '@/components/ui/badge';
-import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
-import * as Button from '@/components/ui/button';
 import * as Breadcrumb from '@/components/ui/breadcrumb';
-import { ImageCarousel } from '../../../components/services/detail/image-carousel';
-import { RelatedServiceCard } from '../../../components/services/detail/related-service-card';
-import { ReviewItem } from '../../../components/services/detail/review-item';
 import {
-  RelatedService,
-  ReviewUser,
-  Review,
-} from '../../../components/services/detail/types';
-import {
-  RiStarFill,
-  RiGoogleFill,
   RiArrowRightSLine,
-  RiHeartLine,
-  RiPriceTag3Line,
-  RiTimeLine,
-  RiCalendar2Line,
-  RiMessage2Line,
-  RiCheckLine,
-  RiTwitchFill,
-  RiTwitterXFill,
   RiHomeLine,
 } from '@remixicon/react';
-import { cn } from '@/utils/cn';
 import { ServiceInfoLeft } from '../../../components/services/detail/service-info-left';
 import { ServiceInfoRight } from '../../../components/services/detail/service-info-right';
 
@@ -78,7 +55,7 @@ export default async function ServiceDetailPage({
         </Breadcrumb.Root>
       </div>
 
-      <h1 className='text-2xl mb-6 font-semibold text-text-strong-950'>
+      <h1 className='text-[32px] mb-6 text-text-strong-950'>
         {service.title}
       </h1>
 

@@ -53,12 +53,12 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
           <p className='text-sm mb-1.5 line-clamp-2 font-medium text-text-strong-950 flex-grow'>
             {service.title}
           </p>
-          <div className='text-xs flex items-center justify-between mt-auto pt-2'>
+          <div className='text-xs flex items-center justify-between mt-auto'>
             <div className='text-text-secondary-600 flex items-center gap-0.5'>
               <RiStarFill className='size-3 text-yellow-400' />
               {/* Placeholder for rating/reviews */}
               <span>
-                4.5 (50+)
+                4.5(50+)
               </span>
             </div>
             {/* Use formatted price and currency */}
