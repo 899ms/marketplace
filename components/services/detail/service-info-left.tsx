@@ -160,29 +160,8 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
         altPrefix={service.title}
       />
 
-      {/* Title - Use service.title */}
-      <h1 className='text-2xl md:text-3xl mt-4 mb-3 font-semibold text-text-strong-950'>
-        {service.title}
-      </h1>
 
-      {/* Provider Info - Use service.seller_name and seller_avatar_url */}
-      <div className='mb-6 flex items-center gap-3'>
-        <Avatar.Root size='56'>
-          <Avatar.Image
-            src={service.seller_avatar_url || 'https://via.placeholder.com/56'}
-            alt={service.seller_name || 'Seller'}
-          />
-        </Avatar.Root>
-        <div>
-          <p className='text-lg font-medium text-text-strong-950'>
-            {service.seller_name || 'Unknown Seller'}
-          </p>
-          <div className='text-sm text-text-secondary-600 flex items-center gap-1'>
-            <RiStarFill className='size-4 text-yellow-400' />
-            4.9 (125 reviews) {/* Placeholder */}
-          </div>
-        </div>
-      </div>
+
 
       {/* Tabs Navigation */}
       <div className='mb-6 border-b border-stroke-soft-200'>
