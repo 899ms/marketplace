@@ -25,6 +25,10 @@ import {
   RiMore2Fill,
   RiArrowLeftSLine,
   RiFilter3Line,
+  RiTimeLine,
+  RiBillLine,
+  RiErrorWarningLine,
+  RiBriefcaseLine,
 } from '@remixicon/react';
 import { clsx } from 'clsx';
 import { Input } from '@/components/ui/input';
@@ -35,8 +39,12 @@ import * as Table from '@/components/ui/table';
 import * as Pagination from '@/components/ui/pagination';
 import { cn } from '@/utils/cn';
 import { useAuth } from '@/utils/supabase/AuthContext';
-import { contractOperations, jobOperations, userOperations, contractMilestoneOperations } from '@/utils/supabase/database';
-import type { Contract, Job, User as AppUser, ContractMilestone } from '@/utils/supabase/types';
+import { contractOperations, jobOperations, userOperations, contractMilestoneOperations, serviceOperations } from '@/utils/supabase/database';
+import type { Contract, Job, User as AppUser, ContractMilestone, Service } from '@/utils/supabase/types';
+import Image from 'next/image';
+
+// Type for the active view state
+type ActiveView = 'orders' | 'billing' | 'my-services'; // Add other views as needed
 
 // Order Page Sidebar Component
 const OrderSidebar = () => {
@@ -327,25 +335,52 @@ const ReviewListItem = () => {
   );
 };
 
-// Left Sidebar Component
-function OrdersSidebar() {
+// Left Sidebar Component - Now checks user type
+function OrdersSidebar({ activeView, setActiveView, isSeller }: { activeView: ActiveView, setActiveView: (view: ActiveView) => void, isSeller: boolean }) {
+  const { loading, profileLoading } = useAuth();
+
+  // Define links with view keys
+  const baseLinks = [
+    { name: 'Orders', view: 'orders' as ActiveView, icon: RiTimeLine },
+    { name: 'Billing', view: 'billing' as ActiveView, icon: RiBillLine },
+  ];
+
+  const links = [
+    ...baseLinks,
+    ...(isSeller ? [{ name: 'My services', view: 'my-services' as ActiveView, icon: RiBriefcaseLine }] : []),
+  ];
+
+  if (loading || profileLoading) {
+    return (
+      <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-4 pt-6">
+        {/* Skeleton Loader */}
+      </aside>
+    );
+  }
+
   return (
     <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-4 pt-6">
       <nav className="flex flex-col gap-1">
-        {/* Active link styling example */}
-        <Link
-          href="/orders"
-          className="flex items-center gap-2 rounded-md bg-bg-brand-subtle-100 px-3 py-2 font-medium text-text-brand-900"
-        >
-          <span>Orders</span>
-          <span className="ml-auto text-xs font-normal text-text-brand-secondary-600">{/* Counter */}</span>
-        </Link>
-        <Link
-          href="/billing"
-          className="flex items-center gap-2 rounded-md px-3 py-2 text-text-secondary-600 hover:bg-bg-neutral-subtle-100 hover:text-text-strong-950"
-        >
-          <span>Billing</span>
-        </Link>
+        {links.map((link) => {
+          const isActive = activeView === link.view;
+          const Icon = link.icon;
+          return (
+            // Use button for internal view switching
+            <button
+              key={link.view}
+              onClick={() => setActiveView(link.view)}
+              className={cn(
+                'flex w-full items-center gap-2 rounded-md px-3 py-2 text-left transition-colors',
+                isActive
+                  ? 'bg-bg-brand-subtle-100 font-medium text-text-brand-900'
+                  : 'text-text-secondary-600 hover:bg-bg-neutral-subtle-100 hover:text-text-strong-950'
+              )}
+            >
+              {Icon && <Icon className="size-5 shrink-0" />}
+              <span>{link.name}</span>
+            </button>
+          );
+        })}
       </nav>
     </aside>
   );
@@ -400,7 +435,7 @@ interface SellerOrder {
 }
 
 // Helper to render status badges based on the image and available Badge props
-function renderStatusBadge(status: string, type: 'job' | 'contract' | 'seller_order') {
+function renderStatusBadge(status: string, type: 'job' | 'contract' | 'seller_order' | 'service') {
   switch (status.toLowerCase()) {
     case 'active':
       // Use lighter variant with green text/bg hint
@@ -843,7 +878,7 @@ function OrdersContent() {
                           </Table.Cell>
                           <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{sellerOrder.deadline}</Table.Cell>
                           <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                            {sellerOrder.rating !== null ? (
+                            {typeof sellerOrder.rating === 'number' ? (
                               <div className="flex items-center gap-1 text-sm text-text-secondary-600">
                                 <RiStarFill className='size-4 text-yellow-400' />
                                 <span>{sellerOrder.rating.toFixed(1)}</span>
@@ -914,12 +949,192 @@ function OrdersContent() {
   );
 }
 
+// Service Card Subcomponent (Copied from my-services)
+interface ServiceCardProps {
+  service: Service;
+}
+function ServiceCard({ service }: ServiceCardProps) {
+  const statusTags = [
+    { text: 'Not Yet Published', variant: 'warning' as const },
+    { text: 'To be improved', variant: 'info' as const },
+  ];
+  const ordersCount = 15;
+  const salesAmount = 0;
+  const favoritesCount = 0;
+  const imageUrl = service.images?.[0]?.url || 'https://via.placeholder.com/150/771796';
+  const currencySymbol = service.currency === 'CNY' ? '¥' : '$';
+
+  return (
+    <div className="flex items-center gap-4 rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm">
+      {/* Image */}
+      <div className="relative h-24 w-32 shrink-0 overflow-hidden rounded-md bg-gray-100">
+        <Image
+          src={imageUrl}
+          alt={service.title}
+          layout="fill"
+          objectFit="cover"
+          className="transition-transform duration-300 group-hover:scale-105"
+        />
+      </div>
+      {/* Details */}
+      <div className="flex-1">
+        <h3 className="mb-1 font-medium text-text-strong-950 line-clamp-1">{service.title}</h3>
+        <div className="flex flex-wrap items-center gap-2">
+          {statusTags.map((tag) => (
+            <Badge.Root
+              key={tag.text}
+              variant="lighter"
+              size="small"
+              className={cn(
+                'capitalize',
+                tag.variant === 'warning' && 'bg-orange-100 text-orange-700',
+                tag.variant === 'info' && 'bg-blue-100 text-blue-700'
+              )}
+            >
+              {tag.text}
+            </Badge.Root>
+          ))}
+        </div>
+      </div>
+      {/* Stats */}
+      <div className="flex shrink-0 items-center gap-6 text-right">
+        {/* ... stats divs (Price, Orders, Sales, Favorites) ... */}
+        <div className="flex flex-col">
+          <span className="font-medium text-text-strong-950">{currencySymbol}{service.price.toLocaleString()}</span>
+          <span className="text-xs text-text-sub-500">Price</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="font-medium text-text-strong-950">{ordersCount}</span>
+          <span className="text-xs text-text-sub-500">Orders</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="font-medium text-text-strong-950">{currencySymbol}{salesAmount.toLocaleString()}</span>
+          <span className="text-xs text-text-sub-500">Sales amount</span>
+        </div>
+        <div className="flex flex-col">
+          <span className="font-medium text-text-strong-950">{favoritesCount}</span>
+          <span className="text-xs text-text-sub-500">Favorites</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// My Services View Component (Adapted from MyServicesContent)
+function MyServicesView() {
+  const { user, userProfile, loading: authLoading, profileLoading } = useAuth();
+  const [services, setServices] = React.useState<Service[]>([]);
+  const [dataLoading, setDataLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+
+  const isSeller = userProfile?.user_type === 'seller';
+
+  React.useEffect(() => {
+    // Basic guard, main check done in OrdersPage conditional render
+    if (!user || !isSeller) {
+      setDataLoading(false);
+      return;
+    }
+
+    const fetchServices = async () => {
+      setDataLoading(true);
+      setError(null);
+      try {
+        const fetchedServices = await serviceOperations.getServicesBySellerId(user.id);
+        setServices(fetchedServices);
+      } catch (err) {
+        console.error("Error fetching services:", err);
+        setError("Failed to load services.");
+        setServices([]);
+      } finally {
+        setDataLoading(false);
+      }
+    };
+    fetchServices();
+  }, [user, isSeller]); // Depend on user and isSeller
+
+  // Don't need auth loading check here, handled by OrdersPage
+
+  return (
+    <main className="flex-1 bg-bg-alt-white-100 p-6">
+      <div className="mb-6 flex items-center justify-between">
+        <h1 className="text-xl font-semibold text-text-strong-950">My Services</h1>
+        {/* More Options Dropdown */}
+        <Dropdown.Root>
+          <Dropdown.Trigger asChild>
+            <button className="flex size-8 items-center justify-center rounded-lg border border-stroke-soft-200 bg-bg-white-0 text-icon-sub-400 shadow-sm transition hover:bg-bg-neutral-subtle-100 hover:text-icon-secondary-400">
+              <RiMore2Fill className="size-5" />
+            </button>
+          </Dropdown.Trigger>
+          <Dropdown.Content align="end">
+            <Dropdown.Item>Create New Service</Dropdown.Item>
+            <Dropdown.Item>Manage Settings</Dropdown.Item>
+          </Dropdown.Content>
+        </Dropdown.Root>
+      </div>
+
+      {/* Services List */}
+      {dataLoading ? (
+        <div className="text-center">Loading services...</div>
+      ) : error ? (
+        <div className="text-center text-red-600">{error}</div>
+      ) : services.length === 0 ? (
+        <div className="text-center text-gray-500">You haven't created any services yet.</div>
+      ) : (
+        <div className="space-y-4">
+          {services.map((service) => (
+            <ServiceCard key={service.id} service={service} />
+          ))}
+        </div>
+      )}
+    </main>
+  );
+}
+
 // Main Orders Page Component
 export default function OrdersPage() {
+  const [activeView, setActiveView] = React.useState<ActiveView>('orders'); // Default view
+  const { userProfile, loading, profileLoading } = useAuth(); // Get loading states
+
+  const isSeller = userProfile?.user_type === 'seller';
+
+  // Show loading state for the whole page while auth is resolving
+  if (loading || profileLoading) {
+    return (
+      <div className="flex min-h-screen bg-bg-alt-white-100">
+        {/* Sidebar Skeleton */}
+        <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-4 pt-6">
+          {/* Placeholder */}
+        </aside>
+        {/* Content Skeleton */}
+        <main className="flex-1 p-6"><p>Loading...</p></main>
+      </div>
+    );
+  }
+
+  // If no profile (e.g., not logged in), maybe redirect or show login message
+  // This depends on whether non-logged-in users can see anything here
+
   return (
     <div className="flex min-h-screen bg-bg-alt-white-100">
-      <OrdersSidebar />
-      <OrdersContent />
+      <OrdersSidebar
+        activeView={activeView}
+        setActiveView={setActiveView}
+        isSeller={!!isSeller}
+      />
+
+      {/* Conditionally render the main content based on activeView */}
+      <div className="flex-1">
+        {activeView === 'orders' && <OrdersContent />}
+        {/* Render MyServicesView only if view is active AND user is seller */}
+        {activeView === 'my-services' && isSeller && <MyServicesView />}
+        {activeView === 'billing' /* && <BillingView /> */}
+        {/* Handle edge case where My Services is selected but user isn't seller */}
+        {activeView === 'my-services' && !isSeller && (
+          <main className="flex-1 p-6"><p className="text-red-500">Access Denied: My Services is only available for sellers.</p></main>
+        )}
+        {/* TODO: Add BillingView component rendering */}
+      </div>
     </div>
   );
 }
