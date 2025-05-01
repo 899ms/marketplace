@@ -72,7 +72,7 @@ export default function Navbar() {
         <div className='flex items-center gap-8'>
           {/* Logo */}
           <Link
-            href='/'
+            href='/home'
             className='text-lg flex items-center gap-2 font-semibold text-text-strong-950'
           >
             {/* Placeholder for actual logo - assuming an SVG or Image component */}
