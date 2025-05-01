@@ -15,6 +15,7 @@ import {
   RiArrowUpCircleLine,
   RiLoader4Line,
 } from '@remixicon/react';
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 import BlockFileUploadDialog from '@/components/blocks/block-file-upload-dialog';
 import { AboutSection } from '@/components/worker/profile/AboutSection';
@@ -108,6 +109,10 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
         className="fixed inset-y-0 right-0 z-50 h-[100dvh] w-full shadow-xl overflow-hidden bg-white"
         style={{ maxWidth: '800px' }}
       >
+        <DialogPrimitive.Title className="sr-only">
+          {`Worker Profile: ${displayName}`}
+        </DialogPrimitive.Title>
+
         <div className="flex h-full flex-col">
           {/* header */}
           <div className="border-b border-stroke-soft-200 px-5 py-4">
