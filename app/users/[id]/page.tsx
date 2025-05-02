@@ -10,6 +10,10 @@ import * as Badge from '@/components/ui/badge';
 import * as Tag from '@/components/ui/tag';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import * as Notification from '@/components/ui/notification';
+import { useAuth } from '@/utils/supabase/AuthContext';
+import { chatOperations, userOperations, jobOperations } from '@/utils/supabase/database';
+import { User, Job, Chat, Message } from '@/utils/supabase/types';
+import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
 import {
   RiStarFill,
   RiStarSFill,
@@ -20,10 +24,10 @@ import {
   RiTwitterXFill,
   RiGoogleFill,
   RiArrowRightSLine,
+  RiLoader4Line,
 } from '@remixicon/react';
 import { clsx } from 'clsx';
-import { userOperations, jobOperations } from '@/utils/supabase/database';
-import { User, Job } from '@/utils/supabase/types';
+import { useNotification } from '@/hooks/use-notification';
 
 // Helper function to get currency symbol
 const getCurrencySymbol = (currency: string): string => {
@@ -41,6 +45,78 @@ const getCurrencySymbol = (currency: string): string => {
 
 // User Sidebar Component
 const UserSidebar = ({ userData }: { userData: User | null }) => {
+  const { user: currentUser } = useAuth();
+  const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null);
+  const [activeChat, setActiveChat] = useState<Chat | null>(null);
+  const [activeChatMessages, setActiveChatMessages] = useState<Message[]>([]);
+  const [isLoadingChat, setIsLoadingChat] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
+  const { notification: toast } = useNotification();
+
+  useEffect(() => {
+    const fetchCurrentUserProfile = async () => {
+      if (currentUser?.id) {
+        const profile = await userOperations.getUserById(currentUser.id);
+        setCurrentUserProfile(profile);
+      }
+    };
+    fetchCurrentUserProfile();
+  }, [currentUser]);
+
+  const handleOpenChat = async () => {
+    if (!currentUser || !userData) {
+      setChatError('Could not load user profiles. Please try again later.');
+      console.error('Cannot open chat: Missing current user or viewed user profile.');
+      return;
+    }
+    if (currentUser.id === userData.id) {
+      setChatError("You cannot start a chat with yourself.");
+      return;
+    }
+
+    setIsLoadingChat(true);
+    setChatError(null);
+    setActiveChat(null);
+    setActiveChatMessages([]);
+
+    try {
+      const chat = await chatOperations.findOrCreateChat(currentUser.id, userData.id);
+      if (chat) {
+        setActiveChat(chat);
+        setIsLoadingMessages(true);
+        const messages = await chatOperations.getChatMessages(chat.id);
+        setActiveChatMessages(messages);
+      } else {
+        setChatError('Failed to find or create chat conversation.');
+      }
+    } catch (error: any) {
+      console.error('Error opening chat:', error);
+      setChatError(error.message || 'An unexpected error occurred.');
+    } finally {
+      setIsLoadingChat(false);
+      setIsLoadingMessages(false);
+    }
+  };
+
+  const handleCloseChat = () => {
+    setActiveChat(null);
+    setActiveChatMessages([]);
+    setChatError(null);
+  };
+
+  // --- Follow Button Handler ---
+  const handleFollowClick = () => {
+    // TODO: Implement actual follow logic later
+    toast({
+      title: "Followed!",
+      description: `You are now following ${userData?.full_name || userData?.username || 'this user'}.`,
+      status: "success",
+      variant: "filled"
+    });
+  };
+  // --- End Follow Button Handler ---
+
   if (!userData) {
     return (
       <aside className='hidden max-w-[352px] w-full shrink-0 lg:block'>
@@ -103,29 +179,45 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
 
         {/* Action Buttons */}
         <div className="flex items-center justify-center gap-2 mb-4">
-          {/* Follow Button */}
+          {/* Follow Button - Modified */}
           <Button.Root
             variant="neutral"
             mode="stroke"
             size="xsmall"
             className="w-[85px] h-[32px] rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-sm flex items-center justify-center gap-[6px] px-2"
+            onClick={handleFollowClick}
+            disabled={!currentUser || currentUser?.id === userData.id}
+            aria-label={currentUser?.id === userData.id ? "Cannot follow yourself" : "Follow user"}
           >
             <span className="text-paragraph-xs">Follow</span>
             <Button.Icon as={RiHeart3Line} className="size-[18px]" />
           </Button.Root>
 
-          {/* Touch Button */}
+          {/* Touch Button - Modified */}
           <Button.Root
             variant="neutral"
             mode="filled"
             size="xsmall"
             className="w-[83px] h-[32px] rounded-lg bg-[#20232D] border border-[#242628] shadow-md flex items-center justify-center gap-[6px] px-2"
+            onClick={handleOpenChat}
+            disabled={!currentUser || isLoadingChat || currentUser?.id === userData.id}
+            aria-label={currentUser?.id === userData.id ? "Cannot message yourself" : "Send message"}
           >
-            <span className="text-paragraph-xs text-bg-white-0">Touch</span>
-            <Button.Icon as={RiSendPlane2Fill} className="size-[18px]" />
+            {isLoadingChat ? (
+              <RiLoader4Line className="animate-spin text-white" size={18} />
+            ) : (
+              <>
+                <span className="text-paragraph-xs text-bg-white-0">Touch</span>
+                <Button.Icon as={RiSendPlane2Fill} className="size-[18px] text-white" />
+              </>
+            )}
           </Button.Root>
         </div>
 
+        {/* Display Chat Error */}
+        {chatError && (
+          <p className="text-xs text-red-600 mb-2 text-center">Error: {chatError}</p>
+        )}
 
         {/* Recent Reviews */}
         <div>
@@ -150,7 +242,6 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
           </div>
         </div>
 
-
         <Divider.Root />
 
         {/* Tags Section */}
@@ -172,7 +263,6 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
           </div>
         </div>
 
-
         <Divider.Root />
 
         {/* About Section */}
@@ -181,7 +271,6 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
             <h3 className='text-label-md font-medium text-text-strong-950'>
               About
             </h3>
-
           </div>
           <p className='text-gray-600 line-clamp-5 text-paragraph-sm'>
             {userData.bio || "This user hasn't added a bio yet."}
@@ -210,12 +299,27 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
           </Link>
         </div>
       </div>
+
+      {/* Conditionally render Chat Popup */}
+      {activeChat && currentUserProfile && userData && currentUser && (
+        <ChatPopupWrapper
+          key={activeChat.id}
+          chat={activeChat}
+          initialMessages={activeChatMessages}
+          currentUserProfile={currentUserProfile}
+          otherUserProfile={userData}
+          currentUserId={currentUser.id}
+          isLoadingMessages={isLoadingMessages}
+          onClose={handleCloseChat}
+          position="bottom-right"
+        />
+      )}
     </aside>
   );
 };
 
 // Order List Item Component
-const OrderListItem = ({ job, userType }: { job: Job; userType?: string }) => {
+const OrderListItem = ({ job, loggedInUserType }: { job: Job; loggedInUserType?: User['user_type'] | null }) => {
   // State for notification
   const [showNotification, setShowNotification] = useState(false);
 
@@ -242,7 +346,9 @@ const OrderListItem = ({ job, userType }: { job: Job; userType?: string }) => {
   }
 
   // Handle apply button click
-  const handleApply = () => {
+  const handleApply = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    e.preventDefault();
     console.log(`Applying for job: ${job.title} (ID: ${job.id})`);
     setShowNotification(true);
 
@@ -253,61 +359,66 @@ const OrderListItem = ({ job, userType }: { job: Job; userType?: string }) => {
   };
 
   return (
-    <div className='flex items-start justify-between gap-4 border-b border-stroke-soft-200 py-4'>
-      <div className='flex-1 max-w-[80%]'>
-        {/* Title */}
-        <h3 className='mb-1 text-paragraph-lg font-medium text-text-strong-950'>
-          {job.title}
-        </h3>
+    <Link
+      href={`/projects/${job.id}`}
+      className='block border-b border-stroke-soft-200 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 first:border-t last:border-b-0'
+    >
+      <div className='flex items-start justify-between gap-4 px-2'>
+        <div className='flex-1 max-w-[80%]'>
+          {/* Title */}
+          <h3 className='mb-1 text-paragraph-lg font-medium text-text-strong-950'>
+            {job.title}
+          </h3>
 
-        {/* Tags */}
-        <div className='mb-2 flex flex-wrap gap-1.5'>
-          {displayTags.map((tag, i) => (
-            <Tag.Root
-              key={i}
-              data-state={i === 0 ? "active" : "default"}
+          {/* Tags */}
+          <div className='mb-2 flex flex-wrap gap-1.5'>
+            {displayTags.map((tag, i) => (
+              <Tag.Root
+                key={i}
+                data-state={i === 0 ? "active" : "default"}
+              >
+                {tag}
+              </Tag.Root>
+            ))}
+          </div>
+
+          {/* Description */}
+          <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm'>
+            {job.description || "No description provided."}
+          </p>
+        </div>
+
+        <div className='shrink-0 text-right'>
+          <div className='text-gray-600 text-label-sm'>Budget</div>
+          <div className='mb-2 text-label-lg font-medium text-text-strong-950'>
+            {getCurrencySymbol(job.currency)}{job.budget.toLocaleString()}
+          </div>
+          {loggedInUserType === 'seller' && (
+            <Button.Root
+              variant='neutral'
+              mode='stroke'
+              size='small'
+              onClick={handleApply}
             >
-              {tag}
-            </Tag.Root>
-          ))}
+              Apply
+              <Button.Icon as={RiArrowRightSLine} />
+            </Button.Root>
+          )}
         </div>
 
-        {/* Description */}
-        <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm'>
-          {job.description || "No description provided."}
-        </p>
-      </div>
-
-      <div className='shrink-0 text-right'>
-        <div className='text-gray-600 text-label-sm'>Budget</div>
-        <div className='mb-2 text-label-lg font-medium text-text-strong-950'>
-          {getCurrencySymbol(job.currency)}{job.budget.toLocaleString()}
-        </div>
-        {userType === 'seller' && (
-          <Button.Root
-            variant='neutral'
-            mode='stroke'
-            size='small'
-            onClick={handleApply}
-          >
-            Apply
-            <Button.Icon as={RiArrowRightSLine} />
-          </Button.Root>
+        {/* Success notification */}
+        {showNotification && (
+          <Notification.Root
+            status="success"
+            variant="filled"
+            title="Application Sent"
+            description={`You've successfully applied to "${job.title}". The buyer will contact you soon.`}
+            open={showNotification}
+            onOpenChange={setShowNotification}
+          />
         )}
       </div>
-
-      {/* Success notification */}
-      {showNotification && (
-        <Notification.Root
-          status="success"
-          variant="filled"
-          title="Application Sent"
-          description={`You've successfully applied to "${job.title}". The buyer will contact you soon.`}
-          open={showNotification}
-          onOpenChange={setShowNotification}
-        />
-      )}
-    </div>
+    </Link>
   );
 };
 
@@ -376,8 +487,10 @@ const ReviewListItem = () => {
 
 // User Profile Page Component 
 export default function UserProfilePage({ params }: { params: { id: string } }) {
+  const { user: currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('Order'); // Default to Order tab
   const [userData, setUserData] = useState<User | null>(null);
+  const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null);
   const [userJobs, setUserJobs] = useState<Job[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingJobs, setIsLoadingJobs] = useState(true);
@@ -411,6 +524,19 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
 
     fetchUserData();
   }, [userId]);
+
+  // Fetch logged-in user's profile data
+  useEffect(() => {
+    const fetchCurrentUserProfile = async () => {
+      if (currentUser?.id) {
+        const profile = await userOperations.getUserById(currentUser.id);
+        setCurrentUserProfile(profile);
+      } else {
+        setCurrentUserProfile(null); // Clear profile if user logs out
+      }
+    };
+    fetchCurrentUserProfile();
+  }, [currentUser]);
 
   // Fetch jobs when user data is available
   useEffect(() => {
@@ -542,12 +668,12 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
                       </div>
                     </>
                   ) : userJobs.length > 0 ? (
-                    // Display actual jobs
+                    // Pass loggedInUserType to OrderListItem
                     userJobs.map((job) => (
                       <OrderListItem
                         key={job.id}
                         job={job}
-                        userType={userData?.user_type}
+                        loggedInUserType={currentUserProfile?.user_type}
                       />
                     ))
                   ) : (
