@@ -40,22 +40,33 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Define public paths (no auth required)
-  const publicPaths = ['/', '/auth/signup', '/auth/forgot-password']; // Added forgot-password
+  const publicPaths = [
+    '/',
+    '/auth/login',
+    '/auth/signup',
+    '/auth/forgot-password',
+  ]; // Added /login
 
   // Define paths that logged-in users should be redirected *away* from
-  const authPages = ['/', '/auth/signup', '/auth/login']; // Add login page if it exists separately
+  const authPages = ['/', '/auth/login', '/auth/signup']; // Ensured /login is here
 
   // Check if the current path requires authentication
   const isProtectedRoute = !publicPaths.some(
     (path) => pathname === path || (path !== '/' && pathname.startsWith(path)),
   );
 
-  // If trying to access a protected path without a user, redirect to login ('/')
+  // If trying to access a protected path without a user, redirect to /login
   if (isProtectedRoute && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = '/'; // Redirect to root/login page
+    url.pathname = '/auth/login'; // Redirect to /auth/login page
     // Optionally add a query param to indicate the original destination
-    // url.searchParams.set('redirectedFrom', pathname);
+    if (pathname !== '/') {
+      // Avoid adding redirect if they were already going to root
+      url.searchParams.set('redirectedFrom', pathname);
+    }
+    console.log(
+      `[Middleware] User not authenticated, redirecting from ${pathname} to /auth/login`,
+    );
     return NextResponse.redirect(url);
   }
 

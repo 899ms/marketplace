@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import * as Tabs from '@/components/ui/tabs';
 import Banner from './Banner';
 import SectionHeader from './SectionHeader';
@@ -105,7 +106,7 @@ const MainContent = () => {
 
       {/* Hot Services Section */}
       <section className='mb-8'>
-        <SectionHeader title='Hot Services' href='/services' />
+        <SectionHeader title='Hot Services' href='/services/search?tab=Service' />
         <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
           {isLoading ? (
             // Loading state
@@ -117,7 +118,9 @@ const MainContent = () => {
           ) : recentServices.length > 0 ? (
             // Map through fetched services
             recentServices.map((service) => (
-              <ServiceCard key={service.id} service={service} />
+              <Link key={service.id} href={`/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
+                <ServiceCard service={service} />
+              </Link>
             ))
           ) : (
             // No services found
@@ -130,7 +133,7 @@ const MainContent = () => {
 
       {/* Hot Workers Section */}
       <section className='mb-8'>
-        <SectionHeader title='Hot Workers' href='/workers' />
+        <SectionHeader title='Hot Workers' href='/services/search?tab=Worker' />
         <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
           {isLoadingWorkers ? (
             // Loading state
@@ -142,7 +145,9 @@ const MainContent = () => {
           ) : recentWorkers.length > 0 ? (
             // Map through fetched workers
             recentWorkers.map((worker) => (
-              <WorkerCard key={worker.id} worker={worker} />
+              <Link key={worker.id} href={`/workers/${worker.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
+                <WorkerCard worker={worker} />
+              </Link>
             ))
           ) : (
             // Placeholder workers if none found
@@ -155,7 +160,7 @@ const MainContent = () => {
 
       {/* Category Ranking Section */}
       <section>
-        <SectionHeader title='Category Ranking' href='/categories' />
+        <SectionHeader title='Category Ranking' href='/services/search?tab=Service' />
         <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
           {isLoading ? (
             // Loading state
@@ -167,7 +172,9 @@ const MainContent = () => {
           ) : categoryServices.length > 0 ? (
             // Map through shuffled services
             categoryServices.map((service) => (
-              <ServiceCard key={`category-${service.id}`} service={service} />
+              <Link key={`category-${service.id}`} href={`/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
+                <ServiceCard service={service} />
+              </Link>
             ))
           ) : (
             // Placeholder data if no real services

@@ -108,6 +108,17 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
     }
   };
 
+  // --- Notification Handler --- 
+  const handleComingSoonClick = () => {
+    toast({
+      title: "Coming Soon",
+      description: "This feature is under development and will be available shortly.",
+      status: "information",
+      variant: "filled" // Optional: Use filled variant for more visibility
+    });
+  };
+  // --- End Notification Handler ---
+
   return (
     <aside className='hidden w-64 shrink-0 lg:block xl:w-72'>
       <div className='shadow-sm sticky top-20 flex flex-col gap-6 rounded-xl border border-stroke-soft-200 bg-bg-white-0 pb-4 mb-6'>
@@ -162,10 +173,10 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
         <nav className='px-4'>
           <ul className='flex flex-col gap-1'>
             <li><SidebarLink href='/home' icon={RiHomeLine} label='Home' /></li>
-            <li><SidebarLink href='/orders' icon={RiFileList2Line} label='Order' /></li>
-            <li><SidebarLink href='/chat' icon={RiChat1Line} label='Chat' /></li>
-            <li><SidebarLink href='/bonus-sidebar' icon={RiCouponLine} label='Bonus' /></li>
-            <li><SidebarLink href='/help' icon={RiQuestionLine} label='Help Center' /></li>
+            <li><SidebarLink href='/settings' icon={RiFileList2Line} label='Order' /></li>
+            <li><SidebarLink href='/chats' icon={RiChat1Line} label='Chat' /></li>
+            <li><SidebarLink onClick={handleComingSoonClick} icon={RiCouponLine} label='Bonus' /></li>
+            <li><SidebarLink onClick={handleComingSoonClick} icon={RiQuestionLine} label='Help Center' /></li>
           </ul>
         </nav>
         <Divider.Root />

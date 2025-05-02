@@ -5,28 +5,44 @@ import Link from 'next/link';
 import { cn } from '@/utils/cn';
 
 interface SidebarLinkProps {
-  href: string;
+  href?: string;
   icon: React.ElementType;
   label: string;
-  // isActive prop is removed for now, will be added later with router logic
-  // isActive?: boolean;
+  onClick?: () => void;
 }
 
-const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
-  return (
-    <Link
-      href={href}
-      className='text-text-primary-600 hover:bg-secondary-transparent-50 flex items-center gap-2 rounded-full px-4 py-2 text-paragraph-sm'
-    >
+const SidebarLink = ({ href, icon: Icon, label, onClick }: SidebarLinkProps) => {
+  const commonClasses = 'text-text-primary-600 hover:bg-secondary-transparent-50 flex w-full items-center gap-2 rounded-full px-4 py-2 text-paragraph-sm text-left';
+
+  const content = (
+    <>
       <Icon
         className={cn(
           'size-5',
-          /* isActive ? 'text-icon-strong-950' : */ 'text-icon-secondary-400',
+          'text-icon-secondary-400',
         )}
       />
       {label}
-    </Link>
+    </>
   );
+
+  if (onClick) {
+    return (
+      <button type="button" onClick={onClick} className={commonClasses}>
+        {content}
+      </button>
+    );
+  }
+
+  if (href) {
+    return (
+      <Link href={href} className={commonClasses}>
+        {content}
+      </Link>
+    );
+  }
+
+  return null;
 };
 
 export default SidebarLink;
