@@ -162,7 +162,7 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
 
             {/* 2) Services - Use fetched services */}
             <h3 className="inline-block text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Service</h3>
-            <div className='mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+            <div className='mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
               {isLoadingServices ? (
                 Array.from({ length: 3 }).map((_, index) => (
                   <div key={index} className="border border-stroke-soft-200 rounded-lg p-4 animate-pulse">
@@ -189,7 +189,7 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
 
             {/* 3) Reviews - Use workerData */}
             <h3 className="inline-block text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Review</h3>
-            <div className='mt-8 space-y-5 divide-y divide-stroke-soft-200'>
+            <div className='mt-4 space-y-5 divide-y divide-stroke-soft-200'>
               {workerData.reviews.length > 0 ? (
                 workerData.reviews.map((r) => (
                   <ReviewItem key={r.id} review={r} />

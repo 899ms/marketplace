@@ -10,16 +10,16 @@ interface ReviewItemProps {
 
 export function ReviewItem({ review }: ReviewItemProps) {
   return (
-    <div className="border-b border-stroke-soft-200 py-5 last:border-b-0">
+    <div className="border-stroke-soft-200 py-4">
       {/* Top row: avatar + name on left, price + like on right */}
       <div className="flex items-start justify-between mb-3">
         {/* left */}
         <div className="flex items-start gap-3">
-          <Avatar.Root size="40">
+          <Avatar.Root size="48">
             <Avatar.Image src={review.reviewerAvatar} alt={review.reviewer} />
           </Avatar.Root>
           <div className="flex flex-col">
-            <p className="text-label-md font-medium text-text-strong-950">
+            <p className="text-text-secondary-600 text-label-sm font-medium">
               {review.reviewer}
             </p>
             <div className="flex items-center gap-2 text-paragraph-xs text-gray-600">
@@ -42,7 +42,7 @@ export function ReviewItem({ review }: ReviewItemProps) {
 
       {/* Bottom row: title + description */}
       <div>
-        <h3 className="mb-1 text-paragraph-md font-medium text-text-strong-950">
+        <h3 className="mb-1 text-paragraph-lg font-medium text-text-strong-950">
           {review.contractTitle}
         </h3>
         <p className="text-gray-600 line-clamp-2 text-paragraph-sm">
