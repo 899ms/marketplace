@@ -3,7 +3,7 @@
 import React from 'react';
 import * as Button from '@/components/ui/button';
 import * as FancyButton from '@/components/ui/fancy-button';
-import { RiHeart3Line, RiLoader4Line } from '@remixicon/react';
+import { RiHeart3Line, RiLoader4Line, RiArrowRightSLine } from '@remixicon/react';
 import { User } from '@/utils/supabase/types';
 
 interface ProfileActionButtonsProps {
@@ -24,7 +24,7 @@ export function ProfileActionButtons({
   const isOwnProfile = currentUser?.id === targetUser.id;
 
   return (
-    <div className="flex items-center justify-center gap-2">
+    <div className="flex items-center justify-center gap-4">
       {/* Hire Button (Previously Follow) */}
       <Button.Root
         variant="neutral"
@@ -37,7 +37,7 @@ export function ProfileActionButtons({
       >
         <span className="text-paragraph-xs">Hire</span> {/* Changed text */}
         {/* Consider changing the icon if RiHeart3Line isn't appropriate for "Hire" */}
-        <Button.Icon as={RiHeart3Line} className="size-5" />
+        <Button.Icon as={RiArrowRightSLine} className="size-5" /> {/* Changed icon */}
       </Button.Root>
 
       {/* Touch Button */}
