@@ -74,13 +74,13 @@ export function MeetingsWidget() {
   return (
     <TabMenuHorizontal.Root defaultValue='7_days'  >
       <TabMenuHorizontal.List className='p-4'>
-        <TabMenuHorizontal.Trigger value='7_days'>
+        <TabMenuHorizontal.Trigger value='7_days' className='flex-1'>
           7 Days
         </TabMenuHorizontal.Trigger>
-        <TabMenuHorizontal.Trigger value='15_days'>
+        <TabMenuHorizontal.Trigger value='15_days' className='flex-1'>
           15 Days
         </TabMenuHorizontal.Trigger>
-        <TabMenuHorizontal.Trigger value='30_days'>
+        <TabMenuHorizontal.Trigger value='30_days' className='flex-1'>
           30 Days
         </TabMenuHorizontal.Trigger>
       </TabMenuHorizontal.List>
