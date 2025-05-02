@@ -142,7 +142,31 @@ const SellerActionButtons = ({
       ) : (
         <>
           Message
-          <Button.Icon><RiSendPlaneLine /></Button.Icon>
+          <Button.Icon className="flex-shrink-0">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 21 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5 stroke-current text-[#525866]"
+            >
+              <path
+                d="M6.66641 5.2668L13.7414 2.90846C16.9164 1.85013 18.6414 3.58346 17.5914 6.75846L15.2331 13.8335C13.6497 18.5918 11.0497 18.5918 9.46641 13.8335L8.76641 11.7335L6.66641 11.0335C1.90807 9.45013 1.90807 6.85846 6.66641 5.2668Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M8.92578 11.375L11.9091 8.3833"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Button.Icon>
         </>
       )}
     </Button.Root>
