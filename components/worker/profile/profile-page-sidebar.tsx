@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { useNotification } from '@/hooks/use-notification';
 
@@ -18,10 +18,16 @@ import {
   RiTwitchFill,
   RiTwitterXFill,
   RiGoogleFill,
+  RiHeart3Line,
+  RiSendPlane2Fill,
+  RiLoader4Line,
+  RiStarSFill,
 } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import * as Tag from '@/components/ui/tag'; // Keep Tag import for tags section
 import { User } from '@/utils/supabase/types';
+import * as Button from '@/components/ui/button'; // Add Button import
+import * as AvatarGroup from '@/components/ui/avatar-group'; // Add AvatarGroup import
 
 // --- Helper Components (Keep SidebarLink as it's used) ---
 interface SidebarLinkProps {
@@ -75,8 +81,7 @@ interface ProfilePageSidebarProps {
 
 // --- Profile Page Sidebar Component (Renamed) ---
 export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
-  // Remove notification hook if not used here, or keep if needed
-  const { notification } = useNotification();
+  const { notification: toast } = useNotification();
 
   // Use userProfile directly or map to a simpler structure if preferred
   const user = {
@@ -88,7 +93,7 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
   };
 
   // Mock tags and links as per the image
-  const tags = [
+  const mockAwards = [
     'Grammy',
     'Billboard Music',
     'American Music',
@@ -103,17 +108,42 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
     { platform: 'google', icon: RiGoogleFill, color: '#DB4437', href: '#' }, // Example color
   ];
 
-  // Remove handleComingSoonClick or adapt if needed for profile page
-  // const handleComingSoonClick = () => { ... };
+  // --- Mock State & Handlers for Buttons/Reviews --- 
+  const currentUser = null; // Mock: No logged-in user state here
+  const isLoadingChat = false; // Mock chat loading state
+  const chatError = null; // Mock chat error state
+  const reviewAvatars = [
+    'https://i.pravatar.cc/40?img=32',
+    'https://i.pravatar.cc/40?img=45',
+    'https://i.pravatar.cc/40?img=12',
+  ]; // Mock review avatars
+
+  const handleFollowClick = () => {
+    toast({
+      title: "Follow Clicked (Mock)",
+      description: `Follow action for ${userProfile.full_name || userProfile.username}.`,
+      status: "information",
+      variant: "filled"
+    });
+  };
+  const handleOpenChat = () => {
+    toast({
+      title: "Touch Clicked (Mock)",
+      description: `Chat action for ${userProfile.full_name || userProfile.username}.`,
+      status: "information",
+      variant: "filled"
+    });
+  };
+  // --- End Mock State & Handlers ---
 
   // Adjust class names if needed to remove margin/padding specific to dashboard layout
   // e.g., remove mt-[3.5rem] from <aside> if it's not needed
   // e.g., remove mb-6 from inner div if spacing is handled differently
   return (
     <aside className='hidden w-full shrink-0 lg:block'> {/* Adjust width/responsive classes as needed */}
-      <div className='shadow-sm sticky top-20 flex flex-col gap-6 rounded-xl border border-stroke-soft-200 bg-bg-white-0 pb-4'>
+      <div className='shadow-sm sticky top-20 flex flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 pb-4'> {/* Reduced gap-6 to gap-4 */}
         {/* Profile Section - Matches image */}
-        <div className='flex flex-col items-center gap-3 pb-6 pt-4 px-4'>
+        <div className='flex flex-col items-center gap-3 pt-4 px-4'> {/* Removed pb-6 */}
           {user.avatarUrl && user.avatarUrl !== "" ?
             <Avatar.Root size='80'>
               <Avatar.Image src={user.avatarUrl} alt={user.name} />
@@ -136,43 +166,87 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
               </span>
             </div>
           </div>
-          {/* Icons below rating - Matches image */}
+          {/* Icons below rating - Replace with Google items */}
           <div className='text-text-secondary-600 flex items-center justify-center gap-3 text-xs mt-2'>
+            {/* Remove original Salary/Work/Specia spans */}
+            {/* <span className='inline-flex items-center gap-1'> ... </span> */}
+            {/* <span className='inline-flex items-center gap-1'> ... </span> */}
+            {/* <span className='inline-flex items-center gap-1'> ... </span> */}
+
+            {/* Add two Google items */}
             <span className='inline-flex items-center gap-1'>
-              {/* Salary Icon - Placeholder */}
-              <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.99978 5.38672V7.29339L7.32645 7.06005C6.98645 6.94005 6.77979 6.82672 6.77979 6.24672C6.77979 5.77339 7.13312 5.38672 7.56645 5.38672H7.99978Z" fill="#F27B2C" />
-                <path d="M10.22 9.75321C10.22 10.2265 9.86667 10.6132 9.43333 10.6132H9V8.70654L9.67333 8.93988C10.0133 9.05988 10.22 9.17321 10.22 9.75321Z" fill="#F27B2C" />
-                <path d="M11.2935 1.3335H5.70683C3.28016 1.3335 1.8335 2.78016 1.8335 5.20683V10.7935C1.8335 13.2202 3.28016 14.6668 5.70683 14.6668H11.2935C13.7202 14.6668 15.1668 13.2202 15.1668 10.7935V5.20683C15.1668 2.78016 13.7202 1.3335 11.2935 1.3335ZM10.0068 8.00016C10.5268 8.18016 11.2202 8.56016 11.2202 9.7535C11.2202 10.7802 10.4202 11.6135 9.4335 11.6135H9.00016V12.0002C9.00016 12.2735 8.7735 12.5002 8.50016 12.5002C8.22683 12.5002 8.00016 12.2735 8.00016 12.0002V11.6135H7.76016C6.66683 11.6135 5.78016 10.6868 5.78016 9.5535C5.78016 9.28016 6.00016 9.0535 6.28016 9.0535C6.5535 9.0535 6.78016 9.28016 6.78016 9.5535C6.78016 10.1402 7.22016 10.6135 7.76016 10.6135H8.00016V8.3535L6.9935 8.00016C6.4735 7.82016 5.78016 7.44016 5.78016 6.24683C5.78016 5.22016 6.58016 4.38683 7.56683 4.38683H8.00016V4.00016C8.00016 3.72683 8.22683 3.50016 8.50016 3.50016C8.7735 3.50016 9.00016 3.72683 9.00016 4.00016V4.38683H9.24016C10.3335 4.38683 11.2202 5.3135 11.2202 6.44683C11.2202 6.72016 11.0002 6.94683 10.7202 6.94683C10.4468 6.94683 10.2202 6.72016 10.2202 6.44683C10.2202 5.86016 9.78016 5.38683 9.24016 5.38683H9.00016V7.64683L10.0068 8.00016Z" fill="#F27B2C" />
-              </svg>
-              Salary
+              <RiGoogleFill className='size-4 text-text-sub-600' /> {/* Adjust size/color as needed */}
+              Google
             </span>
             <span className='inline-flex items-center gap-1'>
-              {/* Work Icon - Placeholder */}
-              <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clipPath="url(#clip0_24005_11186)">
-                  <path d="M6.59977 4.99316C6.22644 4.99316 5.93311 5.29316 5.93311 5.65983C5.93311 6.0265 6.23311 6.3265 6.59977 6.3265C6.96644 6.3265 7.26644 6.0265 7.26644 5.65983C7.26644 5.29316 6.96644 4.99316 6.59977 4.99316Z" fill="#5A36BF" />
-                  <path d="M14.8068 3.36016C14.2468 2.06016 13.0135 1.3335 11.2935 1.3335H5.70683C3.56683 1.3335 1.8335 3.06683 1.8335 5.20683V10.7935C1.8335 12.5135 2.56016 13.7468 3.86016 14.3068C3.98683 14.3602 4.1335 14.3268 4.22683 14.2335L14.7335 3.72683C14.8335 3.62683 14.8668 3.48016 14.8068 3.36016ZM7.52016 8.16016C7.26016 8.4135 6.92016 8.5335 6.58016 8.5335C6.24016 8.5335 5.90016 8.40683 5.64016 8.16016C4.96016 7.52016 4.2135 6.50016 4.50016 5.28683C4.7535 4.18683 5.72683 3.6935 6.58016 3.6935C7.4335 3.6935 8.40683 4.18683 8.66016 5.2935C8.94016 6.50016 8.1935 7.52016 7.52016 8.16016Z" fill="#5A36BF" />
-                  <path d="M13.4798 13.6868C13.6264 13.8335 13.6064 14.0735 13.4264 14.1735C12.8398 14.5002 12.1264 14.6668 11.2931 14.6668H5.70643C5.5131 14.6668 5.4331 14.4402 5.56643 14.3068L9.5931 10.2802C9.72644 10.1468 9.9331 10.1468 10.0664 10.2802L13.4798 13.6868Z" fill="#5A36BF" />
-                  <path d="M15.1667 5.20643V10.7931C15.1667 11.6264 15 12.3464 14.6733 12.9264C14.5733 13.1064 14.3333 13.1198 14.1867 12.9798L10.7733 9.56643C10.64 9.4331 10.64 9.22643 10.7733 9.0931L14.8 5.06643C14.94 4.9331 15.1667 5.0131 15.1667 5.20643Z" fill="#5A36BF" />
-                </g>
-                <defs>
-                  <clipPath id="clip0_24005_11186">
-                    <rect width="16" height="16" fill="white" transform="translate(0.5)" />
-                  </clipPath>
-                </defs>
-              </svg>
-              Work
-            </span>
-            <span className='inline-flex items-center gap-1'>
-              {/* Specia Icon - Placeholder */}
-              <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9.65327 2.33977L10.8266 4.68643C10.9866 5.0131 11.4133 5.32643 11.7733 5.38643L13.8999 5.73977C15.2599 5.96643 15.5799 6.9531 14.5999 7.92643L12.9466 9.57977C12.6666 9.85977 12.5133 10.3998 12.5999 10.7864L13.0733 12.8331C13.4466 14.4531 12.5866 15.0798 11.1533 14.2331L9.15994 13.0531C8.79994 12.8398 8.20661 12.8398 7.83994 13.0531L5.84661 14.2331C4.41994 15.0798 3.55327 14.4464 3.92661 12.8331L4.39994 10.7864C4.48661 10.3998 4.33327 9.85977 4.05327 9.57977L2.39994 7.92643C1.42661 6.9531 1.73994 5.96643 3.09994 5.73977L5.22661 5.38643C5.57994 5.32643 6.00661 5.0131 6.16661 4.68643L7.33994 2.33977C7.97994 1.06643 9.01994 1.06643 9.65327 2.33977Z" fill="#253EA7" />
-              </svg>
-              Specia
+              <RiGoogleFill className='size-4 text-text-sub-600' /> {/* Adjust size/color as needed */}
+              Google
             </span>
           </div>
         </div>
+        {/* Remove this Divider */}
+        {/* <Divider.Root /> */}
+
+        {/* Action Buttons - Copied & Adapted */}
+        <div className="flex items-center justify-center gap-2 px-4">
+          {/* Hire Me Button (Formerly Follow) */}
+          <Button.Root
+            variant="neutral"
+            mode="stroke"
+            size="xsmall"
+            className="w-[85px] h-[32px] rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-sm flex items-center justify-center gap-[6px] px-2"
+            onClick={handleFollowClick}
+            aria-label={"Hire user"}
+          >
+            <span className="text-paragraph-xs">Hire Me</span>
+            <Button.Icon as={RiHeart3Line} className="size-[18px]" />
+          </Button.Root>
+
+          {/* Touch Button */}
+          <Button.Root
+            variant="neutral"
+            mode="filled"
+            size="xsmall"
+            className="w-[83px] h-[32px] rounded-lg bg-[#20232D] border border-[#242628] shadow-md flex items-center justify-center gap-[6px] px-2"
+            onClick={handleOpenChat}
+            aria-label={"Send message"}
+          >
+            {isLoadingChat ? (
+              <RiLoader4Line className="animate-spin text-white" size={18} />
+            ) : (
+              <>
+                <span className="text-paragraph-xs text-bg-white-0">Touch</span>
+                <Button.Icon as={RiSendPlane2Fill} className="size-[18px] text-white" />
+              </>
+            )}
+          </Button.Root>
+        </div>
+
+        {/* Display Chat Error - Placeholder/Removed */}
+        {/* {chatError && (
+          <p className="text-xs text-red-600 mb-2 text-center">Error: {chatError}</p>
+        )} */}
+
+        {/* Recent Reviews - Copied & Adapted */}
+        <div className="px-4"> {/* Added px-4 */}
+          <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-center gap-1 text-label-md font-medium text-text-strong-950">
+              <RiStarSFill className="size-6" />
+              <span>Recent reviews</span>
+            </div>
+            <div className="mt-1 sm:mt-0 flex items-center gap-2">
+              <AvatarGroup.Root size="24">
+                {reviewAvatars.map((src, i) => (
+                  <Avatar.Root key={i} size="24">
+                    <Avatar.Image src={src} />
+                  </Avatar.Root>
+                ))}
+              </AvatarGroup.Root>
+              <span className="text-text-secondary-600 text-paragraph-xs">+4</span> {/* Placeholder count */}
+            </div>
+          </div>
+        </div>
+
         <Divider.Root />
 
         {/* Skills Section - NEW (Based on original ProfileSidebar structure) */}
@@ -217,23 +291,20 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
         </div>
         <Divider.Root />
 
-        {/* Tags Section - Matches image */}
+        {/* Awards Section - Use Tag component */}
         <div className='px-4'>
           <div className='mb-3 flex items-center justify-between'>
             <h3 className='text-text-secondary-600 text-label-md font-medium'>
-              Tags
+              Awards
             </h3>
-            {/* TODO: Implement edit functionality later */}
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
               <RiPencilLine className='size-4 text-[#99A0AE]' />
             </button>
           </div>
           <div className='flex flex-wrap gap-1.5'>
-            {tags.map((tag, idx) => (
-              <Tag.Root
-                key={idx}
-              >
-                {tag}
+            {mockAwards.map((award, idx) => (
+              <Tag.Root key={idx}>
+                {award}
               </Tag.Root>
             ))}
           </div>
