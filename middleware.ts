@@ -40,29 +40,34 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Define public paths (no auth required)
-  // IMPORTANT: Ensure '/' (your login page) is listed here!
-  const publicPaths = ['/', '/auth/signup']; // Add any other public pages like /about, /pricing etc.
+  const publicPaths = ['/', '/auth/signup', '/auth/forgot-password']; // Added forgot-password
 
-  // Check if the current path is public
-  const isPublicPath = publicPaths.some(
+  // Define paths that logged-in users should be redirected *away* from
+  const authPages = ['/', '/auth/signup', '/auth/login']; // Add login page if it exists separately
+
+  // Check if the current path requires authentication
+  const isProtectedRoute = !publicPaths.some(
     (path) => pathname === path || (path !== '/' && pathname.startsWith(path)),
   );
 
   // If trying to access a protected path without a user, redirect to login ('/')
-  if (!isPublicPath && !user) {
+  if (isProtectedRoute && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = '/';
-    url.search = ''; // Clear search params on redirect
+    url.pathname = '/'; // Redirect to root/login page
+    // Optionally add a query param to indicate the original destination
+    // url.searchParams.set('redirectedFrom', pathname);
     return NextResponse.redirect(url);
   }
 
-  // Optional: Redirect logged-in users away from login/signup pages
-  // const authPages = ['/', '/auth/signup'];
-  // if (authPages.includes(pathname) && user) {
-  //   return NextResponse.redirect(new URL('/dashboard', request.url)); // Adjust target as needed
-  // }
+  // If the user is logged in and trying to access an auth page (like login/signup/root), redirect to home
+  if (user && authPages.includes(pathname)) {
+    console.log(
+      `[Middleware] User is logged in, redirecting from ${pathname} to /home`,
+    );
+    return NextResponse.redirect(new URL('/home', request.url)); // Redirect to /home
+  }
 
-  // Return the response (potentially with updated cookies)
+  // Allow the request to proceed if none of the above conditions met
   return response;
 }
 
@@ -76,6 +81,6 @@ export const config = {
      * - favicon.ico (favicon file)
      * - images (static images in /public)
      */
-    '/((?!api|_next/static|_next/image|favicon.ico|images).*)',
+    '/((?!api|_next/static|_next/image|favicon.ico|images|auth/forgot-password).*)', // Exclude forgot-password from matcher if handled client-side mostly
   ],
 };
