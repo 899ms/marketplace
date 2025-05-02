@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { RiHomeLine, RiLinksLine, RiBookmarkLine, RiSendPlaneLine, RiShareLine, RiFileCopyLine, RiArrowRightSLine } from '@remixicon/react';
+import { RiHomeLine, RiLinksLine, RiBookmarkLine, RiSendPlaneLine, RiShareLine, RiFileCopyLine, RiArrowRightSLine, RiLoader4Line } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 
@@ -11,8 +11,9 @@ import * as Input from '@/components/ui/input';
 import {
   jobOperations,
   userOperations,
+  chatOperations,
 } from '@/utils/supabase/database';
-import type { Job, User, BaseFileData } from '@/utils/supabase/types'; // Import types
+import type { Job, User, BaseFileData, Chat, Message } from '@/utils/supabase/types'; // Import types
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 
 // Import Notification hook
@@ -27,6 +28,7 @@ import ProjectDetailsSection from '@/components/projects/detail/ProjectDetailsSe
 import SkillsSection from '@/components/projects/detail/SkillsSection';
 import AttachmentsSection from '@/components/projects/detail/AttachmentsSection';
 import FaqSection from '@/components/projects/detail/FaqSection';
+import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
 
 // --- Mock Data (Keep for sections not yet implemented with real data) ---
 const mockFaqs = [
@@ -113,17 +115,43 @@ const mockApplicants = [
 
 
 // --- Placeholder Seller Components ---
-const SellerActionButtons = ({ onApply }: { onApply: () => void }) => (
+const SellerActionButtons = ({
+  onApply,
+  onMessageClick,
+  isLoadingChat,
+  disabled,
+}: {
+  onApply: () => void;
+  onMessageClick: () => void;
+  isLoadingChat: boolean;
+  disabled: boolean;
+}) => (
   <div className="flex items-center gap-3 p-4 pt-0 mt-4">
-    <Button.Root variant="neutral" mode="stroke" className="flex-1">
-      Message
-      <Button.Icon><RiSendPlaneLine /></Button.Icon>
+    <Button.Root
+      variant="neutral"
+      mode="stroke"
+      className="flex-1"
+      onClick={onMessageClick}
+      disabled={disabled || isLoadingChat}
+    >
+      {isLoadingChat ? (
+        <>
+          <RiLoader4Line className="animate-spin mr-2" size={16} />
+          Opening...
+        </>
+      ) : (
+        <>
+          Message
+          <Button.Icon><RiSendPlaneLine /></Button.Icon>
+        </>
+      )}
     </Button.Root>
     <Button.Root
       variant="neutral"
       mode="filled"
       className="flex-1"
       onClick={onApply}
+      disabled={disabled}
     >
       Apply
       <Button.Icon><RiArrowRightSLine /></Button.Icon>
@@ -166,26 +194,40 @@ const ProjectLinkCard = ({ link }: { link: string }) => (
 // --- Main Page Component ---
 
 export default function ProjectDetailPage() {
-  const { id: projectId } = useParams<{ id: string }>(); // Get project ID from route
+  const { id: projectId } = useParams<{ id: string }>();
   const authContext = useAuth();
-  const { notification } = useNotification(); // Use the notification hook
+  const { notification } = useNotification();
 
   // State for fetched data
   const [projectDataState, setProjectDataState] = useState<Job | null>(null);
   const [clientDataState, setClientDataState] = useState<User | null>(null);
-  const [userRole, setUserRole] = useState<'buyer' | 'seller' | null>(null);
+  const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null); // Added state for current user profile
+  const [pageViewRole, setPageViewRole] = useState<
+    'owner' | 'seller_visitor' | 'buyer_visitor' | 'anonymous'
+  >('anonymous'); // More specific role state
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // --- Chat State --- 
+  const [activeChat, setActiveChat] = useState<Chat | null>(null);
+  const [activeChatMessages, setActiveChatMessages] = useState<Message[]>([]);
+  const [isLoadingChat, setIsLoadingChat] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
+  // --- End Chat State ---
+
   useEffect(() => {
-    if (!projectId || authContext.loading) return; // Wait for ID and auth loading
+    if (!projectId || authContext.loading) return;
 
     const fetchData = async () => {
       setIsLoading(true);
       setError(null);
-      setProjectDataState(null); // Clear previous data
+      setProjectDataState(null);
       setClientDataState(null);
-      setUserRole(null);
+      setCurrentUserProfile(null); // Reset current user profile
+      setPageViewRole('anonymous'); // Reset role
+
+      let fetchedJobData: Job | null = null;
 
       try {
         // 1. Fetch Job data
@@ -194,24 +236,46 @@ export default function ProjectDetailPage() {
           throw new Error('Project not found.');
         }
         setProjectDataState(jobData);
+        fetchedJobData = jobData; // Store for role determination
 
         // 2. Fetch Client (Buyer) data
         const clientData = await userOperations.getUserById(jobData.buyer_id);
-        if (!clientData) {
-          // Handle case where client data might be missing but job exists
-          console.warn(`Client data not found for buyer ID: ${jobData.buyer_id}`);
-          // Proceed without client data if needed, or throw error
-          // throw new Error('Client not found.');
-        }
         setClientDataState(clientData);
+        // Don't throw error if client not found, just proceed
 
-        // 3. Determine User Role
-        if (authContext.user) {
-          const role = authContext.user.id === jobData.buyer_id ? 'buyer' : 'seller';
-          setUserRole(role);
-        } else {
-          setUserRole('seller'); // Default to seller view if not logged in
+        // 3. Fetch Current User Profile (if logged in)
+        let fetchedCurrentUserProfile: User | null = null;
+        if (authContext.user?.id) {
+          fetchedCurrentUserProfile = await userOperations.getUserById(authContext.user.id);
+          setCurrentUserProfile(fetchedCurrentUserProfile);
         }
+
+        // 4. Determine Page View Role using fetched data
+        if (authContext.user && fetchedJobData) {
+          if (authContext.user.id === fetchedJobData.buyer_id) {
+            setPageViewRole('owner');
+            console.log("Setting pageViewRole: owner");
+          } else if (fetchedCurrentUserProfile?.user_type === 'seller') {
+            setPageViewRole('seller_visitor');
+            console.log("Setting pageViewRole: seller_visitor");
+          } else if (fetchedCurrentUserProfile?.user_type === 'buyer') {
+            setPageViewRole('buyer_visitor');
+            console.log("Setting pageViewRole: buyer_visitor");
+          } else {
+            // Logged in, but not owner and not seller/buyer type (shouldn't happen?)
+            setPageViewRole('anonymous');
+            console.log("Setting pageViewRole: anonymous (logged in, unexpected type)");
+          }
+        } else {
+          // Not logged in
+          setPageViewRole('anonymous');
+          console.log("Setting pageViewRole: anonymous (not logged in)");
+        }
+
+        // Reset chat state on new fetch
+        setActiveChat(null);
+        setActiveChatMessages([]);
+        setChatError(null);
 
       } catch (err: any) {
         console.error('Error fetching project details:', err);
@@ -223,10 +287,13 @@ export default function ProjectDetailPage() {
 
     fetchData();
 
-  }, [projectId, authContext.user?.id, authContext.loading]); // Re-run if ID or user changes
+  }, [projectId, authContext.user?.id, authContext.loading]);
 
-  // Derived boolean for cleaner conditional rendering
-  const isSeller = userRole === 'seller';
+  // Derived boolean for cleaner conditional rendering (kept for simplicity where applicable)
+  const isOwner = pageViewRole === 'owner';
+  const isSellerVisitor = pageViewRole === 'seller_visitor';
+  const isBuyerVisitor = pageViewRole === 'buyer_visitor';
+  const isAnonymous = pageViewRole === 'anonymous';
 
   // Handler for the Apply button click
   const handleApplyClick = () => {
@@ -240,6 +307,50 @@ export default function ProjectDetailPage() {
       description: 'Your application for this project has been submitted successfully.',
     });
   };
+
+  // --- Chat Handlers ---
+  const handleOpenChat = async () => {
+    if (!currentUserProfile || !clientDataState) {
+      setChatError('Could not load user profiles. Please try again later.');
+      return;
+    }
+    // Ensure we don't allow opening chat if the roles are incorrect (e.g., buyer trying to message buyer)
+    if (pageViewRole !== 'seller_visitor') {
+      console.warn('Attempted to open chat with incorrect role:', pageViewRole);
+      return;
+    }
+
+    setIsLoadingChat(true);
+    setChatError(null);
+    setActiveChat(null);
+    setActiveChatMessages([]);
+
+    try {
+      // Seller (currentUserProfile) messaging Buyer (clientDataState)
+      const chat = await chatOperations.findOrCreateChat(clientDataState.id, currentUserProfile.id);
+      if (chat) {
+        setActiveChat(chat);
+        setIsLoadingMessages(true);
+        const messages = await chatOperations.getChatMessages(chat.id);
+        setActiveChatMessages(messages);
+      } else {
+        setChatError('Failed to find or create chat conversation.');
+      }
+    } catch (error: any) {
+      console.error('Error opening chat:', error);
+      setChatError(error.message || 'An unexpected error occurred.');
+    } finally {
+      setIsLoadingChat(false);
+      setIsLoadingMessages(false);
+    }
+  };
+
+  const handleCloseChat = () => {
+    setActiveChat(null);
+    setActiveChatMessages([]);
+    setChatError(null);
+  };
+  // --- End Chat Handlers ---
 
   // --- Render Logic ---
   if (isLoading) {
@@ -291,31 +402,35 @@ export default function ProjectDetailPage() {
   const projectProposals = 5; // Placeholder - not in JobSchema
   const projectLink = 'https://www.example.com'; // Placeholder - not in JobSchema
 
+  // Adjust breadcrumb logic based on role if needed
+  const findWorksLabel = isOwner || isBuyerVisitor ? 'Find Project' : 'Find Works';
+  const findWorksLink = isOwner || isBuyerVisitor ? '/projects' : '/jobs'; // Example adjustment
 
   return (
     <div className='container mx-auto px-4 py-6 lg:px-8'>
-      {/* Header with Breadcrumbs */}
+      {/* Header with Breadcrumbs - updated links */}
       <div className='mb-6 flex items-center justify-between'>
         <div className='text-sm flex flex-wrap items-center gap-2'>
+          {/* Updated Home Link */}
           <Link
-            href={!isSeller ? '/projects' : '/jobs'}
+            href="/home"
             className='text-icon-secondary-400 hover:text-icon-primary-500'
           >
             <RiHomeLine className='size-4' />
           </Link>
           <span className='text-text-secondary-400'>/</span>
+          {/* Updated Find Project/Works Link */}
           <Link
-            href={!isSeller ? '/projects' : '/jobs'}
+            href="/services/search?tab=Project"
             className='text-text-secondary-600 hover:text-text-strong-950'
           >
-            {!isSeller ? 'Find Project' : 'Find Works'}
+            {findWorksLabel} { /* Keep dynamic label for now */}
           </Link>
           <span className='text-text-secondary-400'>/</span>
           <span className='font-medium text-text-strong-950'>
             Project Detail
           </span>
         </div>
-        {/* Optional: Right side elements like notifications, can be part of main layout */}
       </div>
 
       {/* Main Content Grid */}
@@ -326,7 +441,7 @@ export default function ProjectDetailPage() {
             <ProjectHeader
               title={projectTitle}
               category={projectCategory}
-              showBookmark={isSeller}
+              showBookmark={isSellerVisitor || isAnonymous} // Show bookmark for non-owners
             />
             <ProjectDetailsSection
               description={projectDescription}
@@ -338,32 +453,34 @@ export default function ProjectDetailPage() {
           </div>
         </div>
 
-        {/* Right Sidebar - Conditionally Rendered */}
+        {/* Right Sidebar - Conditionally Rendered based on pageViewRole */}
         <div className='flex flex-col gap-6 md:col-span-4'>
-          {!isSeller ? (
-            // Buyer Sidebar Layout
-            <>
-              <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
-                <ClientProfileCard client={{
-                  name: clientName,
-                  avatar: clientAvatar,
-                  rating: clientRating,
-                  reviews: clientReviews,
-                  isVerified: clientIsVerified
-                }} />
-                <div className="w-[90%] mx-auto my-4 h-[2px] bg-stroke-soft-200" />
-                <ProjectInfoCard
-                  budget={projectBudget}
-                  releaseTime={projectReleaseTime}
-                  deadline={projectDeadline}
-                  proposals={projectProposals} // Use placeholder
-                />
-              </div>
-              {/* Pass userRole which is 'buyer' here */}
-              <ApplicantsList applicants={mockApplicants} userRole={'buyer'} />
-            </>
-          ) : (
-            // Seller Sidebar Layout
+          {(isOwner || isBuyerVisitor || isAnonymous) && (
+            // Sidebar Layout for Owner, Buyer Visitor, Anonymous (No Apply Button)
+            <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+              <ClientProfileCard client={{
+                name: clientName,
+                avatar: clientAvatar,
+                rating: clientRating,
+                reviews: clientReviews,
+                isVerified: clientIsVerified
+              }} />
+              <div className="w-[90%] mx-auto my-4 h-[2px] bg-stroke-soft-200" />
+              <ProjectInfoCard
+                budget={projectBudget}
+                releaseTime={projectReleaseTime}
+                deadline={projectDeadline}
+                proposals={projectProposals} // Use placeholder
+              />
+              {/* No Action Buttons for these roles */}
+              {/* Anonymous doesn't see applicants */}
+              {!isAnonymous && <ApplicantsList applicants={mockApplicants} userRole={isOwner ? 'buyer' : 'seller'} />}
+              {/* Link Card might still be relevant for Anonymous? */}
+              {(isAnonymous || isBuyerVisitor) && <ProjectLinkCard link={projectLink} />}
+            </div>
+          )}
+          {isSellerVisitor && (
+            // Seller Visitor Sidebar Layout (With Apply Button)
             <>
               <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
                 <ClientProfileCard client={{
@@ -380,15 +497,37 @@ export default function ProjectDetailPage() {
                   deadline={projectDeadline}
                   proposals={projectProposals} // Use placeholder
                 />
-                <SellerActionButtons onApply={handleApplyClick} />
+                <SellerActionButtons
+                  onApply={handleApplyClick}
+                  onMessageClick={handleOpenChat}
+                  isLoadingChat={isLoadingChat}
+                  disabled={!currentUserProfile || !clientDataState}
+                />
               </div>
-              {/* Pass userRole which is 'seller' here */}
+              {/* Display Chat Error */}
+              {chatError && (
+                <p className="text-xs text-red-600 -mt-4 mb-2 text-center">Error: {chatError}</p>
+              )}
               <ApplicantsList applicants={mockApplicants} userRole={'seller'} />
-              <ProjectLinkCard link={projectLink} /> {/* Use placeholder link */}
+              <ProjectLinkCard link={projectLink} />
             </>
           )}
         </div>
       </div>
+      {/* Conditionally render Chat Popup */}
+      {activeChat && currentUserProfile && clientDataState && (
+        <ChatPopupWrapper
+          key={activeChat.id}
+          chat={activeChat}
+          initialMessages={activeChatMessages}
+          currentUserProfile={currentUserProfile} // Seller is current user here
+          otherUserProfile={clientDataState} // Buyer is other user here
+          currentUserId={currentUserProfile.id}
+          isLoadingMessages={isLoadingMessages}
+          onClose={handleCloseChat}
+          position="bottom-right"
+        />
+      )}
     </div>
   );
 }
