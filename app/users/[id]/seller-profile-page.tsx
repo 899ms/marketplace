@@ -275,20 +275,20 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
   };
 
   return (
-    <div className='container mx-auto px-4 py-10'>
-      {/* Two-column layout */}
-      <div className='grid grid-cols-1 gap-8 md:grid-cols-12'>
+    <div className='px-6 py-5'>
+      {/* Two-column layout - Changed to Flexbox */}
+      <div className='flex gap-8'>
         {/* Left Sidebar Column */}
-        <div className='md:col-span-4 lg:col-span-3'>
+        <div className='w-[352px] shrink-0'> {/* Set fixed width and prevent shrinking */}
           <div className='sticky top-20'>
             <ProfilePageSidebar userProfile={user} />
           </div>
         </div>
 
         {/* Right Main Content Column (Tabs) */}
-        <div className='md:col-span-8 lg:col-span-9'>
+        <div className='flex-1 overflow-hidden max-w-[1000px] flex flex-col gap-6'> {/* Use flex-1, keep overflow/max-h/flex/gap */}
           {/* Tabs */}
-          <div className='mb-6 border-b border-stroke-soft-200'>
+          <div className='border-b border-stroke-soft-200'>
             <TabMenuHorizontal.Root
               value={activeTab}
               onValueChange={setActiveTab}
@@ -311,7 +311,7 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
           </div>
 
           {/* Tab Content Area */}
-          <div className='min-h-[400px]'>{renderTabContent()}</div>
+          <div>{renderTabContent()}</div>
         </div>
       </div>
 
