@@ -50,11 +50,13 @@ export default function CreateServicePage() {
 
   return (
     <div className='px-4 py-10 md:px-10'>
-      <Stepper
-        currentStep={activeStep}
-        steps={steps}
-      // className='mx-auto mb-8 max-w-3xl'
-      />
+      {activeStep < 3 && (
+        <Stepper
+          currentStep={activeStep}
+          steps={steps}
+        // className='mx-auto mb-8 max-w-3xl'
+        />
+      )}
       <FormProvider {...formMethods}>
         <form onSubmit={formMethods.handleSubmit(onSubmit)}>
           {renderStep()}
