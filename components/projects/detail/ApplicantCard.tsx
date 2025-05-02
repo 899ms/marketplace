@@ -33,7 +33,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
       <div className="flex items-center justify-between">
         {/* Avatar + Info */}
         <div className="flex items-start gap-3">
-          <Avatar.Root size="48">
+          <Avatar.Root size="40">
             <Avatar.Image src={applicant.avatar} alt={applicant.name} />
             <Avatar.Indicator position="bottom">
               <div className="size-3 rounded-full bg-green-500 ring-2 ring-white" />
@@ -42,13 +42,13 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
 
           <div className="flex-1">
             {/* Name */}
-            <p className="text-label-md font-medium text-text-strong-950">
+            <p className="text-[14px] font-medium text-text-strong-950">
               {applicant.name}
             </p>
 
             {/* “Replaced by …” for hired buyers */}
             {showReplaced && (
-              <p className="text-xs text-gray-600">
+              <p className="text-[12px] text-gray-600">
                 Replaced by {applicant.replacedBy}
               </p>
             )}
@@ -57,11 +57,11 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
             {!showReplaced && (
               <div className="flex items-center gap-2">
                 <RiStarFill className="size-5 text-yellow-400" />
-                <span className="text-xs text-gray-600">
+                <span className="text-[12px] text-gray-600">
                   {applicant.rating}({applicant.reviews})
                 </span>
                 {showMessage && (
-                  <span className="text-xs text-gray-600 bg-[var(--state-faded-lighter,#F2F5F8)] rounded-full px-2 py-0.5">
+                  <span className="text-[12px] text-gray-600 bg-[var(--state-faded-lighter,#F2F5F8)] rounded-full px-2 py-0.5">
                     {applicant.time}
                   </span>
                 )}
@@ -72,7 +72,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
 
         {/* Right-side action */}
         {showReplaced ? (
-          <span className="text-xs rounded-full bg-green-100 px-3 py-1 font-medium text-green-600">
+          <span className="text-[12px] rounded-full bg-green-100 px-3 py-1 font-medium text-green-600">
             Hired
           </span>
         ) : isSeller ? (
@@ -97,7 +97,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
       </div>
       {applicant.hired && userRole === 'buyer' && (
         /* 95% width separator */
-        <div className="w-[95%] mx-auto mt-8 h-px bg-stroke-soft-200" />
+        <div className="w-[95%] mx-auto mt-[16px] h-px bg-stroke-soft-200" />
       )}
     </div>
   );
