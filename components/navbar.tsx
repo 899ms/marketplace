@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image'; // Import next/image
 import * as Button from './ui/button';
+import * as FancyButton from './ui/fancy-button'; // Import FancyButton
 import * as Input from './ui/input';
 import * as Dropdown from './ui/dropdown';
 import * as Avatar from './ui/avatar';
@@ -138,10 +139,10 @@ export default function Navbar() {
                 }
                 passHref
               >
-                <Button.Root variant='neutral' mode='filled' size='medium'>
+                <FancyButton.Root variant='neutral' size='medium'>
                   Create
-                  <Button.Icon as={RiAddLine} />
-                </Button.Root>
+                  <FancyButton.Icon as={RiAddLine} />
+                </FancyButton.Root>
               </Link>
 
               {/* Notifications Button */}
