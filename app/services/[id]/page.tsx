@@ -46,7 +46,7 @@ export default async function ServiceDetailPage({
           <Breadcrumb.ArrowIcon as={RiArrowRightSLine} />
 
           <Breadcrumb.Item asChild>
-            <Link href='/services/search'>Services</Link>
+            <Link href='/services/search?tab=Service'>Services</Link>
           </Breadcrumb.Item>
 
           <Breadcrumb.ArrowIcon as={RiArrowRightSLine} />
