@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Inter as FontSans } from 'next/font/google';
+import { Inter as FontSans, JetBrains_Mono } from 'next/font/google';
 import localFont from 'next/font/local';
 import './globals.css';
 import { ThemeProvider } from 'next-themes';
@@ -8,6 +8,8 @@ import { Provider as TooltipProvider } from '@/components/ui/tooltip';
 import { NotificationProvider } from '@/components/ui/notification-provider';
 import Navbar from '@/components/navbar';
 import { AuthProvider } from '@/utils/supabase/AuthContext';
+import { AudioProvider } from '@/contexts/AudioContext';
+import GlobalAudioPlayer from '@/components/layout/global-audio-player';
 
 const inter = FontSans({
   subsets: ['latin'],
@@ -47,7 +49,12 @@ export default function RootLayout({
                   </div>
                 </div>
                 <div className='mx-auto w-full max-w-[1440px]'>
-                  <main className='flex flex-1 flex-col pt-16'>{children}</main>
+                  <main className='flex flex-1 flex-col pt-16'>
+                    <AudioProvider>
+                      {children}
+                      <GlobalAudioPlayer />
+                    </AudioProvider>
+                  </main>
                 </div>
               </div>
             </TooltipProvider>

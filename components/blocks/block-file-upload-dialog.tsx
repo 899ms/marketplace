@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import {
   RiCloseLine,
   RiLinksLine,
@@ -21,6 +21,10 @@ import * as ProgressBar from '@/components/ui/progress-bar';
 import * as Checkbox from '@/components/ui/checkbox';
 import * as Badge from '@/components/ui/badge';
 import * as Tag from '@/components/ui/tag';
+import * as Textarea from '@/components/ui/textarea';
+import * as Alert from '@/components/ui/alert';
+import { userOperations } from '@/utils/supabase/database';
+import { useNotification } from '@/hooks/use-notification';
 
 function IconInfoCustomFill(props: React.SVGProps<SVGSVGElement>) {
   return (
@@ -45,161 +49,235 @@ function IconInfoCustomFill(props: React.SVGProps<SVGSVGElement>) {
 interface BlockFileUploadDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  userId: string;
+  onUploadComplete?: (updatedMusicData: any[]) => void;
 }
 
 export default function BlockFileUploadDialog({
   open,
   onOpenChange,
+  userId,
+  onUploadComplete,
 }: BlockFileUploadDialogProps) {
-  const [tags, setTags] = useState<string[]>([
-    'Digital Painting',
-    'Retrowave',
-    'NFT',
-  ]);
-  const [tagInput, setTagInput] = useState('');
+  const [file, setFile] = useState<File | null>(null);
+  const [title, setTitle] = useState('');
+  const [remarks, setRemarks] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const { notification: toast } = useNotification();
 
-  const handleAddTag = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter' && tagInput.trim() !== '' && tags.length < 8) {
-      e.preventDefault();
-      setTags([...tags, tagInput.trim()]);
-      setTagInput('');
+  React.useEffect(() => {
+    if (open) {
+      setFile(null);
+      setTitle('');
+      setRemarks('');
+      setIsUploading(false);
+      setUploadProgress(0);
+      setUploadError(null);
+    }
+  }, [open]);
+
+  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = event.target.files?.[0];
+    if (selectedFile) {
+      if (selectedFile.size > 50 * 1024 * 1024) {
+        setUploadError('File size exceeds 50MB limit.');
+        setFile(null);
+      } else if (!selectedFile.type.startsWith('audio/')) {
+        setUploadError('Invalid file type. Please upload an audio file.');
+        setFile(null);
+      } else {
+        setFile(selectedFile);
+        setTitle(selectedFile.name.split('.')[0]);
+        setUploadError(null);
+      }
     }
   };
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+  const triggerFileInput = () => {
+    fileInputRef.current?.click();
   };
+
+  const handleUpload = async () => {
+    if (!file || !title || !userId) {
+      setUploadError(
+        `Missing required fields: ${!file ? 'File' : ''} ${!title ? 'Title' : ''}`,
+      );
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError(null);
+    setUploadProgress(0);
+
+    const interval = setInterval(() => {
+      setUploadProgress(prev => (prev < 90 ? prev + 10 : prev));
+    }, 200);
+
+    try {
+      const result = await userOperations.uploadUserMusic(
+        userId,
+        file,
+        title,
+        remarks || null,
+      );
+
+      clearInterval(interval);
+      setUploadProgress(100);
+
+      if (result.success) {
+        toast({
+          title: 'Upload Successful',
+          description: `${file.name} has been added to your music library.`,
+          status: 'success',
+        });
+        onUploadComplete?.(result.updatedMusicData || []);
+        onOpenChange(false);
+      } else {
+        const errorMessage = typeof result.error === 'string' ? result.error : result.error?.message || 'Upload failed.';
+        setUploadError(`Upload failed: ${errorMessage}`);
+        toast({
+          title: 'Upload Failed',
+          description: errorMessage,
+          status: 'error',
+        });
+      }
+    } catch (error: any) {
+      clearInterval(interval);
+      const errorMessage = error.message || 'An unexpected error occurred.';
+      setUploadError(`Upload failed: ${errorMessage}`);
+      toast({
+        title: 'Upload Failed',
+        description: errorMessage,
+        status: 'error',
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDragOver = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+  }, []);
+
+  const handleDrop = useCallback((event: React.DragEvent) => {
+    event.preventDefault();
+    const droppedFile = event.dataTransfer.files?.[0];
+    if (droppedFile) {
+      if (droppedFile.size > 50 * 1024 * 1024) {
+        setUploadError('File size exceeds 50MB limit.');
+        setFile(null);
+      } else if (!droppedFile.type.startsWith('audio/')) {
+        setUploadError('Invalid file type. Please upload an audio file.');
+        setFile(null);
+      } else {
+        setFile(droppedFile);
+        setTitle(droppedFile.name.split('.')[0]);
+        setUploadError(null);
+      }
+    }
+  }, []);
 
   return (
     <Modal.Root open={open} onOpenChange={onOpenChange}>
-      <Modal.Content className='max-w-[440px] shadow-custom-md max-h-[80vh] overflow-auto'>
+      <Modal.Content className='max-w-[440px] shadow-custom-md max-h-[85vh] overflow-y-auto'>
         <Modal.Header
           icon={RiUploadCloud2Line}
-          title='Upload files'
-          description='Select and upload the files of your choice'
+          title='Upload Music'
+          description='Select and upload your music files'
         />
         <Modal.Body className='space-y-6'>
           <div className='space-y-4'>
-            <FileUpload.Root>
-              <input multiple type='file' tabIndex={-1} className='hidden' />
+            <FileUpload.Root
+              onDragOver={handleDragOver}
+              onDrop={handleDrop}
+              onClick={triggerFileInput}
+              className={uploadError ? 'border-red-500' : ''}
+            >
+              <input
+                ref={fileInputRef}
+                type='file'
+                accept="audio/*"
+                onChange={handleFileChange}
+                tabIndex={-1}
+                className='hidden'
+              />
               <FileUpload.Icon as={RiUploadCloud2Line} />
               <div className='space-y-1.5'>
                 <div className='text-label-sm text-text-strong-950'>
                   Choose a file or drag & drop it here
                 </div>
                 <div className='text-paragraph-xs text-text-sub-600'>
-                  JPEG, PNG, PDF, and MP4 formats, up to 50 MB.
+                  Audio formats (MP3, WAV, etc.), up to 50 MB.
                 </div>
               </div>
-              <FileUpload.Button>Browse File</FileUpload.Button>
             </FileUpload.Root>
-            <div className='space-y-4'>
-              <div className='flex w-full flex-col gap-4 rounded-2xl border border-stroke-soft-200 p-4 pl-3.5'>
-                <div className='flex gap-3'>
-                  <FileFormatIcon.Root format='PDF' color='red' />
-                  <div className='flex-1 space-y-1'>
-                    <div className='text-label-sm text-text-strong-950'>
-                      my-cv.pdf
-                    </div>
-                    <div className='flex items-center gap-1'>
-                      <span className='text-paragraph-xs text-text-sub-600'>
-                        60 KB of 120 KB
-                      </span>
-                      <span className='text-paragraph-xs text-text-sub-600'>
-                        ∙
-                      </span>
-                      <RiLoader2Fill className='size-4 shrink-0 animate-spin text-primary-base' />
-                      <span className='text-paragraph-xs text-text-strong-950'>
-                        Uploading...
-                      </span>
+            {file && (
+              <div className='space-y-4'>
+                <div className='flex w-full flex-col gap-4 rounded-2xl border border-stroke-soft-200 p-4 pl-3.5'>
+                  <div className='flex gap-3 items-center'>
+                    <FileFormatIcon.Root format={file.type.split('/')[1]?.toUpperCase() || 'AUDIO'} color='purple' />
+                    <div className='space-y-4'>
+                      <div className='flex w-full flex-col gap-4 rounded-2xl border border-stroke-soft-200 p-4 pl-3.5'>
+                        <div className='flex gap-3'>
+                          <FileFormatIcon.Root format='PDF' color='red' />
+                          <div className='flex-1 space-y-1'>
+                            <div className='text-label-sm text-text-strong-950'>
+                              my-cv.pdf
+                            </div>
+                            <div className='flex items-center gap-1'>
+                              <span className='text-paragraph-xs text-text-sub-600'>
+                                60 KB of 120 KB
+                              </span>
+                              <span className='text-paragraph-xs text-text-sub-600'>
+                                ∙
+                              </span>
+                              <RiLoader2Fill className='size-4 shrink-0 animate-spin text-primary-base' />
+                              <span className='text-paragraph-xs text-text-strong-950'>
+                                Uploading...
+                              </span>
+                            </div>
+                          </div>
+                          <CompactButton.Root
+                            variant='ghost'
+                            size='medium'
+                            tabIndex={-1}
+                          >
+                            <CompactButton.Icon as={RiCloseLine} />
+                          </CompactButton.Root>
+                        </div>
+                        <ProgressBar.Root value={50} />
+                      </div>
                     </div>
                   </div>
-                  <CompactButton.Root
-                    variant='ghost'
-                    size='medium'
-                    tabIndex={-1}
-                  >
-                    <CompactButton.Icon as={RiCloseLine} />
-                  </CompactButton.Root>
+                  <Divider.Root variant='line-text'>OR</Divider.Root>
+                  <div className='flex flex-col gap-1'>
+                    <Label.Root className='flex items-center gap-1 text-label-sm text-text-strong-950'>
+                      Import from URL Link
+                      <IconInfoCustomFill className='size-4 text-text-disabled-300' />
+                    </Label.Root>
+                    <Input.Root>
+                      <Input.Wrapper>
+                        <Input.Icon as={RiLinksLine} />
+                        <Input.Input placeholder='Paste file URL' />
+                      </Input.Wrapper>
+                    </Input.Root>
+                  </div>
+                  <div className='flex flex-col gap-1'>
+                    <Label.Root className='text-label-sm text-text-strong-950'>
+                      Subject (Optional)
+                    </Label.Root>
+                    <Input.Root>
+                      <Input.Wrapper>
+                        <Input.Input placeholder='Question' />
+                      </Input.Wrapper>
+                    </Input.Root>
+                  </div>
                 </div>
-                <ProgressBar.Root value={50} />
-              </div>
-            </div>
-          </div>
-          <Divider.Root variant='line-text'>OR</Divider.Root>
-          <div className='flex flex-col gap-1'>
-            <Label.Root className='flex items-center gap-1 text-label-sm text-text-strong-950'>
-              Import from URL Link
-              <IconInfoCustomFill className='size-4 text-text-disabled-300' />
-            </Label.Root>
-            <Input.Root>
-              <Input.Wrapper>
-                <Input.Icon as={RiLinksLine} />
-                <Input.Input placeholder='Paste file URL' />
-              </Input.Wrapper>
-            </Input.Root>
-          </div>
-          <div className='flex flex-col gap-1'>
-            <Label.Root className='text-label-sm text-text-strong-950'>
-              Subject (Optional)
-            </Label.Root>
-            <Input.Root>
-              <Input.Wrapper>
-                <Input.Input placeholder='Question' />
-              </Input.Wrapper>
-            </Input.Root>
-          </div>
-          <div className='flex flex-col gap-1'>
-            <Label.Root className='flex items-center gap-1 text-label-sm text-text-strong-950'>
-              Add Tags (max. 8)
-              <RiInformationLine className='text-icon-secondary-400 size-4' />
-            </Label.Root>
-            <Input.Root>
-              <Input.Wrapper>
-                <Input.Input
-                  placeholder='Pixel Art'
-                  value={tagInput}
-                  onChange={(e) => setTagInput(e.target.value)}
-                  onKeyDown={handleAddTag}
-                />
-              </Input.Wrapper>
-            </Input.Root>
-            {tags.length > 0 && (
-              <div className='mt-2 flex flex-wrap gap-1.5'>
-                {tags.map((tag, index) => (
-                  <Tag.Root key={index} variant='stroke' className='pl-2'>
-                    {tag}
-                    <Tag.DismissButton onClick={() => handleRemoveTag(tag)} />
-                  </Tag.Root>
-                ))}
               </div>
             )}
-          </div>
-          <div className='flex flex-col gap-3'>
-            <Label.Root className='text-label-sm text-text-strong-950'>
-              Display Preferences
-            </Label.Root>
-            <div className='flex items-center gap-3'>
-              <Checkbox.Root id='display-profile' defaultChecked />
-              <Label.Root
-                htmlFor='display-profile'
-                className='text-text-secondary-600 flex items-center gap-1.5 text-paragraph-sm font-normal'
-              >
-                Display on profile
-                <Badge.Root size='small' color='yellow' className='ml-1'>
-                  NEW
-                </Badge.Root>
-              </Label.Root>
-            </div>
-            <div className='flex items-center gap-3'>
-              <Checkbox.Root id='disable-commenting' />
-              <Label.Root
-                htmlFor='disable-commenting'
-                className='text-text-secondary-600 text-paragraph-sm font-normal'
-              >
-                Disable commenting
-              </Label.Root>
-            </div>
           </div>
         </Modal.Body>
         <Modal.Footer>

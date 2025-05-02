@@ -1,6 +1,7 @@
 'use client'; // Mark component as client-side
 
 import Link from 'next/link';
+import Image from 'next/image'; // Import next/image
 import * as Button from './ui/button';
 import * as Input from './ui/input';
 import * as Dropdown from './ui/dropdown';
@@ -75,20 +76,15 @@ export default function Navbar() {
             href='/home'
             className='text-lg flex items-center gap-2 font-semibold text-text-strong-950'
           >
-            {/* Placeholder for actual logo - assuming an SVG or Image component */}
-            <svg
-              width='30'
-              height='30'
-              viewBox='0 0 30 30'
-              fill='none'
-              xmlns='http://www.w3.org/2000/svg'
-            >
-              <path
-                d='M15 2.5C15.663 2.5 16.2989 2.76339 16.7678 3.23223C17.2366 3.70107 17.5 4.33696 17.5 5V25C17.5 25.663 17.2366 26.2989 16.7678 26.7678C16.2989 27.2366 15.663 27.5 15 27.5C14.337 27.5 13.7011 27.2366 13.2322 26.7678C12.7634 26.2989 12.5 25.663 12.5 25V5C12.5 4.33696 12.7634 3.70107 13.2322 3.23223C13.7011 2.76339 14.337 2.5 15 2.5ZM7.5 7.5C8.16304 7.5 8.79893 7.76339 9.26777 8.23223C9.73661 8.70107 10 9.33696 10 10V20C10 20.663 9.73661 21.2989 9.26777 21.7678C8.79893 22.2366 8.16304 22.5 7.5 22.5C6.83696 22.5 6.20107 22.2366 5.73223 21.7678C5.26339 21.2989 5 20.663 5 20V10C5 9.33696 5.26339 8.70107 5.73223 8.23223C6.20107 7.76339 6.83696 7.5 7.5 7.5ZM22.5 7.5C23.163 7.5 23.7989 7.76339 24.2678 8.23223C24.7366 8.70107 25 9.33696 25 10V20C25 20.663 24.7366 21.2989 24.2678 21.7678C23.7989 22.2366 23.163 22.5 22.5 22.5C21.837 22.5 21.2011 22.2366 20.7322 21.7678C20.2634 21.2989 20 20.663 20 20V10C20 9.33696 20.2634 8.70107 20.7322 8.23223C21.2011 7.76339 21.837 7.5 22.5 7.5Z'
-                fill='currentColor'
-              />
-            </svg>
-            {/* Add actual logo text if needed */}
+            {/* Replace placeholder SVG with Next.js Image */}
+            <Image
+              src='/images/logo.svg' // Path relative to the public directory
+              alt='Marketplace Logo' // Descriptive alt text
+              width={40} // Increased width
+              height={40} // Increased height
+              priority // Load the logo quickly as it's important
+            />
+            {/* You can add text next to the logo if needed, e.g., <span>MyBrand</span> */}
           </Link>
           {/* Navigation Links */}
           <div className='text-text-secondary-600 hidden items-center gap-6 text-label-md lg:flex'>

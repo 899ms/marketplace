@@ -5,8 +5,36 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/utils/supabase/AuthContext';
 import { chatOperations, userOperations } from '@/utils/supabase/database';
 import { Chat, User, Message } from '@/utils/supabase/types';
-import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
+// Removed ChatPopupWrapper import as it's no longer used here
 import ChatList from '@/components/chat/chat-list';
+import ChatFullscreen from '@/components/chat/chat-fullscreen'; // Import the fullscreen component
+import ChatDetailsPanel from '@/components/chat/chat-details-panel'; // Import the new details panel
+
+// Placeholder components (replace with actual implementations later)
+const FullScreenChatWindow = ({ chat, messages, currentUserProfile, otherUserProfile, currentUserId, isLoadingMessages }: any) => (
+  <div className="flex h-full flex-col border-x border-stroke-soft-200 bg-bg-white-0">
+    {chat ? (
+      <>
+        {/* Header */}
+        <div className="flex items-center gap-3 border-b border-stroke-soft-200 p-4">
+          <img src={otherUserProfile?.avatar_url || 'https://via.placeholder.com/40'} alt={otherUserProfile?.full_name || 'User'} className="size-10 rounded-full" />
+          <div>
+            <h2 className="font-medium">{otherUserProfile?.full_name || 'User'}</h2>
+            {/* Add online/offline status later */}
+          </div>
+        </div>
+        {/* Message Area */}
+        <div className="flex-1 overflow-y-auto p-4">{/* Messages will go here */}</div>
+        {/* Input Area */}
+        <div className="border-t border-stroke-soft-200 p-4">{/* Input field will go here */}</div>
+      </>
+    ) : (
+      <div className="flex h-full items-center justify-center text-text-secondary-600">
+        Select a chat to start messaging.
+      </div>
+    )}
+  </div>
+);
 
 export default function ChatsPage() {
   const { user: currentUser, loading: authLoading } = useAuth();
@@ -81,6 +109,7 @@ export default function ChatsPage() {
     // Only fetch if logged in and a chat is selected
     if (!selectedChatId || !currentUser || authLoading) {
       setSelectedChatMessages([]);
+      setIsLoadingMessages(false);
       return;
     }
 
@@ -100,7 +129,7 @@ export default function ChatsPage() {
   }, [selectedChatId, currentUser, authLoading]); // Dependency array remains the same
 
   const handleChatSelect = (chatId: string) => {
-    setSelectedChatId(chatId === selectedChatId ? null : chatId);
+    setSelectedChatId(prevId => (prevId === chatId ? null : chatId));
   };
 
   // --- Add function to close the chat popup ---
@@ -115,14 +144,15 @@ export default function ChatsPage() {
   };
 
   const selectedChat = getSelectedChat();
+  const otherUserProfile = selectedChat ? chatProfiles[selectedChat.id] : null;
 
   // Loading State: Show loading if auth is loading OR initial data is loading
   // If middleware redirects, this component might unmount before rendering, but this is still good practice.
   if (authLoading || isLoadingData) {
     return (
-      <div className="container mx-auto p-4">
-        <h1 className="mb-6 text-2xl font-bold">My Chats</h1>
-        <div className="animate-pulse rounded-lg border bg-gray-100 p-4 h-24 dark:bg-gray-700"></div>
+      <div className="flex h-screen items-center justify-center">
+        {/* Add a more sophisticated loading skeleton later */}
+        <p>Loading chats...</p>
       </div>
     );
   }
@@ -135,39 +165,62 @@ export default function ChatsPage() {
 
   // Error State
   if (error) {
-    return <div className="p-4 text-red-500">Error: {error}</div>;
+    return <div className="p-4 text-center text-red-500">Error: {error}</div>;
   }
 
-  // --- Render actual content only if loaded and authenticated ---
+  // Main 3-Column Layout
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="mb-6 text-2xl font-bold">My Chats</h1>
+    <div className="flex h-screen w-full overflow-hidden bg-bg-subtle-50">
+      {/* Left Column: Chat List */}
+      <div className="w-full max-w-xs shrink-0 overflow-y-auto border-r border-stroke-soft-200 bg-bg-white-0 lg:w-80">
+        <h1 className="sticky top-0 z-10 border-b border-stroke-soft-200 bg-bg-white-0 p-4 text-lg font-medium">Chats</h1>
+        {chats.length === 0 ? (
+          <p className="p-4 text-center text-text-secondary-600">You have no chats yet.</p>
+        ) : (
+          <ChatList
+            chats={chats}
+            chatProfiles={chatProfiles}
+            selectedChatId={selectedChatId}
+            onChatSelect={handleChatSelect}
+            currentUserId={currentUser.id} // Pass currentUserId to ChatList if needed
+          />
+        )}
+      </div>
 
-      {chats.length === 0 ? (
-        <p className="text-gray-500 dark:text-gray-400">You have no chats yet.</p>
-      ) : (
-        <ChatList
-          chats={chats}
-          chatProfiles={chatProfiles}
-          selectedChatId={selectedChatId}
-          onChatSelect={handleChatSelect}
-        />
-      )}
+      {/* Middle Column: Chat Window */}
+      <div className="relative flex flex-1 flex-col"> {/* Added relative positioning for overlay */}
+        {selectedChat && currentUserProfile && otherUserProfile ? (
+          <ChatFullscreen
+            chat={selectedChat}
+            initialMessages={selectedChatMessages} // Pass fetched messages
+            currentUserProfile={currentUserProfile}
+            otherUserProfile={otherUserProfile}
+            currentUserId={currentUser.id}
+          // isLoadingMessages is handled internally by ChatCore/ChatFullscreen likely, but could pass if needed
+          />
+        ) : (
+          // Placeholder when no chat is selected
+          <div className="flex h-full items-center justify-center border-x border-stroke-soft-200 bg-bg-white-0 text-text-secondary-600">
+            Select a chat to start messaging.
+          </div>
+        )}
+        {/* Potential loading state overlay for messages within the middle panel */}
+        {isLoadingMessages && selectedChatId && (
+          <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/70">
+            {/* Add a spinner or loading indicator here */}
+            <p>Loading messages...</p>
+          </div>
+        )}
+      </div>
 
-      {/* Chat popup */}
-      {selectedChat && currentUserProfile && (
-        <ChatPopupWrapper
-          key={selectedChat.id}
-          chat={selectedChat}
-          initialMessages={selectedChatMessages}
+      {/* Right Column: Details Panel */}
+      <div className="hidden w-full max-w-sm shrink-0 lg:block">
+        <ChatDetailsPanel
+          chat={selectedChat || null}
+          otherUserProfile={otherUserProfile}
           currentUserProfile={currentUserProfile}
-          otherUserProfile={chatProfiles[selectedChat.id]}
-          currentUserId={currentUser.id}
-          isLoadingMessages={isLoadingMessages}
-          position="bottom-right"
-          onClose={handleCloseChat}
         />
-      )}
+      </div>
     </div>
   );
 } 

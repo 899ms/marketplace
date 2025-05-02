@@ -26,7 +26,8 @@ import { AboutSection } from '@/components/worker/profile/AboutSection';
 import { WorkItem } from '@/components/worker/profile/work-item';
 import { ServiceCard } from '@/components/worker/profile/service-card';
 import { ReviewItem } from '@/components/worker/profile/review-item';
-import { User, Service, Chat, Message } from '@/utils/supabase/types';
+import { User, Service, Chat, Message, MusicItem } from '@/utils/supabase/types';
+import MusicUploadDialog from '@/components/blocks/music-upload-dialog';
 
 interface WorkerProfileDrawerProps {
   isOpen: boolean;
@@ -43,22 +44,6 @@ const placeholderWorkerData = {
   reviewCount: 125,
   specialty: 'Next.js & TypeScript Specialist',
   about: '...',
-  workItems: [
-    {
-      title: 'Funky Bounce Logo',
-      description: 'Worker remarks text',
-      duration: '0:22',
-      bpm: '112 BPM',
-      genres: ['Mixing', 'Singing', 'Jazz'],
-    },
-    {
-      title: 'Another Track',
-      description: 'Some details',
-      duration: '3:15',
-      bpm: '120 BPM',
-      genres: ['Pop', 'Mastering'],
-    },
-  ],
   reviews: [
     {
       id: '1',
@@ -176,6 +161,11 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   }, [isOpen, isLoading, worker]);
 
   const disableActions = !currentUserProfile || !worker || isLoading || currentUserProfile?.id === worker?.id;
+
+  const handleUploadComplete = (updatedMusicData: MusicItem[]) => {
+    console.log('Drawer: Upload complete, new music data:', updatedMusicData);
+    // TODO: Potentially refresh worker data or update state here
+  };
 
   return (
     <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -317,9 +307,23 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       </h3>
                     </div>
                     <div className="divide-y divide-stroke-soft-200">
-                      {placeholderWorkerData.workItems.map((item, i) => (
-                        <WorkItem key={i} item={item} />
-                      ))}
+                      {worker.music_data && worker.music_data.length > 0 ? (
+                        worker.music_data.map((item: MusicItem, i) => (
+                          <WorkItem
+                            key={i}
+                            url={item.url}
+                            title={item.title}
+                            remarks={item.remarks ?? ''}
+                            sellerName={displayName}
+                            sellerAvatarUrl={displayAvatar ?? null}
+                            duration={`0:${(i % 60).toString().padStart(2, '0')}`}
+                            bpm={`${90 + (i * 5) % 60} BPM`}
+                            genres={['Pop', 'Electronic', 'Vocal'].slice(i % 2, (i % 2) + 2)}
+                          />
+                        ))
+                      ) : (
+                        <p className="py-4 text-sm text-text-secondary-600">No work items uploaded yet.</p>
+                      )}
                     </div>
 
                     <h3 className="mt-8 inline-block text-lg font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
@@ -353,13 +357,23 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
 
                 {activeTab === 'work' && (
                   <div className="divide-y divide-stroke-soft-200">
-                    {placeholderWorkerData.workItems.length > 0 ? (
-                      placeholderWorkerData.workItems.map((item, i) => (
-                        <WorkItem key={i} item={item} />
+                    {worker.music_data && worker.music_data.length > 0 ? (
+                      worker.music_data.map((item: MusicItem, i) => (
+                        <WorkItem
+                          key={i}
+                          url={item.url}
+                          title={item.title}
+                          remarks={item.remarks ?? ''}
+                          sellerName={displayName}
+                          sellerAvatarUrl={displayAvatar ?? null}
+                          duration={`0:${(i % 60).toString().padStart(2, '0')}`}
+                          bpm={`${90 + (i * 5) % 60} BPM`}
+                          genres={['Pop', 'Electronic', 'Vocal'].slice(i % 2, (i % 2) + 2)}
+                        />
                       ))
                     ) : (
                       <div className="text-center text-text-secondary-600 py-10">
-                        <p>No work samples available yet.</p>
+                        <p>No work items uploaded yet.</p>
                       </div>
                     )}
                   </div>
@@ -408,10 +422,14 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
           </div>
         </div>
 
-        <BlockFileUploadDialog
-          open={isUploadModalOpen}
-          onOpenChange={setIsUploadModalOpen}
-        />
+        {worker && (
+          <MusicUploadDialog
+            open={isUploadModalOpen}
+            onOpenChange={setIsUploadModalOpen}
+            userId={worker.id}
+            onUploadComplete={handleUploadComplete}
+          />
+        )}
         {activeChat && currentUserProfile && worker && (
           <ChatPopupWrapper
             key={activeChat.id}

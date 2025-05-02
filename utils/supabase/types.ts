@@ -1,6 +1,15 @@
 import { z } from 'zod';
 
 // --- User Schema (maps to public.users) ---
+
+// Define the structure for individual music items within the JSONB array
+export const MusicItemSchema = z.object({
+  url: z.string().url(),
+  title: z.string(),
+  remarks: z.string().optional().nullable(), // Remarks can be optional
+});
+export type MusicItem = z.infer<typeof MusicItemSchema>;
+
 export const UserSchema = z.object({
   id: z.string(), // TEXT primary key (usually UUID from auth, but TEXT in table)
   created_at: z.string().optional().nullable(), // TIMESTAMPTZ default NOW(), nullable based on schema info (was optional before)
@@ -11,6 +20,7 @@ export const UserSchema = z.object({
   user_type: z.enum(['buyer', 'seller']), // TEXT NOT NULL CHECK (Assuming these are the only types)
   balance: z.number().optional().nullable(), // NUMERIC default 1000, nullable based on schema info
   language: z.enum(['en', 'zh']).optional().nullable(), // TEXT default 'zh' CHECK, nullable based on schema info
+  music_data: z.array(MusicItemSchema).optional().nullable(), // JSONB, array of music items, only for sellers
 });
 export type User = z.infer<typeof UserSchema>;
 
