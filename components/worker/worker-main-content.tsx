@@ -53,7 +53,7 @@ export function ProjectCard({ job }: ProjectCardProps) {
   const tags = Array.isArray(job.skill_levels) ? job.skill_levels : [];
 
   return (
-    <div className="flex flex-col max-w-[644px] max-h-[148px] gap-6">
+    <div className="flex flex-col max-h-[148px] gap-6">
       <div className='flex flex-col gap-2 px-2 pt-4'>
         <div className='flex flex-row justify-between'>
           <div className='flex flex-col gap-2'>
@@ -101,7 +101,7 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
   return (
     <main className='flex-1 max-w-[676px]'>
       <Banner />
-      <section className='mt-6 flex flex-col w-[676px] max-h-[632px]'>
+      <section className='mt-6 flex flex-col max-w-[676px] max-h-[632px]'>
         <SectionHeader title='Projects' href='#' />
         <div className='flex flex-col gap-2'>
           {recentJobs && recentJobs.length > 0 ? (
