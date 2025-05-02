@@ -117,7 +117,7 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
 
             {/* 1) Work - Use workerData */}
             <div className="mt-8 flex items-center justify-between">
-              <h3 className="text-xl sm:text-xl font-semibold text-text-strong-950 pb-1 border-b-2 border-text-strong-950">
+              <h3 className="text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 pb-1 border-b-2 border-text-strong-950">
                 Work
               </h3>
               <button
@@ -161,7 +161,7 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
             </div>
 
             {/* 2) Services - Use fetched services */}
-            <h3 className="inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Service</h3>
+            <h3 className="inline-block text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Service</h3>
             <div className='mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
               {isLoadingServices ? (
                 Array.from({ length: 3 }).map((_, index) => (
@@ -188,7 +188,7 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
             </div>
 
             {/* 3) Reviews - Use workerData */}
-            <h3 className="inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Review</h3>
+            <h3 className="inline-block text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Review</h3>
             <div className='mt-8 space-y-5 divide-y divide-stroke-soft-200'>
               {workerData.reviews.length > 0 ? (
                 workerData.reviews.map((r) => (
@@ -288,22 +288,22 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
         {/* Right Main Content Column (Tabs) */}
         <div className='flex-1 overflow-hidden max-w-[1000px] flex flex-col gap-6'> {/* Use flex-1, keep overflow/max-h/flex/gap */}
           {/* Tabs */}
-          <div className='border-b border-stroke-soft-200'>
+          <div>
             <TabMenuHorizontal.Root
               value={activeTab}
               onValueChange={setActiveTab}
             >
-              <TabMenuHorizontal.List>
-                <TabMenuHorizontal.Trigger value='about'>
+              <TabMenuHorizontal.List className="border-y-0">
+                <TabMenuHorizontal.Trigger value='about' className="text-[24px] font-medium leading-8 tracking-normal text-center">
                   About
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='work'>
+                <TabMenuHorizontal.Trigger value='work' className="text-[24px] font-medium leading-8 tracking-normal text-center">
                   Work
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='services'>
+                <TabMenuHorizontal.Trigger value='services' className="text-[24px] font-medium leading-8 tracking-normal text-center">
                   Service
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='reviews'>
+                <TabMenuHorizontal.Trigger value='reviews' className="text-[24px] font-medium leading-8 tracking-normal text-center">
                   Review
                 </TabMenuHorizontal.Trigger>
               </TabMenuHorizontal.List>

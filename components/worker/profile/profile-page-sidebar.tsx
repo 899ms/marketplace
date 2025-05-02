@@ -261,9 +261,9 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
         <Divider.Root />
 
         {/* Combined About and Social Links Section - Copied from UserSidebar styles */}
-        <div className="flex flex-col max-w-[352px] max-h-[218px] p-4 gap-5">
+        <div className="flex flex-col max-w-[352px] max-h-[218px] pb-4 px-4 gap-5">
           {/* About Content */}
-          <div className='mb-2 flex items-center justify-between'>
+          <div className='flex items-center justify-between'> {/* Removed mb-2 */}
             <h3 className='text-text-strong-950 text-[12px] font-semibold'>
               About
             </h3>
