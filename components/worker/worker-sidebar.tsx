@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { useNotification } from '@/hooks/use-notification';
 
 import * as Avatar from '@/components/ui/avatar';
 import * as Divider from '@/components/ui/divider';
@@ -17,46 +18,64 @@ import {
   RiTwitchFill,
   RiTwitterXFill,
   RiGoogleFill,
-  RiMoneyDollarCircleLine,
-  RiBriefcaseLine,
-  RiSparklingLine,
 } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import * as Tag from '@/components/ui/tag';
+import { User } from '@/utils/supabase/types';
 
 // --- Helper Components and Interfaces ---
 interface SidebarLinkProps {
-  href: string;
+  href?: string;
   icon: React.ElementType;
   label: string;
+  onClick?: () => void;
 }
 
-const SidebarLink = ({ href, icon: Icon, label }: SidebarLinkProps) => {
+const SidebarLink = ({ href, icon: Icon, label, onClick }: SidebarLinkProps) => {
+  const commonClasses = cn(
+    'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-label-md transition-colors duration-200',
+    'hover:bg-action-hover-bg-inverse-0 focus:outline-none focus:ring-2 focus:ring-border-focus-base'
+  );
+  if (onClick) {
+    return (
+      <button onClick={onClick} className={commonClasses}>
+        <Icon className={cn('size-5')} />
+        {label}
+      </button>
+    );
+  }
+  if (href) {
+    return (
+      <Link href={href} className={commonClasses}>
+        <Icon className={cn('size-5')} />
+        {label}
+      </Link>
+    );
+  }
   return (
-    <Link
-      href={href}
-      className={cn(
-        'flex items-center gap-3 rounded-lg px-3 py-2 text-label-md transition-colors duration-200',
-        // Add active state styles if needed based on current route
-      )}
-    >
+    <div className={cn(commonClasses, 'cursor-not-allowed opacity-50')}>
       <Icon className={cn('size-5')} />
       {label}
-    </Link>
+    </div>
   );
 };
 
+// --- Worker Sidebar Props ---
+interface WorkerSidebarProps {
+  userProfile: User;
+}
+
 // --- Worker Dashboard Sidebar ---
-export function WorkerSidebar() {
-  // TODO: Replace with actual user data fetching
+export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
+  const { notification } = useNotification();
+
   const user = {
-    name: 'Cleve Music',
-    avatarUrl: '',
+    name: userProfile.full_name ?? 'User',
+    avatarUrl: userProfile.avatar_url ?? '',
     rating: 4.9,
     reviews: 125,
   };
 
-  // TODO: Replace with actual tags data fetching
   const tags = [
     'Grammy',
     'Billboard Music',
@@ -65,6 +84,14 @@ export function WorkerSidebar() {
     'MTV Music',
     'Eurovision Awards',
   ];
+
+  const handleComingSoonClick = () => {
+    notification({
+      title: 'Coming Soon',
+      description: 'This feature is under development.',
+      status: 'information',
+    });
+  };
 
   return (
     <aside className='hidden w-64 shrink-0 lg:block xl:w-72 mt-[3.5rem]'>
@@ -132,28 +159,28 @@ export function WorkerSidebar() {
             </li>
             <li>
               <SidebarLink
-                href='/worker/orders' // TODO: Update with correct path
+                href='/settings'
                 icon={RiFileList2Line}
                 label='Order'
               />
             </li>
             <li>
               <SidebarLink
-                href='/worker/chat' // TODO: Update with correct path
+                href='/chats'
                 icon={RiChat1Line}
                 label='Chat'
               />
             </li>
             <li>
               <SidebarLink
-                href='/worker/bonus' // TODO: Update with correct path
+                onClick={handleComingSoonClick}
                 icon={RiCouponLine}
                 label='Bonus'
               />
             </li>
             <li>
               <SidebarLink
-                href='/worker/help' // TODO: Update with correct path
+                onClick={handleComingSoonClick}
                 icon={RiQuestionLine}
                 label='Help Center'
               />

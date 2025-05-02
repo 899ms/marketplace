@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { createSupabaseServerClient } from '@/utils/supabase/server';
-import { userOperations } from '@/utils/supabase/database';
+import { userOperations, jobOperations } from '@/utils/supabase/database';
 import { redirect } from 'next/navigation';
 
 // Buyer Home Content (assuming structure from previous app/home/page.tsx)
@@ -10,7 +10,7 @@ import MainContent from '@/components/home/MainContent';
 
 // Seller Home Content
 import SellerHomeContent from '@/components/home/seller-home-content';
-import { User } from '@/utils/supabase/types'; // Import User type
+import { User, Job } from '@/utils/supabase/types';
 
 // Define Buyer Home component locally for clarity
 function BuyerHome({ userProfile }: { userProfile: User }) {
@@ -60,10 +60,26 @@ export default async function HomePage() {
     redirect('/');
   }
 
+  // Fetch recent jobs *only if* the user is a seller
+  let recentJobs: Job[] = [];
+  if (userProfile.user_type === 'seller') {
+    try {
+      console.log('Fetching recent jobs for seller...');
+      recentJobs = await jobOperations.getRecentJobs(3);
+      console.log(`Fetched ${recentJobs.length} recent jobs.`);
+    } catch (error) {
+      console.error('Error fetching recent jobs:', error);
+      // Assign empty array on error so the prop exists
+      recentJobs = [];
+    }
+  }
+
   // --- Conditional Rendering based on user_type ---
   if (userProfile.user_type === 'seller') {
-    console.log('Rendering Seller Home Content');
-    return <SellerHomeContent userProfile={userProfile} />;
+    console.log('Rendering Seller Home Content with recent jobs');
+    // Pass recentJobs to SellerHomeContent
+    // Note: SellerHomeContent props will need to be updated in its own file
+    return <SellerHomeContent userProfile={userProfile} recentJobs={recentJobs} />;
   } else {
     console.log('Rendering Buyer Home Content');
     // Default to buyer view

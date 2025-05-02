@@ -491,6 +491,85 @@ export const jobOperations = {
       return { jobs: [], total: 0 };
     }
   },
+
+  // Get recent jobs
+  async getRecentJobs(limit: number = 3): Promise<Job[]> {
+    console.log(`Fetching ${limit} recent jobs...`);
+    try {
+      const { data, error } = await supabase
+        .from('jobs')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(limit);
+
+      if (error) {
+        console.error('Supabase error fetching recent jobs:', error);
+        return [];
+      }
+
+      if (!data || !Array.isArray(data) || data.length === 0) {
+        console.log('No recent jobs found.');
+        return [];
+      }
+
+      console.log(`Found ${data.length} recent jobs.`);
+
+      // Validate each job
+      const validJobs: Job[] = [];
+      for (const job of data) {
+        try {
+          // Ensure all required fields have appropriate values before parsing
+          const processedJob = {
+            ...job,
+            id: String(job.id),
+            title: String(job.title || ''),
+            description: job.description || null,
+            budget: typeof job.budget === 'number' ? job.budget : 0,
+            buyer_id: String(job.buyer_id || ''), // Needs a buyer ID, even if empty
+            currency: job.currency || 'USD',
+            created_at: job.created_at ? String(job.created_at) : null,
+            // Handle array/JSON fields carefully
+            skill_levels: Array.isArray(job.skill_levels)
+              ? job.skill_levels
+              : [],
+            candidate_sources: Array.isArray(job.candidate_sources)
+              ? job.candidate_sources
+              : [],
+            files: Array.isArray(job.files) ? job.files : [],
+            status: ['open', 'in_progress', 'completed'].includes(job.status)
+              ? job.status
+              : 'open', // Provide default if null/invalid
+            deadline: job.deadline ? String(job.deadline) : null,
+            negotiate_budget:
+              typeof job.negotiate_budget === 'boolean'
+                ? job.negotiate_budget
+                : false,
+            usage_option: ['private', 'business'].includes(job.usage_option)
+              ? job.usage_option
+              : 'private',
+            privacy_option: ['public', 'private'].includes(job.privacy_option)
+              ? job.privacy_option
+              : 'public',
+          };
+
+          const parsedJob = JobSchema.parse(processedJob);
+          validJobs.push(parsedJob);
+        } catch (validationErr) {
+          console.error(
+            `Error validating recent job ${job.id}:`,
+            validationErr,
+          );
+          // Continue with the next job
+        }
+      }
+
+      console.log(`Successfully processed ${validJobs.length} recent jobs.`);
+      return validJobs;
+    } catch (err) {
+      console.error('Unexpected error in getRecentJobs:', err);
+      return [];
+    }
+  },
 };
 
 /**
