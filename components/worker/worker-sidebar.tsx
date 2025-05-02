@@ -94,17 +94,17 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
   };
 
   return (
-    <aside className='hidden w-64 shrink-0 lg:block xl:w-72 mt-[3.5rem]'>
-      <div className='shadow-sm sticky top-20 flex flex-col gap-6 rounded-xl border border-stroke-soft-200 bg-bg-white-0 pb-4 mb-6'>
+    <aside className='hidden w-[300px] shrink-0 lg:block'>
+      <div className='sticky top-20 flex flex-col gap-6 border border-stroke-soft-200 bg-bg-white-0 mb-6 max-w-[300px] max-h-[760px] rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
         {/* Profile Section */}
-        <div className='flex flex-col items-center gap-3 pb-6 pt-4 px-4'>
-          {user.avatarUrl && user.avatarUrl !== "" ? <Avatar.Root size='80'>
+        <div className='flex flex-col items-center gap-4 p-4'>
+          {user.avatarUrl && user.avatarUrl !== "" ? <Avatar.Root size='64'>
             <Avatar.Image src={user.avatarUrl} alt={user.name} />
             <Avatar.Indicator position='bottom'>
               <Avatar.Status status='online' />
             </Avatar.Indicator>
           </Avatar.Root> :
-            <Avatar.Root size='80' color='yellow'>{user.name.charAt(0).toUpperCase()}</Avatar.Root>}
+            <Avatar.Root size='64' color='yellow'>{user.name.charAt(0).toUpperCase()}</Avatar.Root>}
           <div className='text-center'>
             <h2 className='text-[16px] font-medium text-[#525866]'>
               {user.name}
@@ -152,7 +152,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         </div>
         <Divider.Root />
         {/* Navigation Section */}
-        <nav className='px-4'>
+        <nav className='max-w-[300px] max-h-[228px] px-4 '>
           <ul className='flex flex-col gap-1'>
             <li>
               <SidebarLink href='/home' icon={RiHomeLine} label='Home' />
@@ -213,7 +213,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         </div>
         <Divider.Root />
         {/* Links Section */}
-        <div className='px-4'>
+        <div className='px-5'>
           <div className='mb-3 flex items-center justify-between'>
             <h3 className='text-text-secondary-600 text-label-md font-medium'>
               Links

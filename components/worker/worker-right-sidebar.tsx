@@ -117,7 +117,7 @@ interface WorkerRightSidebarProps {
 // --- Worker Right Sidebar ---
 export function WorkerRightSidebar({ userProfile }: WorkerRightSidebarProps) {
   return (
-    <aside className='hidden w-64 shrink-0 lg:block xl:w-72 mt-[3.5rem]'>
+    <aside className='hidden w-64 shrink-0 lg:block xl:w-72'>
       <div className='shadow-sm sticky top-20 flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-white-0 pb-4 mb-6'>
         <CalendarWidget />
         <Divider.Root className='!mb-0 !pb-0' />

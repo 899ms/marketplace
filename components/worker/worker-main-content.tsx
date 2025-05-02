@@ -99,7 +99,7 @@ interface WorkerMainContentProps {
 // --- Worker Main Content ---
 export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContentProps) {
   return (
-    <main className='flex-1 mt-[3.5rem]'>
+    <main className='flex-1'>
       <Banner />
       <section className='mt-6'>
         <SectionHeader title='Projects' href='#' />
