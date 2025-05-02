@@ -27,9 +27,9 @@ const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
   if (!faqs.length) return null;
 
   return (
-    <div className="p-4">
+    <div className="pt-[24px]">
       {/* Header */}
-      <h2 className="text-base font-semibold leading-6 tracking-[-0.015em] text-[#161922] mb-4">
+      <h2 className="text-base font-semibold leading-6 tracking-[-0.015em] text-[#161922] mb-[12px]">
         Frequently Asked Questions
       </h2>
 
@@ -39,38 +39,41 @@ const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
             key={idx}
             className={`
               overflow-hidden
-              rounded-lg
-              border-b border-stroke-soft-200
+              border-b-[2px] border-stroke-soft-200
               ${faq.isOpen ? 'bg-bg-weak-50' : ''}
             `}
           >
             {/* Question row */}
             <button
               onClick={() => toggleFaq(idx)}
-              className="flex w-full items-center justify-between p-4 text-left font-medium text-text-strong-950"
+              className="flex w-full items-start justify-between p-4 text-left font-medium text-text-strong-950"
             >
-              <div className="flex items-center gap-3">
+              <div className="flex text-[14px] items-start gap-3">
                 {/* Black-bordered question mark */}
-                <div className="border border-black rounded-full p-1 flex items-center justify-center">
-                  <RiQuestionMark className="size-3 text-text-secondary-600" />
+                <div className="pt-[2.5px]">
+                  <div className="border border-black rounded-full p-[1px] flex items-center justify-center">
+                    <RiQuestionMark className="size-3 text-text-secondary-600" />
+                  </div>
                 </div>
-                {faq.question}
+                <div className="text-[14px] flex flex-col gap-2">
+                  {faq.question}
+                  {/* Answer, flush under question text */}
+                  {faq.isOpen && faq.answer && (
+                    <div className="text-[#525866]">
+                      {faq.answer}
+                    </div>
+                  )}
+                </div>
               </div>
 
               {/* Plus/minus icon */}
               {faq.isOpen ? (
                 <RiSubtractLine className="size-5 text-text-secondary-600" />
               ) : (
-                <RiAddLine className="size-5 text-text-secondary-600" />
+                <RiAddLine className="size-5 text-gray-400" />
               )}
             </button>
 
-            {/* Answer, flush under question text */}
-            {faq.isOpen && faq.answer && (
-              <div className="text-sm text-[#525866] pb-4 pl-[56px]">
-                {faq.answer}
-              </div>
-            )}
           </div>
         ))}
       </div>
