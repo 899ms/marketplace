@@ -1,7 +1,7 @@
 import React from 'react';
 import { Chat, User } from '@/utils/supabase/types';
 import clsx from 'clsx';
-
+import * as Avatar from '@/components/ui/avatar';
 interface ChatListProps {
   chats: Chat[];
   chatProfiles: Record<string, User | null>;
@@ -20,18 +20,23 @@ const formatRelativeTime = (dateString?: string | null): string => {
   const diffTime = now.getTime() - date.getTime();
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-  if (diffDays === 0) {
-    // Format time if it's today
-    return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-  } else if (diffDays === 1) {
-    return 'Yesterday';
-  } else if (diffDays <= 7) {
-    // Format as day of the week if within the last 7 days
-    return date.toLocaleDateString('en-US', { weekday: 'short' });
+  // Return based on seconds ago, minutes ago, hours ago, days ago, weeks ago, months ago, years ago
+  if (diffTime < 60 * 1000) {
+    return 'Just now';
+  } else if (diffTime < 60 * 60 * 1000) {
+    return `${Math.floor(diffTime / (60 * 1000))} ${Math.floor(diffTime / (60 * 1000)) > 1 ? 'minutes' : 'minute'} ago`;
+  } else if (diffTime < 24 * 60 * 60 * 1000) {
+    return `${Math.floor(diffTime / (60 * 60 * 1000))} ${Math.floor(diffTime / (60 * 60 * 1000)) > 1 ? 'hours' : 'hour'} ago`;
+  } else if (diffTime < 7 * 24 * 60 * 60 * 1000) {
+    return `${Math.floor(diffTime / (24 * 60 * 60 * 1000))} ${Math.floor(diffTime / (24 * 60 * 60 * 1000)) > 1 ? 'days' : 'day'} ago`;
+  } else if (diffTime < 30 * 24 * 60 * 60 * 1000) {
+    return `${Math.floor(diffTime / (30 * 24 * 60 * 60 * 1000))} ${Math.floor(diffTime / (30 * 24 * 60 * 60 * 1000)) > 1 ? 'weeks' : 'week'} ago`;
+  } else if (diffTime < 365 * 24 * 60 * 60 * 1000) {
+    return `${Math.floor(diffTime / (30 * 24 * 60 * 60 * 1000))} ${Math.floor(diffTime / (30 * 24 * 60 * 60 * 1000)) > 1 ? 'months' : 'month'} ago`;
   } else {
-    // Format as short date if older than a week
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    return `${Math.floor(diffTime / (365 * 24 * 60 * 60 * 1000))} ${Math.floor(diffTime / (365 * 24 * 60 * 60 * 1000)) > 1 ? 'years' : 'year'} ago`;
   }
+
 };
 
 export default function ChatList({
@@ -58,7 +63,7 @@ export default function ChatList({
   }
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col px-4 gap-2 custom-scrollbar h-full">
       {chats.map((chat) => {
         const otherUserProfile = chatProfiles[chat.id];
         // Use full_name, fallback to username, then 'Unknown User'
@@ -71,42 +76,30 @@ export default function ChatList({
         const relativeTime = formatRelativeTime(lastActivityTime);
 
         return (
-          // Apply styling for row layout
-          <div
-            key={chat.id}
-            className={clsx(
-              'flex cursor-pointer items-start gap-3 border-b border-stroke-soft-200 px-4 py-3 transition-colors hover:bg-bg-subtle-100', // Use items-start for alignment
-              isSelected ? 'bg-bg-subtle-100' : 'bg-bg-white-0'
-            )}
-            onClick={() => onChatSelect(chat.id)}
-          >
-            {/* Avatar */}
-            <div className="shrink-0 pt-1"> {/* Add padding-top to align avatar with text */}
-              {otherUserProfile?.avatar_url ? (
-                <img src={otherUserProfile.avatar_url} alt={displayName} className="size-10 rounded-full object-cover" />
-              ) : (
-                <div className="flex size-10 items-center justify-center rounded-full bg-bg-subtle-200 font-medium text-text-secondary-600">
-                  {displayInitial}
-                </div>
-              )}
-              {/* TODO: Add online indicator later */}
-            </div>
 
-            {/* Name and Last Activity Time */}
-            <div className="flex-1 overflow-hidden">
-              <div className="flex items-baseline justify-between">
-                <h3 className="truncate font-medium text-text-strong-950">{displayName}</h3>
-                {/* Display relative time */}
-                <span className="ml-2 shrink-0 text-paragraph-xs text-text-sub-400">{relativeTime}</span>
-              </div>
-              {/* TODO: Add last message preview text here later */}
-              <p className="truncate text-paragraph-sm text-text-secondary-600">
-                {/* Placeholder for last message text */}
-              </p>
+          <div key={chat.id} className={`flex gap-3 p-2 items-center ${isSelected ? 'bg-[#F5F7FA]' : 'bg-white'} rounded-lg cursor-pointer`} onClick={() => onChatSelect(chat.id)}>
+            <div>
+              {otherUserProfile?.avatar_url && otherUserProfile?.avatar_url != "" ? (
+                <Avatar.Root size='40'>
+                  <Avatar.Image src={otherUserProfile?.avatar_url} alt={displayName} />
+                  <Avatar.Indicator position='bottom'>
+                    <Avatar.Status status='online' />
+                  </Avatar.Indicator>
+                </Avatar.Root>
+              ) : (
+                <Avatar.Root size='40' color='yellow'>
+                  {displayInitial}
+                </Avatar.Root>
+              )}
+            </div>
+            <div className='flex flex-col gap-1'>
+              <p className='text-[#525866] text-[12px] font-medium'>{displayName}</p>
+              <p className='text-[#525866] text-[12px]'>{relativeTime}</p>
             </div>
           </div>
         );
       })}
+
     </div>
   );
 } 

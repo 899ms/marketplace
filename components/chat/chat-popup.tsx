@@ -26,7 +26,7 @@ export default function ChatPopup({
     : 'bottom-4 left-4';
 
   return (
-    <div className={`fixed ${positionClass} z-50`}>
+    <div className={`fixed z-50`}>
       <ChatCore
         chat={chat}
         initialMessages={initialMessages}

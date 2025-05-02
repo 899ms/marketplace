@@ -29,7 +29,7 @@ export default function ChatPopupWrapper({
     <>
       {isLoadingMessages ? (
         <div className={`fixed ${position === 'bottom-right' ? 'bottom-4 right-4' : 'bottom-4 left-4'} z-50`}>
-          <ChatLoadingSkeleton isPopup={true} />
+          {/* <ChatLoadingSkeleton isPopup={true} /> */}
         </div>
       ) : (
         <ChatInterface

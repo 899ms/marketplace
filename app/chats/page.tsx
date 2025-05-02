@@ -148,14 +148,14 @@ export default function ChatsPage() {
 
   // Loading State: Show loading if auth is loading OR initial data is loading
   // If middleware redirects, this component might unmount before rendering, but this is still good practice.
-  if (authLoading || isLoadingData) {
-    return (
-      <div className="flex h-screen items-center justify-center">
-        {/* Add a more sophisticated loading skeleton later */}
-        <p>Loading chats...</p>
-      </div>
-    );
-  }
+  // if (authLoading || isLoadingData) {
+  //   return (
+  //     <div className="flex h-screen items-center justify-center">
+  //       {/* Add a more sophisticated loading skeleton later */}
+  //       <p>Loading chats...</p>
+  //     </div>
+  //   );
+  // }
 
   // Middleware should prevent rendering if !currentUser, but this is a safeguard
   if (!currentUser) {
@@ -170,12 +170,14 @@ export default function ChatsPage() {
 
   // Main 3-Column Layout
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-bg-subtle-50">
+    <div className="flex h-[calc(100vh-70px)] w-full overflow-hidden bg-bg-subtle-50">
       {/* Left Column: Chat List */}
-      <div className="w-full max-w-xs shrink-0 overflow-y-auto border-r border-stroke-soft-200 bg-bg-white-0 lg:w-80">
-        <h1 className="sticky top-0 z-10 border-b border-stroke-soft-200 bg-bg-white-0 p-4 text-lg font-medium">Chats</h1>
+      <div className="w-full max-w-xs shrink-0 lg:w-[200px] border-x border-t border-[#E2E4E9] h-full">
+        <h1 className="sticky top-0 z-10 bg-bg-white-0 px-6 py-4 text-[24px] text-[#0E121B] font-medium">Chat</h1>
         {chats.length === 0 ? (
-          <p className="p-4 text-center text-text-secondary-600">You have no chats yet.</p>
+          <div className="h-full flex items-center justify-center">
+            <p className="text-center text-[#525866] text-[14px] font-medium mb-36">You have no chats yet.</p>
+          </div>
         ) : (
           <ChatList
             chats={chats}
@@ -188,7 +190,7 @@ export default function ChatsPage() {
       </div>
 
       {/* Middle Column: Chat Window */}
-      <div className="relative flex flex-1 flex-col"> {/* Added relative positioning for overlay */}
+      <div className="relative flex flex-1 flex-col h-full"> {/* Added relative positioning for overlay */}
         {selectedChat && currentUserProfile && otherUserProfile ? (
           <ChatFullscreen
             chat={selectedChat}
@@ -200,7 +202,7 @@ export default function ChatsPage() {
           />
         ) : (
           // Placeholder when no chat is selected
-          <div className="flex h-full items-center justify-center border-x border-stroke-soft-200 bg-bg-white-0 text-text-secondary-600">
+          <div className="flex h-full items-center justify-center border-x border-stroke-soft-200 bg-bg-white-0 text-[#525866] text-[14px]">
             Select a chat to start messaging.
           </div>
         )}

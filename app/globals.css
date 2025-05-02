@@ -390,3 +390,23 @@
   transform: scale(0.8996);
   transform-origin: center;
 }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 16px;
+  /* Set the width of the scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #8e8f91;
+  /* Set the color of the thumb (scrollbar handle) */
+  background-clip: content-box;
+  border: 5px solid transparent;
+  border-radius: 28px !important;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background-color: #f5f5f7;
+  /* Set the color of the track (the area behind the thumb) */
+  border-radius: 28px !important;
+  background-clip: content-box;
+  border: 5px solid transparent;
+}

@@ -9,19 +9,20 @@ import {
   SystemEventData,
 } from '@/utils/supabase/message-data-types';
 import { format, isSameDay, formatRelative, parseISO, isToday, isYesterday } from 'date-fns';
-import { Root as Avatar, Image as AvatarImage } from '@/components/ui/avatar';
+import * as Avatar from '@/components/ui/avatar';
 import { Root as Button } from '@/components/ui/button';
 import { Root as Textarea } from '@/components/ui/textarea';
 import { Root as LinkButton } from '@/components/ui/link-button';
-import * as FancyButtonModule from '@/components/ui/fancy-button';
-import { Paperclip, Send, Smile, MoreVertical, Clock, XCircle, FileImage, CheckCircle } from 'lucide-react';
+import * as FancyButton from '@/components/ui/fancy-button';
+import { Paperclip, Send, Smile, MoreVertical, Clock, XCircle, FileImage, CheckCircle, SendIcon, LoaderCircle, X } from 'lucide-react';
 import Link from 'next/link';
 
 function formatMessageTimestamp(timestamp: string | null | undefined): string {
   if (!timestamp) return '';
   try {
     const date = parseISO(timestamp);
-    return format(date, 'p');
+    // Return the time in 24 hour format
+    return format(date, 'HH:mm');
   } catch (error) {
     console.error('Error formatting timestamp:', error);
     return '';
@@ -216,91 +217,129 @@ function ChatMessageRenderer({
     );
   };
 
+  function formatBytes(bytes: number, decimals = 2): string {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+
   let contentElement = null;
 
   if (message.message_type === 'system_event') {
     return renderSystemEventMessage();
   }
 
-  if (message.message_type !== 'text' && message.message_type !== 'image') {
-    switch (message.message_type) {
-      case 'offer':
-        contentElement = renderOfferMessage(isCurrentUser);
-        break;
-      case 'milestone_activated':
-      case 'milestone_completed':
-        contentElement = renderMilestoneEventMessage();
-        break;
-      default:
-        contentElement = (
-          <p className={`text-sm italic ${plainTextColor}`}>
-            [Unsupported message type: {message.message_type}] {message.content || ''}
-          </p>
-        );
-        break;
-    }
-  }
+  // if (message.message_type !== 'text' && message.message_type !== 'image') {
+  //   switch (message.message_type) {
+  //     case 'offer':
+  //       contentElement = renderOfferMessage(isCurrentUser);
+  //       break;
+  //     case 'milestone_activated':
+  //     case 'milestone_completed':
+  //       contentElement = renderMilestoneEventMessage();
+  //       break;
+  //     default:
+  //       contentElement = (
+  //         <p className={`text-sm italic ${plainTextColor}`}>
+  //           [Unsupported message type: {message.message_type}] {message.content || ''}
+  //         </p>
+  //       );
+  //       break;
+  //   }
+  // }
 
   return (
-    <div className={`flex w-full mb-4 ${alignmentContainerClass}`}>
-      <div className={`flex items-end gap-2 ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
-        <Avatar className="w-8 h-8 flex-shrink-0 mb-1">
-          {senderProfile?.avatar_url ? (
-            <AvatarImage src={senderProfile.avatar_url} alt={senderName} />
-          ) : (
-            <div className="w-full h-full rounded-full bg-gray-300 dark:bg-gray-600 flex items-center justify-center text-sm font-semibold text-gray-600 dark:text-gray-300">
-              {senderName?.charAt(0).toUpperCase()}
+    <div className={`flex gap-2 w-full ${alignmentContainerClass} ${!isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
+      <div className='flex flex-col w-full'>
+        <p className={`text-[12px] text-[#525866] font-medium ${!isCurrentUser ? 'text-left' : 'text-right'}`}>{`${senderName} ${timestamp}`}</p>
+        {(message.message_type === 'text' || message.message_type === 'image') && <p className={`text-[12px] text-[#525866] break-all ${!isCurrentUser ? 'text-left pr-[30%]' : 'text-right pl-[30%]'}`}>{message.content}</p>}
+        {message.message_type === 'image' && (
+          <div className={`flex flex-col gap-2 mt-2 ${isCurrentUser ? 'items-end' : 'items-start'} w-full`}>
+            <div className='flex flex-col w-40'>
+              <a href={message.data?.[0]?.url} target='_blank' rel='noopener noreferrer'>
+                <img src={message.data?.[0]?.url} alt={message.data?.[0]?.name} className='rounded-md p-2 w-40 h-32 rounded-md object-contain' />
+              </a>
+              <div className='flex flex-row justify-between w-full'>
+                <p title={message.data?.[0]?.name} className={`w-1/2 text-[12px] text-[#525866] ${!isCurrentUser ? 'text-left' : 'text-left'} truncate`}>{message.data?.[0]?.name}</p>
+                <p title={formatBytes(message.data?.[0]?.size)} className={`w-1/2 text-[12px] text-[#525866] ${!isCurrentUser ? 'text-right' : 'text-right'}`}>{formatBytes(message.data?.[0]?.size)}</p>
+              </div>
             </div>
-          )}
-        </Avatar>
-        <div className={`flex flex-col ${alignmentItemsClass} ${messageContentMaxWidth}`}>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mb-0.5">
-            {senderName}
-          </p>
-          {message.message_type === 'text' ? (
-            <p className={`text-sm whitespace-pre-wrap break-words ${plainTextColor}`}>
-              {message.content || ''}
-            </p>
-          ) : message.message_type === 'image' ? (
-            <div className="mt-1">
-              {(() => {
-                const imageData = message.data as ImageMessageData | null;
-                const firstImage = imageData?.[0];
-                if (!firstImage) return <p className='italic text-xs text-gray-500'>[Image data missing]</p>;
+          </div>
+        )}
+        {message.message_type === 'offer' && (
+          <div className={`mt-2 flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
+            <div className={`flex flex-col gap-2 w-2/5`}>
+              <div className='flex flex-row gap-1 items-center'>
+                <p className='text-[12px] text-[#525866]'>Offer</p>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 12C2.6862 12 0 9.3138 0 6C0 2.6862 2.6862 0 6 0C9.3138 0 12 2.6862 12 6C12 9.3138 9.3138 12 6 12ZM6 10.8C7.27304 10.8 8.49394 10.2943 9.39411 9.39411C10.2943 8.49394 10.8 7.27304 10.8 6C10.8 4.72696 10.2943 3.50606 9.39411 2.60589C8.49394 1.70571 7.27304 1.2 6 1.2C4.72696 1.2 3.50606 1.70571 2.60589 2.60589C1.70571 3.50606 1.2 4.72696 1.2 6C1.2 7.27304 1.70571 8.49394 2.60589 9.39411C3.50606 10.2943 4.72696 10.8 6 10.8ZM5.4 3H6.6V4.2H5.4V3ZM5.4 5.4H6.6V9H5.4V5.4Z" fill="#525866" />
+                </svg>
 
-                return (
-                  <>
-                    <a
-                      href={firstImage.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="block group relative overflow-hidden rounded-lg border dark:border-gray-600"
-                      title={`View image: ${firstImage.name}`}
-                    >
-                      <img
-                        src={firstImage.url}
-                        alt={firstImage.name || 'Chat attachment'}
-                        className="max-w-full h-auto max-h-64 object-contain transition-opacity group-hover:opacity-90"
-                      />
-                    </a>
-                    {message.content && (
-                      <p className={`text-sm mt-1 whitespace-pre-wrap break-words ${plainTextColor}`}>
-                        {message.content}
-                      </p>
-                    )}
-                  </>
-                );
-              })()}
+
+              </div>
+              <div className='flex flex-col rounded-lg border border-[#E1E4EA]'>
+                <div className='flex flex-row justify-between bg-[#F5F7FA] rounded-t-lg p-2'>
+                  <p className='text-[14px] text-[#0E121B] font-medium'>{message.data?.title}</p>
+                  <p className='text-[16px] text-[#0E121B] font-medium'>${message.data?.price}</p>
+                </div>
+                <div className='flex flex-col p-2 gap-1 border-b border-[#E1E4EA]'>
+                  <p className='text-[12px] text-[#0E121B] border-b border-[#E1E4EA] pb-2 mb-1'>{message.data?.description}</p>
+                  <p className='text-[#0E121B] text-[12px] font-medium'>Your offer includes</p>
+                  <div className='flex flex-row gap-2 items-center'>
+                    <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M6 12C2.6862 12 0 9.3138 0 6C0 2.6862 2.6862 0 6 0C9.3138 0 12 2.6862 12 6C12 9.3138 9.3138 12 6 12ZM6 10.8C7.27304 10.8 8.49394 10.2943 9.39411 9.39411C10.2943 8.49394 10.8 7.27304 10.8 6C10.8 4.72696 10.2943 3.50606 9.39411 2.60589C8.49394 1.70571 7.27304 1.2 6 1.2C4.72696 1.2 3.50606 1.70571 2.60589 2.60589C1.70571 3.50606 1.2 4.72696 1.2 6C1.2 7.27304 1.70571 8.49394 2.60589 9.39411C3.50606 10.2943 4.72696 10.8 6 10.8ZM6.6 6H9V7.2H5.4V3H6.6V6Z" fill="#525866" />
+                    </svg>
+
+                    <p className='text-[#525866] text-[12px] leading-none'>{message.data?.deliveryTime}</p>
+                  </div>
+                </div>
+                <div className='flex flex-row justify-between w-full p-2 gap-3'>
+                  <Button className='w-1/2' variant="neutral" mode="stroke" size="small">Decline</Button>
+                  <FancyButton.Root className='w-1/2' size="small">Accept</FancyButton.Root>
+                </div>
+              </div>
             </div>
-          ) : (
-            contentElement
-          )}
-          <p className={`text-[10px] text-gray-400 dark:text-gray-500 mt-1`}>
-            {timestamp}
-          </p>
-        </div>
+          </div>
+        )}
+        {message.message_type === 'milestone_completed' && (
+          <div className={`flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
+            <div className={`flex flex-col gap-2 w-2/5`}>
+              <div className='flex flex-row gap-1 items-center'>
+                <p className='text-[12px] text-[#525866]'>{`${message.data.status && message.data.status === 'completed' ? 'Completed' : 'Activated'}`} the milestone</p>
+              </div>
+              <div className='flex flex-col gap-2 rounded-lg bg-[#F5F7FA] p-2'>
+                <p className='text-[14px] text-[#0E121B]'>Milestone: &quot;{message.data?.description}&quot;</p>
+                <p className='text-[14px] text-[#0E121B]'>Amount: ${message.data?.amount}</p>
+                <LinkButton
+                  variant="primary"
+                  size="medium"
+                  className='!justify-start'
+                >
+                  <Link href={`/orders/detail/${message.data.contractId}`}>
+                    View Contract
+                  </Link>
+                </LinkButton>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
+
+      <Avatar.Root size='40'>
+        {senderProfile?.avatar_url && senderProfile?.avatar_url != "" ? (
+          <Avatar.Image src={senderProfile?.avatar_url} />
+        ) : (
+          <Avatar.Root size='32' color='yellow'>
+            {senderProfile?.full_name?.charAt(0) ?? senderProfile?.username?.charAt(0)}
+          </Avatar.Root>
+        )}
+
+      </Avatar.Root>
     </div>
+
   );
 }
 
@@ -486,29 +525,53 @@ export default function ChatCore({
   const groupedMessages = groupMessagesByDate(messages);
   const sortedDateKeys = Object.keys(groupedMessages).sort();
 
-  const containerClass = 'flex flex-col bg-white dark:bg-gray-800';
+  const containerClass = 'flex flex-col bg-white dark:bg-gray-800 h-full overflow-hidden';
   const containerModeClass = isPopup
-    ? 'rounded-lg shadow-xl border dark:border-gray-700 overflow-hidden h-[700px] w-[800px] fixed bottom-4 right-4 z-50'
+    ? 'rounded-lg shadow-xl border dark:border-gray-700 overflow-hidden !h-[500px] w-[40%] fixed bottom-4 right-4 z-50'
     : 'h-screen';
 
   return (
-    <div className={`${containerClass} ${containerModeClass}`}>
-      <div className='flex items-center justify-between border-b border-gray-200 dark:border-gray-700 p-3 flex-shrink-0'>
+    <div className={`${containerClass} ${containerModeClass} overflow-hidden`}>
+      <div className='flex items-center justify-between border-y border-gray-200 dark:border-gray-700 p-3 flex-shrink-0'>
         <div className='flex items-center space-x-3'>
           <div className='relative'>
-            <Avatar size="32">
-              <AvatarImage
-                src={otherUserProfile?.avatar_url ?? undefined}
-                alt={otherUserProfile?.username ?? 'User'}
-              />
-            </Avatar>
-            <span className="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-green-500 ring-2 ring-white dark:ring-gray-800" title="Online"></span>
+
+            <Avatar.Root size='40'>
+              {otherUserProfile?.avatar_url && otherUserProfile?.avatar_url != "" ? (
+                <Avatar.Image src={otherUserProfile?.avatar_url} />
+              ) : (
+                <Avatar.Root size='40' color='yellow'>
+                  {otherUserProfile?.full_name?.charAt(0) ?? otherUserProfile?.username?.charAt(0)}
+                </Avatar.Root>
+              )}
+              <Avatar.Indicator position='top'>
+                <svg
+                  viewBox='0 0 36 36'
+                  fill='none'
+                  xmlns='http://www.w3.org/2000/svg'
+                >
+                  <path
+                    d='M22.3431 5.51481L20.1212 3.29299C18.9497 2.12141 17.0502 2.12141 15.8786 3.29299L13.6568 5.51481H10.5146C8.85778 5.51481 7.51463 6.85796 7.51463 8.51481V11.6569L5.2928 13.8788C4.12123 15.0503 4.12123 16.9498 5.2928 18.1214L7.51463 20.3432V23.4854C7.51463 25.1422 8.85777 26.4854 10.5146 26.4854H13.6568L15.8786 28.7072C17.0502 29.8788 18.9497 29.8788 20.1212 28.7072L22.3431 26.4854H25.4852C27.142 26.4854 28.4852 25.1422 28.4852 23.4854V20.3432L30.707 18.1214C31.8786 16.9498 31.8786 15.0503 30.707 13.8788L28.4852 11.6569V8.51481C28.4852 6.85796 27.142 5.51481 25.4852 5.51481H22.3431ZM21.2217 7.22192C21.4093 7.40946 21.6636 7.51481 21.9288 7.51481H25.4852C26.0375 7.51481 26.4852 7.96253 26.4852 8.51481V12.0712C26.4852 12.3364 26.5905 12.5907 26.7781 12.7783L29.2928 15.293C29.6833 15.6835 29.6833 16.3167 29.2928 16.7072L26.7781 19.2219C26.5905 19.4095 26.4852 19.6638 26.4852 19.929V23.4854C26.4852 24.0377 26.0375 24.4854 25.4852 24.4854H21.9288C21.6636 24.4854 21.4093 24.5907 21.2217 24.7783L18.707 27.293C18.3165 27.6835 17.6833 27.6835 17.2928 27.293L14.7781 24.7783C14.5905 24.5907 14.3362 24.4854 14.071 24.4854H10.5146C9.96234 24.4854 9.51463 24.0377 9.51463 23.4854V19.929C9.51463 19.6638 9.40927 19.4095 9.22174 19.2219L6.70702 16.7072C6.31649 16.3167 6.31649 15.6835 6.70702 15.293L9.22174 12.7783C9.40927 12.5907 9.51463 12.3364 9.51463 12.0712V8.51481C9.51463 7.96253 9.96234 7.51481 10.5146 7.51481H14.071C14.3362 7.51481 14.5905 7.40946 14.7781 7.22192L17.2928 4.7072C17.6833 4.31668 18.3165 4.31668 18.707 4.7072L21.2217 7.22192Z'
+                    className='fill-bg-white-0'
+                  />
+                  <path
+                    d='M21.9288 7.51457C21.6636 7.51457 21.4092 7.40921 21.2217 7.22167L18.707 4.70696C18.3164 4.31643 17.6833 4.31643 17.2927 4.70696L14.778 7.22167C14.5905 7.40921 14.3361 7.51457 14.0709 7.51457H10.5146C9.96228 7.51457 9.51457 7.96228 9.51457 8.51457V12.0709C9.51457 12.3361 9.40921 12.5905 9.22167 12.778L6.70696 15.2927C6.31643 15.6833 6.31643 16.3164 6.70696 16.707L9.22167 19.2217C9.40921 19.4092 9.51457 19.6636 9.51457 19.9288V23.4851C9.51457 24.0374 9.96228 24.4851 10.5146 24.4851H14.0709C14.3361 24.4851 14.5905 24.5905 14.778 24.778L17.2927 27.2927C17.6833 27.6833 18.3164 27.6833 18.707 27.2927L21.2217 24.778C21.4092 24.5905 21.6636 24.4851 21.9288 24.4851H25.4851C26.0374 24.4851 26.4851 24.0374 26.4851 23.4851V19.9288C26.4851 19.6636 26.5905 19.4092 26.778 19.2217L29.2927 16.707C29.6833 16.3164 29.6833 15.6833 29.2927 15.2927L26.778 12.778C26.5905 12.5905 26.4851 12.3361 26.4851 12.0709V8.51457C26.4851 7.96228 26.0374 7.51457 25.4851 7.51457H21.9288Z'
+                    fill='#47C2FF'
+                  />
+                  <path
+                    d='M23.3737 13.3739L16.6666 20.081L13.2928 16.7073L14.707 15.2931L16.6666 17.2526L21.9595 11.9597L23.3737 13.3739Z'
+                    className='fill-text-white-0'
+                  />
+                </svg>
+              </Avatar.Indicator>
+            </Avatar.Root>
+
           </div>
-          <div>
-            <p className='font-medium text-sm text-gray-900 dark:text-gray-100'>
+          <div className='flex flex-col gap-0.5'>
+            <p className='font-medium text-[12px] text-[#525866] dark:text-gray-100'>
               {otherUserProfile?.full_name ?? otherUserProfile?.username ?? 'User'}
             </p>
-            <p className='text-xs text-green-600 dark:text-green-400'>Online</p>
+            <p className='text-[12px] text-[#525866] dark:text-green-400'>Online</p>
           </div>
         </div>
         <div className="flex items-center space-x-1">
@@ -525,18 +588,18 @@ export default function ChatCore({
               </svg>
             </Button>
           )}
-          <Button
+          {/* <Button
             variant="neutral"
             mode="ghost"
             size="medium"
             aria-label="More options"
           >
             <MoreVertical size={18} />
-          </Button>
+          </Button> */}
         </div>
       </div>
 
-      <div className='flex-1 overflow-y-auto p-4 md:px-6 space-y-0'>
+      <div className='flex-1 overflow-y-auto p-4 md:px-6 space-y-4 min-h-0 custom-scrollbar'>
         {sortedDateKeys.map((dateKey) => (
           <Fragment key={dateKey}>
             <div className="relative my-4">
@@ -571,93 +634,78 @@ export default function ChatCore({
         <div ref={messagesEndRef} />
       </div>
 
-      <div className='border-t border-gray-200 dark:border-gray-700 p-3 flex-shrink-0'>
-        {selectedFile && (
-          <div className="mb-2 flex items-center justify-between rounded border border-gray-300 dark:border-gray-600 bg-gray-50 dark:bg-gray-700 p-2 text-sm">
-            <div className="flex items-center space-x-2 overflow-hidden">
-              <FileImage size={18} className="text-gray-500 dark:text-gray-400 flex-shrink-0" />
-              <span className="truncate text-gray-700 dark:text-gray-200" title={selectedFile.name}>{selectedFile.name}</span>
-              <span className="ml-auto text-xs text-gray-500 dark:text-gray-400 flex-shrink-0">({(selectedFile.size / 1024).toFixed(1)} KB)</span>
-            </div>
-            <Button
-              variant="neutral"
-              mode="ghost"
-              size="medium"
-              type="button"
-              onClick={clearSelectedFile}
-              aria-label="Remove attachment"
-              className="ml-2 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/50"
-            >
-              <XCircle size={18} />
-            </Button>
+
+      <form onSubmit={handleSendMessage} className='p-4 mx-4 mb-4 rounded-lg border border-[#E1E4EA] flex flex-col gap-4 flex-shrink-0'>
+        <div className='border-b border-[#E1E4EA] pb-2 w-full'>
+          <textarea
+            placeholder='Type your message...'
+            className='w-full border-none outline-none resize-none min-h-[24px] max-h-[72px]'
+            rows={1}
+            value={newMessage}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+              setNewMessage(e.target.value);
+
+              // Auto-resize textarea
+              const textarea = e.target;
+              textarea.style.height = 'auto';
+              const newHeight = Math.min(textarea.scrollHeight, 72); // 72px = 3 rows
+              textarea.style.height = `${newHeight}px`;
+            }}
+            onKeyDown={handleTextareaKeyDown}
+            disabled={isSending}
+            autoComplete='off'
+          />
+        </div>
+        <div className='flex flex-col gap-2'>
+          <div className='flex flex-row'>
+            {selectedFile && (
+              <div className='rounded-lg h-24 w-24 border border-[#E1E4EA] p-2 relative'>
+                <img src={URL.createObjectURL(selectedFile)} alt="Attachment" className='w-full h-full object-cover' />
+                <X size={20} onClick={clearSelectedFile} className='absolute top-1 right-1 cursor-pointer text-[#525866] p-1 rounded-lg bg-white' />
+              </div>
+            )}
           </div>
-        )}
-        <form onSubmit={handleSendMessage} className='flex flex-col space-y-2'>
-          <div>
-            <Textarea
-              placeholder={selectedFile ? 'Add a caption...' : 'Type your message...'}
-              value={newMessage}
-              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setNewMessage(e.target.value)}
-              onKeyDown={handleTextareaKeyDown}
-              disabled={isSending}
-              className='resize-none border-gray-300 rounded-lg dark:border-gray-600 dark:bg-gray-700 dark:text-white focus:ring-blue-500 focus:border-blue-500 block w-full min-h-[40px] max-h-[120px] overflow-y-auto text-sm p-2.5'
-              rows={1}
-              autoComplete='off'
-            />
-          </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-1">
-              <Button
-                variant="neutral"
-                mode="ghost"
-                size="xsmall"
-                type="button"
-                aria-label="Emoji"
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              >
-                <Smile />
-              </Button>
-              <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                className="hidden"
-                accept="image/*"
-              />
-              <Button
-                variant="neutral"
-                mode="ghost"
-                size="xsmall"
-                type="button"
-                aria-label="Attach file"
-                onClick={handleAttachmentClick}
-                disabled={isSending}
-                className="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-              >
-                <Paperclip />
-              </Button>
-            </div>
-            <div>
-              <FancyButtonModule.Root
-                type='submit'
-                disabled={(!newMessage.trim() && !selectedFile) || isSending}
-                variant="primary"
-                className="!px-4 !py-2"
-              >
-                {isSending ? (
-                  <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+
+
+          <div className='flex flex-row justify-between items-center'>
+            <div className='flex flex-row gap-4 items-center'>
+              <div className='cursor-pointer'>
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 18C4.0293 18 0 13.9707 0 9C0 4.0293 4.0293 0 9 0C13.9707 0 18 4.0293 18 9C18 13.9707 13.9707 18 9 18ZM9 16.2C10.9096 16.2 12.7409 15.4414 14.0912 14.0912C15.4414 12.7409 16.2 10.9096 16.2 9C16.2 7.09044 15.4414 5.25909 14.0912 3.90883C12.7409 2.55857 10.9096 1.8 9 1.8C7.09044 1.8 5.25909 2.55857 3.90883 3.90883C2.55857 5.25909 1.8 7.09044 1.8 9C1.8 10.9096 2.55857 12.7409 3.90883 14.0912C5.25909 15.4414 7.09044 16.2 9 16.2ZM4.5 9.9H6.3C6.3 10.6161 6.58446 11.3028 7.09081 11.8092C7.59716 12.3155 8.28392 12.6 9 12.6C9.71608 12.6 10.4028 12.3155 10.9092 11.8092C11.4155 11.3028 11.7 10.6161 11.7 9.9H13.5C13.5 11.0935 13.0259 12.2381 12.182 13.082C11.3381 13.9259 10.1935 14.4 9 14.4C7.80653 14.4 6.66193 13.9259 5.81802 13.082C4.97411 12.2381 4.5 11.0935 4.5 9.9ZM5.4 8.1C5.04196 8.1 4.69858 7.95777 4.44541 7.70459C4.19223 7.45142 4.05 7.10804 4.05 6.75C4.05 6.39196 4.19223 6.04858 4.44541 5.79541C4.69858 5.54223 5.04196 5.4 5.4 5.4C5.75804 5.4 6.10142 5.54223 6.35459 5.79541C6.60777 6.04858 6.75 6.39196 6.75 6.75C6.75 7.10804 6.60777 7.45142 6.35459 7.70459C6.10142 7.95777 5.75804 8.1 5.4 8.1ZM12.6 8.1C12.242 8.1 11.8986 7.95777 11.6454 7.70459C11.3922 7.45142 11.25 7.10804 11.25 6.75C11.25 6.39196 11.3922 6.04858 11.6454 5.79541C11.8986 5.54223 12.242 5.4 12.6 5.4C12.958 5.4 13.3014 5.54223 13.5546 5.79541C13.8078 6.04858 13.95 6.39196 13.95 6.75C13.95 7.10804 13.8078 7.45142 13.5546 7.70459C13.3014 7.95777 12.958 8.1 12.6 8.1Z" fill="#525866" />
+                </svg>
+
+              </div>
+              <div className='cursor-pointer'>
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                  accept="image/*"
+                />
+                <div
+                  onClick={() => isSending ? null : handleAttachmentClick()}
+                >
+                  <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9.80078 10.35V5.4C9.80078 4.44522 9.4215 3.52955 8.74637 2.85442C8.07124 2.17928 7.15556 1.8 6.20078 1.8C5.246 1.8 4.33033 2.17928 3.6552 2.85442C2.98007 3.52955 2.60078 4.44522 2.60078 5.4V10.35C2.60078 11.9015 3.21712 13.3895 4.31421 14.4866C5.41129 15.5837 6.89926 16.2 8.45078 16.2C10.0023 16.2 11.4903 15.5837 12.5874 14.4866C13.6844 13.3895 14.3008 11.9015 14.3008 10.35V1.8H16.1008V10.35C16.1008 12.3789 15.2948 14.3247 13.8601 15.7594C12.4255 17.194 10.4797 18 8.45078 18C6.42188 18 4.47607 17.194 3.04141 15.7594C1.60676 14.3247 0.800781 12.3789 0.800781 10.35V5.4C0.800781 3.96783 1.36971 2.59432 2.3824 1.58162C3.3951 0.568927 4.76861 0 6.20078 0C7.63295 0 9.00646 0.568927 10.0192 1.58162C11.0319 2.59432 11.6008 3.96783 11.6008 5.4V10.35C11.6008 11.1854 11.2689 11.9866 10.6782 12.5774C10.0874 13.1681 9.28621 13.5 8.45078 13.5C7.61535 13.5 6.81414 13.1681 6.2234 12.5774C5.63266 11.9866 5.30078 11.1854 5.30078 10.35V5.4H7.10078V10.35C7.10078 10.708 7.24301 11.0514 7.49619 11.3046C7.74936 11.5578 8.09274 11.7 8.45078 11.7C8.80882 11.7 9.1522 11.5578 9.40538 11.3046C9.65855 11.0514 9.80078 10.708 9.80078 10.35Z" fill="#525866" />
                   </svg>
-                ) : (
-                  <Send size={16} />
-                )}
-                <span className={`ml-2 ${isSending ? 'opacity-0' : 'opacity-100'}`}>Send</span>
-              </FancyButtonModule.Root>
+                </div>
+
+              </div>
             </div>
+            <FancyButton.Root
+              type='submit'
+              disabled={(!newMessage.trim() && !selectedFile) || isSending}
+            >
+              Send
+              {!isSending ? <FancyButton.Icon as={SendIcon} /> :
+                <FancyButton.Icon as={LoaderCircle} className='animate-spin' />}
+            </FancyButton.Root>
           </div>
-        </form>
-      </div>
+        </div>
+      </form>
+
+
     </div>
   );
 } 
