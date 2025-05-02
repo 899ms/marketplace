@@ -380,13 +380,10 @@ export default function ProjectDetailPage() {
 
   // Prepare data for child components, handling missing fields
   const projectTitle = projectDataState.title ?? 'Untitled Project';
-  // Map usage_option or use default - check JobSchema for exact field/values
   const projectCategory = projectDataState.usage_option === 'business' ? 'Business' : 'Private';
-  const projectDescription = projectDataState.description ? [projectDataState.description] : []; // Wrap in array if needed
-  // const projectRequirements = []; // Requirements field is not in JobSchema
+  const projectDescription = projectDataState.description ? [projectDataState.description] : [];
   const projectSkills = projectDataState.skill_levels ?? [];
-  // Adapt attachment structure if BaseFileData doesn't match AttachmentsSection expectation
-  const projectAttachments = (projectDataState.files ?? []).map(file => ({ name: file.name, type: 'file', size: `${(file.size / (1024 * 1024)).toFixed(1)} MB` }));
+  const projectAttachments = projectDataState.files ?? [];
 
   const clientName = clientDataState?.full_name ?? 'Unknown Client';
   const clientAvatar = clientDataState?.avatar_url ?? 'https://via.placeholder.com/100'; // Placeholder avatar
