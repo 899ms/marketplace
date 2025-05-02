@@ -12,7 +12,7 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
   requirements,
 }) => {
   return (
-    <div className='p-4'>
+    <div className='pt-[24px]'>
       <h2
         className="
           text-base
@@ -21,6 +21,7 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
           tracking-[-0.015em]
           text-[#161922]
           mb-4
+          text-[16px]
         "
       >
         Project Details
@@ -51,7 +52,7 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
             {requirements.map((requirement, idx) => (
               <li
                 key={idx}
-                className='text-sm text-text-secondary-600 list-disc'
+                className='text-sm text-text-secondary-600 list-disc text-[#525866]'
               >
                 {requirement}
               </li>
@@ -61,7 +62,7 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
       )}
 
       {/* underline */}
-      <div className="w-[99%] h-[2px] bg-stroke-soft-200 mx-auto mt-8" />
+      <div className="h-[1.5px] bg-stroke-soft-200 mx-auto mt-[24px]" />
     </div>
   );
 };

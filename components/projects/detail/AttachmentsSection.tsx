@@ -24,7 +24,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
   if (!attachments || attachments.length === 0) return null;
 
   return (
-    <div className='px-4 pt-4 pb-8'>
+    <div className='pt-[24px]'>
       <h2 className="text-base font-semibold leading-6 tracking-[-0.015em] text-[#161922] mb-4">
         Attachments
       </h2>
@@ -54,6 +54,8 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
           </li>
         ))}
       </ul>
+
+      <div className="h-[1.5px] bg-stroke-soft-200 mx-auto mt-[24px]" />
     </div>
   );
 };
