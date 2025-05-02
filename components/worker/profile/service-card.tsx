@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image'; // Keep Image import
+import Link from 'next/link'; // Added Link import
 import * as Avatar from '@/components/ui/avatar'; // Keep Avatar if needed for fallback/placeholder
 import { RiStarFill } from '@remixicon/react';
 // Removed import for local ./types
@@ -45,46 +46,47 @@ export function ServiceCard({ service, rating, reviewCount, sellerAvatarUrl, sel
   };
 
   return (
-    <div className='shadow-sm hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all'>
-      {/* Image Section - Use Next/Image or img tag */}
-      <div className={`relative h-40 w-full bg-gray-200`}> {/* Fallback bg */}
-        <Image
-          src={imageUrl || fallbackImageUrl}
-          alt={displayTitle}
-          fill // Use fill layout
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" // Example sizes
-          className="object-cover" // Ensure image covers the area
-          onError={(e) => { e.currentTarget.src = fallbackImageUrl; }} // Handle image loading errors
-        />
-        {/* Removed the top-right avatar as it's not directly in Service type */}
-      </div>
+    // Wrap the entire card content with a Link
+    <Link href={`/services/${service.id}`} className="block group">
+      <div className='shadow-sm group-hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all'>
+        {/* Image Section - Use Next/Image or img tag */}
+        <div className={`relative h-40 w-full bg-gray-200`}> {/* Fallback bg */}
+          <Image
+            src={imageUrl || fallbackImageUrl}
+            alt={displayTitle}
+            fill // Use fill layout
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw" // Example sizes
+            className="object-cover" // Ensure image covers the area
+            onError={(e) => { e.currentTarget.src = fallbackImageUrl; }} // Handle image loading errors
+          />
+          {/* Removed the top-right avatar as it's not directly in Service type */}
+        </div>
 
-      <div className='p-3 space-y-2'> {/* Added space-y-2 for spacing */}
-        {/* Title */}
-        <p className='line-clamp-2 text-paragraph-sm font-medium text-text-strong-950'>
-          {displayTitle}
-        </p>
+        <div className='p-3 space-y-2'> {/* Added space-y-2 for spacing */}
+          {/* Title */}
+          <p className='line-clamp-2 text-paragraph-sm font-medium text-text-strong-950 group-hover:text-blue-600 transition-colors'>
+            {displayTitle}
+          </p>
 
-
-
-        {/* Rating and Price */}
-        <div className='flex items-center justify-between text-paragraph-sm'>
-          {/* Display passed rating/review or placeholder */}
-          <div className='text-text-secondary-600 flex items-center gap-0.5'>
-            <RiStarFill className='size-3.5 text-yellow-400' />
-            <span className='text-gray-600'>
-              {hasRatingData ? (
-                <>{rating?.toFixed(1)} ({reviewCount})</>
-              ) : (
-                '4.8 (100+)' // Default placeholder if no rating/review props
-              )}
+          {/* Rating and Price */}
+          <div className='flex items-center justify-between text-paragraph-sm'>
+            {/* Display passed rating/review or placeholder */}
+            <div className='text-text-secondary-600 flex items-center gap-0.5'>
+              <RiStarFill className='size-3.5 text-yellow-400' />
+              <span className='text-gray-600'>
+                {hasRatingData ? (
+                  <>{rating?.toFixed(1)} ({reviewCount})</>
+                ) : (
+                  '4.8 (100+)' // Default placeholder if no rating/review props
+                )}
+              </span>
+            </div>
+            <span className='font-medium text-text-strong-950'>
+              {getCurrencySymbol(displayCurrency)}{displayPrice}
             </span>
           </div>
-          <span className='font-medium text-text-strong-950'>
-            {getCurrencySymbol(displayCurrency)}{displayPrice}
-          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

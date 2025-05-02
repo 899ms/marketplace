@@ -5,6 +5,10 @@ import Link from 'next/link';
 import * as Avatar from '@/components/ui/avatar';
 import * as Drawer from '@/components/ui/drawer';
 import * as Tabs from '@/components/ui/tabs';
+import { useAuth } from '@/utils/supabase/AuthContext';
+import { chatOperations, userOperations } from '@/utils/supabase/database';
+import { useNotification } from '@/hooks/use-notification';
+import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
 import {
   RiCloseLine,
   RiSendPlaneLine,
@@ -22,7 +26,7 @@ import { AboutSection } from '@/components/worker/profile/AboutSection';
 import { WorkItem } from '@/components/worker/profile/work-item';
 import { ServiceCard } from '@/components/worker/profile/service-card';
 import { ReviewItem } from '@/components/worker/profile/review-item';
-import { User, Service } from '@/utils/supabase/types';
+import { User, Service, Chat, Message } from '@/utils/supabase/types';
 
 interface WorkerProfileDrawerProps {
   isOpen: boolean;
@@ -87,12 +91,80 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   services,
   isLoading,
 }) => {
+  const authContext = useAuth();
+  const { notification: toast } = useNotification();
   const [activeTab, setActiveTab] = useState<'about' | 'work' | 'services' | 'reviews'>('about');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+
+  const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null);
+  const [activeChat, setActiveChat] = useState<Chat | null>(null);
+  const [activeChatMessages, setActiveChatMessages] = useState<Message[]>([]);
+  const [isLoadingChat, setIsLoadingChat] = useState(false);
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false);
+  const [chatError, setChatError] = useState<string | null>(null);
 
   const displayName = worker?.full_name || worker?.username || (isLoading ? 'Loading...' : 'Worker');
   const displayAvatar = worker?.avatar_url ?? undefined;
   const displayBio = worker?.bio || (isLoading ? 'Loading bio...' : 'No bio provided.');
+
+  useEffect(() => {
+    const fetchCurrentUserProfile = async () => {
+      if (authContext.user?.id) {
+        const profile = await userOperations.getUserById(authContext.user.id);
+        setCurrentUserProfile(profile);
+      }
+    };
+    fetchCurrentUserProfile();
+  }, [authContext.user]);
+
+  const handleHireClick = () => {
+    toast({
+      title: "Hire Initiated",
+      description: `Proceeding to hire ${displayName}. You will be redirected soon.`,
+      status: "success",
+      variant: "filled"
+    });
+  };
+
+  const handleOpenChat = async () => {
+    if (!currentUserProfile || !worker) {
+      setChatError('Could not load user profiles. Please log in.');
+      return;
+    }
+    if (currentUserProfile.id === worker.id) {
+      setChatError("You cannot start a chat with yourself.");
+      return;
+    }
+
+    setIsLoadingChat(true);
+    setChatError(null);
+    setActiveChat(null);
+    setActiveChatMessages([]);
+
+    try {
+      const chat = await chatOperations.findOrCreateChat(currentUserProfile.id, worker.id);
+      if (chat) {
+        setActiveChat(chat);
+        setIsLoadingMessages(true);
+        const messages = await chatOperations.getChatMessages(chat.id);
+        setActiveChatMessages(messages);
+      } else {
+        setChatError('Failed to find or create chat conversation.');
+      }
+    } catch (error: any) {
+      console.error('Error opening chat:', error);
+      setChatError(error.message || 'An unexpected error occurred.');
+    } finally {
+      setIsLoadingChat(false);
+      setIsLoadingMessages(false);
+    }
+  };
+
+  const handleCloseChat = () => {
+    setActiveChat(null);
+    setActiveChatMessages([]);
+    setChatError(null);
+  };
 
   useEffect(() => {
     if (!isOpen && document.activeElement instanceof HTMLElement) {
@@ -103,19 +175,21 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
     }
   }, [isOpen, isLoading, worker]);
 
+  const disableActions = !currentUserProfile || !worker || isLoading || currentUserProfile?.id === worker?.id;
+
   return (
     <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Drawer.Content
-        className="fixed inset-y-0 right-0 z-50 h-[100dvh] w-full shadow-xl overflow-hidden bg-white"
+        className="fixed inset-y-0 right-0 z-50 h-[100dvh] w-full shadow-xl overflow-hidden bg-white flex flex-col"
         style={{ maxWidth: '800px' }}
       >
         <DialogPrimitive.Title className="sr-only">
           {`Worker Profile: ${displayName}`}
         </DialogPrimitive.Title>
 
-        <div className="flex h-full flex-col">
+        <div className="flex flex-col flex-grow">
           {/* header */}
-          <div className="px-5 py-4">
+          <div className="px-5 py-4 flex-shrink-0">
             <div className="flex items-center justify-between">
               <Drawer.Close asChild>
                 <button className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
@@ -164,11 +238,27 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <button className="w-[96px] rounded-md border border-stroke-soft-200 px-3.5 py-2 text-sm font-medium text-text-strong-950 transition-colors hover:bg-bg-weak-50">
+                  <button
+                    className="w-[96px] rounded-md border border-stroke-soft-200 px-3.5 py-2 text-sm font-medium text-text-strong-950 transition-colors hover:bg-bg-weak-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={handleHireClick}
+                    disabled={disableActions}
+                    aria-label={currentUserProfile?.id === worker?.id ? "Cannot hire yourself" : `Hire ${displayName}`}
+                  >
                     Hire <RiArrowDropRightLine className="ml-.5 inline size-7" />
                   </button>
-                  <button className="w-[96px] flex items-center justify-center rounded-md bg-text-strong-950 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-text-strong-900">
-                    Touch <RiSendPlaneLine className="ml-1.5 inline size-3.5" />
+                  <button
+                    className="w-[96px] flex items-center justify-center rounded-md bg-text-strong-950 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-text-strong-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    onClick={handleOpenChat}
+                    disabled={disableActions || isLoadingChat}
+                    aria-label={currentUserProfile?.id === worker?.id ? "Cannot message yourself" : `Message ${displayName}`}
+                  >
+                    {isLoadingChat ? (
+                      <RiLoader4Line className="animate-spin" size={18} />
+                    ) : (
+                      <>
+                        Touch <RiSendPlaneLine className="ml-1.5 inline size-3.5" />
+                      </>
+                    )}
                   </button>
                   <button className="rounded-full p-1.5 text-text-secondary-600 transition-colors hover:bg-bg-weak-50 hover:text-red-500">
                     <RiHeartLine className="size-5" />
@@ -180,12 +270,15 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                 Could not load worker profile.
               </div>
             )}
+            {chatError && (
+              <p className="text-xs text-red-600 px-5 mt-2 text-center">Error: {chatError}</p>
+            )}
           </div>
 
-          <div className="mt-2 h-px bg-stroke-soft-200 w-[95%] mx-auto" />
+          <div className="mt-2 h-px bg-stroke-soft-200 w-[95%] mx-auto flex-shrink-0" />
 
           {!isLoading && worker && (
-            <div className="px-5 pt-4">
+            <div className="px-5 pt-4 flex-shrink-0">
               <Tabs.Root value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
                 <Tabs.List className="flex justify-start gap-4">
                   {[
@@ -207,7 +300,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
             </div>
           )}
 
-          <div className="flex-1 overflow-x-hidden overflow-y-auto px-5 py-5">
+          <div className="flex-1 overflow-y-auto px-5 py-5">
             {isLoading ? (
               <div className="flex h-full items-center justify-center">
                 <RiLoader4Line className="size-10 animate-spin text-text-secondary-600" />
@@ -319,6 +412,19 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
           open={isUploadModalOpen}
           onOpenChange={setIsUploadModalOpen}
         />
+        {activeChat && currentUserProfile && worker && (
+          <ChatPopupWrapper
+            key={activeChat.id}
+            chat={activeChat}
+            initialMessages={activeChatMessages}
+            currentUserProfile={currentUserProfile}
+            otherUserProfile={worker}
+            currentUserId={currentUserProfile.id}
+            isLoadingMessages={isLoadingMessages}
+            onClose={handleCloseChat}
+            position="bottom-right"
+          />
+        )}
       </Drawer.Content>
     </Drawer.Root>
   );

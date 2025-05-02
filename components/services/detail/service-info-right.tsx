@@ -79,8 +79,8 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
   const handleHireClick = () => {
     // TODO: Implement actual hiring logic later
     toast({
-      title: "Hire Request Sent! (Dummy)",
-      description: `Successfully initiated hiring process for service: ${service.title} (ID: ${service.id}). You will be redirected soon.`, // Added dummy data
+      title: "Hire Request Sent!",
+      description: `Successfully initiated hiring process for service: ${service.title}. You will be redirected soon.`, // Added dummy data
       status: "success",
       variant: "filled"
     });
