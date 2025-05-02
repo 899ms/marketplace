@@ -525,7 +525,7 @@ function OrdersContent() {
               const sellerProfile = await userOperations.getUserById(relatedContract.seller_id);
               const workerInfo = sellerProfile ? { name: sellerProfile.full_name, avatarUrl: sellerProfile.avatar_url || 'https://via.placeholder.com/40' } : null;
               return {
-                id: job.id,
+                id: relatedContract.id,
                 type: 'contract',
                 subject: job.title,
                 price: relatedContract.amount,
@@ -608,7 +608,7 @@ function OrdersContent() {
     fetchOrders();
   }, [user, userType, authLoading, profileLoading, isBuyer]);
 
-  // --- Conditional Data & Logic (using fetched data) --- 
+  // --- Conditional Data & Logic (using fetched `ordersData`) --- 
 
   // TODO: Implement filtering & sorting on fetched `ordersData`
   const filteredAndSortedOrders = ordersData; // Placeholder
@@ -819,99 +819,119 @@ function OrdersContent() {
             </Table.Header>
             {/* Conditional Table Body with Type Narrowing and Safer Rendering */}
             <Table.Body className="divide-y divide-stroke-soft-200 bg-bg-white-0">
-              {currentTableData.map((order) => (
-                <Table.Row key={order.id}>
-                  {isBuyer ? (
-                    (() => {
-                      const engagement = order as BuyerEngagement;
-                      return (
-                        <>
-                          <Table.Cell className="px-4 py-3 align-top">
-                            <div className="text-sm font-medium text-text-strong-950">{engagement.subject}</div>
-                            <div className="text-sm text-text-secondary-600">${engagement.price.toLocaleString()}</div>
-                          </Table.Cell>
-                          <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{engagement.deadline}</Table.Cell>
-                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                            {engagement.worker ? (
+              {currentTableData.map((order) => {
+                // Determine link based on type (needed for dropdown)
+                const isBuyerJobPosting = isBuyer && (order as BuyerEngagement).type === 'job';
+                const detailLink = isBuyerJobPosting ? `/projects/${order.id}` : `/orders/detail/${order.id}`;
+
+                // Ensure the Table.Row is returned directly from the map callback
+                return (
+                  <Table.Row key={order.id}>
+                    {isBuyer ? (
+                      // --- Buyer Row --- 
+                      (() => {
+                        const engagement = order as BuyerEngagement;
+                        return (
+                          <>
+                            <Table.Cell className="px-4 py-3 align-top">
+                              {/* Conditional Link for Buyer - Use detailLink */}
+                              <Link href={detailLink} className="block group hover:text-blue-600">
+                                <div className="text-sm font-medium text-text-strong-950 group-hover:underline">{engagement.subject}</div>
+                              </Link>
+                              <div className="text-sm text-text-secondary-600">${engagement.price.toLocaleString()}</div>
+                            </Table.Cell>
+                            <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{engagement.deadline}</Table.Cell>
+                            <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                              {engagement.worker ? (
+                                <div className="flex items-center gap-2">
+                                  <Avatar.Root size="32">
+                                    <Avatar.Image
+                                      src={engagement.worker.avatarUrl || 'https://via.placeholder.com/40'}
+                                      alt={engagement.worker.name}
+                                    />
+                                  </Avatar.Root>
+                                  <span className="text-sm font-medium text-text-strong-950">{engagement.worker.name}</span>
+                                </div>
+                              ) : (
+                                <span className="text-sm text-text-sub-400 italic">Job Posting</span>
+                              )}
+                            </Table.Cell>
+                            <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                              {renderStatusBadge(engagement.status, engagement.type)}
+                            </Table.Cell>
+                          </>
+                        );
+                      })()
+                    ) : (
+                      // --- Seller Row --- 
+                      (() => {
+                        const sellerOrder = order as SellerOrder;
+                        // Seller always links to order detail
+                        const sellerLink = `/orders/detail/${sellerOrder.id}`;
+                        return (
+                          <>
+                            <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
                               <div className="flex items-center gap-2">
                                 <Avatar.Root size="32">
-                                  <Avatar.Image
-                                    src={engagement.worker.avatarUrl || 'https://via.placeholder.com/40'}
-                                    alt={engagement.worker.name}
-                                  />
+                                  {sellerOrder.from && (
+                                    <Avatar.Image
+                                      src={sellerOrder.from.avatarUrl || 'https://via.placeholder.com/40'}
+                                      alt={sellerOrder.from.name}
+                                    />
+                                  )}
                                 </Avatar.Root>
-                                <span className="text-sm font-medium text-text-strong-950">{engagement.worker.name}</span>
+                                <span className="text-sm font-medium text-text-strong-950">
+                                  {sellerOrder.from ? sellerOrder.from.name : 'Unknown Buyer'}
+                                </span>
                               </div>
-                            ) : (
-                              <span className="text-sm text-text-sub-400 italic">Job Posting</span>
-                            )}
-                          </Table.Cell>
-                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                            {renderStatusBadge(engagement.status, engagement.type)}
-                          </Table.Cell>
-                        </>
-                      );
-                    })()
-                  ) : (
-                    (() => {
-                      const sellerOrder = order as SellerOrder;
-                      return (
-                        <>
-                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                            <div className="flex items-center gap-2">
-                              <Avatar.Root size="32">
-                                {sellerOrder.from && (
-                                  <Avatar.Image
-                                    src={sellerOrder.from.avatarUrl || 'https://via.placeholder.com/40'}
-                                    alt={sellerOrder.from.name}
-                                  />
-                                )}
-                              </Avatar.Root>
-                              <span className="text-sm font-medium text-text-strong-950">
-                                {sellerOrder.from ? sellerOrder.from.name : 'Unknown Buyer'}
-                              </span>
-                            </div>
-                          </Table.Cell>
-                          <Table.Cell className="px-4 py-3 align-top">
-                            <div className="text-sm font-medium text-text-strong-950">{sellerOrder.subject}</div>
-                            <div className="text-sm text-text-secondary-600">${sellerOrder.price.toLocaleString()}</div>
-                          </Table.Cell>
-                          <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{sellerOrder.deadline}</Table.Cell>
-                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                            {typeof sellerOrder.rating === 'number' ? (
-                              <div className="flex items-center gap-1 text-sm text-text-secondary-600">
-                                <RiStarFill className='size-4 text-yellow-400' />
-                                <span>{sellerOrder.rating.toFixed(1)}</span>
-                              </div>
-                            ) : (
-                              <span className="text-sm text-text-sub-400">-</span>
-                            )}
-                          </Table.Cell>
-                          <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-                            {renderStatusBadge(sellerOrder.status, 'seller_order')}
-                          </Table.Cell>
-                        </>
-                      );
-                    })()
-                  )}
-                  {/* Actions Column (Common) */}
-                  <Table.Cell className="px-4 py-3 text-right align-top whitespace-nowrap">
-                    <Dropdown.Root>
-                      <Dropdown.Trigger asChild>
-                        <button className="p-1 text-text-sub-400 hover:text-text-strong-950 focus:outline-none">
-                          <RiMore2Fill className="size-5" />
-                        </button>
-                      </Dropdown.Trigger>
-                      <Dropdown.Content align="end">
-                        <Dropdown.Item>View Details</Dropdown.Item>
-                        <Dropdown.Item>{isBuyer ? 'Message Worker' : 'Message Buyer'}</Dropdown.Item>
-                        <Dropdown.Separator />
-                        <Dropdown.Item className="text-text-danger-500">Cancel Order</Dropdown.Item>
-                      </Dropdown.Content>
-                    </Dropdown.Root>
-                  </Table.Cell>
-                </Table.Row>
-              ))}
+                            </Table.Cell>
+                            <Table.Cell className="px-4 py-3 align-top">
+                              {/* Seller Link (always order detail) */}
+                              <Link href={sellerLink} className="block group hover:text-blue-600">
+                                <div className="text-sm font-medium text-text-strong-950 group-hover:underline">{sellerOrder.subject}</div>
+                              </Link>
+                              <div className="text-sm text-text-secondary-600">${sellerOrder.price.toLocaleString()}</div>
+                            </Table.Cell>
+                            <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">{sellerOrder.deadline}</Table.Cell>
+                            <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                              {typeof sellerOrder.rating === 'number' ? (
+                                <div className="flex items-center gap-1 text-sm text-text-secondary-600">
+                                  <RiStarFill className='size-4 text-yellow-400' />
+                                  <span>{sellerOrder.rating.toFixed(1)}</span>
+                                </div>
+                              ) : (
+                                <span className="text-sm text-text-sub-400">-</span>
+                              )}
+                            </Table.Cell>
+                            <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+                              {renderStatusBadge(sellerOrder.status, 'seller_order')}
+                            </Table.Cell>
+                          </>
+                        );
+                      })()
+                    )}
+                    {/* Actions Column (Common) */}
+                    <Table.Cell className="px-4 py-3 text-right align-top whitespace-nowrap">
+                      <Dropdown.Root>
+                        <Dropdown.Trigger asChild>
+                          <button className="p-1 text-text-sub-400 hover:text-text-strong-950 focus:outline-none">
+                            <RiMore2Fill className="size-5" />
+                          </button>
+                        </Dropdown.Trigger>
+                        <Dropdown.Content align="end">
+                          {/* Use Link for View Details with conditional href */}
+                          <Dropdown.Item asChild>
+                            <Link href={detailLink}>View Details</Link>
+                          </Dropdown.Item>
+                          <Dropdown.Item>{isBuyer ? 'Message Worker' : 'Message Buyer'}</Dropdown.Item>
+                          <Dropdown.Separator />
+                          <Dropdown.Item className="text-text-danger-500">Cancel Order</Dropdown.Item>
+                        </Dropdown.Content>
+                      </Dropdown.Root>
+                    </Table.Cell>
+                  </Table.Row>
+                );
+              })}
             </Table.Body>
           </Table.Root>
         )}

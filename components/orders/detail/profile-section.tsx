@@ -3,7 +3,7 @@
 import * as React from 'react';
 import * as Button from "@/components/ui/button";
 import * as Avatar from "@/components/ui/avatar";
-import { RiStarFill, RiGoogleFill, RiMoreLine } from '@remixicon/react';
+import { RiStarFill, RiGoogleFill, RiMoreLine, RiLoader4Line, RiSendPlaneLine } from '@remixicon/react';
 
 type UserRole = 'buyer' | 'seller';
 
@@ -15,6 +15,10 @@ interface ProfileSectionProps {
   specialty?: string;
   avatarUrl?: string;
   status?: 'online' | 'offline';
+  onMessageClick: () => void;
+  isMessagingLoading: boolean;
+  onRehireClick: () => void;
+  disabled?: boolean;
 }
 
 export function ProfileSection({
@@ -25,6 +29,10 @@ export function ProfileSection({
   specialty,
   avatarUrl,
   status = 'online',
+  onMessageClick,
+  isMessagingLoading,
+  onRehireClick,
+  disabled = false,
 }: ProfileSectionProps) {
   return (
     <div
@@ -77,9 +85,21 @@ export function ProfileSection({
           variant="neutral"
           mode="stroke"
           size="medium"
-          className="px-6"
+          className="px-6 min-w-[110px]"
+          onClick={onMessageClick}
+          disabled={disabled || isMessagingLoading}
         >
-          Message
+          {isMessagingLoading ? (
+            <>
+              <RiLoader4Line className="animate-spin mr-2" size={18} />
+              Opening...
+            </>
+          ) : (
+            <>
+              Message
+              <Button.Icon as={RiSendPlaneLine} className="ml-1.5" />
+            </>
+          )}
         </Button.Root>
 
         {userRole === 'buyer' && (
@@ -88,6 +108,8 @@ export function ProfileSection({
             mode="filled"
             size="medium"
             className="px-6"
+            onClick={onRehireClick}
+            disabled={disabled}
           >
             Rehire
           </Button.Root>
@@ -98,6 +120,7 @@ export function ProfileSection({
           mode="stroke"
           size="medium"
           className="px-4"
+          disabled={disabled}
         >
           <Button.Icon as={RiMoreLine} className="size-5" />
         </Button.Root>
