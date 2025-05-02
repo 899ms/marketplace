@@ -28,6 +28,7 @@ import * as Tag from '@/components/ui/tag'; // Keep Tag import for tags section
 import { User } from '@/utils/supabase/types';
 import * as Button from '@/components/ui/button'; // Add Button import
 import * as AvatarGroup from '@/components/ui/avatar-group'; // Add AvatarGroup import
+import { ProfileActionButtons } from '../../users/profile/profile-action-buttons'; // Use relative path
 
 // --- Helper Components (Keep SidebarLink as it's used) ---
 interface SidebarLinkProps {
@@ -76,11 +77,20 @@ const SidebarLink = ({ href, icon: Icon, label, isActive, onClick }: SidebarLink
 // --- Profile Page Sidebar Props ---
 interface ProfilePageSidebarProps {
   userProfile: User;
-  // Add other specific props if needed for profile page context
+  currentUser: User | null; // Add currentUser
+  isLoadingChat: boolean; // Add isLoadingChat
+  onHire: () => void; // Add onHire handler prop
+  onMessage: () => void; // Add onMessage handler prop
 }
 
 // --- Profile Page Sidebar Component (Renamed) ---
-export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
+export function ProfilePageSidebar({
+  userProfile,
+  currentUser,
+  isLoadingChat,
+  onHire,
+  onMessage,
+}: ProfilePageSidebarProps) {
   const { notification: toast } = useNotification();
 
   // Use userProfile directly or map to a simpler structure if preferred
@@ -109,7 +119,6 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
   ];
 
   // --- Mock State & Handlers for Buttons/Reviews --- 
-  const isLoadingChat = false; // Mock chat loading state
   const chatError = null; // Mock chat error state
   const reviewAvatars = [
     'https://i.pravatar.cc/40?img=32',
@@ -169,6 +178,15 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
             </div>
           </div>
           {/* Removed Action Buttons */}
+
+          {/* ADD ACTION BUTTONS COMPONENT */}
+          <ProfileActionButtons
+            targetUser={userProfile}
+            currentUser={currentUser}
+            isLoadingChat={isLoadingChat}
+            onHire={onHire} // Pass down the prop
+            onMessage={onMessage} // Pass down the prop
+          />
 
           {/* Recent Reviews Section */}
           <div> {/* Original wrapper */}

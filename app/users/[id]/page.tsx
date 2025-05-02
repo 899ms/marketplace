@@ -15,6 +15,7 @@ import { useAuth } from '@/utils/supabase/AuthContext';
 import { chatOperations, userOperations, jobOperations } from '@/utils/supabase/database';
 import { User, Job, Chat, Message } from '@/utils/supabase/types';
 import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
+import { ProfileActionButtons } from '@/components/users/profile/profile-action-buttons';
 
 import {
   RiStarFill,
@@ -180,46 +181,14 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="flex items-center justify-center gap-2">
-            {/* Follow Button - Modified */}
-            <Button.Root
-              variant="neutral"
-              mode="stroke"
-              size="xsmall"
-              className="w-[85px] h-[32px] rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-sm flex items-center justify-center gap-[6px] px-2"
-              onClick={handleFollowClick}
-              disabled={!currentUser || currentUser?.id === userData.id}
-              aria-label={currentUser?.id === userData.id ? "Cannot follow yourself" : "Follow user"}
-            >
-              <span className="text-paragraph-xs">Follow</span>
-              <Button.Icon as={RiHeart3Line} className="size-5" />
-            </Button.Root>
-
-            {/* Touch Button - Replaced with FancyButton */}
-            <FancyButton.Root
-              variant="neutral"
-              size="xsmall"
-              className="w-[83px] h-[32px] rounded-lg" /* Kept fixed dimensions and radius */
-              onClick={handleOpenChat}
-              disabled={!currentUser || isLoadingChat || currentUser?.id === userData.id}
-              aria-label={currentUser?.id === userData.id ? "Cannot message yourself" : "Send message"}
-            >
-              {isLoadingChat ? (
-                <RiLoader4Line className="animate-spin text-white" size={18} />
-              ) : (
-                <>
-                  <span className="text-paragraph-xs text-static-white">Touch</span>
-                  <FancyButton.Icon as="span">
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-5 text-static-white">
-                      <path d="M6.16689 5.26667L13.2419 2.90834C16.4169 1.85001 18.1419 3.58334 17.0919 6.75834L14.7336 13.8333C13.1502 18.5917 10.5502 18.5917 8.96689 13.8333L8.26689 11.7333L6.16689 11.0333C1.40856 9.45001 1.40856 6.85834 6.16689 5.26667Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                      <path d="M8.4248 11.375L11.4081 8.38336" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </FancyButton.Icon>
-                </>
-              )}
-            </FancyButton.Root>
-          </div>
+          {/* Action Buttons - Replaced with component */}
+          <ProfileActionButtons
+            targetUser={userData}
+            currentUser={currentUserProfile}
+            isLoadingChat={isLoadingChat}
+            onHire={handleFollowClick}
+            onMessage={handleOpenChat}
+          />
 
           {/* Display Chat Error */}
           {chatError && (
@@ -500,7 +469,8 @@ const ReviewListItem = () => {
 };
 
 // User Profile Page Component 
-export default function UserProfilePage({ params }: { params: { id: string } }) {
+export default function UserProfilePage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params); // Unwrap the promise
   const { user: currentUser } = useAuth();
   const [activeTab, setActiveTab] = useState('Order'); // Default to Order tab
   const [userData, setUserData] = useState<User | null>(null);
@@ -509,7 +479,7 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingJobs, setIsLoadingJobs] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const userId = params.id;
+  const userId = resolvedParams.id; // Access id from the resolved params
 
   // Fetch user data when component mounts or userId changes
   useEffect(() => {
