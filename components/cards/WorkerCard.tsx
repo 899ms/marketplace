@@ -28,11 +28,11 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
 
   return (
     <div
-      className='shadow-sm hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 transition-all'
+      className='shadow-sm hover:shadow-md overflow-hidden border border-stroke-soft-200 bg-bg-white-0 p-4 transition-all max-w-[334.67px] max-h-[198px] rounded-xl flex flex-col gap-6'
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
-      <div className='mb-2 flex items-start justify-between'>
+      <div className='flex items-start justify-between'>
         <div className='flex items-center gap-2'>
           <Avatar.Root size='48' color='sky'>
             {avatarUrl ? (
@@ -73,9 +73,9 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
         </div>
       </div>
 
-      <Divider.Root className='my-5' />
+      <Divider.Root />
 
-      <p className='text-[#525866] mb-3 line-clamp-2 text-[14px]'>
+      <p className='text-[#525866] line-clamp-2 text-[14px]'>
         {bio}
       </p>
       <div className='flex flex-wrap gap-1'>
