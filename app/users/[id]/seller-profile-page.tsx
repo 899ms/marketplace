@@ -148,6 +148,8 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
                     url={item.url}
                     title={item.title}
                     remarks={item.remarks ?? ''}
+                    sellerName={user.full_name ?? user.username ?? 'Seller'}
+                    sellerAvatarUrl={user.avatar_url ?? null}
                     duration={`0:${(i % 60).toString().padStart(2, '0')}`}
                     bpm={`${90 + (i * 5) % 60} BPM`}
                     genres={['Pop', 'Electronic', 'Vocal'].slice(i % 2, (i % 2) + 2)}
@@ -209,6 +211,8 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
                   url={item.url}
                   title={item.title}
                   remarks={item.remarks ?? ''}
+                  sellerName={user.full_name ?? user.username ?? 'Seller'}
+                  sellerAvatarUrl={user.avatar_url ?? null}
                   duration={`0:${(index % 60).toString().padStart(2, '0')}`}
                   bpm={`${90 + (index * 5) % 60} BPM`}
                   genres={['Pop', 'Electronic', 'Vocal'].slice(index % 2, (index % 2) + 2)}

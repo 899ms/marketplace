@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useRef } from 'react';
+import React from 'react';
+import { useAudioPlayer } from '@/contexts/AudioContext';
 import * as Badge from '@/components/ui/badge';
 import { RiPlayCircleFill, RiPauseCircleFill, RiBookmarkLine } from '@remixicon/react';
 
@@ -8,69 +9,48 @@ interface WorkItemProps {
   url: string;
   title: string;
   remarks: string;
+  sellerName: string;
+  sellerAvatarUrl: string | null;
   duration?: string;
   bpm?: string;
   genres?: string[];
 }
 
-export function WorkItem({ url, title, remarks, duration, bpm, genres }: WorkItemProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const [actualDuration, setActualDuration] = useState<string | null>(null);
+export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, duration, bpm, genres }: WorkItemProps) {
+  const {
+    loadTrack,
+    currentTrack,
+    currentSeller,
+    isPlaying,
+  } = useAudioPlayer();
 
-  const togglePlayPause = () => {
-    if (!audioRef.current) return;
+  const isActiveTrack = currentTrack?.url === url;
 
-    if (isPlaying) {
-      audioRef.current.pause();
-    } else {
-      audioRef.current.play();
-    }
-    setIsPlaying(!isPlaying);
-  };
-
-  const handleAudioEnd = () => {
-    setIsPlaying(false);
-  };
-
-  const formatTime = (seconds: number): string => {
-    if (isNaN(seconds) || seconds === Infinity) return '--:--';
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
-  const handleMetadataLoaded = () => {
-    if (audioRef.current) {
-      setActualDuration(formatTime(audioRef.current.duration));
-    }
+  const handlePlayClick = () => {
+    loadTrack(
+      { url, title, remarks },
+      { name: sellerName, avatarUrl: sellerAvatarUrl }
+    );
   };
 
   return (
     <div className="flex items-center justify-between border-b border-stroke-soft-200 py-4 last:border-b-0">
       {/* 1. Play + Info */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 min-w-0">
         <button
-          onClick={togglePlayPause}
+          onClick={handlePlayClick}
           className="bg-bg-subtle-100 hover:bg-bg-subtle-200 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors"
         >
-          {isPlaying ? (
+          {isActiveTrack && isPlaying ? (
             <RiPauseCircleFill className="size-8 text-text-strong-950" />
           ) : (
             <RiPlayCircleFill className="size-8 text-text-strong-950" />
           )}
         </button>
-        <div>
-          <p className="font-medium text-text-strong-950">{title}</p>
-          <p className="text-xs text-text-secondary-600">{remarks}</p>
+        <div className="min-w-0">
+          <p className="font-medium text-text-strong-950 truncate">{title}</p>
+          <p className="text-xs text-text-secondary-600 truncate">{remarks}</p>
         </div>
-        <audio
-          ref={audioRef}
-          src={url}
-          onEnded={handleAudioEnd}
-          onLoadedMetadata={handleMetadataLoaded}
-          preload="metadata"
-        />
       </div>
 
       {/* 2. Tags (middle split) */}
@@ -90,7 +70,7 @@ export function WorkItem({ url, title, remarks, duration, bpm, genres }: WorkIte
       {/* 3. Duration/BPM + Bookmark */}
       <div className="flex items-center gap-7">
         <div className="text-left">
-          <p className="text-paragraph-sm text-gray-600">{actualDuration ?? '--:--'}</p>
+          <p className="text-paragraph-sm text-gray-600">{duration ?? '--:--'}</p>
           <p className="text-xs text-gray-600">{bpm ?? '-- BPM'}</p>
         </div>
         <button className="text-icon-secondary-400 hover:text-icon-primary-500 shrink-0">
