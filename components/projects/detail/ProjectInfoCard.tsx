@@ -22,9 +22,9 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
   proposals,
 }) => {
   return (
-    <div>
+    <div className="m-[20px]">
       {/* Budget */}
-      <div className="flex items-center justify-between p-2">
+      <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
           <RiMoneyCnyCircleLine className="text-icon-secondary-400 size-5" />
           <span className="text-sm font-medium text-gray-600">
@@ -37,7 +37,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
       </div>
 
       {/* Release time */}
-      <div className="flex items-center justify-between p-2">
+      <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
           <RiTimeLine className="text-icon-secondary-400 size-5" />
           <span className="text-sm font-medium text-gray-600">
@@ -50,7 +50,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
       </div>
 
       {/* Deadline */}
-      <div className="flex items-center justify-between p-2">
+      <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
           <RiCalendarLine className="text-icon-secondary-400 size-5" />
           <span className="text-sm font-medium text-gray-600">
@@ -63,7 +63,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
       </div>
 
       {/* Proposals */}
-      <div className="flex items-center justify-between p-2">
+      <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
           <RiGroupLine className="text-icon-secondary-400 size-5" />
           <span className="text-sm font-medium text-gray-600">
