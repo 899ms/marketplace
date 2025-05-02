@@ -20,6 +20,7 @@ import {
   MusicItem,
 } from './types';
 import { z } from 'zod';
+import { PostgrestError } from '@supabase/supabase-js'; // Import PostgrestError for better error typing
 
 /**
  * User-related database operations
@@ -320,6 +321,181 @@ export const userOperations = {
     } catch (err) {
       console.error(`getUserMusicData Unexpected error for ID ${userId}:`, err);
       return [];
+    }
+  },
+
+  // Upload music file, get URL, and update user's music_data
+  async uploadUserMusic(
+    userId: string,
+    file: File,
+    title: string,
+    remarks: string | null,
+  ): Promise<{
+    success: boolean;
+    error?: string | PostgrestError | null;
+    updatedMusicData?: MusicItem[];
+  }> {
+    console.log(
+      `uploadUserMusic: Starting upload for user ${userId}, file: ${file.name}`,
+    );
+
+    if (!userId) return { success: false, error: 'User ID is required.' };
+    if (!file) return { success: false, error: 'File is required.' };
+    if (!title) return { success: false, error: 'Title is required.' };
+
+    const bucketName = 'music-storage';
+    // Create a unique file path, e.g., userId/timestamp-filename
+    const filePath = `${userId}/${Date.now()}-${file.name}`;
+
+    try {
+      // 1. Upload file to Supabase Storage
+      console.log(
+        `uploadUserMusic: Uploading to bucket ${bucketName}, path: ${filePath}`,
+      );
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from(bucketName)
+        .upload(filePath, file);
+
+      if (uploadError) {
+        console.error(
+          `uploadUserMusic: Storage upload error for ${filePath}:`,
+          uploadError,
+        );
+        return {
+          success: false,
+          error: `Storage upload failed: ${uploadError.message}`,
+        };
+      }
+      console.log(`uploadUserMusic: File uploaded successfully`, uploadData);
+
+      // 2. Get the public URL of the uploaded file
+      const { data: urlData } = supabase.storage
+        .from(bucketName)
+        .getPublicUrl(filePath);
+
+      if (!urlData || !urlData.publicUrl) {
+        console.error(
+          `uploadUserMusic: Could not get public URL for ${filePath}`,
+        );
+        // Attempt to delete the orphaned file if URL retrieval fails
+        await supabase.storage.from(bucketName).remove([filePath]);
+        return {
+          success: false,
+          error: 'Failed to get file URL after upload.',
+        };
+      }
+      const publicUrl = urlData.publicUrl;
+      console.log(`uploadUserMusic: Public URL obtained: ${publicUrl}`);
+
+      // 3. Fetch current music_data for the user
+      const { data: userData, error: fetchError } = await supabase
+        .from('users')
+        .select('music_data')
+        .eq('id', userId)
+        .single();
+
+      if (fetchError) {
+        console.error(
+          `uploadUserMusic: Error fetching current music_data for ${userId}:`,
+          fetchError,
+        );
+        // Attempt cleanup
+        await supabase.storage.from(bucketName).remove([filePath]);
+        return {
+          success: false,
+          error: `Failed to fetch user data: ${fetchError.message}`,
+        };
+      }
+
+      // Initialize music_data if null or not an array
+      const currentMusicData: MusicItem[] = (
+        userData?.music_data && Array.isArray(userData.music_data)
+          ? userData.music_data
+          : []
+      ).filter((item) => {
+        try {
+          // Filter out any invalid existing items before adding new one
+          MusicItemSchema.parse(item);
+          return true;
+        } catch {
+          return false;
+        }
+      });
+
+      // 4. Prepare new music item
+      const newMusicItem: MusicItem = {
+        url: publicUrl,
+        title: title,
+        remarks: remarks,
+      };
+
+      // Validate the new item just in case
+      try {
+        MusicItemSchema.parse(newMusicItem);
+      } catch (validationError) {
+        console.error(
+          'uploadUserMusic: New music item failed validation:',
+          validationError,
+        );
+        await supabase.storage.from(bucketName).remove([filePath]);
+        return {
+          success: false,
+          error: 'Generated music item data is invalid.',
+        };
+      }
+
+      // 5. Update user's music_data with the new item appended
+      const updatedMusicData = [...currentMusicData, newMusicItem];
+
+      const { data: updateData, error: updateError } = await supabase
+        .from('users')
+        .update({ music_data: updatedMusicData })
+        .eq('id', userId)
+        .select('music_data') // Select the updated data to return it
+        .single();
+
+      if (updateError) {
+        console.error(
+          `uploadUserMusic: Error updating music_data for ${userId}:`,
+          updateError,
+        );
+        // Attempt cleanup
+        await supabase.storage.from(bucketName).remove([filePath]);
+        return {
+          success: false,
+          error: `Failed to update user profile: ${updateError.message}`,
+          updatedMusicData: currentMusicData,
+        }; // Return old data on failure
+      }
+
+      console.log(
+        `uploadUserMusic: Successfully updated music_data for user ${userId}`,
+      );
+      return {
+        success: true,
+        updatedMusicData: updateData?.music_data || updatedMusicData,
+      }; // Return newly selected or optimistic data
+    } catch (err: any) {
+      console.error(
+        `uploadUserMusic: Unexpected error during upload process for ${userId}:`,
+        err,
+      );
+      // Attempt cleanup if filePath is defined
+      if (filePath) {
+        await supabase.storage
+          .from(bucketName)
+          .remove([filePath])
+          .catch((cleanupErr) => {
+            console.error(
+              'uploadUserMusic: Failed to cleanup storage during unexpected error:',
+              cleanupErr,
+            );
+          });
+      }
+      return {
+        success: false,
+        error: err.message || 'An unexpected error occurred during upload.',
+      };
     }
   },
 };

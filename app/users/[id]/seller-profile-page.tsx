@@ -2,14 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
-import BlockFileUploadDialog from '@/components/blocks/block-file-upload-dialog';
+import MusicUploadDialog from '@/components/blocks/music-upload-dialog';
 import { ProfilePageSidebar } from '@/components/worker/profile/profile-page-sidebar';
 import { ServiceCard } from '@/components/worker/profile/service-card';
 import { WorkItem } from '@/components/worker/profile/work-item';
 import { ReviewItem } from '@/components/worker/profile/review-item';
 import { AboutSection } from '@/components/worker/profile/AboutSection';
 import { RiArrowUpCircleLine, RiUploadCloud2Line, RiLoader4Line } from '@remixicon/react';
-import { User, Service } from '@/utils/supabase/types';
+import { User, Service, MusicItem } from '@/utils/supabase/types';
 import { serviceOperations } from '@/utils/supabase/database';
 
 // --- Restore Mock Data ---
@@ -140,9 +140,18 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
               </button>
             </div>
             <div className="divide-y divide-stroke-soft-200">
-              {workerData.workItems.length > 0 ? (
-                workerData.workItems.map((item, i) => (
-                  <WorkItem key={i} item={item} />
+              {/* Use user.music_data if available */}
+              {user.music_data && user.music_data.length > 0 ? (
+                user.music_data.map((item: MusicItem, i) => (
+                  <WorkItem
+                    key={i}
+                    url={item.url}
+                    title={item.title}
+                    remarks={item.remarks ?? ''}
+                    duration={`0:${(i % 60).toString().padStart(2, '0')}`}
+                    bpm={`${90 + (i * 5) % 60} BPM`}
+                    genres={['Pop', 'Electronic', 'Vocal'].slice(i % 2, (i % 2) + 2)}
+                  />
                 ))
               ) : (
                 <p className="py-4 text-text-secondary-400">No work items uploaded yet.</p>
@@ -192,9 +201,18 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
       case 'work':
         return (
           <div className='divide-y divide-stroke-soft-200'>
-            {workerData.workItems.length > 0 ? (
-              workerData.workItems.map((item, index) => (
-                <WorkItem key={index} item={item} />
+            {/* TODO: Add loading state for music_data if fetched separately */}
+            {user.music_data && user.music_data.length > 0 ? (
+              user.music_data.map((item: MusicItem, index) => (
+                <WorkItem
+                  key={index}
+                  url={item.url}
+                  title={item.title}
+                  remarks={item.remarks ?? ''}
+                  duration={`0:${(index % 60).toString().padStart(2, '0')}`}
+                  bpm={`${90 + (index * 5) % 60} BPM`}
+                  genres={['Pop', 'Electronic', 'Vocal'].slice(index % 2, (index % 2) + 2)}
+                />
               ))
             ) : (
               <p className="py-4 text-text-secondary-400">No work items uploaded yet.</p>
@@ -245,6 +263,13 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
     }
   };
 
+  // TODO: Add state and handler for updated music data if needed for refresh
+  const handleUploadComplete = (updatedMusicData: any[]) => {
+    console.log('Upload complete, new music data:', updatedMusicData);
+    // Here you could potentially update local state to refresh the work items
+    // For now, just logging it.
+  };
+
   return (
     <div className='container mx-auto px-4 py-10'>
       {/* Two-column layout */}
@@ -286,10 +311,12 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
         </div>
       </div>
 
-      {/* File Upload Modal */}
-      <BlockFileUploadDialog
+      {/* File Upload Modal - Use the new MusicUploadDialog */}
+      <MusicUploadDialog
         open={isUploadModalOpen}
         onOpenChange={setIsUploadModalOpen}
+        userId={user.id}
+        onUploadComplete={handleUploadComplete}
       />
     </div>
   );
