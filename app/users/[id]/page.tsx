@@ -455,7 +455,7 @@ const ReviewListItem = () => {
       <div className='flex items-start justify-between mb-3'>
         {/* LEFT SIDE: Avatar + User Info */}
         <div className='flex items-start gap-3'>
-          <Avatar.Root size='40' className='shrink-0'>
+          <Avatar.Root size='48' className='shrink-0'>
             <Avatar.Image src={review.avatarUrl} alt={review.name} />
           </Avatar.Root>
 
