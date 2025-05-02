@@ -374,7 +374,7 @@ const OrderListItem = ({ job, loggedInUserType }: { job: Job; loggedInUserType?:
   return (
     <Link
       href={`/projects/${job.id}`}
-      className='block border-b border-stroke-soft-200 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 first:border-t last:border-b-0'
+      className='block border-b border-stroke-soft-200 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 last:border-b-0'
     >
       <div className='flex items-start justify-between gap-4 px-2'>
         <div className='flex-1 max-w-[80%]'>
@@ -396,7 +396,7 @@ const OrderListItem = ({ job, loggedInUserType }: { job: Job; loggedInUserType?:
           </div>
 
           {/* Description */}
-          <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm'>
+          <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm mt-2.5'>
             {job.description || "No description provided."}
           </p>
         </div>
@@ -412,6 +412,7 @@ const OrderListItem = ({ job, loggedInUserType }: { job: Job; loggedInUserType?:
               mode='stroke'
               size='small'
               onClick={handleApply}
+              className="mt-2.5"
             >
               Apply
               <Button.Icon as={RiArrowRightSLine} />
@@ -454,7 +455,7 @@ const ReviewListItem = () => {
       <div className='flex items-start justify-between mb-3'>
         {/* LEFT SIDE: Avatar + User Info */}
         <div className='flex items-start gap-3'>
-          <Avatar.Root size='40' className='shrink-0'>
+          <Avatar.Root size='48' className='shrink-0'>
             <Avatar.Image src={review.avatarUrl} alt={review.name} />
           </Avatar.Root>
 
@@ -685,32 +686,32 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
 
   return (
     <Notification.Provider>
-      <div className='flex flex-1 gap-6 px-6 pt-6'>
+      <div className='flex flex-1 gap-8 px-6 pt-6'>
         <UserSidebar userData={userData} />
-        <main className="flex-1">
+        <main className="flex-1 max-w-[1000px] max-h-[964px]">
           {/* center everything horizontally */}
-          <div className="w-full lg:max-w-[1000px] mx-auto px-4 sm:px-6">
+          <div className="w-full lg:max-w-[1000px] mx-auto flex flex-col gap-4">
             {/* tab bar */}
-            <div className="mb-6 border-t-0">
+            <div className="border-t-0">
               <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
-                <TabMenuHorizontal.List className="flex items-center gap-2 border-none">
+                <TabMenuHorizontal.List className="flex items-center gap-2 border-none border-y-0">
                   <TabMenuHorizontal.Trigger
                     value="Order"
                     className="
-                      px-4 pb-2 text-label-lg font-medium 
+                      px-4 pb-2 font-medium 
                       text-gray-400 
                       data-[state=active]:text-black
-                    "
+                      text-[24px]"
                   >
                     Order
                   </TabMenuHorizontal.Trigger>
                   <TabMenuHorizontal.Trigger
                     value="Review"
                     className="
-                      px-4 pb-2 text-label-lg font-medium 
+                      px-4 pb-2 font-medium 
                       text-gray-400 
                       data-[state=active]:text-black
-                    "
+                      text-[24px]"
                   >
                     Review
                   </TabMenuHorizontal.Trigger>
@@ -719,7 +720,7 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
             </div>
 
             {/* content panel */}
-            <div className="p-4">
+            <div className="pb-4">
               {renderTabContent()}
             </div>
           </div>
