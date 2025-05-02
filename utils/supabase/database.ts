@@ -16,6 +16,8 @@ import {
   Message,
   ContractMilestoneSchema,
   ContractMilestone,
+  MusicItemSchema,
+  MusicItem,
 } from './types';
 import { z } from 'zod';
 
@@ -60,6 +62,7 @@ export const userOperations = {
         bio: data.bio,
         balance: typeof data.balance === 'number' ? data.balance : 1000,
         language: ['en', 'zh'].includes(data.language) ? data.language : 'zh',
+        music_data: Array.isArray(data.music_data) ? data.music_data : null,
       };
 
       console.log(
@@ -92,6 +95,7 @@ export const userOperations = {
           bio: null,
           balance: 1000,
           language: 'zh',
+          music_data: null,
         };
       }
     } catch (err) {
@@ -256,6 +260,66 @@ export const userOperations = {
     } catch (err) {
       console.error('Unexpected error in getWorkersWithPagination:', err);
       return { workers: [], total: 0 };
+    }
+  },
+
+  // Get music data for a specific user (intended for sellers)
+  async getUserMusicData(userId: string): Promise<MusicItem[]> {
+    console.log(`getUserMusicData: Fetching music data for user ID: ${userId}`);
+
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('music_data')
+        .eq('id', userId)
+        .single();
+
+      if (error) {
+        console.error(
+          `getUserMusicData DB Error for ID ${userId}:`,
+          error.message,
+        );
+        return [];
+      }
+
+      if (!data || !data.music_data || !Array.isArray(data.music_data)) {
+        console.log(
+          `getUserMusicData: No valid music_data found for ID ${userId}`,
+        );
+        return [];
+      }
+
+      // Validate the array against the MusicItemSchema
+      try {
+        const parsedMusicData = z.array(MusicItemSchema).parse(data.music_data);
+        console.log(
+          `getUserMusicData: Successfully parsed music data for ID ${userId}:`,
+          parsedMusicData.length,
+          'items',
+        );
+        return parsedMusicData;
+      } catch (validationErr) {
+        console.error(
+          `getUserMusicData Zod validation errors for ID ${userId}:`,
+          validationErr,
+        );
+        // Optionally, filter out invalid items instead of returning empty
+        const validItems = data.music_data.filter((item) => {
+          try {
+            MusicItemSchema.parse(item);
+            return true;
+          } catch {
+            return false;
+          }
+        });
+        console.warn(
+          `getUserMusicData: Returning ${validItems.length} valid items after filtering.`,
+        );
+        return validItems;
+      }
+    } catch (err) {
+      console.error(`getUserMusicData Unexpected error for ID ${userId}:`, err);
+      return [];
     }
   },
 };
