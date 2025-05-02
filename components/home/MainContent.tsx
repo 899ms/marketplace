@@ -101,7 +101,7 @@ const MainContent = () => {
   }, []);
 
   return (
-    <main className='flex-1 mt-[3.5rem]'>
+    <main className='flex-1 '>
       <Banner />
 
       {/* Hot Services Section */}

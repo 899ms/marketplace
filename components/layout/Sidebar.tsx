@@ -170,7 +170,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
         </div>
         <Divider.Root />
         {/* Navigation Section */}
-        <nav className='px-4 max-w-[300px] max-h-[228px] '>
+        <nav className='px-4 max-w-[300px] max-h-[220px] '>
           <ul className='flex flex-col gap-1'>
             <li><SidebarLink href='/home' icon={RiHomeLine} label='Home' /></li>
             <li><SidebarLink href='/settings' icon={RiFileList2Line} label='Order' /></li>
