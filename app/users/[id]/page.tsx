@@ -28,6 +28,7 @@ import {
 } from '@remixicon/react';
 import { clsx } from 'clsx';
 import { useNotification } from '@/hooks/use-notification';
+import SellerProfilePage from '@/app/users/[id]/seller-profile-page';
 
 // Helper function to get currency symbol
 const getCurrencySymbol = (currency: string): string => {
@@ -614,6 +615,62 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
     );
   }
 
+  // --- Conditional Rendering for Seller ---
+  if (userData?.user_type === 'seller') {
+    // Render the worker detail page if the user is a seller
+    // NOTE: WorkerDetailPage currently uses its own mock data.
+    // We will need to pass actual data later.
+    return <SellerProfilePage />;
+  }
+  // --- End Conditional Rendering ---
+
+  // Function to render content based on active tab
+  const renderTabContent = () => {
+    if (activeTab === "Order") {
+      return (
+        <div className="flex flex-col divide-y divide-stroke-soft-200">
+          {isLoadingJobs ? (
+            // Loading skeleton for jobs
+            <>
+              <div className="py-4 animate-pulse">
+                <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              </div>
+              <div className="py-4 animate-pulse">
+                <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              </div>
+            </>
+          ) : userJobs.length > 0 ? (
+            // Pass loggedInUserType to OrderListItem
+            userJobs.map((job) => (
+              <OrderListItem
+                key={job.id}
+                job={job}
+                loggedInUserType={currentUserProfile?.user_type}
+              />
+            ))
+          ) : (
+            // No jobs found
+            <div className="py-6 text-center">
+              <p className="text-gray-500">No orders found for this user.</p>
+            </div>
+          )}
+        </div>
+      );
+    } else if (activeTab === "Review") {
+      return (
+        <div className="flex flex-col divide-y divide-stroke-soft-200">
+          {reviewsData.map((review, i) => (
+            <ReviewListItem key={i} />
+          ))}
+        </div>
+      );
+    }
+  };
+
   return (
     <Notification.Provider>
       <div className='flex flex-1 gap-6 px-6 pt-6'>
@@ -651,46 +708,7 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
 
             {/* content panel */}
             <div className="p-4">
-              {activeTab === "Order" && (
-                <div className="flex flex-col divide-y divide-stroke-soft-200">
-                  {isLoadingJobs ? (
-                    // Loading skeleton for jobs
-                    <>
-                      <div className="py-4 animate-pulse">
-                        <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                      </div>
-                      <div className="py-4 animate-pulse">
-                        <div className="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-                      </div>
-                    </>
-                  ) : userJobs.length > 0 ? (
-                    // Pass loggedInUserType to OrderListItem
-                    userJobs.map((job) => (
-                      <OrderListItem
-                        key={job.id}
-                        job={job}
-                        loggedInUserType={currentUserProfile?.user_type}
-                      />
-                    ))
-                  ) : (
-                    // No jobs found
-                    <div className="py-6 text-center">
-                      <p className="text-gray-500">No orders found for this user.</p>
-                    </div>
-                  )}
-                </div>
-              )}
-              {activeTab === "Review" && (
-                <div className="flex flex-col divide-y divide-stroke-soft-200">
-                  {reviewsData.map((review, i) => (
-                    <ReviewListItem key={i} />
-                  ))}
-                </div>
-              )}
+              {renderTabContent()}
             </div>
           </div>
         </main>

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import BlockFileUploadDialog from '@/components/blocks/block-file-upload-dialog';
+// Adjust import paths if necessary based on the new location
 import { ProfileSidebar } from '@/components/worker/profile/profile-sidebar';
 import { ServiceCard } from '@/components/worker/profile/service-card';
 import { WorkItem } from '@/components/worker/profile/work-item';
@@ -10,7 +11,7 @@ import { ReviewItem } from '@/components/worker/profile/review-item';
 import { AboutSection } from '@/components/worker/profile/AboutSection';
 import { RiArrowUpCircleLine, RiUploadCloud2Line } from '@remixicon/react';
 
-// Mock data for the worker profile
+// Mock data for the worker profile (Keep for now, replace later)
 const workerData = {
   id: '1',
   name: 'Cleve Music',
@@ -89,26 +90,50 @@ const workerData = {
     {
       id: '1',
       title: 'Draw catchy and eye-catching illustrations anime',
-      image: 'bg-gradient-to-br from-blue-400 to-purple-500',
       price: 101,
-      rating: 4.9,
-      reviewCount: 125,
+      description: 'Detailed description for catchy anime illustrations.',
+      seller_id: 'seller-123',
+      audio_url: null,
+      lead_time: 3,
+      currency: 'USD',
+      images: [{ url: 'https://placekitten.com/300/160', name: 'kitten1.jpg', size: 12345 }],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      category_id: 'cat-anime',
+      skill_levels: ['Intermediate'],
+      status: 'active',
     },
     {
       id: '2',
-      title: 'Draw catchy and eye-catching illustrations anime',
-      image: 'bg-gradient-to-br from-blue-400 to-purple-500',
-      price: 101,
-      rating: 4.9,
-      reviewCount: 125,
+      title: 'Write compelling song lyrics',
+      price: 75,
+      description: 'Professional songwriting services for various genres.',
+      seller_id: 'seller-123',
+      audio_url: null,
+      lead_time: 5,
+      currency: 'USD',
+      images: [{ url: 'https://placekitten.com/300/161', name: 'kitten2.jpg', size: 23456 }],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      category_id: 'cat-songwriting',
+      skill_levels: ['Expert'],
+      status: 'active',
     },
     {
       id: '3',
-      title: 'Draw catchy and eye-catching illustrations anime',
-      image: 'bg-gradient-to-br from-blue-400 to-purple-500',
-      price: 101,
-      rating: 4.9,
-      reviewCount: 125,
+      title: 'Mix and master your audio track',
+      price: 250,
+      description: 'High-quality audio mixing and mastering for your songs.',
+      seller_id: 'seller-123',
+      audio_url: 'https://example.com/audio-sample.mp3',
+      lead_time: 7,
+      currency: 'USD',
+      images: [{ url: 'https://placekitten.com/300/162', name: 'kitten3.jpg', size: 34567 }],
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      category_id: 'cat-mixing',
+      skill_levels: ['Beginner', 'Intermediate', 'Expert'],
+      status: 'active',
     },
   ],
   reviews: [
@@ -137,7 +162,8 @@ const workerData = {
   ],
 };
 
-export default function WorkerDetailPage() {
+// Renamed the component
+export default function SellerProfilePage() {
   const worker = workerData;
   const [activeTab, setActiveTab] = useState('about');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -148,7 +174,6 @@ export default function WorkerDetailPage() {
       case 'about':
         return (
           <>
-
             <AboutSection about={worker.about.description} />
 
             {/* 1) Work */}
@@ -181,12 +206,16 @@ export default function WorkerDetailPage() {
               ))}
             </div>
 
-
             {/* 2) Services */}
             <h3 className="inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Service</h3>
             <div className='mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
               {worker.services.map((svc) => (
-                <ServiceCard key={svc.id} service={svc} />
+                <ServiceCard
+                  key={svc.id}
+                  service={svc}
+                  rating={worker.rating}
+                  reviewCount={worker.reviewCount}
+                />
               ))}
             </div>
 
@@ -211,7 +240,12 @@ export default function WorkerDetailPage() {
         return (
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
             {worker.services.map((service) => (
-              <ServiceCard key={service.id} service={service} />
+              <ServiceCard
+                key={service.id}
+                service={service}
+                rating={worker.rating}
+                reviewCount={worker.reviewCount}
+              />
             ))}
           </div>
         );
@@ -276,4 +310,4 @@ export default function WorkerDetailPage() {
       />
     </div>
   );
-}
+} 
