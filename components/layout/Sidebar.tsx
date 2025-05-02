@@ -120,11 +120,11 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
   // --- End Notification Handler ---
 
   return (
-    <aside className='hidden w-64 shrink-0 lg:block xl:w-72'>
-      <div className='shadow-sm sticky top-20 flex flex-col gap-6 rounded-xl border border-stroke-soft-200 bg-bg-white-0 pb-4 mb-6'>
+    <aside className='hidden w-[300px] max-h-[682px] shrink-0 lg:block'>
+      <div className='sticky top-20 flex flex-col gap-6 border border-stroke-soft-200 bg-bg-white-0 pb-5 mb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)] rounded-[20px]'>
         {' '}
         {/* Profile Section */}
-        <div className='flex flex-col items-center gap-3 pb-3 pt-4 px-4'>
+        <div className='flex flex-col items-center gap-3 pb-3 pt-4 px-4 max-w-[300px] max-h-[228px]'>
           {displayAvatar ? (
             <Avatar.Root size='80'>
               <Avatar.Image src={displayAvatar} alt={displayName} />
@@ -156,7 +156,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
                 <path d="M4.13966 9.33234L3.61681 9.72456L1.76611 11.1373C2.94145 13.4218 5.35039 15 8.14261 15C10.0712 15 11.688 14.3763 12.8699 13.3073L10.5517 11.5445C9.91532 11.9645 9.10362 12.2191 8.14261 12.2191C6.28545 12.2191 4.70756 10.9909 4.14258 9.33638L4.13966 9.33234Z" fill="#34A853" />
                 <path d="M1.76619 4.86285C1.27919 5.80463 1 6.86737 1 8.00007C1 9.13278 1.27919 10.1955 1.76619 11.1373C1.76619 11.1436 4.14288 9.33003 4.14288 9.33003C4.00002 8.91003 3.91558 8.46461 3.91558 8C3.91558 7.5354 4.00002 7.08997 4.14288 6.66997L1.76619 4.86285Z" fill="#FBBC05" />
                 <path d="M8.14275 3.78726C9.19473 3.78726 10.1298 4.14361 10.8766 4.83089L12.922 2.82638C11.6817 1.69368 10.0714 1 8.14275 1C5.35054 1 2.94145 2.57181 1.76611 4.86272L4.14273 6.66999C4.70764 5.01543 6.2856 3.78726 8.14275 3.78726Z" fill="#EA4335" />
-              </svg>Google
+              </svg><span className="text-[11px]">Google</span>
             </div>
             <div className='flex flex-row items-center gap-1 text-[#525866]'>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -164,13 +164,13 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
                 <path d="M4.13966 9.33234L3.61681 9.72456L1.76611 11.1373C2.94145 13.4218 5.35039 15 8.14261 15C10.0712 15 11.688 14.3763 12.8699 13.3073L10.5517 11.5445C9.91532 11.9645 9.10362 12.2191 8.14261 12.2191C6.28545 12.2191 4.70756 10.9909 4.14258 9.33638L4.13966 9.33234Z" fill="#34A853" />
                 <path d="M1.76619 4.86285C1.27919 5.80463 1 6.86737 1 8.00007C1 9.13278 1.27919 10.1955 1.76619 11.1373C1.76619 11.1436 4.14288 9.33003 4.14288 9.33003C4.00002 8.91003 3.91558 8.46461 3.91558 8C3.91558 7.5354 4.00002 7.08997 4.14288 6.66997L1.76619 4.86285Z" fill="#FBBC05" />
                 <path d="M8.14275 3.78726C9.19473 3.78726 10.1298 4.14361 10.8766 4.83089L12.922 2.82638C11.6817 1.69368 10.0714 1 8.14275 1C5.35054 1 2.94145 2.57181 1.76611 4.86272L4.14273 6.66999C4.70764 5.01543 6.2856 3.78726 8.14275 3.78726Z" fill="#EA4335" />
-              </svg>Google
+              </svg><span className="text-[11px]">Google</span>
             </div>
           </div>
         </div>
         <Divider.Root />
         {/* Navigation Section */}
-        <nav className='px-4'>
+        <nav className='px-4 max-w-[300px] max-h-[220px] '>
           <ul className='flex flex-col gap-1'>
             <li><SidebarLink href='/home' icon={RiHomeLine} label='Home' /></li>
             <li><SidebarLink href='/settings' icon={RiFileList2Line} label='Order' /></li>
@@ -181,8 +181,8 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
         </nav>
         <Divider.Root />
         {/* About Section */}
-        <div className='px-4'>
-          <div className='mb-3 flex items-center justify-between'>
+        <div className='px-4 max-w-[300px] max-h-[202px]  flex flex-col'>
+          <div className='mb-1 flex items-center justify-between'>
             <h3 className='text-[14px] text-[#525866] text-label-md font-medium'>About</h3>
             {!isEditingBio && (
               <button
@@ -226,7 +226,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
               </div>
             </div>
           ) : (
-            <p className='text-[12px] mb-4 text-[#525866]'>
+            <p className='text-[12px] text-[#525866]'>
               {displayBio}
             </p>
           )}

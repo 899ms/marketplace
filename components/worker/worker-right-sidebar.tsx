@@ -45,7 +45,7 @@ const MeetingCard = (
           }
           <p className='text-[12px] text-[#525866] leading-none'>
 
-            {status === 'Timeout' ? <div className='rounded-lg bg-[#FB3748] text-white px-2 py-1 flex flex-row gap-1 items-center'>
+            {status === 'Timeout' ? <div className='rounded-full bg-[#FB3748] text-white px-2 py-1 flex flex-row gap-1 items-center'>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11.2999 2.2998L14.5999 7.9998L11.2999 13.6998H4.6999L1.3999 7.9998L4.6999 2.2998H11.2999ZM7.3999 9.79981V10.9998H8.5999V9.79981H7.3999ZM7.3999 4.9998V8.5998H8.5999V4.9998H7.3999Z" fill="white" />
               </svg>
@@ -85,21 +85,21 @@ export function MeetingsWidget() {
         </TabMenuHorizontal.Trigger>
       </TabMenuHorizontal.List>
       <TabMenuHorizontal.Content value='7_days'>
-        <div className='flex flex-col gap-4 p-3'>
+        <div className='flex flex-col gap-2 p-3'>
           {meetings.map((meeting) => (
             <MeetingCard key={meeting.with} withName={meeting.with} deadline={meeting.deadline} budget={meeting.budget} status={meeting.status} />
           ))}
         </div>
       </TabMenuHorizontal.Content>
       <TabMenuHorizontal.Content value='15_days'>
-        <div className='flex flex-col gap-4 p-3'>
+        <div className='flex flex-col gap-2 p-3'>
           {meetings.map((meeting) => (
             <MeetingCard key={meeting.with} withName={meeting.with} deadline={meeting.deadline} budget={meeting.budget} status={meeting.status} />
           ))}
         </div>
       </TabMenuHorizontal.Content>
       <TabMenuHorizontal.Content value='30_days'>
-        <div className='flex flex-col gap-4 p-3'>
+        <div className='flex flex-col gap-2 p-3'>
           {meetings.map((meeting) => (
             <MeetingCard key={meeting.with} withName={meeting.with} deadline={meeting.deadline} budget={meeting.budget} status={meeting.status} />
           ))}
@@ -117,8 +117,8 @@ interface WorkerRightSidebarProps {
 // --- Worker Right Sidebar ---
 export function WorkerRightSidebar({ userProfile }: WorkerRightSidebarProps) {
   return (
-    <aside className='hidden w-64 shrink-0 lg:block xl:w-72 mt-[3.5rem]'>
-      <div className='shadow-sm sticky top-20 flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-white-0 pb-4 mb-6'>
+    <aside className='hidden w-64 shrink-0 lg:block min-w-[352px]'>
+      <div className='shadow-sm sticky top-20 flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-white-0  mb-6'>
         <CalendarWidget />
         <Divider.Root className='!mb-0 !pb-0' />
         <MeetingsWidget />

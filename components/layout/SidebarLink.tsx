@@ -12,7 +12,7 @@ interface SidebarLinkProps {
 }
 
 const SidebarLink = ({ href, icon: Icon, label, onClick }: SidebarLinkProps) => {
-  const commonClasses = 'text-text-primary-600 hover:bg-secondary-transparent-50 flex w-full items-center gap-2 rounded-full px-4 py-2 text-paragraph-sm text-left';
+  const commonClasses = 'text-text-primary-600 hover:bg-secondary-transparent-50 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-paragraph-sm text-left';
 
   const content = (
     <>
