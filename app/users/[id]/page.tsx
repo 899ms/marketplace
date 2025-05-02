@@ -27,7 +27,6 @@ import {
   RiArrowRightSLine,
   RiLoader4Line,
 } from '@remixicon/react';
-import { clsx } from 'clsx';
 import { useNotification } from '@/hooks/use-notification';
 import SellerProfilePage from '@/app/users/[id]/seller-profile-page';
 
