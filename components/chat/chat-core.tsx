@@ -488,7 +488,7 @@ export default function ChatCore({
 
   const containerClass = 'flex flex-col bg-white dark:bg-gray-800';
   const containerModeClass = isPopup
-    ? 'rounded-lg shadow-xl border dark:border-gray-700 overflow-hidden w-[800px] fixed bottom-4 right-4 z-50'
+    ? 'rounded-lg shadow-xl border dark:border-gray-700 overflow-hidden h-[700px] w-[800px] fixed bottom-4 right-4 z-50'
     : 'h-screen';
 
   return (

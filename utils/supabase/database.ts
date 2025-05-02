@@ -956,6 +956,98 @@ export const chatOperations = {
     }
   },
 
+  // Find an existing chat between two users or create a new one
+  async findOrCreateChat(
+    buyerId: string,
+    sellerId: string,
+  ): Promise<Chat | null> {
+    console.log(
+      `findOrCreateChat: Attempting to find/create chat between Buyer ${buyerId} and Seller ${sellerId}`,
+    );
+    if (!buyerId || !sellerId) {
+      console.error(
+        'findOrCreateChat: Both buyerId and sellerId are required.',
+      );
+      return null;
+    }
+    if (buyerId === sellerId) {
+      console.error(
+        'findOrCreateChat: buyerId and sellerId cannot be the same.',
+      );
+      return null;
+    }
+
+    try {
+      // 1. Check if a chat already exists between these two users
+      console.log(
+        `findOrCreateChat: Checking for existing chat between ${buyerId} and ${sellerId}`,
+      );
+      const { data: existingChats, error: findError } = await supabase
+        .from('chats')
+        .select('*')
+        .or(
+          `and(buyer_id.eq.${buyerId},seller_id.eq.${sellerId}),and(buyer_id.eq.${sellerId},seller_id.eq.${buyerId})`,
+        )
+        .limit(1);
+
+      // If the initial find query itself fails, stop here.
+      if (findError) {
+        console.error(
+          'findOrCreateChat: Error finding existing chat:',
+          findError,
+        );
+        return null; // Don't proceed if the check failed
+      }
+
+      // If an existing chat is found
+      if (existingChats && existingChats.length > 0) {
+        console.log(
+          `findOrCreateChat: Found existing chat ID: ${existingChats[0].id}`,
+        );
+        try {
+          // Try to parse the existing chat
+          const parsedChat = ChatSchema.parse(existingChats[0]);
+          return parsedChat; // Return the valid existing chat
+        } catch (parseError) {
+          console.error(
+            'findOrCreateChat: Error parsing existing chat data:',
+            parseError,
+          );
+          // If parsing fails, it indicates data inconsistency. Stop here.
+          return null; // Don't proceed to create a duplicate if parsing failed
+        }
+      }
+
+      // 2. If no chat exists (and the find query didn't error), create a new one
+      console.log(
+        'findOrCreateChat: No existing chat found, creating a new one.',
+      );
+      const newChat = await this.createChat({
+        buyer_id: buyerId,
+        seller_id: sellerId,
+        contract_id: null, // Explicitly set contract_id to null
+      });
+
+      if (newChat) {
+        console.log(
+          `findOrCreateChat: Successfully created new chat ID: ${newChat.id}`,
+        );
+        return newChat;
+      } else {
+        console.error(
+          'findOrCreateChat: Failed to create a new chat (createChat returned null).',
+        );
+        return null;
+      }
+    } catch (err) {
+      console.error(
+        'findOrCreateChat: Unexpected error during find/create process:',
+        err,
+      );
+      return null;
+    }
+  },
+
   // Get messages for a chat
   async getChatMessages(chatId: string): Promise<Message[]> {
     const { data, error } = await supabase

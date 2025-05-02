@@ -1,11 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Service } from '@/utils/supabase/types'; // Import the main Service type
+import { Service, Chat, Message, User } from '@/utils/supabase/types'; // Import Chat, Message, User
+import { useAuth } from '@/utils/supabase/AuthContext'; // Added useAuth
+import { chatOperations, userOperations } from '@/utils/supabase/database'; // Added chatOperations, userOperations
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
 import * as Tag from '@/components/ui/tag'; // Import Tag
+import { notification as toast } from '@/hooks/use-notification'; // Added import for toast
+import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper'; // Added ChatPopupWrapper
 import {
   RiStarFill,
   RiHeartLine,
@@ -17,6 +21,7 @@ import {
   RiMoneyCnyCircleLine,
   RiGroupLine,
   RiCalendarLine,
+  RiLoader4Line // Added loader icon
 } from '@remixicon/react';
 
 // Remove the old specific data interfaces
@@ -33,6 +38,30 @@ interface ServiceInfoRightProps {
 const dummyTools = ['Adobe Audition', 'Pro Tools', 'Logic Pro X', 'FL Studio'];
 
 export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
+  const { user: currentUser } = useAuth(); // Get current user
+  const [sellerProfile, setSellerProfile] = useState<User | null>(null); // State for seller profile
+  const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null); // State for current user profile
+  const [activeChat, setActiveChat] = useState<Chat | null>(null); // State for active chat
+  const [activeChatMessages, setActiveChatMessages] = useState<Message[]>([]); // State for messages
+  const [isLoadingChat, setIsLoadingChat] = useState(false); // State for loading chat
+  const [isLoadingMessages, setIsLoadingMessages] = useState(false); // Separate loading state for messages
+  const [chatError, setChatError] = useState<string | null>(null); // State for chat errors
+
+  // Fetch profiles
+  useEffect(() => {
+    const fetchProfiles = async () => {
+      if (service.seller_id) {
+        const profile = await userOperations.getUserById(service.seller_id);
+        setSellerProfile(profile);
+      }
+      if (currentUser?.id) {
+        const profile = await userOperations.getUserById(currentUser.id);
+        setCurrentUserProfile(profile);
+      }
+    };
+    fetchProfiles();
+  }, [service.seller_id, currentUser]);
+
   // Keep social icon helper if needed, otherwise remove
   // const getSocialIcon = (platform: string) => { ... };
 
@@ -45,6 +74,63 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
       maximumFractionDigits: 2,
     }).format(amount);
   };
+
+  // --- Hire Button Handler --- 
+  const handleHireClick = () => {
+    // TODO: Implement actual hiring logic later
+    toast({
+      title: "Hire Request Sent! (Dummy)",
+      description: `Successfully initiated hiring process for service: ${service.title} (ID: ${service.id}). You will be redirected soon.`, // Added dummy data
+      status: "success",
+      variant: "filled"
+    });
+    // Optionally, redirect after a short delay or after actual API call succeeds
+    // setTimeout(() => { window.location.href = `/orders/create?serviceId=${service.id}`; }, 2000);
+  };
+  // --- End Hire Button Handler ---
+
+  // --- Message Button Handlers --- 
+  const handleOpenChat = async () => {
+    if (!currentUser || !sellerProfile) {
+      setChatError('Could not load user profiles. Please try again later.');
+      console.error('Cannot open chat: Missing current user or seller profile.');
+      return;
+    }
+    if (currentUser.id === sellerProfile.id) {
+      setChatError("You cannot start a chat with yourself.");
+      return;
+    }
+
+    setIsLoadingChat(true);
+    setChatError(null);
+    setActiveChat(null);
+    setActiveChatMessages([]);
+
+    try {
+      const chat = await chatOperations.findOrCreateChat(currentUser.id, sellerProfile.id);
+      if (chat) {
+        setActiveChat(chat);
+        setIsLoadingMessages(true);
+        const messages = await chatOperations.getChatMessages(chat.id);
+        setActiveChatMessages(messages);
+      } else {
+        setChatError('Failed to find or create chat conversation.');
+      }
+    } catch (error: any) {
+      console.error('Error opening chat:', error);
+      setChatError(error.message || 'An unexpected error occurred.');
+    } finally {
+      setIsLoadingChat(false);
+      setIsLoadingMessages(false);
+    }
+  };
+
+  const handleCloseChat = () => {
+    setActiveChat(null);
+    setActiveChatMessages([]);
+    setChatError(null);
+  };
+  // --- End Message Button Handlers ---
 
   return (
     <div className='sticky top-20'>
@@ -75,13 +161,13 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
                 </h2>
               </Link>
 
-              {/* rating (no “reviews” text) */}
+              {/* rating (no "reviews" text) */}
               <div className="mt-1 flex items-center justify-center gap-1 text-text-secondary-600 text-paragraph-xs">
                 <RiStarFill className="size-3.5 text-yellow-400" />
                 <span className="text-gray-600" >4.9 (125)</span>
               </div>
 
-              {/* two Google icons + “Google” twice */}
+              {/* two Google icons + "Google" twice */}
               <div className="mt-1 flex items-center justify-center gap-1 text-text-secondary-600 text-paragraph-xs">
                 <RiGoogleFill className="size-3.5" />
                 <span>Google</span>
@@ -128,21 +214,43 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
 
         {/* Action Buttons - Update links/actions */}
         <div className='mb-4 grid grid-cols-1 gap-2 sm:grid-cols-2'>
-          {/* TODO: Update Hire link/action */}
-          {/* TODO: Update Message link/action */}
-          <Button.Root asChild variant='neutral' mode='stroke' size='small'>
-            <Link href={`/chat?recipientId=${service.seller_id}`}>
-              Message
-              <Button.Icon as={RiSendPlaneLine} />
-            </Link>
+          {/* Message Button - Changed to use onClick */}
+          <Button.Root
+            variant='neutral'
+            mode='stroke'
+            size='small'
+            onClick={handleOpenChat}
+            disabled={!currentUser || isLoadingChat || !sellerProfile} // Disable conditions
+            aria-label={currentUser?.id === service.seller_id ? "Cannot message yourself" : "Send message to seller"}
+          >
+            {isLoadingChat ? (
+              <>
+                <RiLoader4Line className="animate-spin mr-2" size={16} />
+                Opening...
+              </>
+            ) : (
+              <>
+                Message
+                <Button.Icon as={RiSendPlaneLine} />
+              </>
+            )}
           </Button.Root>
-          <Button.Root asChild variant='neutral' mode='stroke' size='small'>
-            <Link href={`/orders/create?serviceId=${service.id}`}>
-              Hire
-              <Button.Icon as={RiArrowRightSLine} />
-            </Link>
+          {/* Hire Button */}
+          <Button.Root
+            variant='neutral'
+            mode='stroke'
+            size='small'
+            onClick={handleHireClick}
+          >
+            Hire
+            <Button.Icon as={RiArrowRightSLine} />
           </Button.Root>
         </div>
+
+        {/* Display Chat Error if exists */}
+        {chatError && (
+          <p className="text-xs text-red-600 mb-4 text-center">Error: {chatError}</p>
+        )}
 
         {/* About Seller Section */}
         {service.seller_bio && (
@@ -196,6 +304,21 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         </div>
 
       </div>
+
+      {/* Conditionally render Chat Popup */}
+      {activeChat && currentUserProfile && sellerProfile && currentUser && (
+        <ChatPopupWrapper
+          key={activeChat.id} // Important for re-rendering if chat changes
+          chat={activeChat}
+          initialMessages={activeChatMessages}
+          currentUserProfile={currentUserProfile}
+          otherUserProfile={sellerProfile} // Pass fetched seller profile
+          currentUserId={currentUser.id} // Safe now due to check above
+          isLoadingMessages={isLoadingMessages} // Pass message loading state
+          onClose={handleCloseChat}
+          position="bottom-right" // Or configure as needed
+        />
+      )}
     </div>
   );
 }
