@@ -29,7 +29,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
   const unread = applicant.unreadMessages ?? 0;
 
   return (
-    <div className="p-4">
+    <div className="px-[16px] pb-[16px]">
       <div className="flex items-center justify-between">
         {/* Avatar + Info */}
         <div className="flex items-start gap-3">
@@ -55,7 +55,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
 
             {/* Rating + time pill for non-hired buyers */}
             {!showReplaced && (
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <RiStarFill className="size-5 text-yellow-400" />
                 <span className="text-[12px] text-gray-600">
                   {applicant.rating}({applicant.reviews})
@@ -76,7 +76,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
             Hired
           </span>
         ) : isSeller ? (
-          <Button.Root variant="neutral" mode="stroke" size="small">
+          <Button.Root variant="neutral" mode="stroke" size="small" className="h-auto text-[12px] py-[4px] px-[10px]">
             view
           </Button.Root>
         ) : showMessage ? (

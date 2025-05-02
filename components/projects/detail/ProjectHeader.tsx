@@ -45,7 +45,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ title, category, showBook
             variant="neutral"
             mode="ghost"
             size="small"
-            className="text-icon-secondary-400 hover:text-icon-primary-500"
+            className="!text-gray-400 hover:!text-gray-500"
           >
             <Button.Icon>
               <RiBookmarkLine />
