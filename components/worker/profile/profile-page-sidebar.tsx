@@ -109,7 +109,6 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
   ];
 
   // --- Mock State & Handlers for Buttons/Reviews --- 
-  const currentUser = null; // Mock: No logged-in user state here
   const isLoadingChat = false; // Mock chat loading state
   const chatError = null; // Mock chat error state
   const reviewAvatars = [
@@ -118,11 +117,11 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
     'https://i.pravatar.cc/40?img=12',
   ]; // Mock review avatars
 
-  const handleFollowClick = () => {
+  const handleHireMeClick = () => {
     toast({
-      title: "Follow Clicked (Mock)",
-      description: `Follow action for ${userProfile.full_name || userProfile.username}.`,
-      status: "information",
+      title: "Hire Request Sent!",
+      description: `Your request to hire ${userProfile.full_name || userProfile.username} has been sent.`,
+      status: "success",
       variant: "filled"
     });
   };
@@ -195,7 +194,7 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
             mode="stroke"
             size="xsmall"
             className="w-[85px] h-[32px] rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-sm flex items-center justify-center gap-[6px] px-2"
-            onClick={handleFollowClick}
+            onClick={handleHireMeClick}
             aria-label={"Hire user"}
           >
             <span className="text-paragraph-xs">Hire Me</span>
@@ -209,7 +208,8 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
             size="xsmall"
             className="w-[83px] h-[32px] rounded-lg bg-[#20232D] border border-[#242628] shadow-md flex items-center justify-center gap-[6px] px-2"
             onClick={handleOpenChat}
-            aria-label={"Send message"}
+            disabled={isLoadingChat || !userProfile}
+            aria-label={!userProfile ? "Cannot message user" : "Send message"}
           >
             {isLoadingChat ? (
               <RiLoader4Line className="animate-spin text-white" size={18} />

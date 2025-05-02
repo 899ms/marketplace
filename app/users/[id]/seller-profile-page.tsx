@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import BlockFileUploadDialog from '@/components/blocks/block-file-upload-dialog';
 import { ProfilePageSidebar } from '@/components/worker/profile/profile-page-sidebar';
@@ -8,8 +8,9 @@ import { ServiceCard } from '@/components/worker/profile/service-card';
 import { WorkItem } from '@/components/worker/profile/work-item';
 import { ReviewItem } from '@/components/worker/profile/review-item';
 import { AboutSection } from '@/components/worker/profile/AboutSection';
-import { RiArrowUpCircleLine, RiUploadCloud2Line } from '@remixicon/react';
-import { User } from '@/utils/supabase/types';
+import { RiArrowUpCircleLine, RiUploadCloud2Line, RiLoader4Line } from '@remixicon/react';
+import { User, Service } from '@/utils/supabase/types';
+import { serviceOperations } from '@/utils/supabase/database';
 
 // --- Restore Mock Data ---
 const workerData = {
@@ -41,48 +42,6 @@ const workerData = {
       duration: '1:30',
       bpm: '90 BPM',
       genres: ['Pop', 'Mixing'],
-    },
-  ],
-  services: [
-    {
-      id: 'mock-svc-1',
-      title: 'Draw catchy illustrations anime',
-      price: 101,
-      description: 'Detailed description for catchy anime illustrations.',
-      seller_id: 'mock-seller-123',
-      audio_url: null,
-      lead_time: 3,
-      currency: 'USD',
-      images: [{ url: 'https://placekitten.com/300/160', name: 'kitten1.jpg', size: 12345 }],
-      created_at: new Date().toISOString(), // Keep for type compatibility
-      updated_at: new Date().toISOString(), // Keep for type compatibility
-      category_id: 'cat-anime',
-      skill_levels: ['Intermediate'],
-      status: 'active',
-      // Add any other fields needed by ServiceCard or ServiceSchema
-      tags: [],
-      includes: [],
-      additional_services: [],
-    },
-    // Add other mock services...
-    {
-      id: 'mock-svc-2',
-      title: 'Write compelling song lyrics',
-      price: 75,
-      description: 'Professional songwriting services.',
-      seller_id: 'mock-seller-123',
-      audio_url: null,
-      lead_time: 5,
-      currency: 'USD',
-      images: [{ url: 'https://placekitten.com/300/161', name: 'kitten2.jpg', size: 23456 }],
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      category_id: 'cat-songwriting',
-      skill_levels: ['Expert'],
-      status: 'active',
-      tags: [],
-      includes: [],
-      additional_services: [],
     },
   ],
   reviews: [
@@ -120,6 +79,34 @@ interface SellerProfilePageProps {
 export default function SellerProfilePage({ user }: SellerProfilePageProps) {
   const [activeTab, setActiveTab] = useState('about');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
+  const [isLoadingServices, setIsLoadingServices] = useState(true);
+  const [errorServices, setErrorServices] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function fetchServices() {
+      if (!user?.id) {
+        setIsLoadingServices(false);
+        setErrorServices('Seller ID is missing.');
+        return;
+      }
+
+      setIsLoadingServices(true);
+      setErrorServices(null);
+      try {
+        const fetchedServices = await serviceOperations.getServicesBySellerId(user.id);
+        console.log('Fetched services:', fetchedServices);
+        setServices(fetchedServices);
+      } catch (error) {
+        console.error('Error fetching services:', error);
+        setErrorServices('Failed to load services.');
+      } finally {
+        setIsLoadingServices(false);
+      }
+    }
+
+    fetchServices();
+  }, [user?.id]);
 
   const renderTabContent = () => {
     switch (activeTab) {
@@ -162,11 +149,21 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
               )}
             </div>
 
-            {/* 2) Services - Use workerData */}
+            {/* 2) Services - Use fetched services */}
             <h3 className="inline-block text-xl sm:text-2xl font-semibold text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">Service</h3>
             <div className='mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-              {workerData.services.length > 0 ? (
-                workerData.services.map((svc) => (
+              {isLoadingServices ? (
+                Array.from({ length: 3 }).map((_, index) => (
+                  <div key={index} className="border border-stroke-soft-200 rounded-lg p-4 animate-pulse">
+                    <div className="h-32 bg-gray-200 rounded mb-3"></div>
+                    <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                    <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                  </div>
+                ))
+              ) : errorServices ? (
+                <p className="py-4 text-red-600 col-span-full">{errorServices}</p>
+              ) : services.length > 0 ? (
+                services.slice(0, 3).map((svc) => (
                   <ServiceCard
                     key={svc.id}
                     service={svc}
@@ -207,8 +204,18 @@ export default function SellerProfilePage({ user }: SellerProfilePageProps) {
       case 'services':
         return (
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-            {workerData.services.length > 0 ? (
-              workerData.services.map((service) => (
+            {isLoadingServices ? (
+              Array.from({ length: 3 }).map((_, index) => (
+                <div key={index} className="border border-stroke-soft-200 rounded-lg p-4 animate-pulse">
+                  <div className="h-32 bg-gray-200 rounded mb-3"></div>
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              ))
+            ) : errorServices ? (
+              <p className="py-4 text-red-600 col-span-full">{errorServices}</p>
+            ) : services.length > 0 ? (
+              services.map((service) => (
                 <ServiceCard
                   key={service.id}
                   service={service}
