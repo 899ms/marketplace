@@ -406,25 +406,25 @@ export default function ProjectDetailPage() {
   return (
     <div className='container mx-auto px-4 py-6 lg:px-8'>
       {/* Header with Breadcrumbs - updated links */}
-      <div className='mb-6 flex items-center justify-between'>
-        <div className='text-sm flex flex-wrap items-center gap-2'>
+      <div className='mb-6 flex items-center justify-between text-[14px]'>
+        <div className='flex flex-wrap items-center gap-2'>
           {/* Updated Home Link */}
           <Link
             href="/home"
-            className='text-icon-secondary-400 hover:text-icon-primary-500'
+            className='text-text-sub-600 text-icon-secondary-400 hover:text-icon-primary-500'
           >
             <RiHomeLine className='size-4' />
           </Link>
-          <span className='text-text-secondary-400'>/</span>
+          <span className='text-text-sub-600'>/</span>
           {/* Updated Find Project/Works Link */}
           <Link
             href="/services/search?tab=Project"
-            className='text-text-secondary-600 hover:text-text-strong-950'
+            className='text-text-sub-600 hover:text-text-strong-950'
           >
             {findWorksLabel} { /* Keep dynamic label for now */}
           </Link>
-          <span className='text-text-secondary-400'>/</span>
-          <span className='font-medium text-text-strong-950'>
+          <span className='text-text-sub-600'>/</span>
+          <span className='font-medium text-text-sub-600 text-text-strong-950'>
             Project Detail
           </span>
         </div>
@@ -434,7 +434,7 @@ export default function ProjectDetailPage() {
       <div className='grid grid-cols-1 gap-6 md:grid-cols-12'>
         {/* Left Content Area (Project Details) */}
         <div className='md:col-span-8'>
-          <div className='shadow-[0px_16px_32px_-12px_#0E121B1A] rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+          <div className='p-[24px] shadow-[0px_16px_32px_-12px_#0E121B1A] rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
             <ProjectHeader
               title={projectTitle}
               category={projectCategory}
