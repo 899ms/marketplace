@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image'; // Import next/image
 import * as Button from './ui/button';
+import * as FancyButton from './ui/fancy-button'; // Import FancyButton
 import * as Input from './ui/input';
 import * as Dropdown from './ui/dropdown';
 import * as Avatar from './ui/avatar';
@@ -67,7 +68,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-sm'>
+    <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-stroke-soft-200'>
       <div className='mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8'>
         {/* Left Section: Logo and Nav Links */}
         <div className='flex items-center gap-8'>
@@ -138,10 +139,10 @@ export default function Navbar() {
                 }
                 passHref
               >
-                <Button.Root variant='neutral' mode='filled' size='medium'>
+                <FancyButton.Root variant='neutral' size='medium'>
                   Create
-                  <Button.Icon as={RiAddLine} />
-                </Button.Root>
+                  <FancyButton.Icon as={RiAddLine} />
+                </FancyButton.Root>
               </Link>
 
               {/* Notifications Button */}

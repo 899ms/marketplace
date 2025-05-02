@@ -18,9 +18,9 @@ const SectionHeader = ({ title, href = '#' }: SectionHeaderProps) => {
         className='text-surface-800 text-[14px] font-medium'
         asChild
       >
-        <Link href={href} className='leading-none'>
+        <Link href={href} className='leading-none underline'>
           More
-          <LinkButton.Icon as={RiArrowRightSLine} className='size-6'/>
+          <LinkButton.Icon as={RiArrowRightSLine} className='size-6' />
         </Link>
       </LinkButton.Root>
     </div>

@@ -45,15 +45,15 @@ const Banner = () => {
   const currentBanner = dummyBanners[currentBannerIndex];
 
   return (
-    <div className='shadow-lg relative mb-8 min-h-[244px] overflow-hidden rounded-xl bg-[#253337] p-6 pl-12 text-white flex items-center'>
-      <div className='relative z-10 max-w-xl'>
+    <div className='shadow-lg relative mb-4 max-w-[1052px] min-h-[244px] overflow-hidden rounded-[20px] bg-[#253337] p-6 pl-12 text-white flex items-center'>
+      <div className='absolute z-10 top-[59px] left-[45.66px] w-[513.98px] h-[127px] flex flex-col'>
         {/* Display dynamic content */}
-        <h1 className='text-[32px] mb-2 font-semibold'>{currentBanner.title}</h1>
-        <p className='text-[14px] mb-8 text-gray-300'>
+        <h1 className=' h-[40px] font-medium text-[32px] leading-[40px] tracking-normal'>{currentBanner.title}</h1>
+        <p className='w-[513.98px] h-[45px] font-medium text-[14px] leading-[20px] tracking-[-0.006em] text-[#CDD0D5]'>
           {currentBanner.description}
         </p>
         {/* Indicator Dots - Update based on current index */}
-        <div className='flex gap-1.5'>
+        <div className='flex gap-1.5 mt-8'>
           {dummyBanners.map((_, index) => (
             <span
               key={index}
@@ -68,8 +68,8 @@ const Banner = () => {
       {/* Image positioned absolutely on the right side */}
       {currentBanner.image && (
         <div className='absolute right-0 top-0 h-full w-[40%] overflow-hidden'>
-          <Image 
-            src={currentBanner.image} 
+          <Image
+            src={currentBanner.image}
             alt={currentBanner.title}
             className='h-full w-full object-cover'
             width={400}

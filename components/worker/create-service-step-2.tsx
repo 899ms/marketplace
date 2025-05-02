@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { UseFormReturn, useFieldArray } from 'react-hook-form';
 import {
   CreateServiceFormData,
@@ -45,7 +45,8 @@ export function Step2Pricing({
     getValues,
     watch,
     control,
-    formState: { errors },
+    trigger,
+    formState: { errors, isValid },
   } = formMethods;
 
   const { fields, append, remove } = useFieldArray({
@@ -53,7 +54,15 @@ export function Step2Pricing({
     name: 'additionalServices',
   });
 
-  const currency = watch('currency') || 'USD';
+  const [currency, price, leadTime] = watch([
+    'currency',
+    'price',
+    'lead_time',
+  ]);
+
+  useEffect(() => {
+    trigger(['price', 'lead_time']);
+  }, [price, leadTime, trigger]);
 
   const addAdditionalService = () => {
     append({ name: '', price: 0 });
@@ -174,7 +183,7 @@ export function Step2Pricing({
           {fields.map((item, index) => (
             <div
               key={item.id}
-              className='flex flex-col gap-4 rounded-md border border-stroke-soft-200 p-4 sm:flex-row sm:items-end'
+              className='flex flex-col gap-4 rounded-md  p-4 sm:flex-row sm:items-end'
             >
               <div className='flex-grow'>
                 <Label.Root
@@ -273,16 +282,23 @@ export function Step2Pricing({
           <span className='block h-1.5 w-1.5 rounded-full bg-[#EBEBEB]'></span>
         </div>
         {/* Action Buttons */}
-        <div className='flex gap-2'>
-          <Button.Root variant='neutral' mode='stroke' onClick={prevStep}>
-            <span>Previous</span>
+        <div className='flex gap-3 border-t border-stroke-soft-200 p-4'>
+          <Button.Root
+            variant='neutral'
+            mode='stroke'
+            onClick={prevStep}
+            className='flex-1'
+          >
+            <Button.Icon as={RiArrowLeftSLine} />
+            Previous
           </Button.Root>
           <FancyButton.Root
             variant='neutral'
             onClick={nextStep}
-            disabled={!isStep2Complete(getValues())}
+            className='flex-1'
+            disabled={!!errors.price || !!errors.lead_time}
           >
-            <span>Next</span>
+            Next Step <FancyButton.Icon as={RiArrowRightSLine} />
           </FancyButton.Root>
         </div>
       </div>

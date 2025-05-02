@@ -13,11 +13,11 @@ interface ProjectHeaderProps {
 
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({ title, category, showBookmark }) => {
   return (
-    <div className='p-4'>
+    <div className=''>
       <div className='flex justify-between items-center'>
         {/* Left side: title + category */}
         <div className='flex items-center gap-2'>
-          <h1 className='font-medium text-[24px] leading-[32px] tracking-normal text-text-strong-950'>
+          <h1 className='font-medium text-[24px] py-[6px] leading-[32px] tracking-normal text-text-strong-950'>
             {title}
           </h1>
           <Badge.Root
@@ -45,7 +45,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ title, category, showBook
             variant="neutral"
             mode="ghost"
             size="small"
-            className="text-icon-secondary-400 hover:text-icon-primary-500"
+            className="!text-gray-400 hover:!text-gray-500"
           >
             <Button.Icon>
               <RiBookmarkLine />
@@ -55,7 +55,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ title, category, showBook
       </div>
 
       {/* underline */}
-      <div className="w-[99%] h-[2px] bg-stroke-soft-200 mx-auto mt-8" />
+      <div className="h-[1.5px] bg-stroke-soft-200 mx-auto mt-[24px]" />
     </div>
   );
 };

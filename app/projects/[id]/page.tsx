@@ -142,7 +142,31 @@ const SellerActionButtons = ({
       ) : (
         <>
           Message
-          <Button.Icon><RiSendPlaneLine /></Button.Icon>
+          <Button.Icon className="flex-shrink-0">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 21 20"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5 stroke-current text-[#525866]"
+            >
+              <path
+                d="M6.66641 5.2668L13.7414 2.90846C16.9164 1.85013 18.6414 3.58346 17.5914 6.75846L15.2331 13.8335C13.6497 18.5918 11.0497 18.5918 9.46641 13.8335L8.76641 11.7335L6.66641 11.0335C1.90807 9.45013 1.90807 6.85846 6.66641 5.2668Z"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M8.92578 11.375L11.9091 8.3833"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </Button.Icon>
         </>
       )}
     </Button.Root>
@@ -406,25 +430,25 @@ export default function ProjectDetailPage() {
   return (
     <div className='container mx-auto px-4 py-6 lg:px-8'>
       {/* Header with Breadcrumbs - updated links */}
-      <div className='mb-6 flex items-center justify-between'>
-        <div className='text-sm flex flex-wrap items-center gap-2'>
+      <div className='mb-6 flex items-center justify-between text-[14px]'>
+        <div className='flex flex-wrap items-center gap-2'>
           {/* Updated Home Link */}
           <Link
             href="/home"
-            className='text-icon-secondary-400 hover:text-icon-primary-500'
+            className='text-text-sub-600 text-icon-secondary-400 hover:text-icon-primary-500'
           >
             <RiHomeLine className='size-4' />
           </Link>
-          <span className='text-text-secondary-400'>/</span>
+          <span className='text-text-sub-600'>/</span>
           {/* Updated Find Project/Works Link */}
           <Link
             href="/services/search?tab=Project"
-            className='text-text-secondary-600 hover:text-text-strong-950'
+            className='text-text-sub-600 hover:text-text-strong-950'
           >
             {findWorksLabel} { /* Keep dynamic label for now */}
           </Link>
-          <span className='text-text-secondary-400'>/</span>
-          <span className='font-medium text-text-strong-950'>
+          <span className='text-text-sub-600'>/</span>
+          <span className='font-medium text-text-sub-600 text-text-strong-950'>
             Project Detail
           </span>
         </div>
@@ -433,8 +457,8 @@ export default function ProjectDetailPage() {
       {/* Main Content Grid */}
       <div className='grid grid-cols-1 gap-6 md:grid-cols-12'>
         {/* Left Content Area (Project Details) */}
-        <div className='md:col-span-8'>
-          <div className='shadow-[0px_16px_32px_-12px_#0E121B1A] rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+        <div className='md:col-span-8 max-w-[824px]'>
+          <div className='p-[24px] shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
             <ProjectHeader
               title={projectTitle}
               category={projectCategory}
@@ -451,30 +475,32 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* Right Sidebar - Conditionally Rendered based on pageViewRole */}
-        <div className='flex flex-col gap-6 md:col-span-4'>
+        <div className='flex flex-col gap-6 md:col-span-4 max-w-[352px]'>
           {(isOwner || isBuyerVisitor || isAnonymous) && (
             // Sidebar Layout for Owner, Buyer Visitor, Anonymous (No Apply Button)
-            <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
-              <ClientProfileCard client={{
-                name: clientName,
-                avatar: clientAvatar,
-                rating: clientRating,
-                reviews: clientReviews,
-                isVerified: clientIsVerified
-              }} />
-              <div className="w-[90%] mx-auto my-4 h-[2px] bg-stroke-soft-200" />
-              <ProjectInfoCard
-                budget={projectBudget}
-                releaseTime={projectReleaseTime}
-                deadline={projectDeadline}
-                proposals={projectProposals} // Use placeholder
-              />
+            <>
+              <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0  shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)]'>
+                <ClientProfileCard client={{
+                  name: clientName,
+                  avatar: clientAvatar,
+                  rating: clientRating,
+                  reviews: clientReviews,
+                  isVerified: clientIsVerified
+                }} />
+                <div className="w-[90%] mx-auto my-4 h-[2px] bg-stroke-soft-200" />
+                <ProjectInfoCard
+                  budget={projectBudget}
+                  releaseTime={projectReleaseTime}
+                  deadline={projectDeadline}
+                  proposals={projectProposals} // Use placeholder
+                />
+              </div>
               {/* No Action Buttons for these roles */}
               {/* Anonymous doesn't see applicants */}
               {!isAnonymous && <ApplicantsList applicants={mockApplicants} userRole={isOwner ? 'buyer' : 'seller'} />}
               {/* Link Card might still be relevant for Anonymous? */}
               {(isAnonymous || isBuyerVisitor) && <ProjectLinkCard link={projectLink} />}
-            </div>
+            </>
           )}
           {isSellerVisitor && (
             // Seller Visitor Sidebar Layout (With Apply Button)

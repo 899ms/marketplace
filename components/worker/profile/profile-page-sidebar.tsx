@@ -28,6 +28,7 @@ import * as Tag from '@/components/ui/tag'; // Keep Tag import for tags section
 import { User } from '@/utils/supabase/types';
 import * as Button from '@/components/ui/button'; // Add Button import
 import * as AvatarGroup from '@/components/ui/avatar-group'; // Add AvatarGroup import
+import { ProfileActionButtons } from '../../users/profile/profile-action-buttons'; // Use relative path
 
 // --- Helper Components (Keep SidebarLink as it's used) ---
 interface SidebarLinkProps {
@@ -76,11 +77,20 @@ const SidebarLink = ({ href, icon: Icon, label, isActive, onClick }: SidebarLink
 // --- Profile Page Sidebar Props ---
 interface ProfilePageSidebarProps {
   userProfile: User;
-  // Add other specific props if needed for profile page context
+  currentUser: User | null; // Add currentUser
+  isLoadingChat: boolean; // Add isLoadingChat
+  onHire: () => void; // Add onHire handler prop
+  onMessage: () => void; // Add onMessage handler prop
 }
 
 // --- Profile Page Sidebar Component (Renamed) ---
-export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
+export function ProfilePageSidebar({
+  userProfile,
+  currentUser,
+  isLoadingChat,
+  onHire,
+  onMessage,
+}: ProfilePageSidebarProps) {
   const { notification: toast } = useNotification();
 
   // Use userProfile directly or map to a simpler structure if preferred
@@ -109,7 +119,6 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
   ];
 
   // --- Mock State & Handlers for Buttons/Reviews --- 
-  const isLoadingChat = false; // Mock chat loading state
   const chatError = null; // Mock chat error state
   const reviewAvatars = [
     'https://i.pravatar.cc/40?img=32',
@@ -135,124 +144,82 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
   };
   // --- End Mock State & Handlers ---
 
-  // Adjust class names if needed to remove margin/padding specific to dashboard layout
-  // e.g., remove mt-[3.5rem] from <aside> if it's not needed
-  // e.g., remove mb-6 from inner div if spacing is handled differently
   return (
-    <aside className='hidden w-full shrink-0 lg:block'> {/* Adjust width/responsive classes as needed */}
-      <div className='shadow-sm sticky top-20 flex flex-col gap-4 rounded-xl border border-stroke-soft-200 bg-bg-white-0 pb-4'> {/* Reduced gap-6 to gap-4 */}
-        {/* Profile Section - Matches image */}
-        <div className='flex flex-col items-center gap-3 pt-4 px-4'> {/* Removed pb-6 */}
-          {user.avatarUrl && user.avatarUrl !== "" ?
-            <Avatar.Root size='80'>
-              <Avatar.Image src={user.avatarUrl} alt={user.name} />
-              <Avatar.Indicator position='bottom' className='translate-x-1 translate-y-1'>
-                {/* Green dot indicator like the image */}
-                <div className='size-4 rounded-full bg-green-500 ring-2 ring-white' />
-              </Avatar.Indicator>
-            </Avatar.Root>
-            :
-            <Avatar.Root size='80' color='yellow'>{user.name.charAt(0).toUpperCase()}</Avatar.Root> // Fallback initial
-          }
-          <div className='text-center'>
-            <h2 className='text-lg font-medium text-text-strong-950'> {/* Adjust text size/weight if needed */}
-              {user.name}
-            </h2>
-            <div className='text-text-secondary-600 mt-1 flex items-center justify-center gap-1 text-sm'> {/* Adjust text size/color */}
-              <RiStarFill className='size-4 text-yellow-400' /> {/* Adjust color if needed */}
-              <span>
-                {user.rating} ({user.reviews})
-              </span>
+    <aside className='hidden w-[352px] max-w-[352px] shrink-0 lg:block'>
+      <div className='sticky top-20 flex flex-col gap-4 border border-stroke-soft-200 bg-bg-white-0 max-h-[925px] rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
+        {/* Wrapper Div from UserSidebar */}
+        <div className="flex flex-col max-w-[352px] max-h-[328px] p-4 gap-4">
+          {/* Profile Section */}
+          <div className='flex flex-col items-center gap-3 text-center'> {/* Removed pt-4 px-4 */}
+            {user.avatarUrl && user.avatarUrl !== "" ?
+              <Avatar.Root size='80'> {/* Matched size */}
+                <Avatar.Image src={user.avatarUrl} alt={user.name} />
+                <Avatar.Indicator position='bottom'>
+                  <Avatar.Status status='online' />
+                </Avatar.Indicator>
+              </Avatar.Root>
+              :
+              <Avatar.Root size='80' color='yellow'>{user.name.charAt(0).toUpperCase()}</Avatar.Root> // Matched size
+            }
+            <div className='text-center'>
+              <h2 className='font-medium text-text-strong-950 text-[16px]'> {/* Matched size/weight */}
+                {user.name}
+              </h2>
+              <div className='text-text-secondary-600 mt-1 flex items-center justify-center gap-1 text-sm'>
+                <RiStarFill className='size-3.5 text-yellow-400' />
+                <span className='text-text-secondary-600 text-paragraph-xs'> {/* Kept original styling for rating */}
+                  {user.rating} ({user.reviews})
+                </span>
+              </div>
+            </div>
+            <div className='flex items-center justify-center gap-2'> {/* Updated Google icons/text */}
+              <RiGoogleFill className='size-4 text-text-sub-600' /> <span className="text-[12px]">Google</span>
+              <RiGoogleFill className='size-4 text-text-sub-600' /> <span className="text-[12px]">Google</span>
             </div>
           </div>
-          {/* Icons below rating - Replace with Google items */}
-          <div className='text-text-secondary-600 flex items-center justify-center gap-3 text-xs mt-2'>
-            {/* Remove original Salary/Work/Specia spans */}
-            {/* <span className='inline-flex items-center gap-1'> ... </span> */}
-            {/* <span className='inline-flex items-center gap-1'> ... </span> */}
-            {/* <span className='inline-flex items-center gap-1'> ... </span> */}
+          {/* Removed Action Buttons */}
 
-            {/* Add two Google items */}
-            <span className='inline-flex items-center gap-1'>
-              <RiGoogleFill className='size-4 text-text-sub-600' /> {/* Adjust size/color as needed */}
-              Google
-            </span>
-            <span className='inline-flex items-center gap-1'>
-              <RiGoogleFill className='size-4 text-text-sub-600' /> {/* Adjust size/color as needed */}
-              Google
-            </span>
-          </div>
-        </div>
-        {/* Remove this Divider */}
-        {/* <Divider.Root /> */}
+          {/* ADD ACTION BUTTONS COMPONENT */}
+          <ProfileActionButtons
+            targetUser={userProfile}
+            currentUser={currentUser}
+            isLoadingChat={isLoadingChat}
+            onHire={onHire} // Pass down the prop
+            onMessage={onMessage} // Pass down the prop
+          />
 
-        {/* Action Buttons - Copied & Adapted */}
-        <div className="flex items-center justify-center gap-2 px-4">
-          {/* Hire Me Button (Formerly Follow) */}
-          <Button.Root
-            variant="neutral"
-            mode="stroke"
-            size="xsmall"
-            className="w-[85px] h-[32px] rounded-lg border border-stroke-soft-200 bg-bg-white-0 shadow-sm flex items-center justify-center gap-[6px] px-2"
-            onClick={handleHireMeClick}
-            aria-label={"Hire user"}
-          >
-            <span className="text-paragraph-xs">Hire Me</span>
-            <Button.Icon as={RiHeart3Line} className="size-[18px]" />
-          </Button.Root>
-
-          {/* Touch Button */}
-          <Button.Root
-            variant="neutral"
-            mode="filled"
-            size="xsmall"
-            className="w-[83px] h-[32px] rounded-lg bg-[#20232D] border border-[#242628] shadow-md flex items-center justify-center gap-[6px] px-2"
-            onClick={handleOpenChat}
-            disabled={isLoadingChat || !userProfile}
-            aria-label={!userProfile ? "Cannot message user" : "Send message"}
-          >
-            {isLoadingChat ? (
-              <RiLoader4Line className="animate-spin text-white" size={18} />
-            ) : (
-              <>
-                <span className="text-paragraph-xs text-bg-white-0">Touch</span>
-                <Button.Icon as={RiSendPlane2Fill} className="size-[18px] text-white" />
-              </>
-            )}
-          </Button.Root>
-        </div>
-
-        {/* Display Chat Error - Placeholder/Removed */}
-        {/* {chatError && (
-          <p className="text-xs text-red-600 mb-2 text-center">Error: {chatError}</p>
-        )} */}
-
-        {/* Recent Reviews - Copied & Adapted */}
-        <div className="px-4"> {/* Added px-4 */}
-          <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-center gap-1 text-label-md font-medium text-text-strong-950">
-              <RiStarSFill className="size-6" />
-              <span>Recent reviews</span>
-            </div>
-            <div className="mt-1 sm:mt-0 flex items-center gap-2">
-              <AvatarGroup.Root size="24">
-                {reviewAvatars.map((src, i) => (
-                  <Avatar.Root key={i} size="24">
-                    <Avatar.Image src={src} />
-                  </Avatar.Root>
-                ))}
-              </AvatarGroup.Root>
-              <span className="text-text-secondary-600 text-paragraph-xs">+4</span> {/* Placeholder count */}
+          {/* Recent Reviews Section */}
+          <div> {/* Original wrapper */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between"> {/* Removed mb-2 */}
+              <div className="flex items-center gap-1 font-medium text-text-strong-950"> {/* Removed text-label-md */}
+                {/* Inline SVG Star */}
+                <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-5">
+                  <path d="M11.4416 2.92501L12.9083 5.85835C13.1083 6.26668 13.6416 6.65835 14.0916 6.73335L16.7499 7.17501C18.4499 7.45835 18.8499 8.69168 17.6249 9.90835L15.5583 11.975C15.2083 12.325 15.0166 13 15.1249 13.4833L15.7166 16.0417C16.1833 18.0667 15.1083 18.85 13.3166 17.7917L10.8249 16.3167C10.3749 16.05 9.63326 16.05 9.17492 16.3167L6.68326 17.7917C4.89992 18.85 3.81659 18.0583 4.28326 16.0417L4.87492 13.4833C4.98326 13 4.79159 12.325 4.44159 11.975L2.37492 9.90835C1.15826 8.69168 1.54992 7.45835 3.24992 7.17501L5.90826 6.73335C6.34992 6.65835 6.88326 6.26668 7.08326 5.85835L8.54992 2.92501C9.34992 1.33335 10.6499 1.33335 11.4416 2.92501Z" fill="#0A0D14" stroke="#0A0D14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <span className="text-sm">Recent reviews</span>
+              </div>
+              {/* Right section - Avatars (Styled) */}
+              <div className="flex items-center gap-2 rounded-full pt-0.5 pr-2.5 pb-0.5 pl-0.5 bg-bg-white-0 shadow-[0_2px_4px_0_rgba(27,28,29,0.04)]">
+                <AvatarGroup.Root size="32">
+                  {reviewAvatars.map((src, i) => (
+                    <Avatar.Root key={i} size="32">
+                      <Avatar.Image src={src} />
+                    </Avatar.Root>
+                  ))}
+                </AvatarGroup.Root>
+                <span className="text-text-secondary-600 text-sm">+4</span>
+              </div>
             </div>
           </div>
-        </div>
+        </div> {/* End Wrapper Div */}
 
+        {/* Sections outside the wrapper */}
         <Divider.Root />
 
         {/* Skills Section - NEW (Based on original ProfileSidebar structure) */}
         <div className='px-4'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-secondary-600 text-label-md font-medium'>
+            <h3 className='text-text-strong-950 text-[12px] font-semibold'>
               Skills
             </h3>
             {/* TODO: Implement edit functionality later */}
@@ -260,7 +227,7 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
               <RiPencilLine className='size-4 text-[#99A0AE]' />
             </button>
           </div>
-          <div className='space-y-2'>
+          <div className='space-y-2 text-[12px]'>
             {/* Mock Skills Data - Add actual data source later */}
             {[
               { name: 'Singer', details: 'Female', price: '$150 per song' },
@@ -273,7 +240,7 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
               { name: 'Vocal Tuning', details: '', contactForPricing: true },
             ].map((skill, idx) => (
               <div key={idx}>
-                <p className='text-sm font-medium text-text-strong-950'>
+                <p className='text-[12px] font-medium text-text-strong-950'>
                   {skill.name}
                   {skill.details ? ` - ${skill.details}` : ''}
                 </p>
@@ -291,10 +258,10 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
         </div>
         <Divider.Root />
 
-        {/* Awards Section - Use Tag component */}
-        <div className='px-4'>
+        {/* Awards Section - Styled like Tags section */}
+        <div className='px-4 max-w-[352px] max-h-[116px]'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-secondary-600 text-label-md font-medium'>
+            <h3 className='text-text-strong-950 font-semibold text-[12px]'>
               Awards
             </h3>
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
@@ -303,7 +270,7 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
           </div>
           <div className='flex flex-wrap gap-1.5'>
             {mockAwards.map((award, idx) => (
-              <Tag.Root key={idx}>
+              <Tag.Root key={idx} className="bg-white rounded-md border border-stroke-soft-300 text-gray-600 px-2 py-0.5">
                 {award}
               </Tag.Root>
             ))}
@@ -311,28 +278,30 @@ export function ProfilePageSidebar({ userProfile }: ProfilePageSidebarProps) {
         </div>
         <Divider.Root />
 
-        {/* About Section - Modified to include Links */}
-        <div className='px-4'>
-          <div className='mb-2 flex items-center justify-between'>
-            <h3 className='text-text-secondary-600 text-label-md font-medium'>
+        {/* Combined About and Social Links Section - Copied from UserSidebar styles */}
+        <div className="flex flex-col max-w-[352px] max-h-[218px] pb-4 px-4 gap-5">
+          {/* About Content */}
+          <div className='flex items-center justify-between'> {/* Removed mb-2 */}
+            <h3 className='text-text-strong-950 text-[12px] font-semibold'>
               About
             </h3>
-            {/* TODO: Implement edit functionality later */}
+            {/* TODO: Add Edit button logic if needed for own profile */}
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
               <RiPencilLine className='size-4 text-[#99A0AE]' />
             </button>
           </div>
-          <p className='text-text-secondary-600 line-clamp-3 text-sm mb-3'> {/* Added mb-3 for spacing */}
+          <p className='line-clamp-5 font-normal text-[12px] leading-4 tracking-normal text-[#525866]'>
             {userProfile.bio || "This user hasn't added a bio yet."}
           </p>
-          {/* Social Links moved here */}
+
+          {/* Social Links */}
           <div className='flex items-center gap-3'>
             {socialLinks.map(({ platform, icon: Icon, color, href }) => (
               <Link
                 key={platform}
-                href={href} // TODO: Use actual links from user data later
+                href={href}
                 className='text-icon-secondary-400 hover:opacity-80'
-                target="_blank" // Open social links in new tab
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 <Icon className='size-7' style={{ color: color }} />

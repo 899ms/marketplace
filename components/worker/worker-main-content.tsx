@@ -53,12 +53,12 @@ export function ProjectCard({ job }: ProjectCardProps) {
   const tags = Array.isArray(job.skill_levels) ? job.skill_levels : [];
 
   return (
-    <>
+    <div className="flex flex-col max-h-[148px] gap-6">
       <div className='flex flex-col gap-2 px-2 pt-4'>
         <div className='flex flex-row justify-between'>
           <div className='flex flex-col gap-2'>
             <Link href={`/projects/${job.id}`} className='hover:underline'>
-              <h3 className='text-base font-medium text-[#0A0D14]'>{title}</h3>
+              <h3 className='font-medium text-[#0A0D14] text-[20px]'>{title}</h3>
             </Link>
             <div className='flex flex-row gap-2'>
               {tags.map((tag) => (
@@ -86,7 +86,7 @@ export function ProjectCard({ job }: ProjectCardProps) {
         </div>
       </div>
       <Divider.Root />
-    </>
+    </div>
   );
 }
 
@@ -99,9 +99,9 @@ interface WorkerMainContentProps {
 // --- Worker Main Content ---
 export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContentProps) {
   return (
-    <main className='flex-1 mt-[3.5rem]'>
+    <main className='flex-1 max-w-[676px]'>
       <Banner />
-      <section className='mt-6'>
+      <section className='mt-6 flex flex-col max-w-[676px] max-h-[632px]'>
         <SectionHeader title='Projects' href='#' />
         <div className='flex flex-col gap-2'>
           {recentJobs && recentJobs.length > 0 ? (

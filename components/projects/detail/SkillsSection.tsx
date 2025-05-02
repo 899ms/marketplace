@@ -11,7 +11,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
   if (!skills || skills.length === 0) return null;
 
   return (
-    <div className='p-4'>
+    <div className='pt-[24px]'>
       <h2
         className='
           text-base
@@ -20,6 +20,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
           tracking-[-0.015em]
           text-[#161922]
           mb-4
+          text-[16px]
         '
       >
         Skills
@@ -28,17 +29,18 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
         {skills.map((skill, idx) => (
           <Badge.Root
             key={idx}
-            variant='stroke'
             size='small'
             className=" 
               bg-bg-white-0
-              border border-stroke-soft-200
+              text-gray-600
               rounded-[6px]
-              px-2 py-3
+              px-2 py-1
               gap-[3px]
+              h-full
               flex items-center justify-center
-              font-medium text-[12px] leading-[16px] tracking-normal
-              text/sub-500
+              text-[12px]
+              border
+              border-gray-300
             "
           >
             {skill}
@@ -47,7 +49,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
       </div>
 
       {/* underline */}
-      <div className="w-[99%] h-[2px] bg-stroke-soft-200 mx-auto mt-8" />
+      <div className="h-[1.5px] bg-stroke-soft-200 mx-auto mt-[24px]" />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { RiDownload2Line, RiFileTextLine } from '@remixicon/react';
+import { RiDownload2Line, RiPlayCircleFill } from '@remixicon/react';
 import { BaseFileData } from '@/utils/supabase/types';
 
 // Updated props to use BaseFileData which includes URL
@@ -24,7 +24,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
   if (!attachments || attachments.length === 0) return null;
 
   return (
-    <div className='px-4 pt-4 pb-8'>
+    <div className='pt-[24px]'>
       <h2 className="text-base font-semibold leading-6 tracking-[-0.015em] text-[#161922] mb-4">
         Attachments
       </h2>
@@ -36,24 +36,18 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
               href={attachment.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center justify-between gap-4 rounded-lg border border-stroke-soft-200 p-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
+              className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
             >
-              <div className="flex items-center gap-3 overflow-hidden">
-                <RiFileTextLine className="size-5 text-gray-500 flex-shrink-0" />
-                <span className="text-sm font-medium text-text-strong-950 truncate" title={attachment.name}>
-                  {attachment.name}
-                </span>
-              </div>
-              <div className="flex items-center gap-3 flex-shrink-0">
-                <span className="text-xs text-gray-500">
-                  {formatFileSize(attachment.size)}
-                </span>
-                <RiDownload2Line className="size-5 text-gray-400 group-hover:text-gray-600" />
-              </div>
+              <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>
+                {attachment.name}
+              </span>
+              <RiPlayCircleFill className="size-6 text-gray-500 flex-shrink-0" />
             </a>
           </li>
         ))}
       </ul>
+
+      <div className="h-[1.5px] bg-stroke-soft-200 mx-auto mt-[24px]" />
     </div>
   );
 };

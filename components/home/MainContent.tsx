@@ -101,134 +101,116 @@ const MainContent = () => {
   }, []);
 
   return (
-    <main className='flex-1 mt-[3.5rem]'>
+    <main className='flex-1 relative'>
       <Banner />
 
-      {/* Hot Services Section */}
-      <section className='mb-8'>
-        <SectionHeader title='Hot Services' href='/services/search?tab=Service' />
-        <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-          {isLoading ? (
-            // Loading state
-            <>
-              <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-              <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-              <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-            </>
-          ) : recentServices.length > 0 ? (
-            // Map through fetched services
-            recentServices.map((service) => (
-              <Link key={service.id} href={`/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
-                <ServiceCard service={service} />
-              </Link>
-            ))
-          ) : (
-            // No services found
-            <div className="col-span-3 text-center py-8 text-gray-500">
-              No services found
-            </div>
-          )}
-        </div>
-      </section>
+      {/* New container for sections */}
+      <div className="max-w-[1052px] flex flex-col gap-8">
+        {/* Hot Services Section */}
+        <section className="flex flex-col max-w-[1052px] max-h-[332px]">
+          <SectionHeader title='Hot Services' href='/services/search?tab=Service' />
+          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+            {isLoading ? (
+              // Loading state
+              <>
+                <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+                <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+                <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+              </>
+            ) : recentServices.length > 0 ? (
+              // Map through fetched services
+              recentServices.map((service) => (
+                <Link key={service.id} href={`/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
+                  <ServiceCard service={service} />
+                </Link>
+              ))
+            ) : (
+              // No services found
+              <div className="col-span-3 text-center py-8 text-gray-500">
+                No services found
+              </div>
+            )}
+          </div>
+        </section>
 
-      {/* Hot Workers Section */}
-      <section className='mb-8'>
-        <SectionHeader title='Hot Workers' href='/services/search?tab=Worker' />
-        <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-          {isLoadingWorkers ? (
-            // Loading state
-            <>
-              <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-              <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-              <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-            </>
-          ) : recentWorkers.length > 0 ? (
-            // Map through fetched workers
-            recentWorkers.map((worker) => (
-              <Link key={worker.id} href={`/workers/${worker.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
-                <WorkerCard worker={worker} />
-              </Link>
-            ))
-          ) : (
-            // Placeholder workers if none found
-            Array(3).fill(0).map((_, index) => (
-              <WorkerCard key={`worker-${index}`} />
-            ))
-          )}
-        </div>
-      </section>
+        {/* Hot Workers Section */}
+        <section>
+          <SectionHeader title='Hot Workers' href='/services/search?tab=Worker' />
+          <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
+            {isLoadingWorkers ? (
+              // Loading state
+              <>
+                <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+                <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+                <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+              </>
+            ) : recentWorkers.length > 0 ? (
+              // Map through fetched workers
+              recentWorkers.map((worker) => (
+                <Link key={worker.id} href={`/workers/${worker.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
+                  <WorkerCard worker={worker} />
+                </Link>
+              ))
+            ) : (
+              // Placeholder workers if none found
+              Array(3).fill(0).map((_, index) => (
+                <WorkerCard key={`worker-${index}`} />
+              ))
+            )}
+          </div>
+        </section>
 
-      {/* Category Ranking Section */}
-      <section>
-        <SectionHeader title='Category Ranking' href='/services/search?tab=Service' />
-        <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-          {isLoading ? (
-            // Loading state
-            <>
-              <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-              <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-              <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
-            </>
-          ) : categoryServices.length > 0 ? (
-            // Map through shuffled services
-            categoryServices.map((service) => (
-              <Link key={`category-${service.id}`} href={`/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
-                <ServiceCard service={service} />
-              </Link>
-            ))
-          ) : (
-            // Placeholder data if no real services
-            Array(3).fill(0).map((_, index) => {
-              const placeholderService: Service = {
-                id: `placeholder-${index}`,
-                title: 'Category Placeholder Service',
-                description: 'Placeholder description',
-                price: 99,
-                seller_id: 'placeholder-seller',
-                seller_name: 'Music Professional',
-                audio_url: null,
-                lead_time: 7,
-                currency: 'USD',
-                images: [{
-                  name: 'placeholder.jpg',
-                  size: 1000,
-                  url: 'https://placekitten.com/300/200'
-                }],
-                includes: ['Source Files', 'Commercial Use License'],
-                tags: ['placeholder', 'category']
-              };
-              return <ServiceCard key={`category-${index}`} service={placeholderService} />;
-            })
-          )}
-        </div>
-      </section>
+        {/* Category Ranking Section */}
+        <section className="flex flex-col max-w-[1052px] max-h-[332px] gap-4">
+          <SectionHeader title='Category Ranking' href='/services/search?tab=Service' />
+          <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
+            {isLoading ? (
+              // Loading state
+              <>
+                <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+                <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+                <div className="h-64 bg-gray-200 animate-pulse rounded-lg"></div>
+              </>
+            ) : categoryServices.length > 0 ? (
+              // Map through shuffled services
+              categoryServices.map((service) => (
+                <Link key={`category-${service.id}`} href={`/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
+                  <ServiceCard service={service} />
+                </Link>
+              ))
+            ) : (
+              // Placeholder data if no real services
+              Array(3).fill(0).map((_, index) => {
+                const placeholderService: Service = {
+                  id: `placeholder-${index}`,
+                  title: 'Category Placeholder Service',
+                  description: 'Placeholder description',
+                  price: 99,
+                  seller_id: 'placeholder-seller',
+                  seller_name: 'Music Professional',
+                  audio_url: null,
+                  lead_time: 7,
+                  currency: 'USD',
+                  images: [{
+                    name: 'placeholder.jpg',
+                    size: 1000,
+                    url: 'https://placekitten.com/300/200'
+                  }],
+                  includes: ['Source Files', 'Commercial Use License'],
+                  tags: ['placeholder', 'category']
+                };
+                return <ServiceCard key={`category-${index}`} service={placeholderService} />;
+              })
+            )}
+          </div>
+        </section>
 
-      {/* Orders Section */}
-      {/* <section className='mt-8'>
-        <SectionHeader title='Orders' href='/orders' />
-        <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
-          <Tabs.List>
-            {tabItems.map((tab) => (
-              <Tabs.Trigger key={tab} value={tab}>
-                {tab}
-              </Tabs.Trigger>
-            ))}
-          </Tabs.List>
-          <Tabs.Content value={activeTab}>
-            <div className='text-text-sub-500 mt-1 text-paragraph-sm'>
-              You can manage your orders, view details, and track their status
-              here. Find everything you need in one place. We&apos;re here to
-              help!
-            </div>
-          </Tabs.Content>
-        </Tabs.Root>
-      </section> */}
+        <section className='mt-8'>
+        </section>
 
-      <section className='mt-8'>
-      </section>
-
-      {/* Review Section */}
-      <section className='mt-8'>{/* Review content */}</section>
+        {/* Review Section */}
+        <section className='mt-8'>{/* Review content */}</section>
+      </div>
     </main>
   );
 };
