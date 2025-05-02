@@ -223,7 +223,7 @@ export function Step3Review({
                 <span className='text-[24px] font-semibold text-[#0E121B] border-b border-b-2 border-[#0E121B] pb-2'>
                   Options
                 </span>
-                <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0 mb-6 mt-6'>
+                <div className='shadow-sm rounded-xl bg-bg-white-0 mb-6 mt-6'>
 
                   <div className='space-y-3 divide-y divide-stroke-soft-200 p-4'>
                     {displayData.options.map((option, idx) => (
