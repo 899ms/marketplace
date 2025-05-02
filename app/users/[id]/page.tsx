@@ -14,6 +14,7 @@ import { useAuth } from '@/utils/supabase/AuthContext';
 import { chatOperations, userOperations, jobOperations } from '@/utils/supabase/database';
 import { User, Job, Chat, Message } from '@/utils/supabase/types';
 import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
+
 import {
   RiStarFill,
   RiStarSFill,
@@ -620,7 +621,7 @@ export default function UserProfilePage({ params }: { params: { id: string } }) 
     // Render the worker detail page if the user is a seller
     // NOTE: WorkerDetailPage currently uses its own mock data.
     // We will need to pass actual data later.
-    return <SellerProfilePage />;
+    return <SellerProfilePage user={userData} />;
   }
   // --- End Conditional Rendering ---
 
