@@ -22,43 +22,9 @@ import {
 import { cn } from '@/utils/cn';
 import * as Tag from '@/components/ui/tag';
 import { User } from '@/utils/supabase/types';
+import SidebarLink from '@/components/layout/SidebarLink';
 
 // --- Helper Components and Interfaces ---
-interface SidebarLinkProps {
-  href?: string;
-  icon: React.ElementType;
-  label: string;
-  onClick?: () => void;
-}
-
-const SidebarLink = ({ href, icon: Icon, label, onClick }: SidebarLinkProps) => {
-  const commonClasses = cn(
-    'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-label-md transition-colors duration-200',
-    'hover:bg-action-hover-bg-inverse-0 focus:outline-none focus:ring-2 focus:ring-border-focus-base'
-  );
-  if (onClick) {
-    return (
-      <button onClick={onClick} className={commonClasses}>
-        <Icon className={cn('size-5')} />
-        {label}
-      </button>
-    );
-  }
-  if (href) {
-    return (
-      <Link href={href} className={commonClasses}>
-        <Icon className={cn('size-5')} />
-        {label}
-      </Link>
-    );
-  }
-  return (
-    <div className={cn(commonClasses, 'cursor-not-allowed opacity-50')}>
-      <Icon className={cn('size-5')} />
-      {label}
-    </div>
-  );
-};
 
 // --- Worker Sidebar Props ---
 interface WorkerSidebarProps {
@@ -87,9 +53,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
 
   const handleComingSoonClick = () => {
     notification({
-      title: 'Coming Soon',
-      description: 'This feature is under development.',
-      status: 'information',
+      description: 'Coming Soon: This feature is under development.',
     });
   };
 
@@ -191,7 +155,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         {/* Tags Section */}
         <div className='px-4'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-secondary-600 text-label-md font-medium'>
+            <h3 className='text-text-secondary-600  font-medium text-[12px]'>
               Tags
             </h3>
             {/* TODO: Implement edit functionality */}
@@ -204,7 +168,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
               <Tag.Root
                 key={idx}
 
-                className='text-[12px] text-[#525866] font-medium'
+                className='text-[12px] text-[#525866] font-medium font-[500]'
               >
                 {tag}
               </Tag.Root>
@@ -215,7 +179,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         {/* Links Section */}
         <div className='px-5'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-secondary-600 text-label-md font-medium'>
+            <h3 className='text-text-secondary-600   text-[12px] font-[500]'>
               Links
             </h3>
             {/* TODO: Implement edit functionality */}
