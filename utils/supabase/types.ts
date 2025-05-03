@@ -29,6 +29,7 @@ export const BaseFileSchema = z.object({
   name: z.string(),
   size: z.number(),
   url: z.string().url(),
+  mimeType: z.string().optional(), // Use .optional() for Zod optional fields
 });
 export type BaseFileData = z.infer<typeof BaseFileSchema>;
 
@@ -133,7 +134,9 @@ export const MessageSchema = z.object({
       'system_event',
       'milestone_activated',
       'milestone_completed',
-    ]) // Added new types
+      'audio', // Added audio type
+      'file', // Added file type
+    ])
     .nullable()
     .default('text'),
   data: z.any().nullable().optional(), // Revert to z.any() for flexibility with different data structures
