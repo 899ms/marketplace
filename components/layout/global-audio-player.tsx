@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAudioPlayer } from '@/contexts/AudioContext';
 import * as Avatar from '@/components/ui/avatar';
 import * as Slider from '@/components/ui/slider'; // Assuming you have a Slider component
@@ -39,6 +39,15 @@ export default function GlobalAudioPlayer() {
     setVolume,
   } = useAudioPlayer();
   const [isVisible, setIsVisible] = useState(true);
+
+  // Effect to show the player when a new track is loaded
+  useEffect(() => {
+    if (currentTrack) {
+      setIsVisible(true);
+    }
+    // No else clause needed: we only want to force it visible on new track,
+    // not hide it when track becomes null (render condition handles that).
+  }, [currentTrack]); // Re-run when currentTrack changes
 
   // Don't render anything if no track is loaded OR if hidden
   if (!currentTrack || !currentSeller || !isVisible) {

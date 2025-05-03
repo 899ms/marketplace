@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { RiDownload2Line, RiPlayCircleFill } from '@remixicon/react';
-import { BaseFileData } from '@/utils/supabase/types';
+import { BaseFileData, User, MusicItem } from '@/utils/supabase/types';
+import { useAudioPlayer } from '@/contexts/AudioContext';
 
-// Updated props to use BaseFileData which includes URL
+// Updated props to use BaseFileData and accept client info
 interface AttachmentsSectionProps {
   attachments: BaseFileData[];
+  client: User | null;
 }
 
 // Helper function to format file size
@@ -20,8 +22,29 @@ function formatFileSize(bytes: number): string {
 
 const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
   attachments,
+  client,
 }) => {
+  const { loadTrack } = useAudioPlayer();
+
   if (!attachments || attachments.length === 0) return null;
+
+  const handlePlayAudio = (attachment: BaseFileData) => {
+    if (!client) {
+      console.error('Client information is missing, cannot play audio.');
+      return;
+    }
+
+    const trackData: MusicItem = {
+      url: attachment.url,
+      title: attachment.name,
+    };
+    const sellerInfo = {
+      name: client.full_name ?? 'Unknown User',
+      avatarUrl: client.avatar_url ?? null,
+    };
+
+    loadTrack(trackData, sellerInfo);
+  };
 
   return (
     <div className='pt-[24px]'>
@@ -30,21 +53,43 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
       </h2>
 
       <ul className="space-y-3">
-        {attachments.map((attachment, index) => (
-          <li key={index}>
-            <a
-              href={attachment.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
-            >
-              <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>
-                {attachment.name}
-              </span>
-              <RiPlayCircleFill className="size-6 text-gray-500 flex-shrink-0" />
-            </a>
-          </li>
-        ))}
+        {attachments.map((attachment, index) => {
+          // Check mimeType first, then fallback to file extension
+          const isAudio =
+            attachment.mimeType?.startsWith('audio/') ||
+            /\.(mp3|wav|ogg|aac|flac)$/i.test(attachment.name);
+
+          return (
+            <li key={index}>
+              {isAudio ? (
+                <button
+                  onClick={() => handlePlayAudio(attachment)}
+                  className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer text-left w-full md:w-auto"
+                  title={`Play ${attachment.name}`}
+                >
+                  <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>
+                    {attachment.name}
+                  </span>
+                  <RiPlayCircleFill className="size-6 text-gray-500 flex-shrink-0" />
+                </button>
+              ) : (
+                <a
+                  href={attachment.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  download={attachment.name}
+                  className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
+                  title={`Download ${attachment.name}`}
+                >
+                  <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>
+                    {attachment.name}
+                  </span>
+                  <RiPlayCircleFill className="size-6 text-gray-500 flex-shrink-0" />
+                </a>
+              )}
+            </li>
+          );
+        })}
       </ul>
 
       <div className="h-[1.5px] bg-stroke-soft-200 mx-auto mt-[24px]" />
