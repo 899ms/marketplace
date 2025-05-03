@@ -202,12 +202,12 @@ export default function OrdersContent() {
   return (
     <main className="flex-1 bg-bg-alt-white-100 p-6 h-full">
       {/* summary cards */}
-      <div className='h-[20%] mb-3'>
+      <div className=' mb-3'>
         <SummarySection data={summaryData} />
       </div>
 
       {/* tabs / search / filters */}
-      <div className='h-[10%] mb-1'>
+      <div className=' mb-1'>
         <TabsFiltersBar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
