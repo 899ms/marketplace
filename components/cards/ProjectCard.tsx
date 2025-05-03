@@ -45,16 +45,16 @@ export function ProjectCard({
   className,
   projectId,
 }: ProjectCardProps) {
+  // Log the client prop
+  console.log('ProjectCard client prop:', client);
+
   const handleApplyClick = () => {
     if (onApply) {
       onApply();
     }
 
     notify({
-      status: 'success',
-      title: 'Application Sent!',
-      description: `Successfully applied to project: ${title}`,
-      duration: 5000,
+      description: `Application Sent! Successfully applied to project: ${title}`,
     });
 
     console.log('Apply button clicked for project ID:', projectId);
