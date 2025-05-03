@@ -53,8 +53,8 @@ export function ProjectCard({ job }: ProjectCardProps) {
   const tags = Array.isArray(job.skill_levels) ? job.skill_levels : [];
 
   return (
-    <div className="flex flex-col max-h-[148px] gap-6">
-      <div className='flex flex-col gap-2 px-2 pt-4'>
+    <div className="flex flex-col max-h-[148px] gap-4">
+      <div className='flex flex-col gap-2  pt-4'>
         <div className='flex flex-row justify-between'>
           <div className='flex flex-col gap-2'>
             <Link href={`/projects/${job.id}`} className='hover:underline'>
@@ -75,9 +75,9 @@ export function ProjectCard({ job }: ProjectCardProps) {
             </p>
           </div>
         </div>
-        <div className='flex justify-between'>
-          <p className='text-[14px] text-[#0E121B]'>{description}</p>
-          <Button.Root mode='stroke' size='xsmall' variant='neutral' asChild>
+        <div className='flex justify-between items-center'>
+          <p className='text-[14px] text-[#0E121B] line-clamp-1'>{description}</p>
+          <Button.Root mode='stroke' size='xsmall' variant='neutral' asChild className='flex-shrink-0'>
             <Link href={`/projects/${job.id}`}>
               Apply
               <Button.Icon as={RiArrowRightSLine} />
