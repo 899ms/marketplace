@@ -100,27 +100,27 @@ export function ProjectCard({
           </p>
 
           {/* Client Info */}
-          <div className='flex items-center gap-2 pt-2'>
-            <Avatar.Root size='24'>
+          <div className='flex items-center gap-1 pt-2'>
+            <Avatar.Root className='w-[20px] h-[20px]'>
               <Avatar.Image src={client.avatarUrl} alt={`${client.name}'s avatar`} />
             </Avatar.Root>
-            <span className='text-xs font-medium text-text-strong-950'>
+            <span className='text-[12px] font-medium text-[#525866]'>
               {client.name}
             </span>
-            <div className='flex items-center gap-0.5 text-xs text-text-secondary-600'>
+            <div className='flex items-center gap-0.5 text-[12px] text-[#525866]'>
               <RiStarFill className='size-3 text-yellow-500' />
               <span>
-                {client.rating.toFixed(1)} ({client.reviewCount})
+                {client.rating.toFixed(1)}({client.reviewCount})
               </span>
             </div>
           </div>
         </div>
 
         {/* Right Column (Budget & Apply) */}
-        <div className='flex flex-col items-end justify-between gap-4 md:justify-start'>
+        <div className='flex flex-col gap-2'>
           <div className='text-right'>
-            <p className='text-xs text-text-secondary-600'>Budget</p>
-            <p className='text-lg font-medium text-text-strong-950'>
+            <p className='text-[14px] text-[#525866]'>Budget</p>
+            <p className='text-[18px] font-medium text-text-strong-950'>
               ${budget.toLocaleString()}
             </p>
           </div>
@@ -129,12 +129,12 @@ export function ProjectCard({
             mode='stroke'
             size='small'
             className={cn(
-              'mt-auto w-full md:w-auto',
+              'text-[14px] w-full md:w-auto',
             )}
             onClick={handleApplyClick}
           >
             Apply
-            <RiArrowRightSLine className='ml-1 size-4' />
+            <RiArrowRightSLine className='size-4' />
           </Button.Root>
         </div>
       </div>
