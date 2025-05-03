@@ -117,7 +117,7 @@ export default function OrdersContent() {
             });
           }
 
-          setOrders([...sellerRows, ...sellerRows, ...sellerRows]);
+          setOrders(sellerRows);
         }
       } catch (err) {
         console.error('fetchOrders', err);
