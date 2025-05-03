@@ -147,7 +147,7 @@ const MainContent = () => {
             ) : recentWorkers.length > 0 ? (
               // Map through fetched workers
               recentWorkers.map((worker) => (
-                <Link key={worker.id} href={`/workers/${worker.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
+                <Link key={worker.id} href={`/users/${worker.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
                   <WorkerCard worker={worker} />
                 </Link>
               ))

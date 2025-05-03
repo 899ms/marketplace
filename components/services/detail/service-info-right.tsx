@@ -155,7 +155,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             </button>
 
             <div className="mt-2">
-              <Link href={`/workers/${service.seller_id}`} passHref>
+              <Link href={`/users/${service.seller_id}`} passHref>
                 <h2 className="text-label-md font-medium text-text-strong-950 hover:underline">
                   {service.seller_name || 'Unknown Seller'}
                 </h2>

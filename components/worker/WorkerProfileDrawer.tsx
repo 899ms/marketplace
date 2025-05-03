@@ -189,7 +189,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
               </Drawer.Close>
 
               <Link
-                href={worker ? `/workers/${worker.id}` : '#'}
+                href={worker ? `/users/${worker.id}` : '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`flex items-center gap-1.5 text-sm font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700 ${!worker || isLoading ? 'pointer-events-none opacity-50' : ''}`}>
