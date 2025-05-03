@@ -128,12 +128,12 @@ export function Step3Review({
 
   return (
     <div className='mx-auto max-w-6xl'>
-      <h1 className='text-[32px] font-medium mb-6 text-text-strong-950'>
-        You will get {displayData.title}
-      </h1>
       <div className='grid grid-cols-1 gap-6 md:grid-cols-12'>
         {/* Left Content: Image, Details, Options */}
         <div className='space-y-6 md:col-span-8'>
+          <h1 className='text-[32px] font-medium text-text-strong-950'>
+            You will get {displayData.title}
+          </h1>
           {/* Image Carousel */}
           <div className='space-y-3'>
             <div className='relative aspect-video w-full overflow-hidden rounded-xl bg-bg-weak-50'>

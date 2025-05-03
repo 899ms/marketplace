@@ -87,7 +87,7 @@ export function Step2Pricing({
           {errors.price && <p>{errors.price.message?.toString()}</p>}
           {errors.currency && <p>{errors.currency.message?.toString()}</p>}
           {errors.lead_time && <p>{errors.lead_time.message?.toString()}</p>}
-          {errors.additionalServices && errors.additionalServices.map((error, index) => {
+          {errors.additionalServices?.map((error, index) => {
             if (!error) return null; // Skip if no error for this index
             return (
               <React.Fragment key={index}>
@@ -272,7 +272,7 @@ export function Step2Pricing({
           <span className='block h-1.5 w-1.5 rounded-full bg-[#EBEBEB]'></span>
         </div>
         {/* Action Buttons */}
-        <div className='flex gap-3 border-t border-stroke-soft-200 p-4'>
+        <div className='flex gap-3  border-stroke-soft-200 p-4'>
           <Button.Root
             variant='neutral'
             mode='stroke'
