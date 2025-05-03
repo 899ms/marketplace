@@ -69,9 +69,9 @@ export function ProjectCard({
     >
       <div className='grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]'>
         {/* Left Column (Content) */}
-        <div className='flex flex-col gap-3'>
+        <div className='flex flex-col gap-1.5'>
           {/* Title and Info Badges */}
-          <div className='flex flex-wrap items-center items-start gap-x-3 gap-y-2'>
+          <div className='flex flex-wrap items-center items-start gap-x-3'>
             <h3 className='text-[20px] font-medium text-text-strong-950'>{title}</h3>
             <div className='flex flex-wrap gap-1.5'>
               {infoBadges.map((badge) => (
