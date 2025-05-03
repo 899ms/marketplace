@@ -34,7 +34,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
         hover:shadow-lg 
         overflow-hidden
         bg-bg-white-0
-        p-4
+        px-4 py-3.5
         transition-all
         max-h-[198px]
         rounded-xl
@@ -67,19 +67,19 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
                 {name}
               </div>
               <div className='text-text-secondary-600 mt-0.5 flex items-center gap-0.5 text-[11px]'>
-                <RiStarFill className='size-3 text-yellow-500' />
+                <RiStarFill className='size-4 text-yellow-500' />
                 <span className='text-[#525866]'>4.9 (125)</span> {/* Placeholder Rating */}
               </div>
             </div>
-            <div className='text-text-secondary-600 mb-2 flex items-center gap-1.5 text-[11px]'>
+            <div className='text-text-secondary-600 mb-2 flex items-center gap-1.5 text-[12px]'>
               <span className='inline-flex items-center gap-0.5'>
-                <RiMoneyDollarCircleLine className='size-3' /> Salary{' '}
+                <RiMoneyDollarCircleLine className='size-5' /> Salary{' '}
               </span>
               <span className='inline-flex items-center gap-0.5'>
-                <RiBriefcaseLine className='size-3' /> Work
+                <RiBriefcaseLine className='size-5' /> Work
               </span>
               <span className='inline-flex items-center gap-0.5'>
-                <RiSparklingLine className='size-3' /> Special
+                <RiSparklingLine className='size-5' /> Special
               </span>
             </div>
           </div>
@@ -91,7 +91,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
       <p className='text-[#525866] line-clamp-2 text-[14px]'>
         {bio}
       </p>
-      <div className='flex flex-wrap gap-1'>
+      <div className='flex flex-wrap gap-2'>
         {/* Placeholder Tags */}
         <Tag.Root className='text-[12px] text-[#525866]'>Mixing</Tag.Root>
         <Tag.Root className='text-[12px] text-[#525866]'>Singing</Tag.Root>
