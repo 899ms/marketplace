@@ -400,7 +400,7 @@ export default function SearchPageClient() {
 
   return (
     <>
-      <div className='flex flex-1 gap-6 px-6 py-6 h-full mx-auto w-full max-w-[1376px]'>
+      <div className='flex flex-1 gap-6 py-6 h-full mx-auto w-full max-w-[1376px]'>
         {/* Left Column: Tabs + Filters */}
         <div className='w-full max-w-[342px] flex-shrink-0 flex flex-col h-full space-y-4'>
           {/* Tab Navigation */}
@@ -559,7 +559,7 @@ export default function SearchPageClient() {
                 </div>
               ) : workers.length > 0 ? (
                 <>
-                  <div className='grid grid-cols-2 gap-4'>
+                  <div className='grid grid-cols-2 gap-6'>
                     {workers.map((worker) => (
                       <WorkerCard
                         key={worker.id}
