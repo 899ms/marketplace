@@ -6,6 +6,7 @@ import { useParams } from 'next/navigation';
 import { RiHomeLine, RiLinksLine, RiBookmarkLine, RiSendPlaneLine, RiShareLine, RiFileCopyLine, RiArrowRightSLine, RiLoader4Line } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
+import { Root as FancyButtonRoot, Icon as FancyButtonIcon } from '@/components/ui/fancy-button'; // Import FancyButton
 
 // Import Supabase functions and types
 import {
@@ -170,16 +171,18 @@ const SellerActionButtons = ({
         </>
       )}
     </Button.Root>
-    <Button.Root
+    <FancyButtonRoot
       variant="neutral"
-      mode="filled"
+      size="medium"
       className="flex-1"
       onClick={onApply}
       disabled={disabled}
     >
       Apply
-      <Button.Icon><RiArrowRightSLine /></Button.Icon>
-    </Button.Root>
+      <FancyButtonIcon>
+        <RiArrowRightSLine />
+      </FancyButtonIcon>
+    </FancyButtonRoot>
   </div>
 );
 
@@ -324,11 +327,9 @@ export default function ProjectDetailPage() {
     // TODO: Add actual application logic here (e.g., API call)
     console.log('Apply button clicked');
 
-    // Show success notification
+    // Show success notification - Removed status and title
     notification({
-      status: 'success',
-      title: 'Application Sent',
-      description: 'Your application for this project has been submitted successfully.',
+      description: 'Application Sent: Your application for this project has been submitted successfully.',
     });
   };
 
@@ -469,7 +470,7 @@ export default function ProjectDetailPage() {
               requirements={[]} // Pass empty array as requirements are not fetched
             />
             <SkillsSection skills={projectSkills} />
-            <AttachmentsSection attachments={projectAttachments} />
+            <AttachmentsSection attachments={projectAttachments} client={clientDataState} />
             <FaqSection initialFaqs={mockFaqs} /> {/* Use mock FAQs */}
           </div>
         </div>
@@ -481,6 +482,7 @@ export default function ProjectDetailPage() {
             <>
               <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0  shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)]'>
                 <ClientProfileCard client={{
+                  id: clientDataState?.id ?? '',
                   name: clientName,
                   avatar: clientAvatar,
                   rating: clientRating,
@@ -507,11 +509,12 @@ export default function ProjectDetailPage() {
             <>
               <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
                 <ClientProfileCard client={{
+                  id: clientDataState?.id ?? '',
                   name: clientName,
                   avatar: clientAvatar,
-                  rating: clientRating, // Placeholder
-                  reviews: clientReviews, // Placeholder
-                  isVerified: clientIsVerified // Placeholder
+                  rating: clientRating,
+                  reviews: clientReviews,
+                  isVerified: clientIsVerified
                 }} />
                 <div className="w-[90%] mx-auto my-4 h-[2px] bg-stroke-soft-200" />
                 <ProjectInfoCard

@@ -1,67 +1,29 @@
-'use client';
+import React, { Suspense } from 'react';
+import SettingsPageContent from '@/components/settings/settings-page-content';
 
-import React, { useState } from 'react';
-import { useAuth } from '@/utils/supabase/AuthContext';
-
-/* ------------- split‑out settings components ------------- */
-import OrdersSidebar from '@/components/settings/OrdersSidebar';
-import OrdersContent from '@/components/settings/OrdersContent';
-import MyServicesView from '@/components/settings/MyServicesView';
-
-/* --------------------------------------------------------- */
-/** Keys that decide which “big view” we’re showing */
-export type ActiveView = 'orders' | 'billing' | 'my-services';
-
-/** Main Settings / Orders page               (route: /settings) */
-export default function SettingsPage() {
-  const [activeView, setActiveView] = useState<ActiveView>('orders');
-
-  /* load auth + profile once at the top level so children can rely
-     on the Supabase context without individual spinner flashes  */
-  const { userProfile, loading, profileLoading } = useAuth();
-  const isSeller = userProfile?.user_type === 'seller';
-
-  /* --------------- global skeleton while auth resolves --------------- */
-  if (loading || profileLoading) {
-    return (
-      <div className="flex min-h-screen bg-bg-alt-white-100">
-        <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-4 pt-6" />
-        <main className="flex-1 p-6">Loading…</main>
-      </div>
-    );
-  }
-
-  /* --------------- main layout --------------- */
+// Skeleton loader for Suspense fallback
+function SettingsPageSkeleton() {
   return (
-    <div className="flex min-h-screen bg-bg-alt-white-100">
-      {/* left nav – adds “My services” only if `isSeller` */}
-      <OrdersSidebar
-        activeView={activeView}
-        setActiveView={setActiveView}
-        isSeller={!!isSeller}
-      />
-
-      {/* right content – switch on activeView */}
-      <div className="flex-1">
-        {activeView === 'orders' && <OrdersContent />}
-
-        {activeView === 'my-services' && isSeller && <MyServicesView />}
-
-        {activeView === 'my-services' && !isSeller && (
-          <main className="flex-1 p-6">
-            <p className="text-red-500">
-              Access Denied: “My Services” is only available for sellers.
-            </p>
-          </main>
-        )}
-
-        {activeView === 'billing' && (
-          <main className="flex-1 p-6">
-            {/* TODO: BillingView component once implemented */}
-            <p className="text-text-sub-400">Billing view coming soon…</p>
-          </main>
-        )}
-      </div>
+    <div className="flex min-h-screen animate-pulse bg-bg-alt-white-100">
+      <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-4 pt-6">
+        <div className="mb-4 h-6 w-3/4 rounded bg-gray-200"></div>
+        <div className="mb-2 h-4 w-1/2 rounded bg-gray-200"></div>
+        <div className="mb-2 h-4 w-1/2 rounded bg-gray-200"></div>
+        {/* Add more skeleton lines if needed */}
+      </aside>
+      <main className="flex-1 p-6">
+        <div className="h-8 w-1/4 rounded bg-gray-200"></div>
+        {/* Add more skeleton content */}
+      </main>
     </div>
+  );
+}
+
+/** Main Settings / Orders page (Server Component Wrapper) (route: /settings) */
+export default function SettingsPage() {
+  return (
+    <Suspense fallback={<SettingsPageSkeleton />}>
+      <SettingsPageContent />
+    </Suspense>
   );
 }

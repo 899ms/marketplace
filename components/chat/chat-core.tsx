@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, Fragment } from 'react';
 import supabase from '@/utils/supabase/client';
 import { chatOperations } from '@/utils/supabase/database';
-import { Chat, Message, User, MessageSchema, BaseFileData } from '@/utils/supabase/types';
+import { Chat, Message, User, MessageSchema, BaseFileData, MusicItem } from '@/utils/supabase/types';
 import {
   ImageMessageData,
   OfferMessageData,
@@ -16,6 +16,19 @@ import { Root as LinkButton } from '@/components/ui/link-button';
 import * as FancyButton from '@/components/ui/fancy-button';
 import { Paperclip, Send, Smile, MoreVertical, Clock, XCircle, FileImage, CheckCircle, SendIcon, LoaderCircle, X } from 'lucide-react';
 import Link from 'next/link';
+import * as FileFormatIcon from '@/components/ui/file-format-icon';
+import { useAudioPlayer } from '@/contexts/AudioContext';
+
+// --- Moved formatBytes function to top level --- 
+function formatBytes(bytes: number, decimals = 2): string {
+  if (bytes === 0) return '0 Bytes';
+  const k = 1024;
+  const dm = decimals < 0 ? 0 : decimals;
+  const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+}
+// --- End moved function --- 
 
 function formatMessageTimestamp(timestamp: string | null | undefined): string {
   if (!timestamp) return '';
@@ -75,6 +88,11 @@ interface ChatCoreProps {
   onClose?: () => void;
 }
 
+interface SellerInfo {
+  name: string;
+  avatarUrl: string | null;
+}
+
 interface ChatMessageRendererProps {
   message: Message;
   isCurrentUser: boolean;
@@ -90,6 +108,7 @@ function ChatMessageRenderer({
   timestamp,
   senderName,
 }: ChatMessageRendererProps) {
+  const audioPlayer = useAudioPlayer();
   const alignmentContainerClass = isCurrentUser ? 'justify-end' : 'justify-start';
   const alignmentItemsClass = isCurrentUser ? 'items-end' : 'items-start';
   const bubbleBaseClass = 'p-3 rounded-xl shadow-sm';
@@ -217,14 +236,22 @@ function ChatMessageRenderer({
     );
   };
 
-  function formatBytes(bytes: number, decimals = 2): string {
-    if (bytes === 0) return '0 Bytes';
-    const k = 1024;
-    const dm = decimals < 0 ? 0 : decimals;
-    const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
-    const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-  }
+  const handleAudioClick = () => {
+    const trackData = message.data?.[0];
+    if (!trackData || !senderProfile) return;
+
+    const track: MusicItem = {
+      url: trackData.url,
+      title: trackData.name,
+    };
+
+    const seller: SellerInfo = {
+      name: senderProfile.full_name || senderProfile.username || 'Unknown Seller',
+      avatarUrl: senderProfile.avatar_url || null,
+    };
+
+    audioPlayer.loadTrack(track, seller);
+  };
 
   let contentElement = null;
 
@@ -267,6 +294,33 @@ function ChatMessageRenderer({
                 <p title={formatBytes(message.data?.[0]?.size)} className={`w-1/2 text-[12px] text-[#525866] ${!isCurrentUser ? 'text-right' : 'text-right'}`}>{formatBytes(message.data?.[0]?.size)}</p>
               </div>
             </div>
+          </div>
+        )}
+        {message.message_type === 'audio' && message.data?.[0] && (
+          <div className={`flex flex-col gap-1 mt-1 ${isCurrentUser ? 'items-end' : 'items-start'} w-full overflow-hidden`}>
+            <button
+              type="button"
+              onClick={handleAudioClick}
+              className={`flex items-center text-left gap-3 rounded-lg border p-3 max-w-[250px] ${isCurrentUser ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200 dark:bg-gray-700 dark:border-gray-600'} hover:bg-opacity-80 transition-colors overflow-hidden w-full`}
+            >
+              <FileFormatIcon.Root format="MP3" color="blue" />
+              <div className='flex-1 space-y-0.5 min-w-0'>
+                <div
+                  className='block w-full text-xs font-medium text-gray-800 dark:text-gray-100 truncate overflow-hidden'
+                  title={message.data[0].name}
+                >
+                  {message.data[0].name}
+                </div>
+                <div className='text-xs text-gray-500 dark:text-gray-400'>
+                  {formatBytes(message.data[0].size)} - Click to play
+                </div>
+              </div>
+            </button>
+            {message.content && (
+              <p className={`text-[12px] text-[#525866] break-words whitespace-pre-wrap mt-1 ${!isCurrentUser ? 'text-left pr-[30%]' : 'text-right pl-[30%]'}`}>
+                {message.content}
+              </p>
+            )}
           </div>
         )}
         {message.message_type === 'offer' && (
@@ -358,6 +412,7 @@ export default function ChatCore({
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' });
@@ -415,24 +470,43 @@ export default function ChatCore({
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
+  // --- UseEffect to handle focus after sending --- 
+  useEffect(() => {
+    // Only focus if we just finished sending
+    if (!isSending) {
+      textareaRef.current?.focus();
+    }
+  }, [isSending]); // Dependency array includes isSending
+
   const handleSendMessage = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
     const textContent = newMessage.trim();
 
     if ((!textContent && !selectedFile) || isSending) return;
 
-    setIsSending(true);
+    setIsSending(true); // Set sending to true *before* async operations
     setNewMessage('');
     let fileToUpload = selectedFile;
     setSelectedFile(null);
 
     let attachmentData: BaseFileData[] | null = null;
-    let finalMessageType: Message['message_type'] = 'text';
+    let finalMessageType: Message['message_type'] = 'text'; // Default to text
 
     try {
       if (fileToUpload) {
-        console.log(`Uploading file: ${fileToUpload.name} (${fileToUpload.size} bytes)`);
-        finalMessageType = 'image';
+        // --- Determine message type based on file --- 
+        const fileType = fileToUpload.type;
+        if (fileType.startsWith('image/')) {
+          finalMessageType = 'image';
+        } else if (fileType === 'audio/mpeg' || fileToUpload.name.toLowerCase().endsWith('.mp3')) {
+          finalMessageType = 'audio'; // Use 'audio' type for MP3s
+        } else {
+          finalMessageType = 'file'; // Fallback for other types
+        }
+        // --- End Determine message type --- 
+
+        console.log(`Uploading file: ${fileToUpload.name} (${fileToUpload.size} bytes) - Type: ${finalMessageType}`);
+
         try {
           const timestamp = Date.now();
           const uniqueFileName = `${timestamp}-${fileToUpload.name}`.replace(/\s+/g, '_');
@@ -455,12 +529,13 @@ export default function ChatCore({
             name: fileToUpload.name,
             size: fileToUpload.size,
             url: urlData.publicUrl,
+            mimeType: fileToUpload.type, // <-- Store MIME type
           }];
 
         } catch (uploadError: any) {
           console.error('Error uploading attachment during send:', uploadError);
           alert(`File upload failed: ${uploadError.message}. Message not sent.`);
-          setNewMessage(textContent);
+          setNewMessage(textContent); // Keep text content if upload fails
           setIsSending(false);
           return;
         }
@@ -471,21 +546,22 @@ export default function ChatCore({
         chat_id: chat.id,
         sender_id: currentUserId,
         content: textContent,
-        message_type: attachmentData ? 'image' : 'text',
-        data: attachmentData,
+        message_type: attachmentData ? finalMessageType : 'text', // Use determined type or text
+        data: attachmentData, // Send BaseFileData including mimeType
       });
 
       if (!sentMessage) {
         console.error('Failed to send message after potential upload');
-        setNewMessage(textContent);
+        setNewMessage(textContent); // Restore text on failure
       } else {
         scrollToBottom();
       }
     } catch (err) {
       console.error('Error sending message:', err);
-      setNewMessage(textContent);
+      setNewMessage(textContent); // Restore text on error
     } finally {
-      setIsSending(false);
+      setIsSending(false); // Set sending back to false
+      // Remove focus logic from here
     }
   };
 
@@ -497,12 +573,13 @@ export default function ChatCore({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && !isSending) {
-      const maxSize = 5 * 1024 * 1024;
+      const maxSize = 5 * 1024 * 1024; // Keep 5MB limit for now, adjust if needed
       if (file.size > maxSize) {
         alert('File is too large. Maximum size is 5MB.');
         if (fileInputRef.current) fileInputRef.current.value = '';
         return;
       }
+      // Add MP3 check here if needed, although the input accept attribute should handle it mostly
       setSelectedFile(file);
     } else {
       setSelectedFile(null);
@@ -638,13 +715,13 @@ export default function ChatCore({
       <form onSubmit={handleSendMessage} className='p-4 mx-4 mb-4 rounded-lg border border-[#E1E4EA] flex flex-col gap-4 flex-shrink-0'>
         <div className='border-b border-[#E1E4EA] pb-2 w-full'>
           <textarea
+            ref={textareaRef}
             placeholder='Type your message...'
             className='w-full border-none outline-none resize-none min-h-[24px] max-h-[72px]'
             rows={1}
             value={newMessage}
             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
               setNewMessage(e.target.value);
-
               // Auto-resize textarea
               const textarea = e.target;
               textarea.style.height = 'auto';
@@ -659,9 +736,28 @@ export default function ChatCore({
         <div className='flex flex-col gap-2'>
           <div className='flex flex-row'>
             {selectedFile && (
-              <div className='rounded-lg h-24 w-24 border border-[#E1E4EA] p-2 relative'>
-                <img src={URL.createObjectURL(selectedFile)} alt="Attachment" className='w-full h-full object-cover' />
-                <X size={20} onClick={clearSelectedFile} className='absolute top-1 right-1 cursor-pointer text-[#525866] p-1 rounded-lg bg-white' />
+              <div className='rounded-lg h-24 w-24 border border-[#E1E4EA] p-2 relative flex items-center justify-center'>
+                {selectedFile.type.startsWith('image/') ? (
+                  <img src={URL.createObjectURL(selectedFile)} alt="Attachment Preview" className='w-full h-full object-contain rounded-md' />
+                ) : (
+                  <div className="flex flex-col items-center justify-center gap-1 text-center w-full overflow-hidden">
+                    {(() => { // IIFE to compute icon props
+                      const fileExt = selectedFile.name.split('.').pop()?.toUpperCase() || 'FILE';
+                      const iconColor = fileExt === 'MP3' ? 'blue' : fileExt === 'PDF' ? 'red' : 'gray';
+                      return <FileFormatIcon.Root format={fileExt} color={iconColor} />;
+                    })()}
+                    <span
+                      className="block w-full text-sm text-gray-600 dark:text-gray-400 truncate px-1"
+                      title={selectedFile.name}
+                    >
+                      {selectedFile.name}
+                    </span>
+                    <span className="text-[10px] text-gray-400 dark:text-gray-500">
+                      {formatBytes(selectedFile.size)}
+                    </span>
+                  </div>
+                )}
+                <X size={20} onClick={clearSelectedFile} className='absolute top-1 right-1 cursor-pointer text-[#525866] p-0.5 rounded-full bg-white/80 hover:bg-white' />
               </div>
             )}
           </div>
@@ -681,7 +777,7 @@ export default function ChatCore({
                   ref={fileInputRef}
                   onChange={handleFileChange}
                   className="hidden"
-                  accept="image/*"
+                  accept="image/*,.mp3,audio/mpeg"
                 />
                 <div
                   onClick={() => isSending ? null : handleAttachmentClick()}

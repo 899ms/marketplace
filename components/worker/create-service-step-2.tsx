@@ -83,6 +83,21 @@ export function Step2Pricing({
 
       {/* Form Fields */}
       <div className='space-y-6 p-6'>
+        <div className='mb-4 space-y-1 text-xs text-red-500'>
+          {errors.price && <p>{errors.price.message?.toString()}</p>}
+          {errors.currency && <p>{errors.currency.message?.toString()}</p>}
+          {errors.lead_time && <p>{errors.lead_time.message?.toString()}</p>}
+          {errors.additionalServices?.map((error, index) => {
+            if (!error) return null; // Skip if no error for this index
+            return (
+              <React.Fragment key={index}>
+                {error.name && <p>Additional Service {index + 1} Name: {error.name?.message}</p>}
+                {error.price && <p>Additional Service {index + 1} Price: {error.price?.message}</p>}
+              </React.Fragment>
+            );
+          })}
+        </div>
+
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
           {/* Pricing Field */}
           <div className='flex flex-col gap-1'>
@@ -141,16 +156,6 @@ export function Step2Pricing({
                 </Select.Content>
               </Select.Root>
             </div>
-            {errors.price && (
-              <p className='text-xs mt-1 text-red-500'>
-                {errors.price?.message?.toString()}
-              </p>
-            )}
-            {errors.currency && (
-              <p className='text-xs mt-1 text-red-500'>
-                {errors.currency?.message?.toString()}
-              </p>
-            )}
           </div>
 
           {/* Lead Time Field */}
@@ -169,11 +174,6 @@ export function Step2Pricing({
                 />
               </Input.Wrapper>
             </Input.Root>
-            {errors.lead_time && (
-              <p className='text-xs mt-1 text-red-500'>
-                {errors.lead_time?.message?.toString()}
-              </p>
-            )}
           </div>
         </div>
 
@@ -201,11 +201,6 @@ export function Step2Pricing({
                     />
                   </Input.Wrapper>
                 </Input.Root>
-                {errors.additionalServices?.[index]?.name && (
-                  <p className='text-xs mt-1 text-red-500'>
-                    {errors.additionalServices[index]?.name?.message}
-                  </p>
-                )}
               </div>
 
               <div className='w-full sm:w-auto'>
@@ -243,11 +238,6 @@ export function Step2Pricing({
                     />
                   </Input.Wrapper>
                 </Input.Root>
-                {errors.additionalServices?.[index]?.price && (
-                  <p className='text-xs mt-1 text-red-500'>
-                    {errors.additionalServices[index]?.price?.message}
-                  </p>
-                )}
               </div>
 
               <Button.Root
@@ -282,14 +272,14 @@ export function Step2Pricing({
           <span className='block h-1.5 w-1.5 rounded-full bg-[#EBEBEB]'></span>
         </div>
         {/* Action Buttons */}
-        <div className='flex gap-3 border-t border-stroke-soft-200 p-4'>
+        <div className='flex gap-3  border-stroke-soft-200 p-4'>
           <Button.Root
             variant='neutral'
             mode='stroke'
             onClick={prevStep}
             className='flex-1'
           >
-            <Button.Icon as={RiArrowLeftSLine} />
+
             Previous
           </Button.Root>
           <FancyButton.Root
@@ -298,7 +288,7 @@ export function Step2Pricing({
             className='flex-1'
             disabled={!!errors.price || !!errors.lead_time}
           >
-            Next Step <FancyButton.Icon as={RiArrowRightSLine} />
+            Next
           </FancyButton.Root>
         </div>
       </div>

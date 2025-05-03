@@ -181,7 +181,7 @@ export function useCreateServiceForm(): UseCreateServiceFormReturn {
       // Set success and redirect after a short delay
       setSuccess(true);
       setTimeout(() => {
-        router.push('/worker/services');
+        router.push('/settings?tab=my-services');
         router.refresh(); // Refresh the page data
       }, 1000);
     } catch (err) {

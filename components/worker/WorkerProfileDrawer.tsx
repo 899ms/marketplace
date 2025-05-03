@@ -104,10 +104,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
 
   const handleHireClick = () => {
     toast({
-      title: "Hire Initiated",
-      description: `Proceeding to hire ${displayName}. You will be redirected soon.`,
-      status: "success",
-      variant: "filled"
+      description: `Hire Initiated: Proceeding to hire ${displayName}.`,
     });
   };
 
@@ -189,7 +186,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
               </Drawer.Close>
 
               <Link
-                href={worker ? `/workers/${worker.id}` : '#'}
+                href={worker ? `/users/${worker.id}` : '#'}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={`flex items-center gap-1.5 text-sm font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700 ${!worker || isLoading ? 'pointer-events-none opacity-50' : ''}`}>
@@ -204,15 +201,23 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
             ) : worker ? (
               <div className="mt-5 flex items-start justify-between px-5">
                 <div className="flex items-center gap-4">
-                  <Avatar.Root size="64">
-                    <Avatar.Image src={displayAvatar ? displayAvatar : undefined} alt={displayName} />
-                  </Avatar.Root>
+                  <Link href={`/users/${worker.id}`} passHref legacyBehavior>
+                    <a className="inline-block">
+                      <Avatar.Root size="64">
+                        <Avatar.Image src={displayAvatar ? displayAvatar : undefined} alt={displayName} />
+                      </Avatar.Root>
+                    </a>
+                  </Link>
 
                   <div>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <h2 className="text-xl font-semibold text-text-strong-950">
-                        {displayName}
-                      </h2>
+                      <Link href={`/users/${worker.id}`} passHref legacyBehavior>
+                        <a className="inline-block hover:underline">
+                          <h2 className="text-xl font-semibold text-text-strong-950">
+                            {displayName}
+                          </h2>
+                        </a>
+                      </Link>
                       <div className="flex items-center gap-0.5 text-sm text-text-secondary-600">
                         <RiStarFill className="size-4 text-yellow-400" />
                         <span> 4.8 (100+)</span>

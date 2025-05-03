@@ -1,15 +1,11 @@
 // AlignUI Notification v0.0.0
 
 import * as React from 'react';
-import * as Alert from '@/components/ui/alert';
+// import * as Alert from '@/components/ui/alert'; // Removed Alert import
 import { cn } from '@/utils/cn';
 import * as NotificationPrimitives from '@radix-ui/react-toast';
 import {
-  RiAlertFill,
   RiCheckboxCircleFill,
-  RiErrorWarningFill,
-  RiInformationFill,
-  RiMagicFill,
 } from '@remixicon/react';
 
 const NotificationProvider = NotificationPrimitives.Provider;
@@ -22,7 +18,8 @@ const NotificationViewport = React.forwardRef<
   <NotificationPrimitives.Viewport
     ref={forwardedRef}
     className={cn(
-      'fixed left-0 top-0 z-[100] flex max-h-screen w-full flex-col-reverse gap-5 p-4 sm:bottom-0 sm:left-auto sm:right-0 sm:top-auto sm:max-w-[438px] sm:flex-col sm:p-6',
+      // Centered horizontally, near bottom, fit content width
+      'fixed bottom-6 left-1/2 z-[100] flex w-fit -translate-x-1/2 flex-col gap-3 p-4',
       className,
     )}
     {...rest}
@@ -32,16 +29,11 @@ NotificationViewport.displayName = 'NotificationViewport';
 
 type NotificationProps = React.ComponentPropsWithoutRef<
   typeof NotificationPrimitives.Root
-> &
-  Pick<
-    React.ComponentPropsWithoutRef<typeof Alert.Root>,
-    'status' | 'variant'
-  > & {
-    title?: string;
-    description?: React.ReactNode;
-    action?: React.ReactNode;
-    disableDismiss?: boolean;
-  };
+> & {
+  // Keep only description and action if needed
+  description?: React.ReactNode;
+  action?: React.ReactNode; // Optional: Keep if actions are sometimes needed
+};
 
 const Notification = React.forwardRef<
   React.ComponentRef<typeof NotificationPrimitives.Root>,
@@ -50,77 +42,46 @@ const Notification = React.forwardRef<
   (
     {
       className,
-      status,
-      variant = 'filled',
-      title,
       description,
       action,
-      disableDismiss = false,
+      // Removed status, variant, title, disableDismiss
       ...rest
     }: NotificationProps,
     forwardedRef,
   ) => {
-    let Icon: React.ElementType;
-
-    switch (status) {
-      case 'success':
-        Icon = RiCheckboxCircleFill;
-        break;
-      case 'warning':
-        Icon = RiAlertFill;
-        break;
-      case 'error':
-        Icon = RiErrorWarningFill;
-        break;
-      case 'information':
-        Icon = RiInformationFill;
-        break;
-      case 'feature':
-        Icon = RiMagicFill;
-        break;
-      default:
-        Icon = RiErrorWarningFill;
-        break;
-    }
+    // Static icon
+    const Icon = RiCheckboxCircleFill;
 
     return (
       <NotificationPrimitives.Root
         ref={forwardedRef}
         className={cn(
-          // open
-          'data-[state=open]:animate-in data-[state=open]:max-[639px]:slide-in-from-top-full data-[state=open]:sm:slide-in-from-right-full',
-          // close
-          'data-[state=closed]:animate-out data-[state=closed]:fade-out-80 data-[state=open]:max-[639px]:slide-out-to-top-full data-[state=closed]:sm:slide-out-to-right-full',
-          // swipe
-          'data-[swipe=cancel]:translate-x-0 data-[swipe=end]:translate-x-[var(--radix-toast-swipe-end-x)] data-[swipe=move]:translate-x-[var(--radix-toast-swipe-move-x)] data-[swipe=move]:transition-none data-[swipe=end]:animate-out',
+          // Base style: White bg, rounded, shadow, padding, flex layout
+          'flex items-center gap-3 rounded-lg border border-gray-200 bg-white p-3 text-gray-900 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-50',
+          // Animations (keep default ones)
+          'data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom-full', // Adjusted animation for bottom
+          'data-[state=closed]:animate-out data-[state=closed]:fade-out-80 data-[state=closed]:slide-out-to-bottom-full', // Adjusted animation for bottom
+          // Swipe (keep default ones)
+          'data-[swipe=cancel]:translate-y-0 data-[swipe=end]:translate-y-[var(--radix-toast-swipe-end-y)] data-[swipe=move]:translate-y-[var(--radix-toast-swipe-move-y)] data-[swipe=move]:transition-none data-[swipe=end]:animate-out',
           className,
         )}
-        asChild
+        // Removed asChild
         {...rest}
       >
-        <Alert.Root variant={variant} status={status} size='large'>
-          <Alert.Icon as={Icon} aria-hidden='true' />
-          <div className='flex w-full flex-col gap-2.5'>
-            <div className='flex w-full flex-col gap-1'>
-              {title && (
-                <NotificationPrimitives.Title className='text-label-sm'>
-                  {title}
-                </NotificationPrimitives.Title>
-              )}
-              {description && (
-                <NotificationPrimitives.Description>
-                  {description}
-                </NotificationPrimitives.Description>
-              )}
-            </div>
-            {action && <div className='flex items-center gap-2'>{action}</div>}
-          </div>
-          {!disableDismiss && (
-            <NotificationPrimitives.Close aria-label='Close'>
-              <Alert.CloseIcon />
-            </NotificationPrimitives.Close>
+        {/* Icon */}
+        <Icon className="size-5 shrink-0 text-black dark:text-white" aria-hidden='true' />
+        {/* Content Wrapper */}
+        <div className='flex w-full flex-col gap-1'>
+          {/* Description (Main Text) */}
+          {description && (
+            <NotificationPrimitives.Description className='text-sm font-medium'>
+              {description}
+            </NotificationPrimitives.Description>
           )}
-        </Alert.Root>
+          {/* Optional Action Area */}
+          {action && <div className='flex items-center gap-2'>{action}</div>}
+        </div>
+        {/* Removed Close Button */}
       </NotificationPrimitives.Root>
     );
   },

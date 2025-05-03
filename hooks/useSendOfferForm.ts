@@ -172,7 +172,6 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
         currency: validatedData.currency,
       };
 
-
       const { data: newContract, error: contractError } = await supabase
         .from('contracts')
         .insert(contractData)
@@ -321,6 +320,14 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
       setIsSubmitting(false);
     }
   };
+
+  // Effect to redirect on success
+  useEffect(() => {
+    if (success) {
+      console.log('Redirecting to /chats...');
+      router.push('/chats');
+    }
+  }, [success, router]); // Depend on success and router
 
   return {
     formMethods,

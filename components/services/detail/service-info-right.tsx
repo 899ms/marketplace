@@ -79,10 +79,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
   const handleHireClick = () => {
     // TODO: Implement actual hiring logic later
     toast({
-      title: "Hire Request Sent!",
-      description: `Successfully initiated hiring process for service: ${service.title}. You will be redirected soon.`, // Added dummy data
-      status: "success",
-      variant: "filled"
+      description: `Hire Request Sent! Successfully initiated hiring process for service: ${service.title}.`, // Combine title and description
     });
     // Optionally, redirect after a short delay or after actual API call succeeds
     // setTimeout(() => { window.location.href = `/orders/create?serviceId=${service.id}`; }, 2000);
@@ -138,16 +135,20 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         {/* Provider Info - Use service.seller_name, seller_avatar_url */}
         <div className="relative mb-4">
           <div className="flex flex-col items-center text-center">
-            <Avatar.Root size="56">
-              <Avatar.Image
-                src={service.seller_avatar_url || 'https://via.placeholder.com/56'}
-                alt={service.seller_name || 'Seller'}
-              />
-              {/* online-status dot */}
-              <Avatar.Indicator position="bottom">
-                <div className="size-3 rounded-full bg-green-500 ring-2 ring-white" />
-              </Avatar.Indicator>
-            </Avatar.Root>
+            <Link href={`/users/${service.seller_id}`} passHref legacyBehavior>
+              <a className="inline-block">
+                <Avatar.Root size="56">
+                  <Avatar.Image
+                    src={service.seller_avatar_url || 'https://via.placeholder.com/56'}
+                    alt={service.seller_name || 'Seller'}
+                  />
+                  {/* online-status dot */}
+                  <Avatar.Indicator position="bottom">
+                    <div className="size-3 rounded-full bg-green-500 ring-2 ring-white" />
+                  </Avatar.Indicator>
+                </Avatar.Root>
+              </a>
+            </Link>
 
             {/* heart icon top-right */}
             <button className="absolute top-0 right-0 p-1 text-icon-secondary-400 hover:text-icon-primary-500">
@@ -155,7 +156,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             </button>
 
             <div className="mt-2">
-              <Link href={`/workers/${service.seller_id}`} passHref>
+              <Link href={`/users/${service.seller_id}`} passHref>
                 <h2 className="text-label-md font-medium text-text-strong-950 hover:underline">
                   {service.seller_name || 'Unknown Seller'}
                 </h2>

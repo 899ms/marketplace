@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import { useAuth } from '@/utils/supabase/AuthContext';
 import { cn } from '@/utils/cn';
 import {
@@ -13,17 +14,15 @@ import type { ActiveView } from '@/app/settings/page';
 /* ------------------------------------------------------------------ */
 /** Left navigation panel shown on every settings page.
  *  ‑ Buyers see “Orders” + “Billing”
- *  ‑ Sellers see an extra “My services” link.
+ *  ‑ Sellers see an extra “My services” link.
  */
 interface Props {
   activeView: ActiveView;
-  setActiveView: (v: ActiveView) => void;
   isSeller: boolean;
 }
 
 export default function OrdersSidebar({
   activeView,
-  setActiveView,
   isSeller,
 }: Props) {
   const { loading, profileLoading } = useAuth();
@@ -60,9 +59,9 @@ export default function OrdersSidebar({
         {links.map(({ name, view, icon: Icon }) => {
           const selected = activeView === view;
           return (
-            <button
+            <Link
               key={view}
-              onClick={() => setActiveView(view)}
+              href={`/settings?tab=${view}`}
               className={cn(
                 'flex w-full items-center gap-2 rounded-md px-3 py-2 text-left transition-colors',
                 selected
@@ -72,7 +71,7 @@ export default function OrdersSidebar({
             >
               <Icon className="size-5 shrink-0" />
               <span>{name}</span>
-            </button>
+            </Link>
           );
         })}
       </nav>
