@@ -61,7 +61,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
     <aside className='hidden w-[300px] shrink-0 lg:block'>
       <div className='sticky top-20 flex flex-col gap-6 border border-stroke-soft-200 bg-bg-white-0 mb-6  max-w-[300px] max-h-[760px] rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
         {/* Profile Section */}
-        <div className='flex flex-col items-center gap-4 p-2 mt-6'>
+        <div className='flex flex-col items-center gap-2  mt-6'>
           {user.avatarUrl && user.avatarUrl !== "" ? <Avatar.Root size='64'>
             <Avatar.Image src={user.avatarUrl} alt={user.name} />
             <Avatar.Indicator position='bottom'>
@@ -75,7 +75,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             </h2>
             <div className='text-text-secondary-600 mt-1 flex items-center justify-center gap-1 text-paragraph-sm'>
               <RiStarFill className='size-4 text-yellow-500' />
-              <span className='text-[#525866]'>
+              <span className='text-[#525866] text-[12px]'>
                 {user.rating} ({user.reviews})
               </span>
             </div>

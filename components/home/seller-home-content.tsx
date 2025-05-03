@@ -15,7 +15,7 @@ interface SellerHomeContentProps {
 export default function SellerHomeContent({ userProfile, recentJobs }: SellerHomeContentProps) {
   // Pass userProfile and recentJobs down to child components
   return (
-    <div className='bg-bg-subtle-0 flex flex-1 gap-6 p-6'>
+    <div className='bg-bg-subtle-0 flex flex-1 gap-6 p-8'>
       <WorkerSidebar userProfile={userProfile} />
       <WorkerMainContent userProfile={userProfile} recentJobs={recentJobs} />
       <WorkerRightSidebar userProfile={userProfile} />

@@ -38,7 +38,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
         transition-all
         max-h-[198px]
         rounded-xl
-        flex flex-col gap-6
+        flex flex-col gap-4
         border border-[#E1E4EA]
         shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]
         '
