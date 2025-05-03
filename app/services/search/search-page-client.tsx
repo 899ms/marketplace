@@ -484,7 +484,7 @@ export default function SearchPageClient() {
                 </div>
               ) : services.length > 0 ? (
                 <>
-                  <div className='grid grid-cols-3 gap-4'>
+                  <div className='grid grid-cols-3 gap-x-4 gap-y-6'>
                     {services.map((service) => (
                       <Link
                         key={service.id}
