@@ -56,24 +56,24 @@ export default function ServiceCard({ service }: Props) {
 
       <div className="flex shrink-0 items-center gap-16 text-right">
         <div className="flex flex-col">
-          <span className="text-[#0E121B] text-[16px] font-normal">
+          <span className="text-[#0E121B] text-[16px] font-normal text-center">
             {currencySymbol}
             {service.price.toLocaleString()}
           </span>
           <span className="text-[12px] text-[#525866] font-medium">Price</span>
         </div>
         <div className="flex flex-col">
-          <span className="text-[#0E121B] text-[16px] font-normal">{ordersCount}</span>
+          <span className="text-[#0E121B] text-[16px] font-normal text-center">{ordersCount}</span>
           <span className="text-[12px] text-[#525866] font-medium">Orders</span>
         </div>
         <div className="flex flex-col">
-          <span className="text-[#0E121B] text-[16px] font-normal">
+          <span className="text-[#0E121B] text-[16px] font-normal text-center">
             {`${currencySymbol} ${salesAmount.toLocaleString()}`}
           </span>
           <span className="text-[12px] text-[#525866] font-medium">Sales amount</span>
         </div>
         <div className="flex flex-col">
-          <span className="text-[#0E121B] text-[16px] font-normal">{favoritesCount}</span>
+          <span className="text-[#0E121B] text-[16px] font-normal text-center">{favoritesCount}</span>
           <span className="text-[12px] text-[#525866] font-medium">Favorites</span>
         </div>
       </div>
