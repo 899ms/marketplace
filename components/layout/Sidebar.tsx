@@ -182,8 +182,8 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
         <Divider.Root />
         {/* About Section */}
         <div className='px-4 max-w-[300px] max-h-[202px]  flex flex-col'>
-          <div className='mb-1 flex items-center justify-between'>
-            <h3 className='text-[14px] text-[#525866] text-label-md font-medium'>About</h3>
+          <div className='mb-4 flex items-center justify-between'>
+            <h3 className='text-[14px] text-[#525866]  font-medium'>About</h3>
             {!isEditingBio && (
               <button
                 onClick={handleEditClick}

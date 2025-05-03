@@ -105,7 +105,7 @@ const MainContent = () => {
       <Banner />
 
       {/* New container for sections */}
-      <div className="max-w-[1052px] flex flex-col gap-8">
+      <div className="max-w-[1052px] flex flex-col gap-7">
         {/* Hot Services Section */}
         <section className="flex flex-col max-w-[1052px] max-h-[332px]">
           <SectionHeader title='Hot Services' href='/services/search?tab=Service' />

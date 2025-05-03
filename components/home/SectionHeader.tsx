@@ -10,8 +10,8 @@ interface SectionHeaderProps {
 }
 const SectionHeader = ({ title, href = '#' }: SectionHeaderProps) => {
   return (
-    <div className='mb-4 flex items-center justify-between'>
-      <h2 className='text-[24px] text-[#0E121B] font-semibold '>{title}</h2>
+    <div className='mb-2 flex items-center justify-between'>
+      <h2 className='text-[24px] text-[#000000] font-[500] '>{title}</h2>
       <LinkButton.Root
         variant='gray'
         size='small'
