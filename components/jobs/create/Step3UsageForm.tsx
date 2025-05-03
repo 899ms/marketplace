@@ -7,7 +7,7 @@ import * as Checkbox from '@/components/ui/checkbox';
 import { CreateJobFormData } from '@/app/jobs/create/schema';
 import FormFieldError from './FormFieldError';
 import * as FancyButton from '@/components/ui/fancy-button';
-
+import * as Divider from '@/components/ui/divider';
 interface Step3Props {
   formMethods: UseFormReturn<CreateJobFormData>;
   nextStep: () => void;
@@ -25,20 +25,20 @@ const Step3UsageForm: React.FC<Step3Props> = ({
   } = formMethods;
 
   return (
-    <form onSubmit={(e) => e.preventDefault()} className='space-y-6 px-4'>
+    <form onSubmit={(e) => e.preventDefault()} className='space-y-6'>
       {/* Usage Section - Using Controller for custom radio group */}
       <Controller
         name='usageOption'
         control={control}
         render={({ field }) => (
-          <div className='space-y-3'>
-            <h3 className='text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full p-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
+          <div className='px-4'>
+            <h3 className='mb-2 text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full p-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
               Usage
             </h3>
-            <div className='space-y-3'>
+            <div className=''>
               {/* Private Usage Option */}
               <label
-                className='flex cursor-pointer items-start gap-3 rounded-lg p-4 transition-colors hover:bg-bg-weak-50'
+                className='flex cursor-pointer items-start gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-bg-weak-50'
                 data-checked={field.value === 'private'}
               >
                 <Checkbox.Root
@@ -49,7 +49,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
                   ref={field.ref} // Attach ref
                 />
                 <div className='grid gap-1'>
-                  <span className='text-[14px] font-medium text-[#525866]'>
+                  <span className='text-[14px] font-medium text-[#525866] leading-none'>
                     Private
                   </span>
                   <span className='text-[12px] text-[#525866] font-normal'>
@@ -59,7 +59,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
               </label>
               {/* Business Usage Option */}
               <label
-                className='flex cursor-pointer items-start gap-3 rounded-lg p-4 transition-colors hover:bg-bg-weak-50 '
+                className='flex cursor-pointer items-start gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-bg-weak-50 '
                 data-checked={field.value === 'business'}
               >
                 <Checkbox.Root
@@ -69,7 +69,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
                   onCheckedChange={() => field.onChange('business')}
                 />
                 <div className='grid gap-1'>
-                  <span className='text-[14px] font-medium text-[#525866]'>
+                  <span className='text-[14px] font-medium text-[#525866] leading-none'>
                     Business
                   </span>
                   <span className='text-[12px] text-[#525866] font-normal'>
@@ -88,14 +88,14 @@ const Step3UsageForm: React.FC<Step3Props> = ({
         name='privacyOption'
         control={control}
         render={({ field }) => (
-          <div className='space-y-3'>
-            <h3 className='text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full p-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
+          <div className=' px-4'>
+            <h3 className='mb-2 text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full p-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
               Privacy
             </h3>
-            <div className='space-y-3'>
+            <div className=''>
               {/* Public Privacy Option */}
               <label
-                className=' flex cursor-pointer items-start gap-3 rounded-lg p-4 transition-colors hover:bg-bg-weak-50 '
+                className=' flex cursor-pointer items-start gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-bg-weak-50 '
                 data-checked={field.value === 'public'}
               >
                 <Checkbox.Root
@@ -106,7 +106,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
                   ref={field.ref} // Attach ref
                 />
                 <div className='grid gap-1'>
-                  <span className='text-[14px] font-medium text-[#525866]'>
+                  <span className='text-[14px] font-medium text-[#525866] leading-none'>
                     Public
                   </span>
                   <span className='text-[12px] text-[#525866] font-normal'>
@@ -116,7 +116,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
               </label>
               {/* Private Privacy Option */}
               <label
-                className='flex cursor-pointer items-start gap-3 rounded-lg p-4 transition-colors hover:bg-bg-weak-50'
+                className='flex cursor-pointer items-start gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-bg-weak-50'
                 data-checked={field.value === 'private'}
               >
                 <Checkbox.Root
@@ -126,7 +126,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
                   onCheckedChange={() => field.onChange('private')}
                 />
                 <div className='grid gap-1'>
-                  <span className='text-[14px] font-medium text-[#525866]'>
+                  <span className='text-[14px] font-medium text-[#525866] leading-none'>
                     Private
                   </span>
                   <span className='text-[12px] text-[#525866] font-normal'>
@@ -140,8 +140,10 @@ const Step3UsageForm: React.FC<Step3Props> = ({
         )}
       />
 
+      <Divider.Root className='w-full' />
+
       {/* Navigation */}
-      <div className='flex justify-between'>
+      <div className='flex justify-between  px-4'>
         <Button.Root variant='neutral' mode='stroke' onClick={prevStep}>
           Previous
         </Button.Root>

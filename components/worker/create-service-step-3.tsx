@@ -109,18 +109,23 @@ export function Step3Review({
     // Use formData.images as dependency, because displayData.images might contain blob URLs that change
   }, [formData.images]);
 
-  const handleThumbnailClick = (index: number) => {
-    // Adjust index because reference sliced the array for thumbnails
+  const handleThumbnailClick = (index: number, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentImageIndex(index);
   };
 
-  const handlePrevClick = () => {
+  const handlePrevClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentImageIndex((prev) =>
       prev === 0 ? displayData.images.length - 1 : prev - 1,
     );
   };
 
-  const handleNextClick = () => {
+  const handleNextClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     setCurrentImageIndex((prev) =>
       prev === displayData.images.length - 1 ? 0 : prev + 1,
     );
@@ -130,19 +135,19 @@ export function Step3Review({
     <div className='mx-auto max-w-6xl'>
       <div className='grid grid-cols-1 gap-6 md:grid-cols-12'>
         {/* Left Content: Image, Details, Options */}
-        <div className='space-y-6 md:col-span-8'>
+        <div className='space-y-6 md:col-span-8 mt-2'>
           <h1 className='text-[32px] font-medium text-text-strong-950'>
             You will get {displayData.title}
           </h1>
           {/* Image Carousel */}
           <div className='space-y-3'>
-            <div className='relative aspect-video w-full overflow-hidden rounded-xl bg-bg-weak-50'>
+            <div className='relative aspect-video w-full overflow-hidden rounded-xl bg-bg-weak-50 '>
               <Image
                 // Use displayData which contains URLs (blob or http)
                 src={displayData.images[currentImageIndex]}
                 alt={displayData.title}
                 fill
-                className='object-cover'
+                className='object-contain p-2'
               // Add unoptimized prop if using blob URLs frequently or for external URLs not configured
               // unoptimized
               />
@@ -168,19 +173,16 @@ export function Step3Review({
                 {displayData.images.map((thumb, index) => (
                   <button
                     key={index}
-                    onClick={() => handleThumbnailClick(index)} // Use original index
-                    className={cn(
-                      'aspect-video w-24 flex-shrink-0 overflow-hidden rounded-lg border-2',
-                      currentImageIndex === index // Compare with original index
-                        ? 'border-primary-base'
-                        : 'border-transparent hover:border-gray-300',
-                    )}
+                    onClick={(e) => handleThumbnailClick(index, e)}
+                    className={'aspect-video w-32 h-24 flex-shrink-0 overflow-hidden rounded-lg border-2 border-none bg-bg-weak-50'}
                   >
                     <Image
                       src={thumb}
                       alt={`Thumbnail ${index + 1}`}
                       fill
-                      className='object-cover'
+                      className={cn('!relative object-contain p-2',
+                        index === currentImageIndex ? 'opacity-100' : 'opacity-20'
+                      )}
                     />
                   </button>
                 ))}
@@ -189,13 +191,11 @@ export function Step3Review({
           </div>
 
           {/* Details Section */}
-          <div className='bg-bg-white-0 p-6'>
+          <div className='bg-bg-white-0 py-6 px-4'>
             <span className='text-[24px] font-semibold text-[#0E121B] border-b border-b-2 border-[#0E121B] pb-2'>
               Details
             </span>
             <p className='text-[16px] text-[#525866] mb-6 mt-6 whitespace-pre-wrap'>
-              {' '}
-              {/* Added whitespace-pre-wrap */}
               {displayData.details}
             </p>
             {displayData.includedItems.length > 0 && (
@@ -223,7 +223,7 @@ export function Step3Review({
                 <span className='text-[24px] font-semibold text-[#0E121B] border-b border-b-2 border-[#0E121B] pb-2'>
                   Options
                 </span>
-                <div className='shadow-sm rounded-xl bg-bg-white-0 mb-6 mt-6'>
+                <div className='shadow-sm rounded-xl bg-bg-white-0 mb-6 mt-6 border border-stroke-soft-200'>
 
                   <div className='space-y-3 divide-y divide-stroke-soft-200 p-4'>
                     {displayData.options.map((option, idx) => (
@@ -251,54 +251,8 @@ export function Step3Review({
 
         {/* Right Sidebar: Worker Info, Price, Buttons */}
         <div className='md:col-span-4'>
-          <div className='sticky top-20 space-y-6 '>
-            {/* Worker Info Card */}
-            {/* <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-6'>
-              <div className='flex flex-col items-center text-center'>
-                <Avatar.Root size='80'>
-                  <Avatar.Image
-                    src={displayData.worker.avatar}
-                    alt={displayData.worker.name}
-                  />
-                </Avatar.Root>
-                <h2 className='text-xl mt-3 font-semibold text-text-strong-950'>
-                  {displayData.worker.name}
-                </h2>
-                <div className='text-text-secondary-600 mt-1 flex items-center gap-1'>
-                  <RiStarFill className='size-4 text-yellow-400' />
-                  <span>
-                    {displayData.worker.rating.toFixed(1)} (
-                    {displayData.worker.reviews})
-                  </span>
-                </div>
-                <div className='mt-2 flex items-center gap-1.5'>
-                  <RiGoogleFill className='text-text-secondary-600 size-5' />
-                  <RiGoogleFill className='text-text-secondary-600 size-5' />
-                </div>
-              </div>
-            </div> */}
+          <div className='sticky top-16 space-y-6 pt-6'>
 
-            {/* Price & Lead Time Card */}
-            {/* <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
-              <div className='flex justify-between border-b border-stroke-soft-200 p-4'>
-                <span className='text-text-secondary-600 flex items-center gap-2 font-medium'>
-                  <RiMoneyDollarCircleLine className='text-icon-secondary-400 size-5' />
-                  Price
-                </span>
-                <span className='font-semibold text-text-strong-950'>
-                  {displayData.price}
-                </span>
-              </div>
-              <div className='flex justify-between p-4'>
-                <span className='text-text-secondary-600 flex items-center gap-2 font-medium'>
-                  <RiTimeLine className='text-icon-secondary-400 size-5' /> Lead
-                  Time
-                </span>
-                <span className='text-text-secondary-600 font-medium'>
-                  {displayData.leadTime}
-                </span>
-              </div>
-            </div> */}
             <div className='flex flex-col gap-6 rounded-xl border border-stroke-soft-200 bg-bg-white-0 pb-4 mb-6'>
 
               <div className='flex flex-col items-center gap-3 pt-4 px-4'>
@@ -352,7 +306,7 @@ export function Step3Review({
                       <path d="M3.02975 2.38251C4.39977 1.16704 6.16852 0.497123 8 0.500009C12.1423 0.500009 15.5 3.85776 15.5 8.00001C15.5024 9.53294 15.0329 11.0295 14.1553 12.2863L12.125 8.00001H14C14 6.80703 13.6444 5.64112 12.9786 4.65122C12.3128 3.66133 11.367 2.89239 10.262 2.44263C9.15706 1.99287 7.94312 1.88271 6.77525 2.12623C5.60739 2.36975 4.53863 2.95588 3.7055 3.80976L3.0305 2.38326L3.02975 2.38251ZM12.9703 13.6175C11.6002 14.833 9.83148 15.5029 8 15.5C3.85775 15.5 0.5 12.1423 0.5 8.00001C0.5 6.40626 0.99725 4.92876 1.84475 3.71376L3.875 8.00001H2C1.99998 9.19299 2.35559 10.3589 3.02141 11.3488C3.68723 12.3387 4.63303 13.1076 5.73798 13.5574C6.84294 14.0071 8.05688 14.1173 9.22475 13.8738C10.3926 13.6303 11.4614 13.0441 12.2945 12.1903L12.9695 13.6168L12.9703 13.6175ZM8.75 9.15126H11V10.6513H8.75V12.1513H7.25V10.6513H5V9.15126H7.25V8.40126H5V6.90126H6.9395L5.348 5.31051L6.41 4.25001L8 5.84076L9.59075 4.25001L10.652 5.31051L9.0605 6.90201H11V8.40201H8.75V9.15201V9.15126Z" fill="#525866" />
                     </svg>
 
-                    <p className='text-[#525866] text-[12px] leading-none'>Price</p>
+                    <p className='text-[#525866] text-[14px] leading-none'>Price</p>
                   </div>
 
                   <span className='text-[#0E121B] text-[24px]'>
@@ -367,7 +321,7 @@ export function Step3Review({
                     </svg>
 
 
-                    <p className='text-[#525866] text-[12px] leading-none'>Lead Time</p>
+                    <p className='text-[#525866] text-[14px] leading-none'>Lead Time</p>
                   </div>
 
                   <span className='text-[#0E121B] text-[14px]'>

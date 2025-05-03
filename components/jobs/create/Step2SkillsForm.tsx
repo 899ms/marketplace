@@ -22,7 +22,7 @@ import { useCreateJobForm } from '@/hooks/useCreateJobForm';
 import * as FancyButton from '@/components/ui/fancy-button';
 // import * as FileFormatIcon from '@/components/ui/file-format-icon'; // Ensure this import is removed or commented out
 import * as CompactButton from '@/components/ui/compact-button';
-
+import * as Divider from '@/components/ui/divider';
 // Define union types for skill levels and sources
 type SkillLevel = 'Trainee' | 'Director' | 'Skilled' | 'Expert';
 type CandidateSource = 'Manual Entry' | 'Referral' | 'Skilled';
@@ -218,9 +218,9 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
   };
 
   return (
-    <form onSubmit={(e) => e.preventDefault()} className='space-y-6 px-4'>
+    <form onSubmit={(e) => e.preventDefault()} className='space-y-6'>
       {/* Skill Levels */}
-      <div className='flex flex-col gap-1'>
+      <div className='flex flex-col gap-1  px-4'>
         <div className='flex items-center gap-1'>
           <Label.Root className='text-[14px] text-[#525866]'>
             Skill Levels
@@ -282,7 +282,7 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
       </div>
 
       {/* Candidate Sources */}
-      <div className='flex flex-col gap-1'>
+      <div className='flex flex-col gap-1  px-4'>
         <div className='flex items-center gap-1'>
           <Label.Root className='text-[14px] text-[#525866]'>
             Candidate Sources
@@ -344,7 +344,7 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
       </div>
 
       {/* File Upload */}
-      <div className='flex flex-col gap-1'>
+      <div className='flex flex-col gap-1  px-4'>
         <div className='flex items-center justify-between'>
           <div className='flex flex-col justify-center gap-0.5'>
             <Label.Root className='text-[14px] text-[#525866] font-medium'>
@@ -444,8 +444,10 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
         </div>
       </div>
 
+      <Divider.Root className='w-full' />
+
       {/* Navigation */}
-      <div className='flex justify-between'>
+      <div className='flex justify-between  px-4'>
         <Button.Root variant='neutral' mode='stroke' onClick={prevStep}>
           Previous
         </Button.Root>

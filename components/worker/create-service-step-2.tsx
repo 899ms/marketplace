@@ -83,20 +83,6 @@ export function Step2Pricing({
 
       {/* Form Fields */}
       <div className='space-y-6 p-6'>
-        <div className='mb-4 space-y-1 text-xs text-red-500'>
-          {errors.price && <p>{errors.price.message?.toString()}</p>}
-          {errors.currency && <p>{errors.currency.message?.toString()}</p>}
-          {errors.lead_time && <p>{errors.lead_time.message?.toString()}</p>}
-          {errors.additionalServices?.map((error, index) => {
-            if (!error) return null; // Skip if no error for this index
-            return (
-              <React.Fragment key={index}>
-                {error.name && <p>Additional Service {index + 1} Name: {error.name?.message}</p>}
-                {error.price && <p>Additional Service {index + 1} Price: {error.price?.message}</p>}
-              </React.Fragment>
-            );
-          })}
-        </div>
 
         <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
           {/* Pricing Field */}
@@ -156,6 +142,8 @@ export function Step2Pricing({
                 </Select.Content>
               </Select.Root>
             </div>
+            {errors.price && <p className='text-red-500 text-xs'>{errors.price.message?.toString()}</p>}
+            {errors.currency && <p className='text-red-500 text-xs'>{errors.currency.message?.toString()}</p>}
           </div>
 
           {/* Lead Time Field */}
@@ -174,6 +162,7 @@ export function Step2Pricing({
                 />
               </Input.Wrapper>
             </Input.Root>
+            {errors.lead_time && <p className='text-red-500 text-xs'>{errors.lead_time.message?.toString()}</p>}
           </div>
         </div>
 
@@ -183,9 +172,9 @@ export function Step2Pricing({
           {fields.map((item, index) => (
             <div
               key={item.id}
-              className='flex flex-col gap-4 rounded-md  p-4 sm:flex-row sm:items-end'
+              className='flex flex-col gap-4 rounded-md sm:flex-row sm:items-end'
             >
-              <div className='flex-grow'>
+              <div className='flex-grow w-[80%]'>
                 <Label.Root
                   htmlFor={`additionalServices.${index}.name`}
                   className='text-label-sm text-text-strong-950'
@@ -201,9 +190,10 @@ export function Step2Pricing({
                     />
                   </Input.Wrapper>
                 </Input.Root>
+                {errors.additionalServices?.[index]?.name && <p className='text-red-500 text-xs'>{errors.additionalServices?.[index]?.name?.message?.toString()}</p>}
               </div>
 
-              <div className='w-full sm:w-auto'>
+              <div className='w-full sm:w-auto w-[20%]'>
                 <Label.Root
                   htmlFor={`additionalServices.${index}.price`}
                   className='text-[14px] font-medium text-[#0E121B]'
@@ -238,6 +228,7 @@ export function Step2Pricing({
                     />
                   </Input.Wrapper>
                 </Input.Root>
+                {errors.additionalServices?.[index]?.price && <p className='text-red-500 text-xs'>{errors.additionalServices?.[index]?.price?.message?.toString()}</p>}
               </div>
 
               <Button.Root

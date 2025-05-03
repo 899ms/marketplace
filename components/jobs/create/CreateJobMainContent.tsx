@@ -33,7 +33,7 @@ const CreateJobMainContent = ({
   };
 
   return (
-    <main className='mx-auto flex-1 px-4 py-6 md:px-10 flex flex-col items-center'>
+    <main className='mx-auto flex-1 px-4 pb-6 md:px-10 flex flex-col items-center'>
       {' '}
       {/* Added flex-1 */}
       <h1 className='text-[32px] mb-1 font-semibold text-[#0A0D14]'>
@@ -74,7 +74,7 @@ const CreateJobMainContent = ({
                 </div>
                 {/* Use group state */}
               </Accordion.Trigger>
-              <Accordion.Content className='py-4 mt-2 border-t border-[#E1E4EA]'>
+              <Accordion.Content className='pt-4 pb-0 mt-2 border-t border-[#E1E4EA] !shadow-xl'>
                 {/* Render content only if this item is the active one conceptually */}
                 {/* This prevents mounting/unmounting form state, but Accordion handles visibility */}
                 {step.content || <p>Content for {step.title} goes here...</p>}

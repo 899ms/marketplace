@@ -49,7 +49,7 @@ export default function CreateServicePage() {
   };
 
   return (
-    <div className='px-4 py-10 md:px-10'>
+    <div className='px-4 py-2 md:px-10'>
       {activeStep < 3 && (
         <Stepper
           currentStep={activeStep}

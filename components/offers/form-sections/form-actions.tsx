@@ -24,7 +24,7 @@ export function FormActions({ isSubmitting, onCancel }: FormActionsProps) {
       <FancyButton.Root
         type='submit'
         disabled={isSubmitting}
-        className='w-1/2 min-w-[100px] rounded-md bg-gray-900 px-4 py-2 text-white hover:bg-gray-700 disabled:bg-gray-400' // Added min-width
+        className='w-1/2 min-w-[100px]' // Added min-width
       >
         {isSubmitting ? (
           <>

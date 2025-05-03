@@ -8,6 +8,7 @@ import { CreateJobFormData } from '@/app/jobs/create/schema';
 import { RiLoader4Line } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import * as FancyButton from '@/components/ui/fancy-button';
+import * as Divider from '@/components/ui/divider';
 
 interface Step4Props {
   formMethods: UseFormReturn<CreateJobFormData>;
@@ -161,8 +162,10 @@ const Step4Preview: React.FC<Step4Props> = ({
         </div>
       )}
 
+      <Divider.Root className='w-full' />
+
       {/* Navigation/Action Buttons */}
-      <div className='flex justify-between gap-3'>
+      <div className='flex justify-between gap-3 px-4 pt-4'>
         <Button.Root
           variant='neutral'
           mode='stroke'

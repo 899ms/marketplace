@@ -148,7 +148,7 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
   };
 
   return (
-    <div className='shadow-sm mx-auto max-w-2xl rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+    <div className='shadow-sm mx-auto max-w-2xl rounded-xl border border-[#EBEBEB] bg-bg-white-0'>
       {/* Header */}
       <div className='flex items-center justify-between border-b border-stroke-soft-200 p-4'>
         <div>

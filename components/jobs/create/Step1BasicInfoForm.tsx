@@ -12,7 +12,7 @@ import { RiInformationLine, RiCalendarLine } from '@remixicon/react';
 import { CreateJobFormData } from '@/app/jobs/create/schema';
 import FormFieldError from './FormFieldError'; // Assuming a general error component
 import * as FancyButton from '@/components/ui/fancy-button';
-
+import * as Divider from '@/components/ui/divider';
 interface Step1Props {
   formMethods: UseFormReturn<CreateJobFormData>;
   nextStep: () => void;
@@ -59,9 +59,9 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
   console.log(budget);
 
   return (
-    <form onSubmit={(e) => e.preventDefault()} className='space-y-6 px-4'>
+    <form onSubmit={(e) => e.preventDefault()} className='flex flex-col gap-4 pb-0'>
       {/* Subject/Title */}
-      <div className='flex flex-col gap-1'>
+      <div className='flex flex-col gap-1 px-4'>
         <Label.Root
           htmlFor='title'
           className='text-[14px] text-[#525866]'
@@ -81,7 +81,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
       </div>
 
       {/* Detail/Description */}
-      <div className='flex flex-col gap-1'>
+      <div className='flex flex-col gap-1 px-4 '>
         <Label.Root
           htmlFor='description'
           className='text-[14px] text-[#525866]'
@@ -102,7 +102,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
       </div>
 
       {/* Amount & Deadline Row */}
-      <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
+      <div className='grid grid-cols-1 gap-4 md:grid-cols-2 px-4 '>
         {/* Amount/Budget */}
         <div className='flex flex-col gap-1'>
           <Label.Root
@@ -124,8 +124,9 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
                 </Input.InlineAffix>
                 <Input.Input id='budget' type='number' placeholder='0.00' step='0.01' {...register('budget', { valueAsNumber: true })} />
               </Input.Wrapper>
-              <Select.Root variant='compactForInput' defaultValue='USD'
-                value={currency}
+              <Select.Root variant='compactForInput'
+                defaultValue='USD'
+                // value={currency}
                 onValueChange={(value) =>
                   setValue('currency', value, { shouldValidate: true })
                 }
@@ -184,7 +185,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
       </div>
 
       {/* Negotiate Budget */}
-      <div className='flex items-center gap-2'>
+      <div className='flex items-center gap-2  px-4'>
         <Switch.Root id='negotiate-budget' {...register('negotiateBudget')} />
         <Label.Root
           htmlFor='negotiate-budget'
@@ -195,8 +196,10 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
       </div>
       <FormFieldError error={errors.negotiateBudget} />
 
+      <Divider.Root className='w-full' />
+
       {/* Navigation */}
-      <div className='flex justify-end'>
+      <div className='flex justify-end  px-4'>
         {/* Type submit triggers RHF validation if mode allows */}
         <FancyButton.Root variant='neutral' onClick={nextStep}>
           Next
