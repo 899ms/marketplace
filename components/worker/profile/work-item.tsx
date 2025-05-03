@@ -34,7 +34,7 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
   };
 
   return (
-    <div className="flex items-center justify-between border-b border-stroke-soft-200 py-4 last:border-b-0">
+    <div className="flex items-center justify-between border-b border-stroke-soft-200 py-[12px]">
       {/* 1. Play + Info */}
       <div className="flex items-center gap-3 min-w-0">
         <button
@@ -48,8 +48,8 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
           )}
         </button>
         <div className="min-w-0">
-          <p className="font-medium text-text-strong-950 truncate">{title}</p>
-          <p className="text-xs text-text-secondary-600 truncate">{remarks}</p>
+          <p className="text-[14px] font-medium text-text-strong-950 truncate">{title}</p>
+          <p className="text-[12px] text-[#99A0AE] truncate">{remarks}</p>
         </div>
       </div>
 
@@ -73,7 +73,7 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
           <p className="text-paragraph-sm text-gray-600">{duration ?? '--:--'}</p>
           <p className="text-xs text-gray-600">{bpm ?? '-- BPM'}</p>
         </div>
-        <button className="text-icon-secondary-400 hover:text-icon-primary-500 shrink-0">
+        <button className="text-[#525866] hover:text-icon-primary-500 shrink-0">
           <RiBookmarkLine className="size-5" />
         </button>
       </div>
