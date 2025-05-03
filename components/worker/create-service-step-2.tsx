@@ -289,7 +289,7 @@ export function Step2Pricing({
             onClick={prevStep}
             className='flex-1'
           >
-            <Button.Icon as={RiArrowLeftSLine} />
+
             Previous
           </Button.Root>
           <FancyButton.Root
@@ -298,7 +298,7 @@ export function Step2Pricing({
             className='flex-1'
             disabled={!!errors.price || !!errors.lead_time}
           >
-            Next Step <FancyButton.Icon as={RiArrowRightSLine} />
+            Next
           </FancyButton.Root>
         </div>
       </div>
