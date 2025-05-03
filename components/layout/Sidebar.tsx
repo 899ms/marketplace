@@ -124,7 +124,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
       <div className='sticky top-20 flex flex-col gap-6 border border-stroke-soft-200 bg-bg-white-0 pb-5 mb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)] rounded-[20px]'>
         {' '}
         {/* Profile Section */}
-        <div className='flex flex-col items-center gap-3 pb-3 pt-4 px-4 max-w-[300px] max-h-[228px]'>
+        <div className='flex flex-col items-center gap-2  pt-8 px-4 max-w-[300px] max-h-[228px]'>
           {displayAvatar ? (
             <Avatar.Root size='80'>
               <Avatar.Image src={displayAvatar} alt={displayName} />
@@ -170,7 +170,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
         </div>
         <Divider.Root />
         {/* Navigation Section */}
-        <nav className='px-4 max-w-[300px] max-h-[220px] '>
+        <nav className='px-4 max-w-[300px]  '>
           <ul className='flex flex-col gap-1'>
             <li><SidebarLink href='/home' icon={RiHomeLine} label='Home' /></li>
             <li><SidebarLink href='/settings' icon={RiFileList2Line} label='Order' /></li>
