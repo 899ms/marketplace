@@ -3,6 +3,7 @@
 import React from 'react';
 import * as Avatar from '@/components/ui/avatar';
 import * as Tag from '@/components/ui/tag';
+import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 import { RiStarFill, RiArrowRightSLine } from '@remixicon/react';
 import { cn } from '@/utils/cn';
@@ -70,13 +71,13 @@ export function ProjectCard({
         {/* Left Column (Content) */}
         <div className='flex flex-col gap-3'>
           {/* Title and Info Badges */}
-          <div className='flex flex-wrap items-start gap-x-3 gap-y-2'>
-            <h3 className='text-lg font-medium text-text-strong-950'>{title}</h3>
+          <div className='flex flex-wrap items-center items-start gap-x-3 gap-y-2'>
+            <h3 className='text-[20px] font-medium text-text-strong-950'>{title}</h3>
             <div className='flex flex-wrap gap-1.5'>
               {infoBadges.map((badge) => (
-                <Tag.Root key={badge.label} variant='gray'>
+                <Badge.Root key={badge.label} variant='light' className='text-[#525866] text-[12px] border border-[#E2E4E9] rounded-md'>
                   {badge.label}
-                </Tag.Root>
+                </Badge.Root>
               ))}
             </div>
           </div>
@@ -95,7 +96,7 @@ export function ProjectCard({
           </div>
 
           {/* Description */}
-          <p className='line-clamp-3 text-sm text-text-secondary-600'>
+          <p className='line-clamp-3 text-[14px] text-[#0E121B] text-text-secondary-600'>
             {description}
           </p>
 
@@ -129,7 +130,7 @@ export function ProjectCard({
             mode='stroke'
             size='small'
             className={cn(
-              'text-[14px] w-full md:w-auto',
+              'text-[14px] w-full md:w-auto !shadow-[0_1px_2px_0_rgba(82,88,102,0.06)]',
             )}
             onClick={handleApplyClick}
           >
