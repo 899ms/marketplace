@@ -136,7 +136,7 @@ export default function Navbar() {
                 }
                 passHref
               >
-                <FancyButton.Root variant='neutral' size='medium'>
+                <FancyButton.Root variant='neutral' size='medium' className='gap-1 text-sm'>
                   Create
                   <FancyButton.Icon as={RiAddLine} />
                 </FancyButton.Root>
@@ -164,8 +164,8 @@ export default function Navbar() {
               {/* --- Account Dropdown --- */}
               <Dropdown.Root>
                 <Dropdown.Trigger asChild>
-                  <button className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center gap-2 rounded-lg border border-stroke-soft-200 p-1 pr-2 text-label-md'>
-                    {user.user_metadata?.avatar_url ? <Avatar.Root size='40'>
+                  <button className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center gap-1.5 rounded-10 border border-stroke-soft-200 p-1 pr-2 h-10 bg-white'>
+                    {user.user_metadata?.avatar_url ? <Avatar.Root size='32'>
                       {/* Use user avatar or fallback */}
                       <Avatar.Image
                         src={
@@ -179,8 +179,8 @@ export default function Navbar() {
                         } // Use name or email for alt text
                       />
                     </Avatar.Root> :
-                      <Avatar.Root size='40' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
-                    <span className='hidden md:inline'>Account</span>
+                      <Avatar.Root size='32' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
+                    <span className='hidden md:inline text-sm font-semibold'>Account</span>
                     <RiArrowDownSLine className='text-icon-sub-500 hidden size-4 md:inline' />
                   </button>
                 </Dropdown.Trigger>
