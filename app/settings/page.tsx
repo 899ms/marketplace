@@ -1,7 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import { useAuth } from '@/utils/supabase/AuthContext';
+import { useSearchParams } from 'next/navigation';
 
 /* ------------- split‑out settings components ------------- */
 import OrdersSidebar from '@/components/settings/OrdersSidebar';
@@ -14,7 +15,8 @@ export type ActiveView = 'orders' | 'billing' | 'my-services';
 
 /** Main Settings / Orders page               (route: /settings) */
 export default function SettingsPage() {
-  const [activeView, setActiveView] = useState<ActiveView>('orders');
+  const searchParams = useSearchParams();
+  const currentTab = (searchParams.get('tab') as ActiveView) || 'orders';
 
   /* load auth + profile once at the top level so children can rely
      on the Supabase context without individual spinner flashes  */
@@ -35,29 +37,25 @@ export default function SettingsPage() {
   return (
     <div className="flex min-h-screen bg-bg-alt-white-100">
       {/* left nav – adds “My services” only if `isSeller` */}
-      <OrdersSidebar
-        activeView={activeView}
-        setActiveView={setActiveView}
-        isSeller={!!isSeller}
-      />
+      <OrdersSidebar activeView={currentTab} isSeller={!!isSeller} />
 
-      {/* right content – switch on activeView */}
+      {/* right content – switch on currentTab */}
       <div className="flex-1">
-        {activeView === 'orders' && <OrdersContent />}
+        {currentTab === 'orders' && <OrdersContent />}
 
-        {activeView === 'my-services' && isSeller && <MyServicesView />}
+        {currentTab === 'my-services' && isSeller && <MyServicesView />}
 
-        {activeView === 'my-services' && !isSeller && (
+        {currentTab === 'my-services' && !isSeller && (
           <main className="flex-1 p-6">
             <p className="text-red-500">
-              Access Denied: “My Services” is only available for sellers.
+              Access Denied: “My Services” is only available for sellers.
             </p>
           </main>
         )}
 
-        {activeView === 'billing' && (
+        {currentTab === 'billing' && (
           <main className="flex-1 p-6">
-            {/* TODO: BillingView component once implemented */}
+            {/* TODO: BillingView component once implemented */}
             <p className="text-text-sub-400">Billing view coming soon…</p>
           </main>
         )}
