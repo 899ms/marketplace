@@ -507,7 +507,7 @@ export default function ProjectDetailPage() {
           {isSellerVisitor && (
             // Seller Visitor Sidebar Layout (With Apply Button)
             <>
-              <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+              <div className='shadow-[0_16px_32px_-12px_rgba(14,18,27,0.1)] rounded-xl border border-[#E2E4E9] bg-bg-white-0'>
                 <ClientProfileCard client={{
                   id: clientDataState?.id ?? '',
                   name: clientName,
