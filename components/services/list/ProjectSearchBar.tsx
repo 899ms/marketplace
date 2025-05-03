@@ -80,7 +80,7 @@ export function ProjectSearchBar({
   };
 
   return (
-    <div className='mb-4 rounded-lg bg-gray-100 p-4'> {/* Adjust background color if needed */}
+    <div className='mb-4 rounded-lg bg-gray-100 px-6 py-5'> {/* Adjust background color if needed */}
       <div className='flex flex-wrap items-center gap-4'>
         {/* Search Input */}
         <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3'>
@@ -96,7 +96,7 @@ export function ProjectSearchBar({
 
         {/* Deadline Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('deadline', value)}>
-          <SelectPrimitive.Trigger className='flex-grow rounded-md border border-gray-300 bg-white px-3 py-2 text-sm sm:flex-grow-0 sm:basis-1/6'>
+          <SelectPrimitive.Trigger className='flex-grow rounded-md border border-gray-300 bg-white px-3 py-2 text-sm sm:flex-grow-0 sm:basis-1/5'>
             <SelectPrimitive.Value placeholder='Deadline' /> {/* Updated placeholder */}
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
@@ -109,7 +109,7 @@ export function ProjectSearchBar({
 
         {/* Purpose Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('purpose', value)}>
-          <SelectPrimitive.Trigger className='flex-grow rounded-md border border-gray-300 bg-white px-3 py-2 text-sm sm:flex-grow-0 sm:basis-1/6'>
+          <SelectPrimitive.Trigger className='flex-grow rounded-md border border-gray-300 bg-white px-3 py-2 text-sm sm:flex-grow-0 sm:basis-1/5'>
             <SelectPrimitive.Value placeholder='Purpose' /> {/* Updated placeholder */}
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
@@ -122,7 +122,7 @@ export function ProjectSearchBar({
 
         {/* Posting Date Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('postingDate', value)}>
-          <SelectPrimitive.Trigger className='flex-grow rounded-md border border-gray-300 bg-white px-3 py-2 text-sm sm:flex-grow-0 sm:basis-1/6'>
+          <SelectPrimitive.Trigger className='flex-grow rounded-md border border-gray-300 bg-white px-3 py-2 text-sm sm:flex-grow-0 sm:basis-1/5'>
             <SelectPrimitive.Value placeholder='Posting Date' /> {/* Updated placeholder */}
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
