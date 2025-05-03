@@ -87,18 +87,18 @@ export default function Navbar() {
             />
             {/* You can add text next to the logo if needed, e.g., <span>MyBrand</span> */}
           </Link>
-          {/* Navigation Links */}
-          <div className='text-text-secondary-600 hidden items-center gap-6 text-label-md lg:flex'>
-            <Link href='/services/search?tab=Service' className='hover:text-text-strong-950'>
+          {/* Navigation Links Container - Apply new styles */}
+          <div className='text-text-secondary-600 hidden items-center gap-1 h-10 max-w-[447px] text-label-md lg:flex'>
+            <Link href='/services/search?tab=Service' className='hover:text-text-strong-950  py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg for better click area */}
               Find Services
             </Link>
-            <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950'>
+            <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
               Find Workers
             </Link>
-            <Link href='/services/search?tab=Project' className='hover:text-text-strong-950'>
+            <Link href='/services/search?tab=Project' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
               Find Projects
             </Link>
-            <Link href='/bonus' className='hover:text-text-strong-950'>
+            <Link href='/bonus' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
               Bonus
             </Link>
           </div>
@@ -109,7 +109,7 @@ export default function Navbar() {
           {/* Search Input */}
           <div className='relative hidden sm:block'>
             <Input.Root>
-              <Input.Wrapper size='medium'>
+              <Input.Wrapper size='medium' className='h-10 w-[220px] rounded-10 border bg-white shadow-regular-xs gap-2'>
                 <Input.Icon
                   as={RiSearchLine}
                   className='text-icon-secondary-400'
