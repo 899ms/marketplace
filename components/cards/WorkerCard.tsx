@@ -29,6 +29,9 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
   return (
     <div
       className='
+        w-full 
+        shadow-md 
+        hover:shadow-lg 
         overflow-hidden
         bg-bg-white-0
         p-4
