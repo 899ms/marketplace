@@ -358,6 +358,7 @@ export default function ChatCore({
   const [isSending, setIsSending] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' });
@@ -415,13 +416,21 @@ export default function ChatCore({
     scrollToBottom();
   }, [messages, scrollToBottom]);
 
+  // --- UseEffect to handle focus after sending --- 
+  useEffect(() => {
+    // Only focus if we just finished sending
+    if (!isSending) {
+      textareaRef.current?.focus();
+    }
+  }, [isSending]); // Dependency array includes isSending
+
   const handleSendMessage = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
     const textContent = newMessage.trim();
 
     if ((!textContent && !selectedFile) || isSending) return;
 
-    setIsSending(true);
+    setIsSending(true); // Set sending to true *before* async operations
     setNewMessage('');
     let fileToUpload = selectedFile;
     setSelectedFile(null);
@@ -477,15 +486,16 @@ export default function ChatCore({
 
       if (!sentMessage) {
         console.error('Failed to send message after potential upload');
-        setNewMessage(textContent);
+        setNewMessage(textContent); // Restore text on failure
       } else {
         scrollToBottom();
       }
     } catch (err) {
       console.error('Error sending message:', err);
-      setNewMessage(textContent);
+      setNewMessage(textContent); // Restore text on error
     } finally {
-      setIsSending(false);
+      setIsSending(false); // Set sending back to false
+      // Remove focus logic from here
     }
   };
 
@@ -638,6 +648,7 @@ export default function ChatCore({
       <form onSubmit={handleSendMessage} className='p-4 mx-4 mb-4 rounded-lg border border-[#E1E4EA] flex flex-col gap-4 flex-shrink-0'>
         <div className='border-b border-[#E1E4EA] pb-2 w-full'>
           <textarea
+            ref={textareaRef}
             placeholder='Type your message...'
             className='w-full border-none outline-none resize-none min-h-[24px] max-h-[72px]'
             rows={1}
