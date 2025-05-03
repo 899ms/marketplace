@@ -70,7 +70,7 @@ export default function Navbar() {
 
   return (
     <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-stroke-soft-200'>
-      <div className='mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8'>
+      <div className='mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between px-8 py-5 gap-4'>
         {/* Left Section: Logo and Nav Links */}
         <div className='flex items-center gap-8'>
           {/* Logo */}
@@ -94,7 +94,7 @@ export default function Navbar() {
               Find Services
             </Link>
             <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
-              Find Workers
+              Find Worker
             </Link>
             <Link href='/services/search?tab=Project' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
               Find Projects
