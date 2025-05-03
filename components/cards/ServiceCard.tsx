@@ -52,7 +52,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
     });
 
     return (
-      <div className='shadow-sm overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0'>
+      <div className='shadow-sm overflow-hidden rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
         <div className='h-40 w-full bg-gradient-to-br from-blue-400 to-purple-500'>
           {images && Array.isArray(images) && images.length > 0 && images[0]?.url && (
             <img
@@ -62,7 +62,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
             />
           )}
         </div>
-        <div className='p-3'>
+        <div className='p-4'>
           <p className='mb-4 line-clamp-2 font-medium text-[#0E121B] text-[14px]'>
             {displayTitle}
           </p>
@@ -95,7 +95,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
   } catch (error) {
     console.error('Error rendering ServiceCard:', error, service);
     return (
-      <div className='shadow-sm overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 text-center'>
+      <div className='shadow-sm overflow-hidden rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4 text-center'>
         <p className='text-red-500'>Error displaying service</p>
       </div>
     );

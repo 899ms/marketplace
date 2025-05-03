@@ -15,8 +15,8 @@ import {
   RiStarFill,
   RiGoogleFill,
   RiArrowDropRightLine,
-  RiHeartLine,
-  RiArrowUpCircleLine,
+  RiHeart3Line,
+  RiArrowRightCircleLine,
   RiLoader4Line,
 } from '@remixicon/react';
 import * as DialogPrimitive from "@radix-ui/react-dialog";
@@ -167,7 +167,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   return (
     <Drawer.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <Drawer.Content
-        className="fixed inset-y-0 right-0 z-50 h-[100dvh] w-full shadow-xl overflow-hidden bg-white flex flex-col"
+        className="fixed inset-y-0 right-0 z-50 h-[100dvh] w-full shadow-xl overflow-x-hidden bg-white flex flex-col"
         style={{ maxWidth: '800px' }}
       >
         <DialogPrimitive.Title className="sr-only">
@@ -176,22 +176,25 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
 
         <div className="flex flex-col flex-grow">
           {/* header */}
-          <div className="px-5 py-4 flex-shrink-0">
-            <div className="flex items-center justify-between">
+          <div className="px-[24px] pt-4 flex-shrink-0">
+            <div className="flex items-center justify-between h-[60px]">
               <Drawer.Close asChild>
                 <button className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                  <RiCloseLine className="size-5 text-text-secondary-600" />
+                  <RiCloseLine className="size-[20px] m-[16px] text-text-secondary-600" />
                   <span className="sr-only">Close</span>
                 </button>
               </Drawer.Close>
 
-              <Link
-                href={worker ? `/users/${worker.id}` : '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`flex items-center gap-1.5 text-sm font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700 ${!worker || isLoading ? 'pointer-events-none opacity-50' : ''}`}>
-                Open in new tab <RiSendPlaneLine className="size-4" />
-              </Link>
+              <div className='flex items-center gap-1.5'>
+                <Link
+                  href={worker ? `/users/${worker.id}` : '#'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`flex items-center gap-1.5 text-[14px] font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700 ${!worker || isLoading ? 'pointer-events-none opacity-50' : ''}`}>
+                  Open in new tab
+                </Link>
+                <RiArrowRightCircleLine className="size-5 text-[#525866]" />
+              </div>
             </div>
 
             {isLoading ? (
@@ -199,7 +202,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                 <RiLoader4Line className="size-8 animate-spin text-text-secondary-600" />
               </div>
             ) : worker ? (
-              <div className="mt-5 flex items-start justify-between px-5">
+              <div className="mt-5 flex items-center justify-between px-5">
                 <div className="flex items-center gap-4">
                   <Link href={`/users/${worker.id}`} passHref legacyBehavior>
                     <a className="inline-block">
@@ -213,17 +216,17 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
                       <Link href={`/users/${worker.id}`} passHref legacyBehavior>
                         <a className="inline-block hover:underline">
-                          <h2 className="text-xl font-semibold text-text-strong-950">
+                          <h2 className="text-[18px] font-semibold text-text-strong-950">
                             {displayName}
                           </h2>
                         </a>
                       </Link>
-                      <div className="flex items-center gap-0.5 text-sm text-text-secondary-600">
+                      <div className="flex items-center gap-0.5 text-[14px] text-gray-600">
                         <RiStarFill className="size-4 text-yellow-400" />
-                        <span> 4.8 (100+)</span>
+                        <span>4.8 (100+)</span>
                       </div>
                     </div>
-                    <div className="mt-1 flex gap-1 text-sm text-text-secondary-600">
+                    <div className="mt-1 flex items-center gap-1 text-[12px] text-text-secondary-600">
                       <RiGoogleFill className="size-4" />
                       <RiGoogleFill className="size-4" />
                       <RiGoogleFill className="size-4" />
@@ -234,15 +237,42 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
 
                 <div className="flex items-center gap-3">
                   <button
-                    className="w-[96px] rounded-md border border-stroke-soft-200 px-3.5 py-2 text-sm font-medium text-text-strong-950 transition-colors hover:bg-bg-weak-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="
+                      w-[100px]            /* 100px wide */
+                      rounded-lg           /* 8px radius */
+                      border border-[#E1E4EA]  /* 1px #E1E4EA */
+                      bg-white             /* #FFFFFF */
+                      px-[6px] py-[6px]    /* 6px padding all around */
+                      flex items-center justify-center gap-[2px] /* 2px between icon/text */
+                      text-sm font-medium text-[#525866] /* 14px/20px, 500, #525866 */
+                      shadow-[0_1px_2px_0_rgba(10,13,20,0.03)] /* 0 1px 2px 0 rgba(10,13,20,0.03) */
+                      transition-colors
+                      hover:bg-bg-weak-50
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                    "
                     onClick={handleHireClick}
                     disabled={disableActions}
                     aria-label={currentUserProfile?.id === worker?.id ? "Cannot hire yourself" : `Hire ${displayName}`}
                   >
-                    Hire <RiArrowDropRightLine className="ml-.5 inline size-7" />
+                    <div className="flex items-center gap-[2px]">
+                      Hire <RiArrowDropRightLine className="size-7" />
+                    </div>
                   </button>
                   <button
-                    className="w-[96px] flex items-center justify-center rounded-md bg-text-strong-950 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-text-strong-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="
+                      w-[100px]
+                      rounded-lg
+                      border border-transparent /* no visible border */
+                      bg-text-strong-950       /* your #20232D */
+                      px-[6px] py-[6px]
+                      flex items-center justify-center gap-[2px]
+                      text-sm font-medium text-white
+                      shadow-[0_0_0_1px_rgba(36,38,40,1),0_1px_2px_0_rgba(27,28,29,0.48)]
+                      /* 0 0 0 1px rgba(36,38,40,1) + 0 1px 2px 0 rgba(27,28,29,0.48) */
+                      transition-colors
+                      hover:bg-text-strong-900
+                      disabled:opacity-50 disabled:cursor-not-allowed
+                    "
                     onClick={handleOpenChat}
                     disabled={disableActions || isLoadingChat}
                     aria-label={currentUserProfile?.id === worker?.id ? "Cannot message yourself" : `Message ${displayName}`}
@@ -251,12 +281,38 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       <RiLoader4Line className="animate-spin" size={18} />
                     ) : (
                       <>
-                        Touch <RiSendPlaneLine className="ml-1.5 inline size-3.5" />
+                        <div className='flex items-center gap-[2px]'>
+
+                          Touch
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 21 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-5 h-5 stroke-current text-white"
+                          >
+                            <path
+                              d="M6.66641 5.2668L13.7414 2.90846C16.9164 1.85013 18.6414 3.58346 17.5914 6.75846L15.2331 13.8335C13.6497 18.5918 11.0497 18.5918 9.46641 13.8335L8.76641 11.7335L6.66641 11.0335C1.90807 9.45013 1.90807 6.85846 6.66641 5.2668Z"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M8.92578 11.375L11.9091 8.3833"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
                       </>
                     )}
                   </button>
-                  <button className="rounded-full p-1.5 text-text-secondary-600 transition-colors hover:bg-bg-weak-50 hover:text-red-500">
-                    <RiHeartLine className="size-5" />
+                  <button className="rounded-full text-gray-400 transition-colors hover:bg-bg-weak-50 hover:text-red-500">
+                    <RiHeart3Line className="size-[30px]" />
                   </button>
                 </div>
               </div>
@@ -270,12 +326,12 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
             )}
           </div>
 
-          <div className="mt-2 h-px bg-stroke-soft-200 w-[95%] mx-auto flex-shrink-0" />
+          <div className="mt-[16px] h-px bg-stroke-soft-200 w-[95%] mx-auto flex-shrink-0" />
 
           {!isLoading && worker && (
-            <div className="px-5 pt-4 flex-shrink-0">
+            <div className="px-[24px] pt-4 flex-shrink-0">
               <Tabs.Root value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-                <Tabs.List className="flex justify-start gap-4">
+                <Tabs.List className="flex justify-start gap-5 px-0">
                   {[
                     { key: 'about', label: 'About' },
                     { key: 'work', label: 'Work' },
@@ -285,7 +341,22 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     <Tabs.Trigger
                       key={key}
                       value={key}
-                      className="inline-flex justify-start border-b-2 border-transparent bg-transparent px-4 py-3 text-sm font-medium text-text-secondary-600 transition-colors data-[state=active]:border-black data-[state=active]:text-text-strong-950 data-[state=active]:bg-transparent"
+                      className="
+                        inline-flex 
+                        justify-start 
+                        border-b-2 
+                        border-transparent 
+                        bg-transparent 
+                        px-0
+                        py-3 
+                        text-[20px] 
+                        font-medium 
+                        text-text-secondary-600 
+                        transition-colors 
+                        data-[state=active]:border-black 
+                        data-[state=active]:text-text-strong-950 
+                        data-[state=active]:bg-transparent
+                      "
                     >
                       {label}
                     </Tabs.Trigger>
@@ -295,7 +366,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto px-5 py-5">
+          <div className="flex-1 overflow-y-auto px-[24px] py-5">
             {isLoading ? (
               <div className="flex h-full items-center justify-center">
                 <RiLoader4Line className="size-10 animate-spin text-text-secondary-600" />
@@ -307,7 +378,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     <AboutSection about={displayBio} />
 
                     <div className="mt-8 flex items-center justify-between">
-                      <h3 className="text-lg font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
+                      <h3 className="text-[20px] font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
                         Work
                       </h3>
                     </div>
@@ -331,7 +402,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       )}
                     </div>
 
-                    <h3 className="mt-8 inline-block text-lg font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
+                    <h3 className="mt-8 inline-block text-[20px] font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
                       Service
                     </h3>
                     <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -349,7 +420,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       )}
                     </div>
 
-                    <h3 className="mt-8 inline-block text-lg font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
+                    <h3 className="mt-8 inline-block text-[20px] font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
                       Review
                     </h3>
                     <div className="mt-4 space-y-5">

@@ -45,16 +45,16 @@ export function ProjectCard({
   className,
   projectId,
 }: ProjectCardProps) {
+  // Log the client prop
+  console.log('ProjectCard client prop:', client);
+
   const handleApplyClick = () => {
     if (onApply) {
       onApply();
     }
 
     notify({
-      status: 'success',
-      title: 'Application Sent!',
-      description: `Successfully applied to project: ${title}`,
-      duration: 5000,
+      description: `Application Sent! Successfully applied to project: ${title}`,
     });
 
     console.log('Apply button clicked for project ID:', projectId);
@@ -69,9 +69,9 @@ export function ProjectCard({
     >
       <div className='grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]'>
         {/* Left Column (Content) */}
-        <div className='flex flex-col gap-3'>
+        <div className='flex flex-col gap-1.5'>
           {/* Title and Info Badges */}
-          <div className='flex flex-wrap items-center items-start gap-x-3 gap-y-2'>
+          <div className='flex flex-wrap items-center items-start gap-x-3'>
             <h3 className='text-[20px] font-medium text-text-strong-950'>{title}</h3>
             <div className='flex flex-wrap gap-1.5'>
               {infoBadges.map((badge) => (
