@@ -441,7 +441,7 @@ export default function SearchPageClient() {
         </div>
 
         {/* Right Column: Tab Content */}
-        <div className='w-full max-w-[1010px] flex-1 space-y-4 min-w-0'>
+        <div className='w-full  flex-1 space-y-4 min-w-0'>
           {/* Search Bars */}
           {activeTab === 'Service' && (
             <ServiceSearchBar
