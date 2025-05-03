@@ -188,7 +188,7 @@ const SellerActionButtons = ({
 
 // NOTE: ProjectLinkCard requires a link - Job schema doesn't have one.
 const ProjectLinkCard = ({ link }: { link: string }) => (
-  <div className="shadow-sm rounded-xl bg-bg-white-0 p-4">
+  <div className="shadow-sm rounded-xl bg-bg-white-0 py-4">
     <label
       htmlFor="project-link"
       className="mb-2 block text-label-md font-medium text-text-strong-950"
