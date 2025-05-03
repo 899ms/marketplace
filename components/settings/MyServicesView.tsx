@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { RiMore2Fill } from '@remixicon/react';
+import { RiMore2Fill, RiMoreFill } from '@remixicon/react';
 import * as Dropdown from '@/components/ui/dropdown';
 import { useAuth } from '@/utils/supabase/AuthContext';
 import { serviceOperations } from '@/utils/supabase/database';
@@ -52,17 +52,17 @@ export default function MyServicesView() {
 
   /* ------------------ render ------------------ */
   return (
-    <main className="flex-1 bg-bg-alt-white-100 p-6">
+    <main className="flex-1 bg-bg-alt-white-100 p-6 h-full">
       {/* ---------- header row ---------- */}
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-semibold text-text-strong-950">
+      <div className="mb-6 flex items-center justify-between border-b border-[#E1E4EA] pb-4 h-[10%]">
+        <h1 className="text-[24px] font-medium text-[#222530]">
           My Services
         </h1>
 
         <Dropdown.Root>
           <Dropdown.Trigger asChild>
-            <button className="flex size-8 items-center justify-center rounded-lg border border-stroke-soft-200 bg-bg-white-0 text-icon-sub-400 shadow-sm transition hover:bg-bg-neutral-subtle-100 hover:text-icon-secondary-400">
-              <RiMore2Fill className="size-5" />
+            <button className="flex size-8 items-center justify-center rounded-lg border border-[#E1E4EA] bg-bg-white-0 text-icon-sub-400 shadow-sm transition hover:bg-bg-neutral-subtle-100 hover:text-icon-secondary-400">
+              <RiMoreFill className="size-5 text-[#99A0AE]" />
             </button>
           </Dropdown.Trigger>
           <Dropdown.Content align="end">
@@ -82,7 +82,7 @@ export default function MyServicesView() {
           You haven’t created any services yet.
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4 h-[90%] overflow-y-auto  custom-scrollbar pr-4">
           {services.map((svc) => (
             <ServiceCard key={svc.id} service={svc} />
           ))}

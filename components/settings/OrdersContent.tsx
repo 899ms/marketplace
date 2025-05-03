@@ -200,45 +200,51 @@ export default function OrdersContent() {
 
   /* ------------------ render ------------------ */
   return (
-    <main className="flex-1 bg-bg-alt-white-100 p-6">
+    <main className="flex-1 bg-bg-alt-white-100 p-6 h-full">
       {/* summary cards */}
-      <SummarySection data={summaryData} />
+      <div className='h-[20%] mb-3'>
+        <SummarySection data={summaryData} />
+      </div>
 
       {/* tabs / search / filters */}
-      <TabsFiltersBar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
-        selectedDate={selectedDate}
-        setSelectedDate={setSelectedDate}
-        sortOption={sortOption}
-        setSortOption={setSortOption}
-        isBuyer={isBuyer}
-        onSellerFilter={() => {
-          /* placeholder for seller filter click */
-        }}
-      />
+      <div className='h-[10%] mb-1'>
+        <TabsFiltersBar
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+          sortOption={sortOption}
+          setSortOption={setSortOption}
+          isBuyer={isBuyer}
+          onSellerFilter={() => {
+            /* placeholder for seller filter click */
+          }}
+        />
+      </div>
 
       {/* orders table */}
-      {dataLoading ? (
-        <div className="p-4 text-center">Loading orders…</div>
-      ) : error ? (
-        <div className="p-4 text-center text-red-600">{error}</div>
-      ) : (
-        <OrdersTable rows={currentData} isBuyer={isBuyer} />
-      )}
+      <div className='h-[70%] overflow-y-auto custom-scrollbar'>
+        {dataLoading ? (
+          <div className="p-4 text-center">Loading orders…</div>
+        ) : error ? (
+          <div className="p-4 text-center text-red-600">{error}</div>
+        ) : (
+          <OrdersTable rows={currentData} isBuyer={isBuyer} />
+        )}
 
-      {/* pagination */}
-      <PaginationBar
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPrev={goPrev}
-        onNext={goNext}
-        onFirst={goFirst}
-        onLast={goLast}
-        setCurrentPage={setCurrentPage}
-      />
+        {/* pagination */}
+        <PaginationBar
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPrev={goPrev}
+          onNext={goNext}
+          onFirst={goFirst}
+          onLast={goLast}
+          setCurrentPage={setCurrentPage}
+        />
+      </div>
 
     </main>
   );
