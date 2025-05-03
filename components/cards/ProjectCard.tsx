@@ -62,7 +62,7 @@ export function ProjectCard({
   return (
     <div
       className={cn(
-        'overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm transition-shadow hover:shadow-md',
+        'overflow-hidden border-b border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm transition-shadow hover:shadow-md',
         className,
       )}
     >
