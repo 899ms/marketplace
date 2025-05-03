@@ -75,7 +75,18 @@ export function ProjectCard({
             <h3 className='text-[20px] font-medium text-text-strong-950'>{title}</h3>
             <div className='flex flex-wrap gap-1.5'>
               {infoBadges.map((badge) => (
-                <Badge.Root key={badge.label} variant='light' className='text-[#525866] text-[12px] border border-[#E2E4E9] rounded-md'>
+                <Badge.Root
+                  key={badge.label}
+                  variant='light'
+                  className={cn(
+                    'inline-flex items-center',
+                    'bg-[#F6F8FA]',
+                    'px-[16px] py-[11px]',
+                    'border border-[#E2E4E9]',
+                    'rounded-full',
+                    'text-[#525866] text-[12px] leading-[16px]'
+                  )}
+                >
                   {badge.label}
                 </Badge.Root>
               ))}

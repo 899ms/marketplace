@@ -5,9 +5,9 @@ import Link from 'next/link';
 import * as Avatar from '@/components/ui/avatar';
 import * as Dropdown from '@/components/ui/dropdown';
 import * as Table from '@/components/ui/table';
+import * as Tag from '@/components/ui/tag';
 import { RiMore2Fill } from '@remixicon/react';
-import renderStatusBadge from '@/components/settings/StatusBadge';
-
+import renderStatusIcon from '@/components/settings/StatusBadge'; // icon helper
 /* ---------- interface (now includes proposals) ---------- */
 interface PersonInfo {
   name: string;
@@ -36,51 +36,73 @@ export default function OrderRowBuyer({ engagement }: Props) {
     : `/orders/detail/${engagement.id}`;
 
   return (
-    <Table.Row>
+    <Table.Row className='border-b border-[#E1E4EA]'>
+
       {/* Details + price */}
-      <Table.Cell className="px-4 py-3 align-top">
-        <Link href={detailLink} className="block group hover:text-blue-600">
-          <div className="text-sm font-medium text-text-strong-950 group-hover:underline">
+      <Table.Cell className=" align-center">
+        <Link href={detailLink} className="flex flex-col gap-1 hover:text-blue-600">
+          <div className="text-[14px] font-normal text-[#0E121B] group-hover:underline">
             {engagement.subject}
           </div>
         </Link>
-        <div className="text-sm text-text-secondary-600">
+        <div className="text-[12px] text-[#0E121B]">
           ${engagement.price.toLocaleString()}
         </div>
       </Table.Cell>
 
       {/* Final deadline */}
-      <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">
+      <Table.Cell className=" text-[14px] text-[#0E121B] align-center whitespace-nowrap">
         {engagement.deadline}
       </Table.Cell>
 
+
+
+
       {/* Proposals */}
-      <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">
+      <Table.Cell className="px-4 py-3 text-[14px] text-[#525866] align-center whitespace-nowrap">
         {engagement.proposals ?? '–'}
       </Table.Cell>
 
       {/* Worker / Job Posting */}
-      <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+      <Table.Cell className="px-4 py-3 align-center whitespace-nowrap">
         {engagement.worker ? (
-          <div className="flex items-center gap-2">
-            <Avatar.Root size="32">
+          <div className="flex items-center gap-4">
+            {engagement.worker.avatarUrl ? (<Avatar.Root size="40">
+
               <Avatar.Image
-                src={engagement.worker.avatarUrl || 'https://via.placeholder.com/40'}
+                src={engagement.worker.avatarUrl}
                 alt={engagement.worker.name}
               />
             </Avatar.Root>
-            <span className="text-sm font-medium text-text-strong-950">
+            ) : (
+              <Avatar.Root size="40">
+                {engagement.worker.name?.charAt(0)}
+              </Avatar.Root>
+            )}
+
+            <span className="text-[14px] font-medium text-[#525866]">
               {engagement.worker.name}
             </span>
           </div>
+
         ) : (
-          <span className="text-sm text-text-sub-400 italic">Job Posting</span>
+          <span className="text-[14px] font-normal text-[#525866]">Job Posting</span>
         )}
       </Table.Cell>
 
       {/* Status */}
-      <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-        {renderStatusBadge(engagement.status, engagement.type)}
+      <Table.Cell className=" align-center whitespace-nowrap">
+        <div className='flex flex-row item-center gap-2 capitalize'>
+          <Tag.Root
+            variant="stroke"
+            className='flex flex-row item-center gap-2 capitalize'
+          >
+            {engagement.status && (engagement.status === 'pending' || engagement.status === 'close' || engagement.status === 'dispute' || engagement.status === 'overdue') && (
+              renderStatusIcon(engagement.status)
+            )}
+            {engagement.status}
+          </Tag.Root>
+        </div>
       </Table.Cell>
 
       {/* Actions */}
