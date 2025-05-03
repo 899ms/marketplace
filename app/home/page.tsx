@@ -16,7 +16,7 @@ import { User, Job } from '@/utils/supabase/types';
 function BuyerHome({ userProfile }: { userProfile: User }) {
   // Pass userProfile to children if they need it
   return (
-    <div className='flex flex-1 gap-6 px-6 pt-6'>
+    <div className='flex flex-1 gap-6 px-8 mt-8'>
       <Sidebar userProfile={userProfile} />
       <MainContent />
     </div>
