@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-
+import * as LinkButton from '@/components/ui/link-button';
 export interface SummaryData {
   milestone: {
     title: string;
@@ -26,35 +25,32 @@ export default function SummarySection({ data }: Props) {
   return (
     <div className="mb-6 grid gap-4 grid-cols-1 lg:grid-cols-4 text-[12px]">
       {/* ─────────── Milestone (¼) ─────────── */}
-      <div className="rounded-lg border border-stroke-soft-200 bg-[var(--bg-weak-50,#F5F7FA)] p-4 shadow-sm lg:col-span-1">
+      <div className="rounded-lg bg-[#F5F7FA] p-4 shadow-sm lg:col-span-1">
         <div className="flex items-start gap-3">
 
-          <div>
-            <span className="h-8 w-8 shrink-0">{data.milestone.icon}</span>
-            <span className="font-medium text-text-strong-950">
+          <div className='flex flex-col gap-1'>
+            {data.milestone.icon}
+            <span className="mt-1 font-medium text-[#0E121B] text-[12px]">
               {data.milestone.title}
             </span>
-            <p className="mt-1 text-gray-600">
+            <p className="text-[#525866] text-[12px]">
               {data.milestone.description}{' '}
-              <Link
-                href={data.milestone.learnMoreLink}
-                className="underline underline-offset-2 text-gray-600"
-              >
-                Learn&nbsp;More
-              </Link>
+              <LinkButton.Root underline onClick={() => {
+                window.open(data.milestone.learnMoreLink, '_blank');
+              }} className='text-[12px] font-medium text-[#525866]'>Learn More</LinkButton.Root>
             </p>
           </div>
         </div>
       </div>
 
       {/* ─────────── Money summary (¾) ─────────── */}
-      <div className="rounded-lg border border-stroke-soft-200 bg-[var(--bg-weak-50,#F5F7FA)] p-4 shadow-sm lg:col-span-3">
-        <div className="grid grid-cols-3 gap-6">
+      <div className="rounded-lg bg-[#F5F7FA] p-4 shadow-sm lg:col-span-3">
+        <div className="flex flex-row justify-between items-center h-full">
           {/* Total Amount */}
           <div>
-            <h4 className="font-medium text-gray-600">{data.totalAmount.title}</h4>
+            <h4 className="font-medium text-[#525866] text-[12px]">{data.totalAmount.title}</h4>
             <div className="flex  gap-2">
-              <p className="text-[18px] mt-1 font-semibold text-text-strong-950">
+              <p className="text-[18px] mt-1 font-medium text-[#0E121B]">
                 {data.totalAmount.value}
               </p>
               {data.totalAmount.actions && (
@@ -67,16 +63,16 @@ export default function SummarySection({ data }: Props) {
 
           {/* Settled */}
           <div>
-            <h4 className="font-medium text-gray-600">{data.settled.title}</h4>
-            <p className="text-[18px] mt-1 font-semibold text-text-strong-950">
+            <h4 className="font-medium text-[#525866] text-[12px]">{data.settled.title}</h4>
+            <p className="text-[18px] mt-1 font-medium text-[#0E121B]">
               {data.settled.value}
             </p>
           </div>
 
           {/* In Escrow */}
           <div>
-            <h4 className="font-medium text-gray-600">{data.inEscrow.title}</h4>
-            <p className="text-[18px] mt-1 font-semibold text-text-strong-950">
+            <h4 className="font-medium text-[#525866] text-[12px]">{data.inEscrow.title}</h4>
+            <p className="text-[18px] mt-1 font-medium text-[#0E121B]">
               {data.inEscrow.value}
             </p>
           </div>

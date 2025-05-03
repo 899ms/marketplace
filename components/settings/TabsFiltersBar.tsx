@@ -11,7 +11,8 @@ import {
   RiCalendarLine,
   RiFilter3Line,
   RiSortAsc,
-  RiSearch2Line,      // ← search icon
+  RiSearch2Line,
+  RiArrowDownSLine,      // ← search icon
 } from '@remixicon/react';
 
 interface Props {
@@ -45,13 +46,13 @@ export default function TabsFiltersBar({
     <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
         {/* ---------------- Tabs ---------------- */}
-        <Tabs.List className="flex flex-wrap rounded-md bg-[var(--bg-weak-50,#F5F7FA)] p-1">
+        <Tabs.List className="flex rounded-lg bg-[#F5F7FA] p-1 h-auto">
           {['all', ...(isBuyer ? ['inProgress', 'completed'] : ['active', 'inactive'])].map(
             (key) => (
               <Tabs.Trigger
                 key={key}
                 value={key}
-                className="rounded-md px-3 py-1.5 text-[12px] text-gray-600 data-[state=active]:bg-white data-[state=active]:text-gray-900"
+                className="rounded-lg px-8 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md"
               >
                 {key === 'inProgress'
                   ? 'In progress'
@@ -62,15 +63,15 @@ export default function TabsFiltersBar({
         </Tabs.List>
 
         {/* -------- Search + filters -------- */}
-        <div className="flex flex-wrap items-center gap-2">
+        <div className="flex gap-2 items-center">
           {/* Search */}
-          <div className="relative">
-            <RiSearch2Line className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 size-4 text-gray-600" />
+          <div className="relative lg:w-[300px]">
+            <RiSearch2Line className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 size-4 text-[#99A0AE]" />
             <Input
               placeholder="Search…"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-9 w-full rounded-md border border-stroke-soft-200 pl-8 pr-3 text-[12px] placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-ring sm:w-[200px]"
+              className="h-9 w-full rounded-lg border border-[#E1E4EA] pl-8 pr-3 text-[12px] placeholder:text-[#99A0AE] focus:outline-none focus:ring-1 focus:ring-ring"
             />
           </div>
 
@@ -94,14 +95,8 @@ export default function TabsFiltersBar({
             </Dropdown.Root>
           ) : (
             /* Seller – Filter button */
-            <Button.Root
-              variant="neutral"
-              mode="stroke"
-              size="small"
-              className="h-9 text-[12px] text-gray-600"
-              onClick={onSellerFilter}
-            >
-              <Button.Icon as={RiFilter3Line} className="size-4" />
+            <Button.Root variant='neutral' mode='stroke' size='small' className='text-[#525866] text-[14px] font-medium'>
+              <Button.Icon as={RiFilter3Line} className="w-5 h-4 text-[#525866]" />
               Filter
             </Button.Root>
           )}
@@ -109,10 +104,11 @@ export default function TabsFiltersBar({
           {/* Sort */}
           <Dropdown.Root>
             <Dropdown.Trigger asChild>
-              <button className="inline-flex h-9 items-center gap-1 whitespace-nowrap rounded-md border border-stroke-soft-200 bg-bg-white-0 px-3 text-[12px] text-gray-600 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
-                <RiSortAsc className="size-4" />
+              <Button.Root variant='neutral' mode='stroke' size='small' className='text-[#525866] text-[14px] font-normal'>
+                <Button.Icon as={RiSortAsc} className="w-4 h-5 text-[#99A0AE]" />
                 Sort by
-              </button>
+                <Button.Icon as={RiArrowDownSLine} className='w-4 h-5 text-[#99A0AE]' />
+              </Button.Root>
             </Dropdown.Trigger>
             <Dropdown.Content align="end">
               <Dropdown.Item onSelect={() => setSortOption('date_asc')}>
