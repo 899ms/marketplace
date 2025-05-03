@@ -27,6 +27,7 @@ import {
 import { useState } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
+import usFlagIcon from '@/assets/images/icons/United_States.svg'; // Import the SVG file
 
 export default function Navbar() {
   // --- Get Auth State using useAuth hook ---
@@ -122,11 +123,7 @@ export default function Navbar() {
             </Input.Root>
           </div>
 
-          {/* Language Selector Dropdown - Placeholder */}
-          {/* TODO: Replace with actual Dropdown implementation */}
-          <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 hidden rounded-md p-2 sm:flex'>
-            <RiGlobalLine className='size-5' />
-          </button>
+          {/* Language Selector moved down */}
 
           {user ? ( // Use user !== null for checking login status
             <>
@@ -144,6 +141,18 @@ export default function Navbar() {
                   <FancyButton.Icon as={RiAddLine} />
                 </FancyButton.Root>
               </Link>
+
+              {/* Language Selector Dropdown - Moved here */}
+              {/* TODO: Replace with actual Dropdown implementation */}
+
+              {/* Use imported SVG variable */}
+              <Image
+                src={usFlagIcon} // Use the imported variable
+                alt="Select Language"
+                width={24}
+                height={24}
+              />
+
 
               {/* Notifications Button */}
               <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 relative rounded-md p-2'>
