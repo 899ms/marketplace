@@ -60,7 +60,7 @@ export function PriceRangeSlider({
             size='xsmall'
             side='top'
             forceMount
-            className='rounded bg-black px-2 py-0.5 text-xs text-white'
+            className='text-[10px] rounded bg-black px-1 py-0.5 text-white'
           >
             {formatCurrency(value[0] ?? 0)}
           </Tooltip.Content>
@@ -75,7 +75,7 @@ export function PriceRangeSlider({
             size='xsmall'
             side='top'
             forceMount
-            className='rounded bg-black px-2 py-0.5 text-xs text-white'
+            className='text-[10px] rounded bg-black px-1 py-0.5 text-white'
           >
             {formatCurrency(value[1] ?? 0)}
           </Tooltip.Content>

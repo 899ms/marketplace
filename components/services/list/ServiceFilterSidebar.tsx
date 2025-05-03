@@ -148,7 +148,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
   const availableFeaturedTags = ['Digital Painting', 'Retrowave', 'NFT'];
 
   return (
-    <aside className='w-full space-y-6 text-sm'>
+    <aside className='flex flex-col w-full h-full text-sm'>
       {/* Worker Search Bar */}
       {activeTab === 'Worker' && (
         <WorkerSearchBar
@@ -160,129 +160,172 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
 
       {/* Skills Section (Service & Project) */}
       {(activeTab === 'Service' || activeTab === 'Project') && (
-        <div>
+        <div className='mx-[16px]' >
           <div className='mb-2 flex items-center justify-between'>
-            <h3 className='text-xs font-medium text-text-strong-950'>Skills</h3>
+            <h3 className='text-[14px] font-medium text-text-strong-950'>Skills</h3>
             {selectedSkills.length > 0 && (
-              <button onClick={clearSkills} className='text-xs text-text-secondary-600 hover:text-text-primary-600'>
+              <button onClick={clearSkills} className='text-[12px] text-gray-400 underline hover:text-text-primary-600'>
                 Clear
               </button>
             )}
           </div>
           <TagInputContainer>
             {selectedSkills.map((skill) => (
-              <Tag.Root key={skill} variant='stroke'>
+              <Tag.Root
+                key={skill}
+                className="!border-black text-black"
+              >
                 {skill}
-                <Tag.Icon as={RiCloseLine} onClick={() => removeSkill(skill)} className='ml-1 cursor-pointer' />
+                <Tag.Icon
+                  as={RiCloseLine}
+                  onClick={() => removeSkill(skill)}
+                  className="ml-1 cursor-pointer text-black"
+                />
               </Tag.Root>
             ))}
           </TagInputContainer>
-          <div className='flex flex-wrap gap-1.5'>
+
+          <div className="flex flex-wrap gap-1.5">
             {availableSkills
               .filter((skill) => !selectedSkills.includes(skill))
-              .map((skill) => (
-                <Tag.Root key={skill} asChild variant='gray' className='cursor-pointer'>
-                  <button onClick={() => handleSkillToggle(skill)}>{skill}</button>
+              .map((skill, idx) => (
+                <Tag.Root
+                  key={skill}
+                  asChild
+                  variant="gray"
+                  className={`
+                    cursor-pointer 
+                    border-gray-100             /* gray-600 border */
+                    ${idx % 2 === 0
+                      ? "bg-white border-gray-400 "
+                      : "bg-gray-100"
+                    }
+                  `}
+                >
+                  <button onClick={() => handleSkillToggle(skill)}>
+                    {skill}
+                  </button>
                 </Tag.Root>
               ))}
           </div>
-          <hr className='my-6 border-stroke-soft-200' />
+          <hr className='border-stroke-soft-200 my-[16px]' />
         </div>
       )}
 
       {/* Tools Section (Service Only) */}
       {activeTab === 'Service' && (
-        <div>
+        <div className='mx-[16px]' >
           <div className='mb-2 flex items-center justify-between'>
             <div className='flex items-center gap-1'>
               <h3 className='text-xs font-medium text-text-strong-950'>Tools</h3>
               <button className='text-icon-secondary-400'><RiInformationLine className='size-4' /></button>
             </div>
             {selectedTools.length > 0 && (
-              <button onClick={clearTools} className='text-xs text-text-secondary-600 hover:text-text-primary-600'>
+              <button onClick={clearTools} className='text-[12px] text-gray-400 underline hover:text-text-primary-600'>
                 Clear
               </button>
             )}
           </div>
           <TagInputContainer>
             {selectedTools.map((tool) => (
-              <Tag.Root key={tool} variant='stroke'>
+              <Tag.Root key={tool} className="!border-black text-black">
                 {tool}
-                <Tag.Icon as={RiCloseLine} onClick={() => removeTool(tool)} className='ml-1 cursor-pointer' />
+                <Tag.Icon as={RiCloseLine} onClick={() => removeTool(tool)} className='ml-1 cursor-pointer text-black' />
               </Tag.Root>
             ))}
           </TagInputContainer>
           <div className='flex flex-wrap gap-1.5'>
             {availableTools
               .filter((tool) => !selectedTools.includes(tool))
-              .map((tool) => (
-                <Tag.Root key={tool} asChild variant='gray' className='cursor-pointer'>
+              .map((tool, idx) => (
+                <Tag.Root
+                  key={tool}
+                  asChild
+                  variant="gray"
+                  className={`
+                    cursor-pointer 
+                    border-gray-100             /* gray-600 border */
+                    ${idx % 2 === 0
+                      ? "bg-white border-gray-400 "
+                      : "bg-gray-100"
+                    }
+                  `}
+                >
                   <button onClick={() => handleToolToggle(tool)}>{tool}</button>
                 </Tag.Root>
               ))}
           </div>
-          <hr className='my-6 border-stroke-soft-200' />
+          <hr className='my-6 border-stroke-soft-200 my-[16px]' />
         </div>
       )}
 
       {/* Featured Tags Section (Service Only) */}
       {activeTab === 'Service' && (
-        <div>
+        <div className='mx-[16px]' >
           <div className='mb-2 flex items-center gap-1'>
             <h3 className='text-xs font-medium text-text-strong-950'>Featured Tags</h3>
             <button className='text-icon-secondary-400'><RiInformationLine className='size-4' /></button>
           </div>
-          <TagInputContainer>
-            {selectedFeaturedTags.map((tag) => (
-              <Tag.Root key={tag} variant='stroke' className='border-black'>
-                <Tag.Icon as={RiSparklingFill} className='text-orange-500' />
-                {tag}
-                <Tag.Icon as={RiCloseLine} onClick={() => removeFeaturedTag(tag)} className='ml-1 cursor-pointer' />
-              </Tag.Root>
-            ))}
-          </TagInputContainer>
-          <div className='flex flex-wrap gap-1.5'>
-            {availableFeaturedTags
-              .filter((tag) => !selectedFeaturedTags.includes(tag))
-              .map((tag) => (
-                <Tag.Root key={tag} asChild variant='gray' className='cursor-pointer'>
-                  <button onClick={() => handleFeaturedTagToggle(tag)}>
-                    <Tag.Icon as={RiSparklingFill} className='text-orange-500' />
-                    {tag}
+          <div className="flex flex-wrap gap-1.5">
+            {availableFeaturedTags.map((tag) => {
+              const isSelected = selectedFeaturedTags.includes(tag)
+              return (
+                <Tag.Root
+                  key={tag}
+                  asChild
+                  variant="stroke"
+                  className={`
+                    bg-white
+                    cursor-pointer
+                    flex items-center
+                    ${isSelected ?
+                      'border border-black text-black' :
+                      'border border-gray-300 text-text-strong-950'
+                    }
+                  `}
+                >
+                  <button onClick={() => handleFeaturedTagToggle(tag)} className="flex items-center">
+                    <Tag.Icon as={RiSparklingFill} className="text-orange-500 mr-1" />
+                    <span>{tag}</span>
+                    {isSelected && (
+                      <Tag.Icon as={RiCloseLine} className="ml-1 cursor-pointer text-black" />
+                    )}
                   </button>
                 </Tag.Root>
-              ))}
+              )
+            })}
           </div>
-          <hr className='my-6 border-stroke-soft-200' />
+
+          <hr className='my-6 border-stroke-soft-200 my-[16px]' />
         </div>
       )}
 
       {/* Toggle Options Section (Worker Only) */}
       {activeTab === 'Worker' && (
-        <div className='space-y-4'>
+        <div className='space-y-4 mx-[16px]'>
           {/* Available Toggle */}
-          <div className='flex items-center gap-3'>
-            <Switch.Root id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
+          <div className='flex items-start gap-3'>
+            <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
             <div>
-              <label htmlFor='available-toggle' className='cursor-pointer font-medium text-text-strong-950'>Available</label>
-              <p className='text-xs text-text-secondary-600'>Recent Online</p>
+              <label htmlFor='available-toggle' className='text-[14px] cursor-pointer font-medium text-text-strong-950'>Available</label>
+              <p className='text-[12px] text-text-secondary-600'>Recent Online</p>
             </div>
           </div>
           {/* Professional Services Toggle */}
           <div className='flex items-center gap-3'>
             <Switch.Root id='professional-toggle' checked={isProfessional} onCheckedChange={(checked) => handleToggleChange('professional', checked)} />
             <div>
-              <label htmlFor='professional-toggle' className='cursor-pointer font-medium text-text-strong-950'>Professional Services</label>
-              <p className='text-xs text-text-secondary-600'>Vetted skills and expertise</p>
+              <label htmlFor='professional-toggle' className='text-[14px] cursor-pointer font-medium text-text-strong-950'>Professional Services</label>
+              <p className='text-[12px] text-text-secondary-600'>Vetted skills and expertise</p>
             </div>
           </div>
-          <hr className='my-6 border-stroke-soft-200' />
+          <hr className='my-6 border-stroke-soft-200 my-[16px]' />
         </div>
       )}
 
       {/* Price/Budget Section (Service & Project) */}
       {(activeTab === 'Service' || activeTab === 'Project') && (
-        <div>
+        <div className='mx-[16px]' >
           <h3 className='mb-3 text-xs font-medium text-text-strong-950'>
             {activeTab === 'Service' ? 'Price' : 'Budget'}
           </h3>
@@ -293,15 +336,19 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
             step={10}
             minStepsBetweenThumbs={1}
           />
-          <hr className='my-6 border-stroke-soft-200' />
+          <hr className='my-6 border-stroke-soft-200 my-[16px]' />
         </div>
       )}
 
       {/* Clear Filters Button */}
-      <div className="pt-4">
+      <div className="mt-auto mb-4 px-4">
         <button
           onClick={handleClearAllFilters}
-          className="w-full py-2 px-4 border border-gray-300 rounded-lg text-center text-gray-700 hover:bg-gray-50 transition-colors"
+          className={cn(
+            'w-full flex items-center justify-center gap-1 rounded-[10px] border border-stroke-soft-200',
+            'bg-bg-white-0 px-4 py-2.5 text-[14px] font-medium leading-[20px] shadow-[0px_1px_2px_0px_#5258660F] transition',
+            'hover:bg-bg-white-100 focus:outline-none focus:ring-2 focus:ring-text-primary-600'
+          )}
         >
           Clear Filters
         </button>

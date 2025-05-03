@@ -400,23 +400,23 @@ export default function SearchPageClient() {
 
   return (
     <>
-      <div className='flex flex-1 gap-6 px-6 py-6'>
+      <div className='flex flex-1 gap-6 px-6 py-6 h-full'>
         {/* Left Column: Tabs + Filters */}
-        <div className='w-full max-w-[342px] flex-shrink-0 space-y-4'>
+        <div className='w-full max-w-[342px] flex-shrink-0 flex flex-col h-full space-y-4'>
           {/* Tab Navigation */}
-          <div className='border-b border-stroke-soft-200'>
+          <div className='border-b border-stroke-soft-200 flex-shrink-0'>
             <TabMenuHorizontal.Root
               value={activeTab}
               onValueChange={handleTabChange}
             >
-              <TabMenuHorizontal.List>
-                <TabMenuHorizontal.Trigger value='Service'>
+              <TabMenuHorizontal.List className="flex justify-between items-center px-4 border-y-0">
+                <TabMenuHorizontal.Trigger value='Service' className="text-[16px] px-[12px] font-medium leading-8 tracking-normal text-center">
                   Service
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='Worker'>
+                <TabMenuHorizontal.Trigger value='Worker' className="text-[16px] px-[12px] font-medium leading-8 tracking-normal text-center">
                   Worker
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='Project'>
+                <TabMenuHorizontal.Trigger value='Project' className="text-[16px] px-[12px] font-medium leading-8 tracking-normal text-center">
                   Project
                 </TabMenuHorizontal.Trigger>
               </TabMenuHorizontal.List>
@@ -424,22 +424,24 @@ export default function SearchPageClient() {
           </div>
 
           {/* Filters Sidebar */}
-          <ServiceFilterSidebar
-            activeTab={activeTab}
-            onServicePriceRangeChange={handleServicePriceRangeChange}
-            onServiceSkillsChange={handleServiceSkillsChange}
-            onWorkerSearch={handleWorkerSearch}
-            onWorkerToggleChange={handleToggleChange}
-            workerSearchTerm={workerFilters.searchTerm}
-            onProjectBudgetRangeChange={handleProjectBudgetRangeChange}
-            onProjectSkillsChange={handleProjectSkillsChange}
-            onClearAllFilters={handleClearAllFilters}
-            resetKey={resetKey}
-          />
+          <div className="flex-grow overflow-y-auto flex">
+            <ServiceFilterSidebar
+              activeTab={activeTab}
+              onServicePriceRangeChange={handleServicePriceRangeChange}
+              onServiceSkillsChange={handleServiceSkillsChange}
+              onWorkerSearch={handleWorkerSearch}
+              onWorkerToggleChange={handleToggleChange}
+              workerSearchTerm={workerFilters.searchTerm}
+              onProjectBudgetRangeChange={handleProjectBudgetRangeChange}
+              onProjectSkillsChange={handleProjectSkillsChange}
+              onClearAllFilters={handleClearAllFilters}
+              resetKey={resetKey}
+            />
+          </div>
         </div>
 
         {/* Right Column: Tab Content */}
-        <div className='flex-1 space-y-4 min-w-0'>
+        <div className='w-full max-w-[1010px] flex-1 space-y-4 min-w-0'>
           {/* Search Bars */}
           {activeTab === 'Service' && (
             <ServiceSearchBar
