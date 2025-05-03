@@ -336,7 +336,6 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
             step={10}
             minStepsBetweenThumbs={1}
           />
-          <hr className='my-6 border-stroke-soft-200 my-[16px]' />
         </div>
       )}
 

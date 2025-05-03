@@ -73,17 +73,30 @@ export function WorkerSearchBar({
   }, [searchTerm]); // Removed onSearch from dependencies
 
   return (
-    <div className='mb-4'>
-      <div className='relative w-full'>
-        <RiSearchLine className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-500' />
+    <div className="mb-4 mx-[16px]">
+      <div className="relative w-full">
+        <RiSearchLine
+          className="absolute left-[12px] top-1/2 w-[20px] h-[20px] -translate-y-1/2 text-[#99A0AE]"
+        />
         <Input
-          type='search'
-          placeholder='Search workers...'
-          className='w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-3 text-sm'
+          type="search"
+          placeholder="Search workers..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          className={`
+            w-full
+            h-[40px]
+            rounded-[10px]
+            border border-[#CACFD8]
+            bg-[#FFFFFF]
+            pl-[40px]  /* 12px padding + 20px icon + 8px gap */
+            pr-[10px]  /* right padding 10px */
+            text-[14px] leading-[20px]
+            text-[#99A0AE]
+            placeholder:text-[#99A0AE]
+          `}
         />
       </div>
     </div>
   );
-} 
+}
