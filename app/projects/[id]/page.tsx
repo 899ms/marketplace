@@ -429,7 +429,7 @@ export default function ProjectDetailPage() {
   const findWorksLink = isOwner || isBuyerVisitor ? '/projects' : '/jobs'; // Example adjustment
 
   return (
-    <div className='container mx-auto px-4 py-6 lg:px-8'>
+    <div className='container mx-auto px-4 py-6 lg:px-8  max-w-[1200px]'>
       {/* Header with Breadcrumbs - updated links */}
       <div className='mb-6 flex items-center justify-between text-[14px]'>
         <div className='flex flex-wrap items-center gap-2'>
