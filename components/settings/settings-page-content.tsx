@@ -35,7 +35,7 @@ export default function SettingsPageContent() {
 
   /* --------------- main layout --------------- */
   return (
-    <div className="flex min-h-screen bg-bg-alt-white-100">
+    <div className="flex bg-bg-alt-white-100 h-[calc(100vh-85px)] overflow-hidden">
       {/* left nav – adds "My services" only if `isSeller` */}
       <OrdersSidebar activeView={currentTab} isSeller={!!isSeller} />
 
