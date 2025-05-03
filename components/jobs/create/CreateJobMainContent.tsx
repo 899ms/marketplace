@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import * as Accordion from '@/components/ui/accordion';
 import { RiArrowDownSLine } from '@remixicon/react';
 
@@ -16,15 +16,20 @@ const CreateJobMainContent = ({
   activeStep,
   setActiveStep,
 }: CreateJobMainContentProps) => {
-  const activeValue = `item-${activeStep}`;
+  // Local state for the accordion's open item value
+  const [accordionValue, setAccordionValue] = useState<string | undefined>(
+    `item-${activeStep}`,
+  );
 
-  // Allow programmatic control via activeStep, but also allow user interaction
+  // Effect to sync accordion when activeStep prop changes (e.g., from VerticalStepper)
+  useEffect(() => {
+    setAccordionValue(`item-${activeStep}`);
+  }, [activeStep]);
+
+  // Handle accordion changes locally
   const handleValueChange = (value: string) => {
-    if (value) {
-      // Only update if an item is opened
-      const stepNum = parseInt(value.split('-')[1]);
-      setActiveStep(stepNum);
-    }
+    setAccordionValue(value); // Directly set the accordion value (can be empty string to close)
+    // Do NOT call setActiveStep here - let VerticalStepper manage the main step
   };
 
   return (
@@ -41,18 +46,19 @@ const CreateJobMainContent = ({
         type='single'
         collapsible
         className='w-full max-w-2xl space-y-3'
-        value={activeValue} // Control expansion based on activeStep
-        onValueChange={handleValueChange} // Update activeStep when accordion changes
+        value={accordionValue} // Controlled by local state
+        onValueChange={handleValueChange} // Updates local state
       >
         {steps.map((step, index) => {
           const stepNumber = index + 1;
+          const itemValue = `item-${stepNumber}`;
           return (
             <Accordion.Item
-              value={`item-${stepNumber}`}
+              value={itemValue}
               key={stepNumber}
               className='shadow-sm overflow-hidden rounded-3xl border !bg-white !border-[#E1E4EA] !px-0'
             >
-              <Accordion.Trigger className='!p-4 !mx-0 group/trigger flex w-full items-center justify-between p-4 text-left hover:bg-bg-weak-50 w-full'>
+              <Accordion.Trigger className='!p-4 !mx-0 group/trigger flex w-full items-center justify-between text-left hover:bg-bg-weak-50'>
                 {' '}
                 {/* Added group */}
                 <div className='flex items-center gap-3'>
@@ -68,7 +74,9 @@ const CreateJobMainContent = ({
                 </div>
                 {/* Use group state */}
               </Accordion.Trigger>
-              <Accordion.Content className='py-4 mt-2 border-t border-[#E1E4EA] '>
+              <Accordion.Content className='py-4 mt-2 border-t border-[#E1E4EA]'>
+                {/* Render content only if this item is the active one conceptually */}
+                {/* This prevents mounting/unmounting form state, but Accordion handles visibility */}
                 {step.content || <p>Content for {step.title} goes here...</p>}
               </Accordion.Content>
             </Accordion.Item>

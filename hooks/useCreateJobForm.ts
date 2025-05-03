@@ -197,7 +197,7 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
       // Set success and redirect after a short delay
       setSuccess(true);
       setTimeout(() => {
-        router.push('/jobs');
+        router.push('/settings?tab=orders');
         router.refresh(); // Refresh the page data
       }, 1000);
     } catch (err) {
