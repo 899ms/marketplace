@@ -400,7 +400,7 @@ export default function SearchPageClient() {
 
   return (
     <>
-      <div className='flex flex-1 gap-6 px-6 py-6 h-full max-w-[1376px] mx-auto'>
+      <div className='flex flex-1 gap-6 px-6 py-6 h-full'>
         {/* Left Column: Tabs + Filters */}
         <div className='w-full max-w-[342px] flex-shrink-0 flex flex-col h-full space-y-4'>
           {/* Tab Navigation */}
