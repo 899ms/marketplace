@@ -33,7 +33,7 @@ export default async function ServiceDetailPage({
   }
 
   return (
-    <div className='container mx-auto px-4 py-10 max-w-[1200px]'>
+    <div className='container mx-auto  py-10 max-w-[1200px]'>
       <div className='mb-4'>
         <Breadcrumb.Root>
           <Breadcrumb.Item asChild>
