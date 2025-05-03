@@ -5,9 +5,9 @@ import Link from 'next/link';
 import * as Avatar from '@/components/ui/avatar';
 import * as Dropdown from '@/components/ui/dropdown';
 import * as Table from '@/components/ui/table';
-import { RiMore2Fill, RiStarFill } from '@remixicon/react';
-import renderStatusBadge from '@/components/settings/StatusBadge'; // badge helper
-
+import * as Tag from '@/components/ui/tag';
+import { RiMore2Fill, RiStarFill, RiUserLine } from '@remixicon/react';
+import renderStatusIcon from '@/components/settings/StatusBadge'; // icon helper
 /* -------- lightweight interface (or import a shared one) -------- */
 interface PersonInfo {
   name: string;
@@ -34,47 +34,52 @@ export default function OrderRowSeller({ order }: Props) {
   const detailLink = `/orders/detail/${order.id}`;
 
   return (
-    <Table.Row>
+    <Table.Row className='border-b border-[#E1E4EA]'>
       {/* -------- From (buyer) -------- */}
-      <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-        <div className="flex items-center gap-2">
-          <Avatar.Root size="32">
-            {order.from && (
-              <Avatar.Image
-                src={order.from.avatarUrl || 'https://via.placeholder.com/40'}
-                alt={order.from.name}
-              />
-            )}
+      <Table.Cell className=" align-center whitespace-nowrap">
+        <div className="flex items-center gap-4">
+          {order.from && order.from.avatarUrl ? (<Avatar.Root size="40">
+
+            <Avatar.Image
+              src={order.from.avatarUrl}
+              alt={order.from.name}
+            />
           </Avatar.Root>
-          <span className="text-sm font-medium text-text-strong-950">
+          ) : (
+            <Avatar.Root size="40">
+              {order.from?.name?.charAt(0)}
+            </Avatar.Root>
+          )}
+
+          <span className="text-[14px] font-medium text-[#525866]">
             {order.from ? order.from.name : 'Unknown Buyer'}
           </span>
         </div>
       </Table.Cell>
 
       {/* -------- Details + price -------- */}
-      <Table.Cell className="px-4 py-3 align-top">
-        <Link href={detailLink} className="block group hover:text-blue-600">
-          <div className="text-sm font-medium text-text-strong-950 group-hover:underline">
+      <Table.Cell className=" align-center">
+        <Link href={detailLink} className="flex flex-col gap-1 hover:text-blue-600">
+          <div className="text-[14px] font-normal text-[#525866] group-hover:underline">
             {order.subject}
           </div>
         </Link>
-        <div className="text-sm text-text-secondary-600">
+        <div className="text-[12px] text-[#0E121B]">
           ${order.price.toLocaleString()}
         </div>
       </Table.Cell>
 
       {/* -------- Final deadline -------- */}
-      <Table.Cell className="px-4 py-3 text-sm text-text-secondary-600 align-top whitespace-nowrap">
+      <Table.Cell className=" text-[14px] text-[#525866] align-center whitespace-nowrap">
         {order.deadline}
       </Table.Cell>
 
       {/* -------- Rating -------- */}
-      <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
+      <Table.Cell className=" align-center whitespace-nowrap">
         {typeof order.rating === 'number' ? (
-          <div className="flex items-center gap-1 text-sm text-text-secondary-600">
-            <RiStarFill className="size-4 text-yellow-400" />
-            <span>{order.rating.toFixed(1)}</span>
+          <div className="flex items-center gap-1">
+            <RiStarFill className="size-4 text-yellow-500" />
+            <span className='text-[14px] text-[#525866] leading-none'>{order.rating.toFixed(1)}</span>
           </div>
         ) : (
           <span className="text-sm text-text-sub-400">‑</span>
@@ -82,12 +87,22 @@ export default function OrderRowSeller({ order }: Props) {
       </Table.Cell>
 
       {/* -------- Status -------- */}
-      <Table.Cell className="px-4 py-3 align-top whitespace-nowrap">
-        {renderStatusBadge(order.status, 'seller_order')}
+      <Table.Cell className=" align-center whitespace-nowrap">
+        <div className='flex flex-row item-center gap-2 capitalize'>
+          <Tag.Root
+            variant="stroke"
+            className='flex flex-row item-center gap-2 capitalize'
+          >
+            {order.status && (order.status === 'pending' || order.status === 'close' || order.status === 'dispute' || order.status === 'overdue') && (
+              renderStatusIcon(order.status)
+            )}
+            {order.status}
+          </Tag.Root>
+        </div>
       </Table.Cell>
 
       {/* -------- Actions dropdown -------- */}
-      <Table.Cell className="px-4 py-3 text-right align-top whitespace-nowrap">
+      <Table.Cell className=" text-right align-center whitespace-nowrap">
         <Dropdown.Root>
           <Dropdown.Trigger asChild>
             <button className="p-1 text-text-sub-400 hover:text-text-strong-950 focus:outline-none">

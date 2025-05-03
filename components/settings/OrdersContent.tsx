@@ -10,7 +10,8 @@ import {
 import {
   RiHeartLine,
 } from '@remixicon/react';
-
+import { Icons } from '@/assets/images/icons/icons';
+import * as LinkButton from '@/components/ui/link-button';
 import SummarySection, {
   type SummaryData,
 } from '@/components/settings/SummarySection';
@@ -22,7 +23,7 @@ import OrdersTable, {
 import PaginationBar from '@/components/settings/PaginationBar';
 
 /* ------------------------------------------------------------------ */
-/** Main right‑hand pane for “Orders” view (both buyers & sellers).   */
+/** Main right‑hand pane for "Orders" view (both buyers & sellers).   */
 export default function OrdersContent() {
   /* ------------------ auth ------------------ */
   const { user, userProfile, loading: authLoading, profileLoading } = useAuth();
@@ -94,6 +95,7 @@ export default function OrdersContent() {
           );
 
           setOrders(rows);
+
         } else {
           /* --- seller: contracts where user is seller --- */
           const contracts = await contractOperations.getUserContracts(user.id);
@@ -135,15 +137,15 @@ export default function OrdersContent() {
       title: 'Milestone',
       description: 'For only $4.99 per month!',
       learnMoreLink: '#',
-      icon: <RiHeartLine className="size-5 text-icon-brand-500" />,
+      icon: <Icons.HeartLine />,
     },
     totalAmount: {
       title: 'Total Amount',
       value: isBuyer ? '$500.00' : '$50,110.00',
       actions: isBuyer ? (
-        <div className="flex gap-2 text-sm">
-          <button className="hover:underline text-text-brand-900">Top up</button>
-          <button className="hover:underline text-text-brand-900">Withdraw</button>
+        <div className="flex gap-2 text-sm items-center">
+          <LinkButton.Root className='text-[#335CFF] text-[12px] font-medium'>Top up</LinkButton.Root>
+          <LinkButton.Root className='text-[#335CFF] text-[12px] font-medium'>Withdraw</LinkButton.Root>
         </div>
       ) : undefined,
     },
@@ -171,8 +173,14 @@ export default function OrdersContent() {
     currentPage * itemsPerPage,
   );
 
+  console.log(totalPages);
+  console.log(currentData);
+  console.log(currentPage)
+
   const goPrev = () => setCurrentPage((p) => Math.max(1, p - 1));
+  const goFirst = () => setCurrentPage(1);
   const goNext = () => setCurrentPage((p) => Math.min(totalPages, p + 1));
+  const goLast = () => setCurrentPage(totalPages);
 
   /* ------------------ auth guard ------------------ */
   if (authLoading || profileLoading) {
@@ -227,7 +235,11 @@ export default function OrdersContent() {
         totalPages={totalPages}
         onPrev={goPrev}
         onNext={goNext}
+        onFirst={goFirst}
+        onLast={goLast}
+        setCurrentPage={setCurrentPage}
       />
+
     </main>
   );
 }

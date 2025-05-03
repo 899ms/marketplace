@@ -56,53 +56,53 @@ export default function OrdersTable({ rows, isBuyer }: Props) {
   return (
     <Table.Root className="min-w-full divide-y divide-stroke-soft-200">
       {/* ---------------- Header ---------------- */}
-      <Table.Header className="bg-bg-alt-white-100">
-        <Table.Row>
+      <Table.Header className="bg-[#F5F7FA] rounded-lg ">
+        <Table.Row className='bg-[#F5F7FA] rounded-lg'>
           {isBuyer ? (
             <>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 Details
               </Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 Final deadline
               </Table.Head>
               {/* new Proposals column */}
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 Proposals
               </Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 Worker
               </Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 Status
               </Table.Head>
             </>
           ) : (
             <>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 From
               </Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 Details
               </Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 Final deadline
               </Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 Rating
               </Table.Head>
-              <Table.Head className="px-4 py-3 text-left text-xs font-medium tracking-wider text-text-sub-500">
+              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
                 Status
               </Table.Head>
             </>
           )}
           {/* common EMPTY head for actions column */}
-          <Table.Head className="px-4 py-3 text-right text-xs font-medium tracking-wider text-text-sub-500" />
+          <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-right text-[14px] tracking-wider text-[#525866]" />
         </Table.Row>
       </Table.Header>
 
       {/* ---------------- Body ---------------- */}
-      <Table.Body className="divide-y divide-stroke-soft-200 bg-bg-white-0">
+      <Table.Body className="">
         {rows.map((row) =>
           isBuyer ? (
             <OrderRowBuyer key={row.id} engagement={row as BuyerEngagement} />
@@ -110,6 +110,7 @@ export default function OrdersTable({ rows, isBuyer }: Props) {
             <OrderRowSeller key={row.id} order={row as SellerOrder} />
           ),
         )}
+
       </Table.Body>
     </Table.Root>
   );
