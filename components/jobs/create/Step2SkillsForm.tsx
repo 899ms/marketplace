@@ -14,15 +14,23 @@ import {
   RiUploadCloud2Line,
   RiCloseLine,
   RiLoader4Line,
+  RiLoader2Fill,
 } from '@remixicon/react';
 import { CreateJobFormData } from '@/app/jobs/create/schema';
 
 import { useCreateJobForm } from '@/hooks/useCreateJobForm';
 import * as FancyButton from '@/components/ui/fancy-button';
+// import * as FileFormatIcon from '@/components/ui/file-format-icon'; // Ensure this import is removed or commented out
+import * as CompactButton from '@/components/ui/compact-button';
 
 // Define union types for skill levels and sources
 type SkillLevel = 'Trainee' | 'Director' | 'Skilled' | 'Expert';
 type CandidateSource = 'Manual Entry' | 'Referral' | 'Skilled';
+
+// Define constants outside the component function scope
+const MAX_FILES = 3;
+const MAX_SIZE_MB = 25;
+const MAX_SIZE_BYTES = MAX_SIZE_MB * 1024 * 1024;
 
 interface Step2Props {
   formMethods: UseFormReturn<CreateJobFormData>;
@@ -77,58 +85,74 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
 
     const currentFiles = getValues('files') || [];
 
-    // Check if we already have 3 files
-    if (currentFiles.length + files.length > 3) {
-      setFileUploadError('Maximum 3 files allowed');
+    // --- File Count Check --- 
+    if (currentFiles.length + files.length > MAX_FILES) {
+      setFileUploadError(`Maximum ${MAX_FILES} files allowed.`);
+      e.target.value = ''; // Clear the input
       return;
     }
+
+    let filesToUpload = [];
+    let validationError = null;
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
 
-      // Check if file is MP3 (or allow other formats as needed)
+      // --- Format Check --- 
       const isValidFormat =
         file.type === 'audio/mpeg' ||
-        file.name.toLowerCase().endsWith('.mp3') ||
-        file.type === 'application/pdf'; // Also allowing PDF for this example
+        file.name.toLowerCase().endsWith('.mp3');
 
-      // Check if file is under 25MB
-      const isValidSize = file.size <= 25 * 1024 * 1024; // 25MB in bytes
+      // --- Size Check --- 
+      const isValidSize = file.size <= MAX_SIZE_BYTES;
 
       if (!isValidFormat) {
-        setFileUploadError('Only MP3 audio files and PDFs are allowed');
-        return;
+        validationError = 'Only MP3 audio files are allowed.';
+        break; // Stop processing further files if one is invalid
       }
 
       if (!isValidSize) {
-        setFileUploadError('Files must be under 25MB');
-        return;
+        validationError = `Files must be under ${MAX_SIZE_MB}MB.`;
+        break; // Stop processing further files if one is invalid
       }
 
-      // Set uploading indicator
+      filesToUpload.push(file);
+    }
+
+    if (validationError) {
+      setFileUploadError(validationError);
+      e.target.value = ''; // Clear the input
+      return;
+    }
+
+    // Proceed with uploading valid files
+    let newUploadedFiles = [];
+    for (const file of filesToUpload) {
       setUploadingFile(file.name);
-
       try {
-        // Upload file to Supabase storage directly
-        const uploadedFile = await uploadFile(file);
-
+        const uploadedFile = await uploadFile(file); // Assume uploadFile handles the actual upload
         if (uploadedFile) {
-          // Add the uploaded file with URL to the form state
-          currentFiles.push(uploadedFile);
+          newUploadedFiles.push(uploadedFile);
         } else {
-          setFileUploadError(`Failed to upload ${file.name}`);
+          setFileUploadError(`Failed to upload ${file.name}. Please try again.`);
+          // Optionally decide if you want to stop all uploads if one fails
+          // break;
         }
       } catch (error) {
-        console.error('Error uploading file:', error);
-        setFileUploadError(`Error uploading ${file.name}`);
+        console.error('Error during file upload:', error);
+        setFileUploadError(`Error uploading ${file.name}.`);
+        // Optionally break here too
       } finally {
         setUploadingFile(null);
       }
     }
 
-    setValue('files', currentFiles, { shouldValidate: true });
+    // Update form state only after all selected files are processed
+    if (newUploadedFiles.length > 0) {
+      setValue('files', [...currentFiles, ...newUploadedFiles], { shouldValidate: true });
+    }
 
-    // Reset the file input
+    // Reset the file input value if needed (especially if some uploads failed)
     e.target.value = '';
   };
 
@@ -325,10 +349,10 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
           <div className='flex flex-col justify-center gap-0.5'>
             <Label.Root className='text-[14px] text-[#525866] font-medium'>
               Add Download File
-              <span className='text-[#525866] font-normal'>(Up to 3 audio files)</span>
+              <span className='text-[#525866] font-normal'>(Up to {MAX_FILES} MP3 files, max {MAX_SIZE_MB}MB each)</span>
             </Label.Root>
             <p className='text-[#99A0AE] text-[12px]'>
-              MP3 format and 25 MB size limitations
+              MP3 format only
             </p>
           </div>
 
@@ -340,7 +364,7 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
               type='button'
               className='flex items-center'
               onClick={() => document.getElementById('file-upload')?.click()}
-              disabled={!!uploadingFile}
+              disabled={!!uploadingFile || watchFiles.length >= MAX_FILES}
             >
               {uploadingFile ? (
                 <>
@@ -349,7 +373,6 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
                 </>
               ) : (
                 <>
-                  {/* <RiUploadCloud2Line className='mr-1' /> */}
                   Upload
                 </>
               )}
@@ -357,15 +380,14 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
             <input
               id='file-upload'
               type='file'
-              accept='.mp3,audio/mpeg,application/pdf,.pdf'
+              accept='.mp3,audio/mpeg'
               onChange={handleFileUpload}
               className='hidden'
-              disabled={!!uploadingFile}
+              disabled={!!uploadingFile || watchFiles.length >= MAX_FILES}
+              multiple
             />
           </label>
         </div>
-
-
 
         {uploadingFile && (
           <p className='text-sm text-primary-500 mt-1'>
@@ -377,44 +399,48 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
           <p className='text-sm mt-1 text-red-500'>{fileUploadError}</p>
         )}
 
-        <div className='mt-2 space-y-2'>
-          {watchFiles.map((file, index) => (
-            <div
-              key={index}
-              className='flex items-center justify-between rounded-md border border-stroke-soft-200 p-2'
-            >
-              <div className='flex items-center gap-2'>
-                <div>
-                  <p className='text-[14px] font-medium text-[#525866]'>
+        <div className='mt-2 space-y-4'>
+          {watchFiles.map((file, index) => {
+            const fileExt = file.name.split('.').pop()?.toUpperCase() || 'FILE';
+            return (
+              <div
+                key={index}
+                className='flex items-start gap-3 rounded-2xl border border-stroke-soft-200 p-4 pl-3.5'
+              >
+                <div className='flex-1 space-y-1'>
+                  <div className='text-label-sm text-text-strong-950'>
                     {file.name}
-                  </p>
+                  </div>
                   <div className='flex items-center gap-1'>
-                    <p className='text-[12px] text-[#525866]'>
-                      {formatFileSize(file.size) + ' ∙ '}
-                    </p>
-                    {file.url && (<div className='flex items-center gap-1'>
-                      <RiCheckboxCircleFill
-                        className='text-green-500'
-                        size={16}
-                        aria-label='Uploaded successfully'
-                      />
-                      <p className='text-[12px] text-[#525866]'>Completed</p>
-                    </div>
+                    <span className='text-paragraph-xs text-text-sub-600'>
+                      {formatFileSize(file.size)}
+                    </span>
+                    <span className='text-paragraph-xs text-text-sub-600'>
+                      ∙
+                    </span>
+                    {file.url ? (
+                      <>
+                        <RiCheckboxCircleFill className='size-4 shrink-0 text-success-base' />
+                        <span className='text-paragraph-xs text-text-strong-950'>
+                          Completed
+                        </span>
+                      </>
+                    ) : (
+                      <>
+                        <RiLoader2Fill className='size-4 shrink-0 animate-spin text-primary-base' />
+                        <span className='text-paragraph-xs text-text-strong-950'>
+                          Processing...
+                        </span>
+                      </>
                     )}
                   </div>
                 </div>
-
+                <CompactButton.Root variant='ghost' size='medium' onClick={() => handleRemoveFile(file.name)}>
+                  <CompactButton.Icon as={RiDeleteBinLine} />
+                </CompactButton.Root>
               </div>
-              <Button.Root
-                variant='neutral'
-                mode='ghost'
-                size='small'
-                onClick={() => handleRemoveFile(file.name)}
-              >
-                <RiDeleteBinLine className='text-[#525866] w-5 h-7' />
-              </Button.Root>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
