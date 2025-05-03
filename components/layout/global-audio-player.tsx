@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { useAudioPlayer } from '@/contexts/AudioContext';
 import * as Avatar from '@/components/ui/avatar';
 import * as Slider from '@/components/ui/slider'; // Assuming you have a Slider component
@@ -13,7 +13,8 @@ import {
   RiVolumeUpLine,
   RiVolumeDownLine,
   RiVolumeMuteLine,
-  RiPlayList2Line
+  RiPlayList2Line,
+  RiCloseLine,
 } from '@remixicon/react';
 import { cn } from '@/utils/cn'; // For conditional classes
 
@@ -37,9 +38,10 @@ export default function GlobalAudioPlayer() {
     seek,
     setVolume,
   } = useAudioPlayer();
+  const [isVisible, setIsVisible] = useState(true);
 
-  // Don't render anything if no track is loaded
-  if (!currentTrack || !currentSeller) {
+  // Don't render anything if no track is loaded OR if hidden
+  if (!currentTrack || !currentSeller || !isVisible) {
     return null;
   }
 
@@ -60,7 +62,7 @@ export default function GlobalAudioPlayer() {
   const VolumeIcon = getVolumeIcon();
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 h-20 bg-white border-t border-stroke-soft-200 shadow-md px-4 md:px-6 flex items-center justify-between">
+    <div className="z-50 h-20 bg-white border-t border-stroke-soft-200 shadow-md px-4 md:px-6 flex items-center justify-between flex-shrink-0">
       {/* Left: Track Info */}
       <div className="flex items-center gap-3 min-w-0 w-1/4">
         <Avatar.Root size="40">
@@ -135,6 +137,13 @@ export default function GlobalAudioPlayer() {
         </div>
         <button className="text-text-secondary-600 hover:text-text-strong-950 transition-colors">
           <RiPlayList2Line className="w-5 h-5" />
+        </button>
+        <button
+          onClick={() => setIsVisible(false)}
+          className="text-text-secondary-600 hover:text-text-strong-950 transition-colors"
+          aria-label="Close player"
+        >
+          <RiCloseLine className="w-5 h-5" />
         </button>
       </div>
     </div>

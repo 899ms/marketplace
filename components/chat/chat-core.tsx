@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, Fragment } from 'react';
 import supabase from '@/utils/supabase/client';
 import { chatOperations } from '@/utils/supabase/database';
-import { Chat, Message, User, MessageSchema, BaseFileData } from '@/utils/supabase/types';
+import { Chat, Message, User, MessageSchema, BaseFileData, MusicItem } from '@/utils/supabase/types';
 import {
   ImageMessageData,
   OfferMessageData,
@@ -17,6 +17,7 @@ import * as FancyButton from '@/components/ui/fancy-button';
 import { Paperclip, Send, Smile, MoreVertical, Clock, XCircle, FileImage, CheckCircle, SendIcon, LoaderCircle, X } from 'lucide-react';
 import Link from 'next/link';
 import * as FileFormatIcon from '@/components/ui/file-format-icon';
+import { useAudioPlayer } from '@/contexts/AudioContext';
 
 // --- Moved formatBytes function to top level --- 
 function formatBytes(bytes: number, decimals = 2): string {
@@ -87,6 +88,11 @@ interface ChatCoreProps {
   onClose?: () => void;
 }
 
+interface SellerInfo {
+  name: string;
+  avatarUrl: string | null;
+}
+
 interface ChatMessageRendererProps {
   message: Message;
   isCurrentUser: boolean;
@@ -102,6 +108,7 @@ function ChatMessageRenderer({
   timestamp,
   senderName,
 }: ChatMessageRendererProps) {
+  const audioPlayer = useAudioPlayer();
   const alignmentContainerClass = isCurrentUser ? 'justify-end' : 'justify-start';
   const alignmentItemsClass = isCurrentUser ? 'items-end' : 'items-start';
   const bubbleBaseClass = 'p-3 rounded-xl shadow-sm';
@@ -229,6 +236,23 @@ function ChatMessageRenderer({
     );
   };
 
+  const handleAudioClick = () => {
+    const trackData = message.data?.[0];
+    if (!trackData || !senderProfile) return;
+
+    const track: MusicItem = {
+      url: trackData.url,
+      title: trackData.name,
+    };
+
+    const seller: SellerInfo = {
+      name: senderProfile.full_name || senderProfile.username || 'Unknown Seller',
+      avatarUrl: senderProfile.avatar_url || null,
+    };
+
+    audioPlayer.loadTrack(track, seller);
+  };
+
   let contentElement = null;
 
   if (message.message_type === 'system_event') {
@@ -274,23 +298,24 @@ function ChatMessageRenderer({
         )}
         {message.message_type === 'audio' && message.data?.[0] && (
           <div className={`flex flex-col gap-1 mt-1 ${isCurrentUser ? 'items-end' : 'items-start'} w-full overflow-hidden`}>
-            <a
-              href={message.data[0].url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`flex items-center gap-3 rounded-lg border p-3 max-w-[250px] ${isCurrentUser ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200 dark:bg-gray-700 dark:border-gray-600'} hover:bg-opacity-80 transition-colors overflow-hidden`}
+            <button
+              type="button"
+              onClick={handleAudioClick}
+              className={`flex items-center text-left gap-3 rounded-lg border p-3 max-w-[250px] ${isCurrentUser ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200 dark:bg-gray-700 dark:border-gray-600'} hover:bg-opacity-80 transition-colors overflow-hidden w-full`}
             >
               <FileFormatIcon.Root format="MP3" color="blue" />
               <div className='flex-1 space-y-0.5 min-w-0'>
-                <div className='block w-full  font-medium text-gray-800 dark:text-gray-100' title={message.data[0].name}>
+                <div
+                  className='block w-full text-xs font-medium text-gray-800 dark:text-gray-100 truncate overflow-hidden'
+                  title={message.data[0].name}
+                >
                   {message.data[0].name}
                 </div>
                 <div className='text-xs text-gray-500 dark:text-gray-400'>
-                  {formatBytes(message.data[0].size)} - Click to download/play
+                  {formatBytes(message.data[0].size)} - Click to play
                 </div>
               </div>
-            </a>
-            {/* Render text content below the audio block if it exists */}
+            </button>
             {message.content && (
               <p className={`text-[12px] text-[#525866] break-words whitespace-pre-wrap mt-1 ${!isCurrentUser ? 'text-left pr-[30%]' : 'text-right pl-[30%]'}`}>
                 {message.content}
