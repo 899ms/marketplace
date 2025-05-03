@@ -188,7 +188,7 @@ const SellerActionButtons = ({
 
 // NOTE: ProjectLinkCard requires a link - Job schema doesn't have one.
 const ProjectLinkCard = ({ link }: { link: string }) => (
-  <div className="shadow-sm rounded-xl bg-bg-white-0 p-4">
+  <div className="shadow-sm rounded-xl bg-bg-white-0 py-4">
     <label
       htmlFor="project-link"
       className="mb-2 block text-label-md font-medium text-text-strong-950"
@@ -429,7 +429,7 @@ export default function ProjectDetailPage() {
   const findWorksLink = isOwner || isBuyerVisitor ? '/projects' : '/jobs'; // Example adjustment
 
   return (
-    <div className='container mx-auto px-4 py-6 lg:px-8'>
+    <div className='container mx-auto  py-6   max-w-[1200px]'>
       {/* Header with Breadcrumbs - updated links */}
       <div className='mb-6 flex items-center justify-between text-[14px]'>
         <div className='flex flex-wrap items-center gap-2'>
@@ -507,7 +507,7 @@ export default function ProjectDetailPage() {
           {isSellerVisitor && (
             // Seller Visitor Sidebar Layout (With Apply Button)
             <>
-              <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+              <div className='shadow-[0_16px_32px_-12px_rgba(14,18,27,0.1)] rounded-xl border border-[#E2E4E9] bg-bg-white-0'>
                 <ClientProfileCard client={{
                   id: clientDataState?.id ?? '',
                   name: clientName,

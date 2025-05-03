@@ -27,6 +27,7 @@ import {
 import { useState } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
+import usFlagIcon from '@/assets/images/icons/United_States.svg'; // Import the SVG file
 
 export default function Navbar() {
   // --- Get Auth State using useAuth hook ---
@@ -69,7 +70,7 @@ export default function Navbar() {
 
   return (
     <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-stroke-soft-200'>
-      <div className='mx-auto flex h-16 w-full max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8'>
+      <div className='mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between px-8 py-5 gap-4'>
         {/* Left Section: Logo and Nav Links */}
         <div className='flex items-center gap-8'>
           {/* Logo */}
@@ -87,18 +88,18 @@ export default function Navbar() {
             />
             {/* You can add text next to the logo if needed, e.g., <span>MyBrand</span> */}
           </Link>
-          {/* Navigation Links */}
-          <div className='text-text-secondary-600 hidden items-center gap-6 text-label-md lg:flex'>
-            <Link href='/services/search?tab=Service' className='hover:text-text-strong-950'>
+          {/* Navigation Links Container - Apply new styles */}
+          <div className='text-text-secondary-600 hidden items-center gap-1 h-10 max-w-[447px] text-label-md lg:flex'>
+            <Link href='/services/search?tab=Service' className='hover:text-text-strong-950  py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg for better click area */}
               Find Services
             </Link>
-            <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950'>
-              Find Workers
+            <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
+              Find Worker
             </Link>
-            <Link href='/services/search?tab=Project' className='hover:text-text-strong-950'>
+            <Link href='/services/search?tab=Project' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
               Find Projects
             </Link>
-            <Link href='/bonus' className='hover:text-text-strong-950'>
+            <Link href='/bonus' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
               Bonus
             </Link>
           </div>
@@ -109,7 +110,7 @@ export default function Navbar() {
           {/* Search Input */}
           <div className='relative hidden sm:block'>
             <Input.Root>
-              <Input.Wrapper size='medium'>
+              <Input.Wrapper size='medium' className='h-10 w-[220px] rounded-10 border bg-white shadow-regular-xs gap-2'>
                 <Input.Icon
                   as={RiSearchLine}
                   className='text-icon-secondary-400'
@@ -122,11 +123,7 @@ export default function Navbar() {
             </Input.Root>
           </div>
 
-          {/* Language Selector Dropdown - Placeholder */}
-          {/* TODO: Replace with actual Dropdown implementation */}
-          <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 hidden rounded-md p-2 sm:flex'>
-            <RiGlobalLine className='size-5' />
-          </button>
+          {/* Language Selector moved down */}
 
           {user ? ( // Use user !== null for checking login status
             <>
@@ -139,11 +136,23 @@ export default function Navbar() {
                 }
                 passHref
               >
-                <FancyButton.Root variant='neutral' size='medium'>
+                <FancyButton.Root variant='neutral' size='medium' className='gap-1 text-sm'>
                   Create
                   <FancyButton.Icon as={RiAddLine} />
                 </FancyButton.Root>
               </Link>
+
+              {/* Language Selector Dropdown - Moved here */}
+              {/* TODO: Replace with actual Dropdown implementation */}
+
+              {/* Use imported SVG variable */}
+              <Image
+                src={usFlagIcon} // Use the imported variable
+                alt="Select Language"
+                width={24}
+                height={24}
+              />
+
 
               {/* Notifications Button */}
               <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 relative rounded-md p-2'>
@@ -155,8 +164,8 @@ export default function Navbar() {
               {/* --- Account Dropdown --- */}
               <Dropdown.Root>
                 <Dropdown.Trigger asChild>
-                  <button className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center gap-2 rounded-lg border border-stroke-soft-200 p-1 pr-2 text-label-md'>
-                    {user.user_metadata?.avatar_url ? <Avatar.Root size='40'>
+                  <button className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center gap-1.5 rounded-10 border border-stroke-soft-200 p-1 pr-2 h-10 bg-white'>
+                    {user.user_metadata?.avatar_url ? <Avatar.Root size='32'>
                       {/* Use user avatar or fallback */}
                       <Avatar.Image
                         src={
@@ -170,8 +179,8 @@ export default function Navbar() {
                         } // Use name or email for alt text
                       />
                     </Avatar.Root> :
-                      <Avatar.Root size='40' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
-                    <span className='hidden md:inline'>Account</span>
+                      <Avatar.Root size='32' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
+                    <span className='hidden md:inline text-sm font-semibold'>Account</span>
                     <RiArrowDownSLine className='text-icon-sub-500 hidden size-4 md:inline' />
                   </button>
                 </Dropdown.Trigger>

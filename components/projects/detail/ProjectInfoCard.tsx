@@ -26,8 +26,8 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
       {/* Budget */}
       <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
-          <RiMoneyCnyCircleLine className="text-icon-secondary-400 size-5" />
-          <span className="text-sm font-medium text-gray-600">
+          <RiMoneyCnyCircleLine className="text-icon-secondary-400 size-5 text-[#525866]" />
+          <span className="text-[14px] font-medium text-gray-600">
             Budget
           </span>
         </div>
@@ -39,8 +39,8 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
       {/* Release time */}
       <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
-          <RiTimeLine className="text-icon-secondary-400 size-5" />
-          <span className="text-sm font-medium text-gray-600">
+          <RiTimeLine className="text-icon-secondary-400 size-5 text-[#525866]" />
+          <span className="text-[14px] font-medium text-gray-600">
             Release time
           </span>
         </div>
@@ -52,8 +52,8 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
       {/* Deadline */}
       <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
-          <RiCalendarLine className="text-icon-secondary-400 size-5" />
-          <span className="text-sm font-medium text-gray-600">
+          <RiCalendarLine className="text-icon-secondary-400 size-5 text-[#525866]" />
+          <span className="text-[14px] font-medium text-gray-600">
             Deadline
           </span>
         </div>
@@ -65,8 +65,8 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
       {/* Proposals */}
       <div className="flex items-center justify-between py-2">
         <div className="flex items-center gap-2">
-          <RiGroupLine className="text-icon-secondary-400 size-5" />
-          <span className="text-sm font-medium text-gray-600">
+          <RiGroupLine className="text-icon-secondary-400 size-5 text-[#525866]" />
+          <span className="text-[14px] font-medium text-gray-600">
             Proposals
           </span>
         </div>

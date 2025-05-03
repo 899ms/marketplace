@@ -28,7 +28,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
 
   return (
     <div
-      className='shadow-sm hover:shadow-md overflow-hidden border border-stroke-soft-200 bg-bg-white-0 p-4 transition-all max-w-[334.67px] max-h-[198px] rounded-xl flex flex-col gap-6'
+      className='shadow-sm hover:shadow-md overflow-hidden border border-stroke-soft-200 bg-bg-white-0 p-4 transition-all max-h-[198px] rounded-xl flex flex-col gap-6'
       onClick={onClick}
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
