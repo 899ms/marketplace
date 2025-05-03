@@ -48,8 +48,8 @@ export default function RootLayout({
                     <Navbar />
                   </div>
                 </div>
-                <div className='mx-auto w-full max-w-[1440px]'>
-                  <main className='flex flex-1 flex-col pt-20'>
+                <div className='mx-auto w-full max-w-[1440px] mt-[4.5rem]'>
+                  <main className='flex flex-1 flex-col '>
                     <AudioProvider>
                       {children}
                       <GlobalAudioPlayer />
