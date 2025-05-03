@@ -273,16 +273,16 @@ function ChatMessageRenderer({
           </div>
         )}
         {message.message_type === 'audio' && message.data?.[0] && (
-          <div className={`flex flex-col gap-1 mt-1 ${isCurrentUser ? 'items-end' : 'items-start'} w-full`}>
+          <div className={`flex flex-col gap-1 mt-1 ${isCurrentUser ? 'items-end' : 'items-start'} w-full overflow-hidden`}>
             <a
               href={message.data[0].url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center gap-3 rounded-lg border p-3 max-w-[250px] ${isCurrentUser ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200 dark:bg-gray-700 dark:border-gray-600'} hover:bg-opacity-80 transition-colors`}
+              className={`flex items-center gap-3 rounded-lg border p-3 max-w-[250px] ${isCurrentUser ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200 dark:bg-gray-700 dark:border-gray-600'} hover:bg-opacity-80 transition-colors overflow-hidden`}
             >
               <FileFormatIcon.Root format="MP3" color="blue" />
               <div className='flex-1 space-y-0.5 min-w-0'>
-                <div className='block w-full text-sm font-medium text-gray-800 dark:text-gray-100 truncate overflow-hidden' title={message.data[0].name}>
+                <div className='block w-full  font-medium text-gray-800 dark:text-gray-100' title={message.data[0].name}>
                   {message.data[0].name}
                 </div>
                 <div className='text-xs text-gray-500 dark:text-gray-400'>
@@ -715,13 +715,16 @@ export default function ChatCore({
                 {selectedFile.type.startsWith('image/') ? (
                   <img src={URL.createObjectURL(selectedFile)} alt="Attachment Preview" className='w-full h-full object-contain rounded-md' />
                 ) : (
-                  <div className="flex flex-col items-center justify-center gap-1 text-center">
+                  <div className="flex flex-col items-center justify-center gap-1 text-center w-full overflow-hidden">
                     {(() => { // IIFE to compute icon props
                       const fileExt = selectedFile.name.split('.').pop()?.toUpperCase() || 'FILE';
                       const iconColor = fileExt === 'MP3' ? 'blue' : fileExt === 'PDF' ? 'red' : 'gray';
                       return <FileFormatIcon.Root format={fileExt} color={iconColor} />;
                     })()}
-                    <span className="text-xs text-gray-600 dark:text-gray-400 truncate w-full px-1" title={selectedFile.name}>
+                    <span
+                      className="block w-full text-sm text-gray-600 dark:text-gray-400 truncate px-1"
+                      title={selectedFile.name}
+                    >
                       {selectedFile.name}
                     </span>
                     <span className="text-[10px] text-gray-400 dark:text-gray-500">
