@@ -54,7 +54,7 @@ export function ProjectCard({ job }: ProjectCardProps) {
 
   return (
     <div className="flex flex-col max-h-[148px] gap-4">
-      <div className='flex flex-col gap-2 px-2 pt-4'>
+      <div className='flex flex-col gap-2  pt-4'>
         <div className='flex flex-row justify-between'>
           <div className='flex flex-col gap-2'>
             <Link href={`/projects/${job.id}`} className='hover:underline'>
