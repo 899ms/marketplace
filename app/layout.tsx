@@ -49,7 +49,7 @@ export default function RootLayout({
                   </div>
                 </div>
                 <div className='mx-auto w-full max-w-[1440px]'>
-                  <main className='flex flex-1 flex-col pt-16'>
+                  <main className='flex flex-1 flex-col pt-20'>
                     <AudioProvider>
                       {children}
                       <GlobalAudioPlayer />
