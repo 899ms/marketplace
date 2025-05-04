@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
-import { RiHomeLine, RiLinksLine, RiBookmarkLine, RiSendPlaneLine, RiShareLine, RiFileCopyLine, RiArrowRightSLine, RiLoader4Line } from '@remixicon/react';
+import { RiLinksLine, RiHomeSmile2Line, RiFileCopyLine, RiArrowRightSLine, RiLoader4Line } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 import { Root as FancyButtonRoot, Icon as FancyButtonIcon } from '@/components/ui/fancy-button'; // Import FancyButton
@@ -188,7 +188,7 @@ const SellerActionButtons = ({
 
 // NOTE: ProjectLinkCard requires a link - Job schema doesn't have one.
 const ProjectLinkCard = ({ link }: { link: string }) => (
-  <div className="shadow-sm rounded-xl bg-bg-white-0 py-4">
+  <div className="shadow-sm rounded-[20px] bg-bg-white-0 py-4 border border-stroke-soft-200 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] p-4">
     <label
       htmlFor="project-link"
       className="mb-2 block text-label-md font-medium text-text-strong-950"
@@ -429,7 +429,7 @@ export default function ProjectDetailPage() {
   const findWorksLink = isOwner || isBuyerVisitor ? '/projects' : '/jobs'; // Example adjustment
 
   return (
-    <div className='container mx-auto  py-6   max-w-[1200px]'>
+    <div className='container mx-auto  py-10 px-1   max-w-[1200px]'>
       {/* Header with Breadcrumbs - updated links */}
       <div className='mb-6 flex items-center justify-between text-[14px]'>
         <div className='flex flex-wrap items-center gap-2'>
@@ -438,13 +438,13 @@ export default function ProjectDetailPage() {
             href="/home"
             className='text-text-sub-600 text-icon-secondary-400 hover:text-icon-primary-500'
           >
-            <RiHomeLine className='size-4' />
+            <RiHomeSmile2Line className='size-5' />
           </Link>
           <span className='text-text-sub-600'>/</span>
           {/* Updated Find Project/Works Link */}
           <Link
             href="/services/search?tab=Project"
-            className='text-text-sub-600 hover:text-text-strong-950'
+            className='font-medium text-text-sub-600 text-text-strong-950'
           >
             {findWorksLabel} { /* Keep dynamic label for now */}
           </Link>
@@ -456,10 +456,10 @@ export default function ProjectDetailPage() {
       </div>
 
       {/* Main Content Grid */}
-      <div className='grid grid-cols-1 gap-6 md:grid-cols-12'>
+      <div className='flex gap-6'>
         {/* Left Content Area (Project Details) */}
-        <div className='md:col-span-8 max-w-[824px]'>
-          <div className='p-[24px] shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+        <div className='w-[824px]'>
+          <div className='p-[24px] shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] rounded-[20px] border border-stroke-soft-200 bg-bg-white-0'>
             <ProjectHeader
               title={projectTitle}
               category={projectCategory}
@@ -476,11 +476,11 @@ export default function ProjectDetailPage() {
         </div>
 
         {/* Right Sidebar - Conditionally Rendered based on pageViewRole */}
-        <div className='flex flex-col gap-6 md:col-span-4 max-w-[352px]'>
+        <div className='flex flex-col gap-6 flex-1'>
           {(isOwner || isBuyerVisitor || isAnonymous) && (
             // Sidebar Layout for Owner, Buyer Visitor, Anonymous (No Apply Button)
             <>
-              <div className='shadow-sm rounded-xl border border-stroke-soft-200 bg-bg-white-0  shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)]'>
+              <div className='shadow-sm rounded-[20px] border border-stroke-soft-200 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)]'>
                 <ClientProfileCard client={{
                   id: clientDataState?.id ?? '',
                   name: clientName,
@@ -499,7 +499,12 @@ export default function ProjectDetailPage() {
               </div>
               {/* No Action Buttons for these roles */}
               {/* Anonymous doesn't see applicants */}
-              {!isAnonymous && <ApplicantsList applicants={mockApplicants} userRole={isOwner ? 'buyer' : 'seller'} />}
+              {!isAnonymous && (
+                /* Applicant List Card Wrapper */
+                <div className="shadow-sm rounded-[20px] border border-stroke-soft-200 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] overflow-hidden">
+                  <ApplicantsList applicants={mockApplicants} userRole={isOwner ? 'buyer' : 'seller'} />
+                </div>
+              )}
               {/* Link Card might still be relevant for Anonymous? */}
               {(isAnonymous || isBuyerVisitor) && <ProjectLinkCard link={projectLink} />}
             </>
@@ -507,7 +512,7 @@ export default function ProjectDetailPage() {
           {isSellerVisitor && (
             // Seller Visitor Sidebar Layout (With Apply Button)
             <>
-              <div className='shadow-[0_16px_32px_-12px_rgba(14,18,27,0.1)] rounded-xl border border-[#E2E4E9] bg-bg-white-0'>
+              <div className='shadow-[0_16px_32px_-12px_rgba(14,18,27,0.1)] rounded-[20px] border border-[#E2E4E9] bg-bg-white-0'>
                 <ClientProfileCard client={{
                   id: clientDataState?.id ?? '',
                   name: clientName,
@@ -534,7 +539,10 @@ export default function ProjectDetailPage() {
               {chatError && (
                 <p className="text-xs text-red-600 -mt-4 mb-2 text-center">Error: {chatError}</p>
               )}
-              <ApplicantsList applicants={mockApplicants} userRole={'seller'} />
+              {/* Applicant List Card Wrapper */}
+              <div className="shadow-sm rounded-[20px] border border-stroke-soft-200 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] overflow-hidden">
+                <ApplicantsList applicants={mockApplicants} userRole={'seller'} />
+              </div>
               <ProjectLinkCard link={projectLink} />
             </>
           )}
