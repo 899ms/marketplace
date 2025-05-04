@@ -27,7 +27,7 @@ const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
   if (!faqs.length) return null;
 
   return (
-    <div className="pt-[24px]">
+    <div className="pt-[20px]">
       {/* Header */}
       <h2 className="text-base font-semibold leading-6 tracking-[-0.015em] text-[#161922] mb-[12px]">
         Frequently Asked Questions

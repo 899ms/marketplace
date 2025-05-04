@@ -47,7 +47,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
   };
 
   return (
-    <div className='pt-[24px]'>
+    <div className='pt-[20px]'>
       <h2 className="text-base font-semibold leading-6 tracking-[-0.015em] text-[#161922] mb-4">
         Attachments
       </h2>
@@ -64,7 +64,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
               {isAudio ? (
                 <button
                   onClick={() => handlePlayAudio(attachment)}
-                  className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer text-left w-full md:w-auto"
+                  className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer text-left w-full md:w-auto bg-[#FDFDFD] gap-8"
                   title={`Play ${attachment.name}`}
                 >
                   <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>

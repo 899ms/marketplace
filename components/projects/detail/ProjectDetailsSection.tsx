@@ -12,7 +12,7 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
   requirements,
 }) => {
   return (
-    <div className='pt-[24px]'>
+    <div className='pt-[20px]'>
       <h2
         className="
           text-base
@@ -31,7 +31,7 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
         <p
           key={idx}
           className="
-            text-sm
+            text-[14px]
             font-medium
             leading-5
             tracking-[-0.006em]

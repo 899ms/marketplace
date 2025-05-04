@@ -84,7 +84,7 @@ export function ProjectCard({
                     'px-[16px] py-[11px]',
                     'border border-[#E2E4E9]',
                     'rounded-full',
-                    'text-[#6a6a6a] text-[12px] leading-[16px]'
+                    'text-[#6a6a6a] text-[0.875rem] leading-[16px]'
                   )}
                 >
                   {badge.label}
@@ -141,7 +141,7 @@ export function ProjectCard({
             mode='stroke'
             size='small'
             className={cn(
-              'text-[14px] w-full md:w-auto !shadow-[0_1px_2px_0_rgba(82,88,102,0.06)] leading-none font-medium p-3 gap-1',
+              'text-[0.875rem] w-full md:w-auto !shadow-[0_1px_2px_0_rgba(82,88,102,0.06)] leading-none font-medium p-3 gap-1',
             )}
             onClick={handleApplyClick}
           >

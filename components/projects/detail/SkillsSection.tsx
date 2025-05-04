@@ -11,7 +11,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
   if (!skills || skills.length === 0) return null;
 
   return (
-    <div className='pt-[24px]'>
+    <div className='pt-[20px]'>
       <h2
         className='
           text-base
@@ -41,6 +41,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
               text-[12px]
               border
               border-gray-300
+              capitalize
             "
           >
             {skill}
