@@ -77,7 +77,7 @@ export function ProjectCard({ job }: ProjectCardProps) {
         </div>
         <div className='flex justify-between items-center'>
           <p className='text-[14px] text-[#0E121B] line-clamp-1'>{description}</p>
-          <Button.Root mode='stroke' size='xsmall' variant='neutral' asChild className='flex-shrink-0'>
+          <Button.Root mode='stroke' size='small' variant='neutral' asChild className='flex-shrink-0'>
             <Link href={`/projects/${job.id}`}>
               Apply
               <Button.Icon as={RiArrowRightSLine} />
