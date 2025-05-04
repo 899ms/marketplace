@@ -46,7 +46,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
       style={{ cursor: onClick ? 'pointer' : 'default' }}
     >
       <div className='flex items-start justify-between'>
-        <div className='flex items-center gap-2'>
+        <div className='flex items-center gap-2.5'>
           <Avatar.Root size='48' color='sky'>
             {avatarUrl ? (
               <Avatar.Image
@@ -63,10 +63,10 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
           </Avatar.Root>
           <div className='flex flex-col gap-1'>
             <div className='flex flex-row gap-2 items-center'>
-              <div className='text-[14px] font-medium text-surface-800'>
+              <div className='text-[14px] font-medium mt-1 text-[#525866]'>
                 {name}
               </div>
-              <div className='text-text-secondary-600 mt-0.5 flex items-center gap-0.5 text-[11px]'>
+              <div className='text-text-secondary-600 ml-1 mt-0.5 flex items-center gap-0.5 text-[11px]'>
                 <RiStarFill className='size-4 text-yellow-500' />
                 <span className='text-[#525866]'>4.9 (125)</span> {/* Placeholder Rating */}
               </div>
@@ -93,11 +93,11 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
       </p>
       <div className='flex flex-wrap gap-2'>
         {/* Placeholder Tags */}
-        <Tag.Root className='text-[12px] text-[#525866]'>Mixing</Tag.Root>
-        <Tag.Root className='text-[12px] text-[#525866]'>Singing</Tag.Root>
-        <Tag.Root className='text-[12px] text-[#525866]'>Jazz</Tag.Root>
-        <Tag.Root className='text-[12px] text-[#525866]'>Hip hop</Tag.Root>
-        <Tag.Root className='text-[12px] text-[#525866]'>K pop</Tag.Root>
+        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Mixing</Tag.Root>
+        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Singing</Tag.Root>
+        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Jazz</Tag.Root>
+        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Hip hop</Tag.Root>
+        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>K pop</Tag.Root>
       </div>
     </div>
   );

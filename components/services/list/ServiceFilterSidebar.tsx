@@ -331,15 +331,13 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       {/* Toggle Options Section (Worker Only) */}
       {activeTab === 'Worker' && (
         <div className='space-y-4 mx-[16px]'>
-          {/* Available Toggle */}
-          <div className='flex items-start gap-3'>
+          {/* <div className='flex items-start gap-3'>
             <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
             <div>
               <label htmlFor='available-toggle' className='text-[14px] cursor-pointer font-medium text-text-strong-950'>Available</label>
               <p className='text-[12px] text-text-secondary-600'>Recent Online</p>
             </div>
           </div>
-          {/* Professional Services Toggle */}
           <div className='flex items-center gap-3'>
             <Switch.Root id='professional-toggle' checked={isProfessional} onCheckedChange={(checked) => handleToggleChange('professional', checked)} />
             <div>
@@ -347,7 +345,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
               <p className='text-[12px] text-text-secondary-600'>Vetted skills and expertise</p>
             </div>
           </div>
-          <hr className='my-6 border-stroke-soft-200 my-[16px]' />
+          <hr className='my-6 border-stroke-soft-200 my-[16px]' /> */}
         </div>
       )}
 
@@ -368,11 +366,11 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       )}
 
       {/* Clear Filters Button */}
-      <div className="mt-auto mb-4 px-4">
+      <div className="mt-5 px-4">
         <button
           onClick={handleClearAllFilters}
           className={cn(
-            'w-full flex items-center justify-center gap-1 rounded-[10px] border border-stroke-soft-200',
+            'w-full flex items-center text-[#525866] font-medium justify-center gap-1 rounded-[10px] border border-stroke-soft-200',
             'bg-bg-white-0 px-4 py-2.5 text-[14px] font-medium leading-[20px] shadow-[0px_1px_2px_0px_#5258660F] transition',
             'hover:bg-bg-white-100 focus:outline-none focus:ring-2 focus:ring-text-primary-600'
           )}
