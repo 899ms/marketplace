@@ -79,12 +79,12 @@ export function ProjectCard({
                   key={badge.label}
                   variant='light'
                   className={cn(
-                    'inline-flex items-center',
+                    'inline-flex items-center capitalize',
                     'bg-[#F6F8FA]',
                     'px-[16px] py-[11px]',
                     'border border-[#E2E4E9]',
                     'rounded-full',
-                    'text-[#525866] text-[12px] leading-[16px]'
+                    'text-[#6a6a6a] text-[12px] leading-[16px]'
                   )}
                 >
                   {badge.label}
