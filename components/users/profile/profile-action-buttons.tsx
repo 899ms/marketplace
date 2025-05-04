@@ -3,7 +3,7 @@
 import React from 'react';
 import * as Button from '@/components/ui/button';
 import * as FancyButton from '@/components/ui/fancy-button';
-import { RiHeart3Line, RiLoader4Line, RiArrowRightSLine } from '@remixicon/react';
+import { RiHeart3Line, RiLoader4Line, RiArrowRightSLine, RiHeartLine } from '@remixicon/react';
 import { User } from '@/utils/supabase/types';
 
 interface ProfileActionButtonsProps {
@@ -30,14 +30,14 @@ export function ProfileActionButtons({
         variant="neutral"
         mode="stroke"
         size="xsmall"
-        className="w-[69px] h-[32px] rounded-[8px] border border-[#E1E4EA] bg-bg-white-0 shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)] flex items-center justify-center gap-[8px] px-2"
+        className="w-[85px] h-[32px] rounded-[8px] border border-[#E1E4EA] bg-bg-white-0 shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)] flex items-center justify-center gap-[8px] px-2"
         onClick={onHire} // Use the passed-in hire handler
         disabled={!currentUser || isOwnProfile}
         aria-label={isOwnProfile ? "Cannot hire yourself" : "Hire user"}
       >
-        <span className="text-paragraph-[14px] text-[#525866]">Hire</span> {/* Changed text */}
+        <span className="text-paragraph-[14px] text-[#525866]">Follow</span> {/* Changed text */}
         {/* Consider changing the icon if RiHeart3Line isn't appropriate for "Hire" */}
-        <Button.Icon as={RiArrowRightSLine} className="size-5" /> {/* Changed icon */}
+        <Button.Icon as={RiHeart3Line} className="size-5 text-[#525866]" />
       </Button.Root>
 
       {/* Touch Button */}
