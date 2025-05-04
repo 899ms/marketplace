@@ -253,7 +253,7 @@ export function OrderDetailsClient({
   console.log('OrderDetailsClient mapped milestones for section:', mappedMilestones);
 
   return (
-    <div className="container mx-auto py-8 px-4">
+    <div className="container mx-auto py-8 max-w-[1200px]">
 
       <ProfileSection
         userRole={userRole}
@@ -270,8 +270,8 @@ export function OrderDetailsClient({
 
       <FinancialSummary {...financialData} />
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="max-w-[614px]">
+      <div className="flex gap-[24px] max-w-[1200px]">
+        <div className="w-full md:w-[614px] md:max-w-none">
           <MilestoneSection
             userRole={userRole}
             contractId={contract.id}
@@ -280,7 +280,7 @@ export function OrderDetailsClient({
             isConfirmingId={isConfirming}
           />
         </div>
-        <div>
+        <div className="w-full md:w-[562px] md:max-w-none">
           <ContractDetails
             contractName={contract.title}
             details={contractDetailItems}
