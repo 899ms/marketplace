@@ -22,7 +22,9 @@ import {
   RiFileCopyLine, // Added for Copy ID
   RiFileList2Line, // Added for Orders
   RiQuestionLine, // Added for Help Center
-  RiChat1Line, // Added for Live Chat
+  RiChat1Line,
+  RiArrowDownFill,
+  RiArrowDropDownFill, // Added for Live Chat
 } from '@remixicon/react';
 import { useState } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
@@ -89,7 +91,7 @@ export default function Navbar() {
             {/* You can add text next to the logo if needed, e.g., <span>MyBrand</span> */}
           </Link>
           {/* Navigation Links Container - Apply new styles */}
-          <div className='text-text-secondary-600 hidden items-center gap-3   text-label-md lg:flex'>
+          <div className='text-text-secondary-600 hidden items-center gap-5   text-label-md lg:flex'>
 
             <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
               Find Worker
@@ -111,14 +113,14 @@ export default function Navbar() {
           {/* Search Input */}
           <div className='relative hidden sm:block'>
             <Input.Root>
-              <Input.Wrapper size='medium' className='h-10 w-[220px] rounded-10 border bg-white shadow-regular-xs gap-2'>
+              <Input.Wrapper size='medium' className='h-10 w-[220px] rounded-10 border bg-white shadow-regular-xs gap-1.5'>
                 <Input.Icon
                   as={RiSearchLine}
                   className='text-icon-secondary-400'
                 />
                 <Input.Input
                   placeholder='Discover more'
-                  className='w-52 lg:w-64'
+                  className='w-52 lg:w-64 font-normal'
                 />
               </Input.Wrapper>
             </Input.Root>
@@ -137,7 +139,7 @@ export default function Navbar() {
                 }
                 passHref
               >
-                <FancyButton.Root variant='neutral' size='medium' className='gap-1 text-sm'>
+                <FancyButton.Root variant='neutral' size='medium' className='gap-4 font-medium text-sm'>
                   Create
                   <FancyButton.Icon as={RiAddLine} />
                 </FancyButton.Root>
@@ -165,7 +167,7 @@ export default function Navbar() {
               {/* --- Account Dropdown --- */}
               <Dropdown.Root>
                 <Dropdown.Trigger asChild>
-                  <button className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center gap-1.5 rounded-10 border border-stroke-soft-200 p-1 pr-2 h-10 bg-white'>
+                  <button className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center rounded-10 border border-stroke-soft-200 p-1 pr-2 h-10 bg-white'>
                     {user.user_metadata?.avatar_url ? <Avatar.Root size='32'>
                       {/* Use user avatar or fallback */}
                       <Avatar.Image
@@ -181,9 +183,8 @@ export default function Navbar() {
                       />
                     </Avatar.Root> :
                       <Avatar.Root size='32' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
-                    <span className='hidden md:inline text-sm font-semibold'>Account</span>
-                    <RiArrowDownSLine className='text-icon-sub-500 hidden size-4 md:inline' />
-                  </button>
+                    <span className='hidden md:inline text-sm pl-2 pr-0.5 font-medium'>Account</span>
+                    <RiArrowDropDownFill className='text-icon-sub-500 hidden size-8 md:inline' />                  </button>
                 </Dropdown.Trigger>
                 <Dropdown.Content align='end' className='w-72'>
                   {/* User Info Section */}
