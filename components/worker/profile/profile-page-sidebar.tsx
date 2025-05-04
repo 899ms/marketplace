@@ -112,10 +112,37 @@ export function ProfilePageSidebar({
     'Eurovision Awards',
   ];
 
+  const cusGoogleIcon = () => (
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M14.2148 12.0911V16.1575H19.9811C19.7279 17.4652 18.9681 18.5725 17.8285 19.317L21.3057 21.9612C23.3317 20.1285 24.5006 17.4366 24.5006 14.2389C24.5006 13.4944 24.4324 12.7784 24.3057 12.0912L14.2148 12.0911Z"
+        fill="#4285F4"
+      />
+      <path
+        d="M4.64927 9.29431C3.91879 10.707 3.5 12.3011 3.5 14.0002C3.5 15.6993 3.91879 17.2934 4.64927 18.7061C4.64927 18.7155 8.21429 15.9951 8.21429 15.9951C8 15.3651 7.87334 14.697 7.87334 14.0001C7.87334 13.3032 8 12.635 8.21429 12.005L4.64927 9.29431Z"
+        fill="#FBBC05"
+      />
+      <path
+        d="M14.2133 7.68093C15.7913 7.68093 17.1939 8.21546 18.314 9.24639L21.3822 6.2396C19.5218 4.54053 17.1063 3.5 14.2133 3.5C10.025 3.5 6.41143 5.85774 4.64844 9.29413L8.21334 12.0051C9.0607 9.5232 11.4276 7.68093 14.2133 7.68093Z"
+        fill="#EA4335"
+      />
+      <path
+        d="M8.20873 15.9987L7.42447 16.587L4.64844 18.7061C6.41143 22.1329 10.0248 24.5002 14.2131 24.5002C17.1059 24.5002 19.5312 23.5647 21.304 21.9611L17.8267 19.317C16.8722 19.947 15.6546 20.3288 14.2131 20.3288C11.4274 20.3288 9.06058 18.4866 8.21311 16.0047L8.20873 15.9987Z"
+        fill="#34A853"
+      />
+    </svg>
+  )
+
   const socialLinks = [
     { platform: 'twitch', icon: RiTwitchFill, color: '#6441A5', href: '#' },
     { platform: 'twitter', icon: RiTwitterXFill, color: '#000000', href: '#' },
-    { platform: 'google', icon: RiGoogleFill, color: '#DB4437', href: '#' }, // Example color
+    { platform: 'google', icon: cusGoogleIcon, color: '#DB4437', href: '#' }, // Example color
   ];
 
   // --- Mock State & Handlers for Buttons/Reviews --- 
@@ -142,13 +169,13 @@ export function ProfilePageSidebar({
 
   return (
     <aside className='hidden w-[352px] max-w-[352px] shrink-0 lg:block'>
-      <div className='sticky top-20 flex flex-col gap-4 border border-stroke-soft-200 bg-bg-white-0 max-h-[925px] rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
+      <div className='sticky top-20 flex flex-col gap-[16px] border border-stroke-soft-200 bg-bg-white-0 max-h-[930px] rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
         {/* Wrapper Div from UserSidebar */}
-        <div className="flex flex-col max-w-[352px] max-h-[328px] p-5 gap-4">
+        <div className="flex flex-col max-w-[352px] max-h-[328px] p-[16px] gap-[16px]">
           {/* Profile Section */}
-          <div className='flex flex-col items-center gap-2 text-center py-3'> {/* Removed pt-4 px-4 */}
+          <div className='flex flex-col items-center gap-1 text-center p-[16px]'>
             {user.avatarUrl && user.avatarUrl !== "" ?
-              <Avatar.Root size='80'> {/* Matched size */}
+              <Avatar.Root size='80'>
                 <Avatar.Image src={user.avatarUrl} alt={user.name} />
                 <Avatar.Indicator position='bottom'>
                   <Avatar.Status status='online' />
@@ -158,19 +185,41 @@ export function ProfilePageSidebar({
               <Avatar.Root size='80' color='yellow'>{user.name.charAt(0).toUpperCase()}</Avatar.Root> // Matched size
             }
             <div className='text-center'>
-              <h2 className='font-medium text-text-strong-950 text-[16px]'> {/* Matched size/weight */}
+              <h2 className='text-[#0E121B] text-[16px] font-medium'> {/* Matched size/weight */}
                 {user.name}
               </h2>
-              <div className='text-text-secondary-600 mt-1 flex items-center justify-center gap-1 text-sm'>
-                <RiStarFill className='size-3.5 text-yellow-400' />
+              <div className='text-[#525866] flex items-center justify-center gap-0.5 text-[12px] mb-[8px]'>
+                <RiStarFill className='size-4 text-yellow-400' />
                 <span className='text-text-secondary-600 text-paragraph-xs'> {/* Kept original styling for rating */}
-                  {user.rating} ({user.reviews})
+                  {user.rating}({user.reviews})
                 </span>
               </div>
             </div>
-            <div className='flex items-center justify-center gap-2'> {/* Updated Google icons/text */}
-              <RiGoogleFill className='size-4 text-text-sub-600' /> <span className="text-[12px]">Google</span>
-              <RiGoogleFill className='size-4 text-text-sub-600' /> <span className="text-[12px]">Google</span>
+            <div className='flex items-center justify-center gap-3'> {/* Updated Google icons/text */}
+              <div className='flex items-center justify-center gap-1.5'>
+                <Button.Icon className="flex-shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.00015 11.4999C9.93325 11.4999 11.5003 9.93274 11.5003 7.99964C11.5003 6.06654 9.93325 4.49942 8.00015 4.49942C6.06704 4.49942 4.5 6.06654 4.5 7.99964C4.5 9.93274 6.06704 11.4999 8.00015 11.4999Z" fill="white" />
+                    <path d="M4.96887 9.75055L1.93811 4.5011C1.32358 5.56517 1 6.77226 1 8.0011C1 9.22994 1.32343 10.437 1.93789 11.5011C2.55235 12.5652 3.43615 13.4488 4.50037 14.063C5.56459 14.6771 6.77182 15.0004 8.00059 15L11.0313 9.75055V9.74974C10.7244 10.2821 10.2826 10.7242 9.75055 11.0316C9.21848 11.339 8.61485 11.5009 8.00036 11.501C7.38588 11.5011 6.7822 11.3394 6.25004 11.0322C5.71788 10.7249 5.27602 10.2829 4.96887 9.75069V9.75055Z" fill="#229342" />
+                    <path d="M11.0319 9.75033L8.00125 14.9998C9.23002 15 10.4372 14.6766 11.5013 14.0623C12.5655 13.4479 13.4491 12.5642 14.0634 11.5C14.6777 10.4358 15.001 9.22862 15.0008 7.99985C15.0006 6.77109 14.6769 5.564 14.0622 4.5H8.00073L8 4.50052C8.61449 4.50022 9.21822 4.66173 9.75048 4.9688C10.2828 5.27592 10.7247 5.71767 11.0321 6.24982C11.3394 6.78195 11.5012 7.38562 11.5012 8.00012C11.5012 8.61462 11.3394 9.21829 11.032 9.7504L11.0319 9.75033Z" fill="#FBC116" />
+                    <path d="M7.99949 10.7714C9.52986 10.7714 10.7705 9.53082 10.7705 8.00037C10.7705 6.46993 9.52986 5.2294 7.99949 5.2294C6.46911 5.2294 5.22852 6.47 5.22852 8.00037C5.22852 9.53075 6.46911 10.7714 7.99949 10.7714Z" fill="#1A73E8" />
+                    <path d="M7.99946 4.50022H14.0609C13.4467 3.436 12.5631 2.5522 11.4989 1.93774C10.4348 1.32333 9.22771 0.999907 7.99895 1C6.77018 1.00007 5.5631 1.32366 4.4991 1.93826C3.43506 2.55283 2.55158 3.43671 1.9375 4.50103L4.96826 9.75048L4.96907 9.75092C4.66157 9.21889 4.49957 8.61527 4.49938 8.00077C4.49919 7.38627 4.6608 6.78255 4.96797 6.25033C5.27509 5.71811 5.71706 5.27613 6.24921 4.96894C6.78135 4.66175 7.38508 4.5 7.99961 4.50015L7.99946 4.50022Z" fill="#E33B2E" />
+                  </svg>
+                </Button.Icon>
+                <span className="text-[12px] text-[#525866]">Google</span>
+              </div>
+              <div className='flex items-center justify-center gap-1.5'>
+                <Button.Icon className="flex-shrink-0">
+                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8.00015 11.4999C9.93325 11.4999 11.5003 9.93274 11.5003 7.99964C11.5003 6.06654 9.93325 4.49942 8.00015 4.49942C6.06704 4.49942 4.5 6.06654 4.5 7.99964C4.5 9.93274 6.06704 11.4999 8.00015 11.4999Z" fill="white" />
+                    <path d="M4.96887 9.75055L1.93811 4.5011C1.32358 5.56517 1 6.77226 1 8.0011C1 9.22994 1.32343 10.437 1.93789 11.5011C2.55235 12.5652 3.43615 13.4488 4.50037 14.063C5.56459 14.6771 6.77182 15.0004 8.00059 15L11.0313 9.75055V9.74974C10.7244 10.2821 10.2826 10.7242 9.75055 11.0316C9.21848 11.339 8.61485 11.5009 8.00036 11.501C7.38588 11.5011 6.7822 11.3394 6.25004 11.0322C5.71788 10.7249 5.27602 10.2829 4.96887 9.75069V9.75055Z" fill="#229342" />
+                    <path d="M11.0319 9.75033L8.00125 14.9998C9.23002 15 10.4372 14.6766 11.5013 14.0623C12.5655 13.4479 13.4491 12.5642 14.0634 11.5C14.6777 10.4358 15.001 9.22862 15.0008 7.99985C15.0006 6.77109 14.6769 5.564 14.0622 4.5H8.00073L8 4.50052C8.61449 4.50022 9.21822 4.66173 9.75048 4.9688C10.2828 5.27592 10.7247 5.71767 11.0321 6.24982C11.3394 6.78195 11.5012 7.38562 11.5012 8.00012C11.5012 8.61462 11.3394 9.21829 11.032 9.7504L11.0319 9.75033Z" fill="#FBC116" />
+                    <path d="M7.99949 10.7714C9.52986 10.7714 10.7705 9.53082 10.7705 8.00037C10.7705 6.46993 9.52986 5.2294 7.99949 5.2294C6.46911 5.2294 5.22852 6.47 5.22852 8.00037C5.22852 9.53075 6.46911 10.7714 7.99949 10.7714Z" fill="#1A73E8" />
+                    <path d="M7.99946 4.50022H14.0609C13.4467 3.436 12.5631 2.5522 11.4989 1.93774C10.4348 1.32333 9.22771 0.999907 7.99895 1C6.77018 1.00007 5.5631 1.32366 4.4991 1.93826C3.43506 2.55283 2.55158 3.43671 1.9375 4.50103L4.96826 9.75048L4.96907 9.75092C4.66157 9.21889 4.49957 8.61527 4.49938 8.00077C4.49919 7.38627 4.6608 6.78255 4.96797 6.25033C5.27509 5.71811 5.71706 5.27613 6.24921 4.96894C6.78135 4.66175 7.38508 4.5 7.99961 4.50015L7.99946 4.50022Z" fill="#E33B2E" />
+                  </svg>
+                </Button.Icon>
+                <span className="text-[12px] text-[#525866]">Google</span>
+              </div>
             </div>
           </div>
           {/* Removed Action Buttons */}
@@ -187,12 +236,12 @@ export function ProfilePageSidebar({
           {/* Recent Reviews Section */}
           <div> {/* Original wrapper */}
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between"> {/* Removed mb-2 */}
-              <div className="flex items-center gap-1 font-medium text-text-strong-950"> {/* Removed text-label-md */}
+              <div className="flex items-center gap-1 font-medium text-text-strong-950 px-[12px] py-[10px]"> {/* Removed text-label-md */}
                 {/* Inline SVG Star */}
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-5"> {/* Changed size-4 back to size-5 and reverted width/height */}
                   <path d="M11.4416 2.92501L12.9083 5.85835C13.1083 6.26668 13.6416 6.65835 14.0916 6.73335L16.7499 7.17501C18.4499 7.45835 18.8499 8.69168 17.6249 9.90835L15.5583 11.975C15.2083 12.325 15.0166 13 15.1249 13.4833L15.7166 16.0417C16.1833 18.0667 15.1083 18.85 13.3166 17.7917L10.8249 16.3167C10.3749 16.05 9.63326 16.05 9.17492 16.3167L6.68326 17.7917C4.89992 18.85 3.81659 18.0583 4.28326 16.0417L4.87492 13.4833C4.98326 13 4.79159 12.325 4.44159 11.975L2.37492 9.90835C1.15826 8.69168 1.54992 7.45835 3.24992 7.17501L5.90826 6.73335C6.34992 6.65835 6.88326 6.26668 7.08326 5.85835L8.54992 2.92501C9.34992 1.33335 10.6499 1.33335 11.4416 2.92501Z" fill="#0A0D14" stroke="#0A0D14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-                <span className="text-xs">Recent reviews</span> {/* Changed text-sm to text-xs */}
+                <span className="text-[14px] text-[#0A0D14] ml-[5px]">Recent reviews</span> {/* Changed text-sm to text-xs */}
               </div>
               {/* Right section - Avatars (Styled) */}
               <div className="flex items-center gap-2 rounded-full pt-0.5 pr-2.5 pb-0.5 pl-0.5 bg-bg-white-0 shadow-[0_2px_4px_0_rgba(27,28,29,0.04)] border">
@@ -203,19 +252,19 @@ export function ProfilePageSidebar({
                     </Avatar.Root>
                   ))}
                 </AvatarGroup.Root>
-                <span className="text-text-secondary-600 text-xs">+4</span> {/* Changed text-sm to text-xs */}
+                <span className="text-[#525866] text-[12px]">+4</span> {/* Changed text-sm to text-xs */}
               </div>
             </div>
           </div>
+          {/* Sections outside the wrapper */}
+          <Divider.Root />
         </div> {/* End Wrapper Div */}
 
-        {/* Sections outside the wrapper */}
-        <Divider.Root />
 
         {/* Skills Section - NEW (Based on original ProfileSidebar structure) */}
         <div className='px-4'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-strong-950 text-[12px] font-semibold'>
+            <h3 className='text-[#0E121B] text-[16px]'>
               Skills
             </h3>
             {/* TODO: Implement edit functionality later */}
@@ -241,10 +290,10 @@ export function ProfilePageSidebar({
                   {skill.details ? ` - ${skill.details}` : ''}
                 </p>
                 {skill.price && (
-                  <p className='text-xs text-text-secondary-600'>{skill.price}</p>
+                  <p className='text-[12px] text-[#525866]'>{skill.price}</p>
                 )}
                 {skill.contactForPricing && (
-                  <p className='text-xs text-text-primary-600'>
+                  <p className='text-[12px] text-[#525866]'>
                     Contact for pricing
                   </p>
                 )}
@@ -257,7 +306,7 @@ export function ProfilePageSidebar({
         {/* Awards Section - Styled like Tags section */}
         <div className='px-4 max-w-[352px] max-h-[116px]'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-strong-950 font-semibold text-[12px]'>
+            <h3 className='text-text-strong-950 text-[#0E121B] text-[14px]'>
               Awards
             </h3>
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
@@ -278,7 +327,7 @@ export function ProfilePageSidebar({
         <div className="flex flex-col max-w-[352px] max-h-[218px] pb-4 px-4 gap-5">
           {/* About Content */}
           <div className='flex items-center justify-between'> {/* Removed mb-2 */}
-            <h3 className='text-text-strong-950 text-[12px] font-semibold'>
+            <h3 className='text-text-strong-950 text-[14px] font-semibold'>
               About
             </h3>
             {/* TODO: Add Edit button logic if needed for own profile */}
