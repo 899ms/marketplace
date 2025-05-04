@@ -6,7 +6,7 @@ import { Service } from '@/utils/supabase/types';
 import * as Breadcrumb from '@/components/ui/breadcrumb';
 import {
   RiArrowRightSLine,
-  RiHomeLine,
+  RiHomeSmile2Line,
 } from '@remixicon/react';
 import { ServiceInfoLeft } from '../../../components/services/detail/service-info-left';
 import { ServiceInfoRight } from '../../../components/services/detail/service-info-right';
@@ -38,7 +38,7 @@ export default async function ServiceDetailPage({
         <Breadcrumb.Root>
           <Breadcrumb.Item asChild>
             <Link href='/home'>
-              <Breadcrumb.Icon as={RiHomeLine} />
+              <Breadcrumb.Icon as={RiHomeSmile2Line} />
               Home
             </Link>
           </Breadcrumb.Item>
