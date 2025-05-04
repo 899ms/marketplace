@@ -25,7 +25,7 @@ export default function SummarySection({ data }: Props) {
   return (
     <div className="mb-6 grid gap-4 grid-cols-1 lg:grid-cols-4 text-[12px]">
       {/* ─────────── Milestone (¼) ─────────── */}
-      <div className="rounded-lg bg-[#F5F7FA] p-4 shadow-sm lg:col-span-1">
+      <div className="rounded-[0.8rem] bg-[#F5F7FA] p-4 shadow-sm lg:col-span-1">
         <div className="flex items-start gap-3">
 
           <div className='flex flex-col gap-1'>
@@ -44,7 +44,7 @@ export default function SummarySection({ data }: Props) {
       </div>
 
       {/* ─────────── Money summary (¾) ─────────── */}
-      <div className="rounded-lg bg-[#F5F7FA] p-4 shadow-sm lg:col-span-3">
+      <div className="rounded-[0.8rem] bg-[#F5F7FA] p-4 shadow-sm lg:col-span-3">
         <div className="flex flex-row justify-between items-center h-full">
           {/* Total Amount */}
           <div>

@@ -60,20 +60,20 @@ export default function OrdersTable({ rows, isBuyer }: Props) {
         <Table.Row className='bg-[#F5F7FA] rounded-lg'>
           {isBuyer ? (
             <>
-              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
+              <Table.Head className="bg-[#F5F7FA] px-3 w-80 py-2 text-left text-[14px] text-[#525866] font-normal">
                 Details
               </Table.Head>
-              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
+              <Table.Head className="bg-[#F5F7FA] px-3 w-80 py-2 text-left text-[14px] text-[#525866] font-normal">
                 Final deadline
               </Table.Head>
               {/* new Proposals column */}
-              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
+              <Table.Head className="bg-[#F5F7FA] px-3 w-32 py-2 text-left text-[14px] text-[#525866] font-normal">
                 Proposals
               </Table.Head>
-              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
+              <Table.Head className="bg-[#F5F7FA] px-3 w-80 py-2 text-left text-[14px] text-[#525866] font-normal">
                 Worker
               </Table.Head>
-              <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
+              <Table.Head className="bg-[#F5F7FA] px-3 w-32 py-2 text-left text-[14px] text-[#525866] font-normal">
                 Status
               </Table.Head>
             </>
