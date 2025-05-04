@@ -12,14 +12,14 @@ interface SidebarLinkProps {
 }
 
 const SidebarLink = ({ href, icon: Icon, label, onClick }: SidebarLinkProps) => {
-  const commonClasses = 'text-text-primary-600 hover:bg-gray-100 hover:text-text-strong-950 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-paragraph-sm text-left transition-colors duration-150';
+  const commonClasses = 'text-text-sub-600 font-medium hover:bg-gray-100 hover:text-text-strong-950 flex w-full items-center gap-2 rounded-lg px-3 py-2 text-paragraph-sm text-left transition-colors duration-150';
 
   const content = (
     <>
       <Icon
         className={cn(
           'size-5',
-          'text-icon-secondary-400',
+          'text-text-sub-600',
         )}
       />
       {label}

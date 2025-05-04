@@ -139,7 +139,7 @@ export default function Navbar() {
                 }
                 passHref
               >
-                <FancyButton.Root variant='neutral' size='medium' className='gap-4 font-medium text-sm'>
+                <FancyButton.Root size='medium' className='gap-2 font-light text-[14px]'>
                   Create
                   <FancyButton.Icon as={RiAddLine} />
                 </FancyButton.Root>
