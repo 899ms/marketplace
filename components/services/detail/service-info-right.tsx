@@ -166,7 +166,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
 
               {/* rating (no "reviews" text) */}
               <div className="mt-1 flex items-center justify-center gap-1 text-xs text-[#525866] font-normal">
-                <RiStarFill className="size-3.5 text-yellow-400" />
+                <RiStarFill className="size-4 text-yellow-400" />
                 <span className="text-gray-600 text-[12px]" >4.9 (125)</span>
               </div>
             </div>

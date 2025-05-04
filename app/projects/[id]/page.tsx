@@ -459,7 +459,7 @@ export default function ProjectDetailPage() {
       <div className='flex gap-6'>
         {/* Left Content Area (Project Details) */}
         <div className='w-[824px]'>
-          <div className='p-[24px] shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] rounded-[20px] border border-neutral-300 bg-bg-white-0'>
+          <div className='p-[24px] shadow-[0px_23px_32px_-8px_rgba(14,18,27,0.27)] rounded-[20px] border border-[#E2E4E9] bg-bg-white-0'>
             <ProjectHeader
               title={projectTitle}
               category={projectCategory}
@@ -480,7 +480,7 @@ export default function ProjectDetailPage() {
           {(isOwner || isBuyerVisitor || isAnonymous) && (
             // Sidebar Layout for Owner, Buyer Visitor, Anonymous (No Apply Button)
             <>
-              <div className='shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)]'>
+              <div className='shadow-sm rounded-[20px] border border-[#E2E4E9] bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)]'>
                 <ClientProfileCard client={{
                   id: clientDataState?.id ?? '',
                   name: clientName,
@@ -501,7 +501,7 @@ export default function ProjectDetailPage() {
               {/* Anonymous doesn't see applicants */}
               {!isAnonymous && (
                 /* Applicant List Card Wrapper */
-                <div className="shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
+                <div className="shadow-sm rounded-[20px] border border-white bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
                   <ApplicantsList applicants={mockApplicants} userRole={isOwner ? 'buyer' : 'seller'} />
                 </div>
               )}
