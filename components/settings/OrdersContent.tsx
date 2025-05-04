@@ -200,7 +200,7 @@ export default function OrdersContent() {
 
   /* ------------------ render ------------------ */
   return (
-    <main className="flex-1 bg-bg-alt-white-100 p-6 h-full">
+    <main className="flex-1 bg-bg-alt-white-100 h-full">
       {/* summary cards */}
       <div className=' mb-3'>
         <SummarySection data={summaryData} />

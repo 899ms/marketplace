@@ -35,12 +35,12 @@ export default function SettingsPageContent() {
 
   /* --------------- main layout --------------- */
   return (
-    <div className="flex bg-bg-alt-white-100 h-[calc(100vh-85px)] overflow-hidden">
+    <div className=" max-w flex bg-bg-alt-white-100  overflow-hidden mx-auto">
       {/* left nav – adds "My services" only if `isSeller` */}
       <OrdersSidebar activeView={currentTab} isSeller={!!isSeller} />
 
       {/* right content – switch on currentTab */}
-      <div className="flex-1">
+      <div className="flex-1 [1112px] p-8">
         {currentTab === 'orders' && <OrdersContent />}
 
         {currentTab === 'my-services' && isSeller && <MyServicesView />}

@@ -16,8 +16,8 @@ import { useRouter } from 'next/navigation';
 import { Icons } from "@/assets/images/icons/icons";
 /* ------------------------------------------------------------------ */
 /** Left navigation panel shown on every settings page.
- *  ‑ Buyers see “Orders” + “Billing”
- *  ‑ Sellers see an extra “My services” link.
+ *  ‑ Buyers see "Orders" + "Billing"
+ *  ‑ Sellers see an extra "My services" link.
  */
 
 
@@ -64,17 +64,26 @@ export default function OrdersSidebar({
 
   /* ------------------ real sidebar ------------------ */
   return (
-    <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-4 pt-6">
+    <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 pt-8 px-8">
       <TabMenuVertical.Root defaultValue={activeView} onValueChange={handleValueChange}>
         <TabMenuVertical.List>
           {links.map(({ name, view, icon: Icon }) => (
-            <TabMenuVertical.Trigger key={view} value={view}>
-              {/* <TabMenuVertical.Icon as={Icon} /> */}
-              <Icon className='text-black' />
-              {name}
-              <TabMenuVertical.ArrowIcon as={RiArrowRightSLine} />
+            <TabMenuVertical.Trigger
+              key={view}
+              value={view}
+              className={cn(
+                'flex h-9 w-full items-center gap-2 rounded-lg px-3 py-2 text-text-soft-600', // Base styles: height, width, flex, gap, padding, border-radius, default text
+                'hover:bg-gray-50', // Hover state
+                'data-[state=active]:bg-gray-100 data-[state=active]:text-text-strong-900', // Active state: background and text color (#F6F8FA equivalent)
+              )}
+            >
+              <Icon className="h-5 w-5 shrink-0" /> {/* Ensure icon size and prevent shrinking */}
+              <span className="flex-grow text-left">{name}</span> {/* Ensure text takes remaining space */}
+              <TabMenuVertical.ArrowIcon
+                as={RiArrowRightSLine}
+                className="ml-auto h-4 w-4 shrink-0 opacity-0 data-[state=active]:opacity-100" // Make arrow visible only on active
+              />
             </TabMenuVertical.Trigger>
-
           ))}
         </TabMenuVertical.List>
       </TabMenuVertical.Root>
