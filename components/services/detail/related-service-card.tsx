@@ -49,7 +49,7 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
           </div>
         </div>
         {/* Content Section */}
-        <div className='p-3 flex flex-col flex-grow border border-[#E1E4EA]'>
+        <div className='p-3 flex flex-col flex-grow border border-t-0 border-[#E1E4EA]'>
           <p className='text-[14px] text-[14px] text-[#0E121B] mb-1.5 line-clamp-2 font-medium flex-grow'>
             {service.title}
           </p>
