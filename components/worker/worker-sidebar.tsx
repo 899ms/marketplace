@@ -76,11 +76,11 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             <div className='text-text-secondary-600 mt-1 flex items-center justify-center gap-1 text-paragraph-sm'>
               <RiStarFill className='size-4 text-yellow-500' />
               <span className='text-[#525866] text-[12px]'>
-                {user.rating} ({user.reviews})
+                {user.rating}({user.reviews})
               </span>
             </div>
           </div>
-          <div className='text-text-secondary-600 flex items-center gap-1.5'>
+          <div className='text-text-secondary-600 flex items-center gap-2 mt-1 font-medium'>
             <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866]'>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M7.99978 5.38672V7.29339L7.32645 7.06005C6.98645 6.94005 6.77979 6.82672 6.77979 6.24672C6.77979 5.77339 7.13312 5.38672 7.56645 5.38672H7.99978Z" fill="#F27B2C" />
