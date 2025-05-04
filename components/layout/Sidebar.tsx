@@ -11,9 +11,12 @@ import {
   RiStarFill,
   RiHomeLine,
   RiFileList2Line,
+  RiBriefcaseLine,
   RiChat1Line,
+  RiBuildingLine,
   RiCouponLine,
   RiQuestionLine,
+  RiArticleLine,
   RiPencilLine,
   RiTwitchFill,
   RiTwitterXFill,
@@ -82,7 +85,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
 
   const handleSaveClick = async () => {
     if (!userProfile) {
-      toast({ title: "Error", description: "User not found.", variant: "light" });
+      toast({ title: "Error", description: "User not found." });
       return;
     }
     if (editableBio === displayBio) {
@@ -102,7 +105,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
       }
     } catch (error) {
       console.error("Error saving bio:", error);
-      toast({ title: "Error", description: "Failed to save bio. Please try again.", variant: "light" });
+      toast({ title: "Error", description: "Failed to save bio. Please try again." });
     } finally {
       setIsSaving(false);
     }
@@ -113,8 +116,6 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
     toast({
       title: "Coming Soon",
       description: "This feature is under development and will be available shortly.",
-      status: "information",
-      variant: "filled" // Optional: Use filled variant for more visibility
     });
   };
   // --- End Notification Handler ---
@@ -173,10 +174,10 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
         <nav className='px-4 max-w-[300px]  '>
           <ul className='flex flex-col gap-1'>
             <li><SidebarLink href='/home' icon={RiHomeLine} label='Home' /></li>
-            <li><SidebarLink href='/settings' icon={RiFileList2Line} label='Order' /></li>
-            <li><SidebarLink href='/chats' icon={RiChat1Line} label='Chat' /></li>
-            <li><SidebarLink onClick={handleComingSoonClick} icon={RiCouponLine} label='Bonus' /></li>
-            <li><SidebarLink onClick={handleComingSoonClick} icon={RiQuestionLine} label='Help Center' /></li>
+            <li><SidebarLink href='/settings' icon={RiBriefcaseLine} label='Order' /></li>
+            <li><SidebarLink href='/chats' icon={RiBuildingLine} label='Chat' /></li>
+            <li><SidebarLink onClick={handleComingSoonClick} icon={RiBuildingLine} label='Bonus' /></li>
+            <li><SidebarLink onClick={handleComingSoonClick} icon={RiArticleLine} label='Help Center' /></li>
           </ul>
         </nav>
         <Divider.Root />

@@ -11,9 +11,12 @@ import {
   RiStarFill,
   RiHomeLine,
   RiFileList2Line,
+  RiBriefcaseLine,
   RiChat1Line,
+  RiBuildingLine,
   RiCouponLine,
   RiQuestionLine,
+  RiArticleLine,
   RiPencilLine,
   RiTwitchFill,
   RiTwitterXFill,
@@ -124,28 +127,28 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             <li>
               <SidebarLink
                 href='/settings'
-                icon={RiFileList2Line}
+                icon={RiBriefcaseLine}
                 label='Order'
               />
             </li>
             <li>
               <SidebarLink
                 href='/chats'
-                icon={RiChat1Line}
+                icon={RiBuildingLine}
                 label='Chat'
               />
             </li>
             <li>
               <SidebarLink
                 onClick={handleComingSoonClick}
-                icon={RiCouponLine}
+                icon={RiBuildingLine}
                 label='Bonus'
               />
             </li>
             <li>
               <SidebarLink
                 onClick={handleComingSoonClick}
-                icon={RiQuestionLine}
+                icon={RiArticleLine}
                 label='Help Center'
               />
             </li>
