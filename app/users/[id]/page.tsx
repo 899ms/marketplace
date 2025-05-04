@@ -152,9 +152,9 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
     <aside className='hidden w-[352px] max-w-[352px] shrink-0 lg:block'>
       <div className='sticky top-20 flex flex-col gap-4 border border-stroke-soft-200 bg-bg-white-0 max-h-[686px] rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
         {/* New Wrapper Div */}
-        <div className="flex flex-col max-w-[352px] max-h-[328px] p-4 gap-4">
+        <div className="flex flex-col max-w-[352px] max-h-[328px] pt-8 px-4 gap-4">
           {/* Profile Section */}
-          <div className='flex flex-col items-center gap-3 text-center'>
+          <div className='flex flex-col items-center gap-2 text-center'>
             <Avatar.Root size='80' className="relative">
               <Avatar.Image
                 src={userData.avatar_url || 'https://via.placeholder.com/80'}
@@ -165,7 +165,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
               </Avatar.Indicator>
             </Avatar.Root>
             <div>
-              <h2 className='font-medium text-text-strong-950 text-[16px]'>
+              <h2 className='font-medium  text-[16px]'>
                 {userData.full_name || userData.username}
               </h2>
               <div className='mt-1 flex items-center justify-center gap-1'>
@@ -203,11 +203,11 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-5">
                   <path d="M11.4416 2.92501L12.9083 5.85835C13.1083 6.26668 13.6416 6.65835 14.0916 6.73335L16.7499 7.17501C18.4499 7.45835 18.8499 8.69168 17.6249 9.90835L15.5583 11.975C15.2083 12.325 15.0166 13 15.1249 13.4833L15.7166 16.0417C16.1833 18.0667 15.1083 18.85 13.3166 17.7917L10.8249 16.3167C10.3749 16.05 9.63326 16.05 9.17492 16.3167L6.68326 17.7917C4.89992 18.85 3.81659 18.0583 4.28326 16.0417L4.87492 13.4833C4.98326 13 4.79159 12.325 4.44159 11.975L2.37492 9.90835C1.15826 8.69168 1.54992 7.45835 3.24992 7.17501L5.90826 6.73335C6.34992 6.65835 6.88326 6.26668 7.08326 5.85835L8.54992 2.92501C9.34992 1.33335 10.6499 1.33335 11.4416 2.92501Z" fill="#0A0D14" stroke="#0A0D14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-                <span className="text-sm">Recent reviews</span>
+                <span className="text-[10px]">Recent reviews</span>
               </div>
 
               {/* Right section - Avatars */}
-              <div className="flex items-center gap-2 rounded-full pt-0.5 pr-2.5 pb-0.5 pl-0.5 bg-bg-white-0 shadow-[0_2px_4px_0_rgba(27,28,29,0.04)]">
+              <div className="flex items-center border gap-2 rounded-full pt-0.5 pr-2.5 pb-0.5 pl-0.5 bg-bg-white-0 shadow-[0_2px_4px_0_rgba(27,28,29,0.04)]">
                 <AvatarGroup.Root size="32">
                   {reviewAvatars.map((src, i) => (
                     <Avatar.Root key={i} size="32">
@@ -656,7 +656,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
 
   return (
     <Notification.Provider>
-      <div className='flex flex-1 gap-8 px-6 pt-6'>
+      <div className='flex flex-1 gap-8 px-8 pt-7'>
         <UserSidebar userData={userData} />
         <main className="flex-1 max-w-[1000px] max-h-[964px]">
           {/* center everything horizontally */}
