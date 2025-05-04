@@ -33,29 +33,30 @@ export default async function ServiceDetailPage({
   }
 
   return (
-    <div className='container mx-auto w-full py-7 max-w-[1218px]'>
+    <div className='container mx-auto w-full py-[30px] max-w-[1218px]'>
       <div className='mb-4'>
         <Breadcrumb.Root>
-          <Breadcrumb.Item asChild>
+          <Breadcrumb.Item asChild className='text-[#525866]'>
             <Link href='/home'>
               <Breadcrumb.Icon as={RiHomeSmile2Line} />
               Home
             </Link>
           </Breadcrumb.Item>
 
-          <Breadcrumb.ArrowIcon as={RiArrowRightSLine} />
+          {/* <Breadcrumb.ArrowIcon as={RiArrowRightSLine} /> */}
+          <span className='text-[14px] text-[#CACFD8]'>/</span>
 
-          <Breadcrumb.Item asChild>
+          <Breadcrumb.Item asChild className='text-[#525866]'>
             <Link href='/services/search?tab=Service'>Services</Link>
           </Breadcrumb.Item>
 
-          <Breadcrumb.ArrowIcon as={RiArrowRightSLine} />
+          <span className='text-[14px] text-[#CACFD8]'>/</span>
 
-          <Breadcrumb.Item active>{service.title}</Breadcrumb.Item>
+          <Breadcrumb.Item active className='text-[#525866]'>{service.title}</Breadcrumb.Item>
         </Breadcrumb.Root>
       </div>
 
-      <h1 className='text-[32px] mb-4 text-text-strong-950'>
+      <h1 className='text-[32px] mb-4 text-[#0E121B] font-medium leading-[40px] tracking-[-0.5%]'>
         You will get wordpress website design
       </h1>
 

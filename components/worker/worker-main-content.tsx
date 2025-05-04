@@ -77,7 +77,7 @@ export function ProjectCard({ job }: ProjectCardProps) {
         </div>
         <div className='flex justify-between items-center'>
           <p className='text-[14px] text-[#0E121B] line-clamp-1'>{description}</p>
-          <Button.Root mode='stroke' size='xsmall' variant='neutral' asChild className='flex-shrink-0'>
+          <Button.Root mode='stroke' size='small' variant='neutral' asChild className='flex-shrink-0 shadow-sm'>
             <Link href={`/projects/${job.id}`}>
               Apply
               <Button.Icon as={RiArrowRightSLine} />
@@ -101,7 +101,7 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
   return (
     <main className='flex-1 max-w-[676px]'>
       <Banner />
-      <section className='mt-6 flex flex-col max-w-[676px] max-h-[632px]'>
+      <section className='flex flex-col max-w-[676px] max-h-[632px]'>
         <SectionHeader title='Projects' href='#' />
         <div className='flex flex-col gap-2'>
           {recentJobs && recentJobs.length > 0 ? (

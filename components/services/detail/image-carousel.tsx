@@ -73,7 +73,7 @@ export function ImageCarousel({
               key={index}
               onClick={() => setSlide(index)}
               className={cn(
-                'relative w-[191px] h-[164px] shrink-0 overflow-hidden rounded-[10px] border-2 transition-all focus:outline-none focus:ring-2 focus:ring-primary-base focus:ring-offset-2',
+                'relative w-[191px] h-[164px] mr-[20px] shrink-0 overflow-hidden rounded-[10px] transition-all',
                 activeIndex === index
                   ? 'border-primary-base'
                   : 'border-transparent hover:border-primary-soft-200'

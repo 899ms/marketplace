@@ -11,9 +11,12 @@ import {
   RiStarFill,
   RiHomeLine,
   RiFileList2Line,
+  RiBriefcaseLine,
   RiChat1Line,
+  RiBuildingLine,
   RiCouponLine,
   RiQuestionLine,
+  RiArticleLine,
   RiPencilLine,
   RiTwitchFill,
   RiTwitterXFill,
@@ -124,28 +127,28 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             <li>
               <SidebarLink
                 href='/settings'
-                icon={RiFileList2Line}
+                icon={RiBriefcaseLine}
                 label='Order'
               />
             </li>
             <li>
               <SidebarLink
                 href='/chats'
-                icon={RiChat1Line}
+                icon={RiBuildingLine}
                 label='Chat'
               />
             </li>
             <li>
               <SidebarLink
                 onClick={handleComingSoonClick}
-                icon={RiCouponLine}
+                icon={RiBuildingLine}
                 label='Bonus'
               />
             </li>
             <li>
               <SidebarLink
                 onClick={handleComingSoonClick}
-                icon={RiQuestionLine}
+                icon={RiArticleLine}
                 label='Help Center'
               />
             </li>
@@ -160,7 +163,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             </h3>
             {/* TODO: Implement edit functionality */}
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
-              <RiPencilLine className='size-4 text-[#99A0AE]' />
+              <RiPencilLine className='size-5 text-[#99A0AE]' />
             </button>
           </div>
           <div className='flex flex-wrap gap-1.5'>
@@ -184,7 +187,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             </h3>
             {/* TODO: Implement edit functionality */}
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
-              <RiPencilLine className='size-4 text-[#99A0AE]' />
+              <RiPencilLine className='size-5 text-[#99A0AE]' />
             </button>
           </div>
           <div className='flex items-center gap-3'>

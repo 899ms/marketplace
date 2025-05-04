@@ -20,7 +20,7 @@ export function ReviewItem({ review }: ReviewItemProps) {
             {/* Add status indicator if available */}
           </Avatar.Root>
           <div>
-            <p className='text-label-md font-medium text-text-strong-950'>
+            <p className='text-[14px] font-medium text-[#0E121B]'>
               {review.user.name}
             </p>
             <div className='text-[#525866] flex items-center gap-2 text-paragraph-xs'>
@@ -32,7 +32,7 @@ export function ReviewItem({ review }: ReviewItemProps) {
             </div>
           </div>
         </div>
-        <span className='text-[18px] text-text-strong-950'>
+        <span className='text-[18px] text-[#0E121B] font-medium'>
           ${review.amount.toFixed(2)}
         </span>
       </div>

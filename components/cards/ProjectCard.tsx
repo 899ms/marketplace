@@ -107,7 +107,7 @@ export function ProjectCard({
           </div>
 
           {/* Description */}
-          <p className='line-clamp-3 text-[14px] text-[#0E121B] text-text-secondary-600'>
+          <p className='line-clamp-3 text-[14px] text-[#0E121B] text-text-secondary-600 py-1'>
             {description}
           </p>
 
@@ -120,7 +120,7 @@ export function ProjectCard({
               {client.name}
             </span>
             <div className='flex items-center gap-0.5 text-[12px] text-[#525866]'>
-              <RiStarFill className='size-3 text-yellow-500' />
+              <RiStarFill className='text-yellow-500 w-[1.25rem] h-[1.25rem]' />
               <span>
                 {client.rating.toFixed(1)}({client.reviewCount})
               </span>
@@ -132,7 +132,7 @@ export function ProjectCard({
         <div className='flex flex-col gap-2'>
           <div className='text-right'>
             <p className='text-[14px] text-[#525866]'>Budget</p>
-            <p className='text-[18px] font-medium text-text-strong-950'>
+            <p className='text-[18px] font-medium text-text-strong-950 py-1'>
               ${budget.toLocaleString()}
             </p>
           </div>
@@ -141,12 +141,12 @@ export function ProjectCard({
             mode='stroke'
             size='small'
             className={cn(
-              'text-[14px] w-full md:w-auto !shadow-[0_1px_2px_0_rgba(82,88,102,0.06)]',
+              'text-[14px] w-full md:w-auto !shadow-[0_1px_2px_0_rgba(82,88,102,0.06)] leading-none font-medium p-3 gap-1',
             )}
             onClick={handleApplyClick}
           >
             Apply
-            <RiArrowRightSLine className='size-4' />
+            <RiArrowRightSLine className='w-[1.25rem] h-[1.25rem]' />
           </Button.Root>
         </div>
       </div>

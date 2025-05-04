@@ -115,12 +115,14 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
           <div className='w-full max-w-[824px] px-4 mx-auto'>
             {portfolioServices.length > 0 ? (
               <div className='flex flex-wrap gap-4'>
-                {portfolioServices.map((portfolioService) => (
-                  <RelatedServiceCard
-                    key={portfolioService.id}
-                    service={portfolioService}
-                  />
-                ))}
+                {portfolioServices
+                  .slice(0, 3)
+                  .map((portfolioService) => (
+                    <RelatedServiceCard
+                      key={portfolioService.id}
+                      service={portfolioService}
+                    />
+                  ))}
               </div>
             ) : (
               <p className='text-sm text-text-secondary-600'>
