@@ -3,10 +3,11 @@
 import React, { useState } from 'react';
 import * as Tag from '@/components/ui/tag';
 import * as Switch from '@/components/ui/switch';
-import { RiInformationLine, RiCloseLine, RiSparklingFill } from '@remixicon/react';
+import { RiInformationLine, RiCloseLine, RiSparklingFill, RiInformationFill } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import { WorkerSearchBar } from './WorkerSearchBar';
 import { PriceRangeSlider } from '../../filters/PriceRangeSlider';
+import Image from 'next/image';
 
 // Helper component for the input-like container
 interface TagInputContainerProps {
@@ -164,7 +165,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           <div className='mb-2 flex items-center justify-between'>
             <h3 className='text-[14px] font-medium text-text-strong-950'>Skills</h3>
             {selectedSkills.length > 0 && (
-              <button onClick={clearSkills} className='text-[12px] text-gray-400 underline hover:text-text-primary-600'>
+              <button onClick={clearSkills} className='text-[12px] font-medium text-[#525866] underline hover:text-text-primary-600'>
                 Clear
               </button>
             )}
@@ -173,13 +174,13 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
             {selectedSkills.map((skill) => (
               <Tag.Root
                 key={skill}
-                className="!border-black text-black"
+                className="!border font-medium !border-[#525866] text-[#525866]"
               >
                 {skill}
                 <Tag.Icon
                   as={RiCloseLine}
                   onClick={() => removeSkill(skill)}
-                  className="ml-1 cursor-pointer text-black"
+                  className="ml-1 cursor-pointer text-[#525866] "
                 />
               </Tag.Root>
             ))}
@@ -197,7 +198,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                     cursor-pointer 
                     border-gray-100             /* gray-600 border */
                     ${idx % 2 === 0
-                      ? "bg-white border-gray-400 "
+                      ? "bg-white border-[E1E4EA]"
                       : "bg-gray-100"
                     }
                   `}
@@ -218,19 +219,19 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           <div className='mb-2 flex items-center justify-between'>
             <div className='flex items-center gap-1'>
               <h3 className='text-[14px] font-medium text-text-strong-950'>Tools</h3>
-              <button className='text-icon-secondary-400'><RiInformationLine className='size-4' /></button>
+              <RiInformationFill className="w-4 text-[#CACFD8] h-4" />
             </div>
             {selectedTools.length > 0 && (
-              <button onClick={clearTools} className='text-[12px] text-gray-400 underline hover:text-text-primary-600'>
+              <button onClick={clearTools} className='text-[12px] text-[#525866] underline hover:text-text-primary-600'>
                 Clear
               </button>
             )}
           </div>
           <TagInputContainer>
             {selectedTools.map((tool) => (
-              <Tag.Root key={tool} className="!border-black text-black">
+              <Tag.Root key={tool} className="!border font-medium !border-[#525866] text-[#525866]">
                 {tool}
-                <Tag.Icon as={RiCloseLine} onClick={() => removeTool(tool)} className='ml-1 cursor-pointer text-black' />
+                <Tag.Icon as={RiCloseLine} onClick={() => removeTool(tool)} className='ml-1 cursor-pointer text-[#525866]' />
               </Tag.Root>
             ))}
           </TagInputContainer>
@@ -246,7 +247,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                     cursor-pointer 
                     border-gray-100             /* gray-600 border */
                     ${idx % 2 === 0
-                      ? "bg-white border-gray-400 "
+                      ? "bg-white border-[E1E4EA] "
                       : "bg-gray-100"
                     }
                   `}
@@ -264,7 +265,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
         <div className='mx-[16px]' >
           <div className='mb-2 flex items-center gap-1'>
             <h3 className='text-[14px] font-medium text-text-strong-950'>Featured Tags</h3>
-            <button className='text-icon-secondary-400'><RiInformationLine className='size-4' /></button>
+            <button className='text-icon-secondary-400'><RiInformationFill className='size-4 text-[#CACFD8]' /></button>
           </div>
           <div className="flex flex-wrap gap-1.5">
             {availableFeaturedTags.map((tag) => {
@@ -279,16 +280,18 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                     cursor-pointer
                     flex items-center
                     ${isSelected ?
-                      'border border-black text-black' :
-                      'border border-gray-300 text-text-strong-950'
+                      'text-[#525866] !border font-medium !border-[#525866]' :
+                      'text-[#525866]'
                     }
                   `}
                 >
                   <button onClick={() => handleFeaturedTagToggle(tag)} className="flex items-center">
-                    <Tag.Icon as={RiSparklingFill} className="text-orange-500 mr-1" />
+                    <Tag.Icon>
+                      <Image src="/images/Monday.com.svg" alt="Icon" width={16} height={16} />
+                    </Tag.Icon>
                     <span>{tag}</span>
                     {isSelected && (
-                      <Tag.Icon as={RiCloseLine} className="ml-1 cursor-pointer text-black" />
+                      <Tag.Icon as={RiCloseLine} className="ml-1 cursor-pointer text-[#525866]" />
                     )}
                   </button>
                 </Tag.Root>
@@ -299,6 +302,31 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           <hr className='my-6 border-stroke-soft-200 my-[16px]' />
         </div>
       )}
+
+      {/* Available and professional services toggles */}
+      <div className="space-y-3 pl-4">
+        {/* Item 1 */}
+        <div className="flex items-start gap-2">
+          {/* Icon */}
+          <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
+          {/* Text */}
+          <div className='mt-0.5'>
+            <p className="text-base font-normal text-[14px] text-[#1F2937]">Available</p>
+            <p className="text-[12px] font-normal text-[#6B7280]">Recent Online</p>
+          </div>
+        </div>
+
+        {/* Item 2 */}
+        <div className="flex items-start gap-2">
+          {/* Icon */}
+          <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
+          {/* Text */}
+          <div className='mt-0.5'>
+            <p className="text-base font-normal text-[14px] text-[#1F2937]">Professional Services</p>
+            <p className="text-[12px] font-normal text-[#6B7280]">Vetted skills and expertise</p>
+          </div>
+        </div>
+      </div>
 
       {/* Toggle Options Section (Worker Only) */}
       {activeTab === 'Worker' && (
