@@ -67,7 +67,7 @@ export default async function ServiceDetailPage({
           />
         </div>
 
-        <div className='w-full max-w-[352px]'>
+        <div className='w-full max-w-[352px] max-h-[900px]'>
           <ServiceInfoRight service={service} />
         </div>
       </div>
