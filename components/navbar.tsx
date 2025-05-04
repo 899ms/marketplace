@@ -89,12 +89,13 @@ export default function Navbar() {
             {/* You can add text next to the logo if needed, e.g., <span>MyBrand</span> */}
           </Link>
           {/* Navigation Links Container - Apply new styles */}
-          <div className='text-text-secondary-600 hidden items-center gap-1 h-10 max-w-[447px] text-label-md lg:flex'>
-            <Link href='/services/search?tab=Service' className='hover:text-text-strong-950  py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg for better click area */}
-              Find Services
-            </Link>
+          <div className='text-text-secondary-600 hidden items-center gap-3   text-label-md lg:flex'>
+
             <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
               Find Worker
+            </Link>
+            <Link href='/services/search?tab=Service' className='hover:text-text-strong-950  py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg for better click area */}
+              Find Services
             </Link>
             <Link href='/services/search?tab=Project' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
               Find Projects

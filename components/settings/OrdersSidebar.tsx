@@ -54,7 +54,7 @@ export default function OrdersSidebar({
   /* -------- skeleton while auth finishes -------- */
   if (loading || profileLoading) {
     return (
-      <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-4 pt-6" />
+      <aside className="w-[250px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-4 pt-7" />
     );
   }
 
