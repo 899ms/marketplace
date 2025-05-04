@@ -45,7 +45,7 @@ const Banner = () => {
   const currentBanner = dummyBanners[currentBannerIndex];
 
   return (
-    <div className='shadow-lg relative mb-8 min-h-[244px] overflow-hidden p-6 pl-12 text-white flex items-center  max-h-[248px] rounded-[20px] bg-[#253337]'>
+    <div className='shadow-lg relative mb-6 min-h-[244px] overflow-hidden p-6 pl-12 text-white flex items-center  max-h-[248px] rounded-[20px] bg-[#253337]'>
       <div className='relative z-10 max-w-lg'>
         {/* Display dynamic content */}
         <h1 className='text-[32px] mb-2 font-semibold'>{currentBanner.title}</h1>

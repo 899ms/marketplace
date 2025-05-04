@@ -101,7 +101,7 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
   return (
     <main className='flex-1 max-w-[676px]'>
       <Banner />
-      <section className='mt-6 flex flex-col max-w-[676px] max-h-[632px]'>
+      <section className='flex flex-col max-w-[676px] max-h-[632px]'>
         <SectionHeader title='Projects' href='#' />
         <div className='flex flex-col gap-2'>
           {recentJobs && recentJobs.length > 0 ? (
