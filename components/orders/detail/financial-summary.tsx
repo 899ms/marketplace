@@ -19,19 +19,19 @@ export function FinancialSummary({
       {/* Financial Details */}
       <div className="flex-1 grid grid-cols-4 gap-[116px] bg-[#F5F7FA] px-[24px] py-[26px] rounded-[12px] h-[100px] max-w-[876px]">
         <div className="flex flex-col justify-center max-w-[120px]">
-          <span className="text-[12px] text-[#525866]">Total Amount</span>
+          <span className="text-[12px] text-[#525866] font-medium ">Total Amount</span>
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{totalAmount}</span>
         </div>
         <div className="flex flex-col justify-center max-w-[120px]">
-          <span className="text-[12px] text-[#525866]">Received</span>
+          <span className="text-[12px] text-[#525866] font-medium ">Received</span>
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{received}</span>
         </div>
         <div className="flex flex-col justify-center max-w-[120px]">
-          <span className="text-[12px] text-[#525866]">In Escrow</span>
+          <span className="text-[12px] text-[#525866] font-medium ">In Escrow</span>
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{inEscrow}</span>
         </div>
         <div className="flex flex-col justify-center max-w-[120px]">
-          <span className="text-[12px] text-[#525866]">Refunded</span>
+          <span className="text-[12px] text-[#525866] font-medium ">Refunded</span>
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{refunded}</span>
         </div>
       </div>
@@ -45,7 +45,7 @@ export function FinancialSummary({
             </svg>
           </Button.Icon>
         </div>
-        <h4 className="text-[12px] text-[#0E121B] text-text-strong-950 mt-[5px]">Milestone</h4>
+        <h4 className="text-[12px] text-[#0E121B] font-medium text-text-strong-950 mt-[5px]">Milestone</h4>
         <div className="mt-[8px]">
           <p className="text-[12px] text-[#525866]">
             For only $4.99 per month!

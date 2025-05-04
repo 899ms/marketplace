@@ -66,7 +66,7 @@ export function WorkFiles({
       <Accordion.Item value="item-1" className="p-0 rounded-none ring-0 hover:bg-white data-[state=open]:bg-white">
 
         <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200">
-          <Accordion.Trigger className="w-full text-[16px] text-[#0E121B] p-0 m-0 flex justify-between items-center hover:no-underline">
+          <Accordion.Trigger className="w-full text-[16px] text-[#0E121B] font-medium p-0 m-0 flex justify-between items-center hover:no-underline">
             Work File
             <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
           </Accordion.Trigger>
@@ -129,8 +129,8 @@ export function WorkFiles({
             {files.map((file) => (
               <div key={file.id} className="flex justify-between items-center p-[16px] pb-[28px] border-b border-[#E1E4EA] last:border-b-0">
                 <div>
-                  <p className="text-[14px] text-[#0E121B]">{file.name}</p>
-                  <div className="flex gap-2 text-[12px] text-[#525866]">
+                  <p className="text-[14px] mb-1 text-[#0E121B]">{file.name}</p>
+                  <div className="flex gap-5 text-[12px] text-[#525866]">
                     <span>{file.size}</span>
                     <span>{file.date}</span>
                   </div>

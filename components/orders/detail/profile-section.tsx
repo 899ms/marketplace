@@ -3,7 +3,8 @@
 import * as React from 'react';
 import * as Button from "@/components/ui/button";
 import * as Avatar from "@/components/ui/avatar";
-import { RiStarFill, RiGoogleFill, RiMoreLine, RiLoader4Line, RiSendPlaneLine } from '@remixicon/react';
+import * as FancyButton from "../../ui/fancy-button"; // Import FancyButton
+import { RiStarFill, RiGoogleFill, RiMoreLine, RiLoader4Line, RiSendPlaneLine, RiAddLine, RiMore2Fill } from '@remixicon/react';
 
 type UserRole = 'buyer' | 'seller';
 
@@ -64,7 +65,7 @@ export function ProfileSection({
             <div className="flex items-center">
               <RiStarFill className="size-4 text-yellow-400" />
               <span className="text-[14px] text-[#525866]">
-                {rating}({totalReviews})
+                {rating} ({totalReviews})
               </span>
             </div>
           </div>
@@ -91,7 +92,7 @@ export function ProfileSection({
           variant="neutral"
           mode="stroke"
           size="medium"
-          className="px-6 min-w-[110px]"
+          className="px-6 min-w-[110px] h-[36px]"
           onClick={onMessageClick}
           disabled={disabled || isMessagingLoading}
         >
@@ -108,16 +109,9 @@ export function ProfileSection({
         </Button.Root>
 
         {userRole === 'buyer' && (
-          <Button.Root
-            variant="neutral"
-            mode="filled"
-            size="medium"
-            className="px-6 min-w-[100px]"
-            onClick={onRehireClick}
-            disabled={disabled}
-          >
+          <FancyButton.Root disabled={disabled} variant='neutral' size='medium' className="px-6 min-w-[100px] h-[36px]" onClick={onRehireClick}>
             Rehire
-          </Button.Root>
+          </FancyButton.Root>
         )}
 
         <Button.Root
@@ -127,7 +121,7 @@ export function ProfileSection({
           className="px-4 max-w-[36px]"
           disabled={disabled}
         >
-          <Button.Icon as={RiMoreLine} className="size-5" />
+          <Button.Icon as={RiMore2Fill} className="text-[#99A0AE] size-[22px] transform rotate-90" />
         </Button.Root>
 
       </div>
