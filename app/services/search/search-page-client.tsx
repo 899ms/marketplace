@@ -409,14 +409,14 @@ export default function SearchPageClient() {
               value={activeTab}
               onValueChange={handleTabChange}
             >
-              <TabMenuHorizontal.List className="flex justify-between items-center px-4 border-y-0">
-                <TabMenuHorizontal.Trigger value='Service' className="text-[16px] px-[12px] font-medium leading-8 tracking-normal text-center">
+              <TabMenuHorizontal.List className="flex justify-center items-center px-4 border-y-0 gap-2">
+                <TabMenuHorizontal.Trigger value='Service' className="text-[16px] px-4 font-medium leading-8 tracking-normal text-center">
                   Service
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='Worker' className="text-[16px] px-[12px] font-medium leading-8 tracking-normal text-center">
+                <TabMenuHorizontal.Trigger value='Worker' className="text-[16px] px-4 font-medium leading-8 tracking-normal text-center">
                   Worker
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='Project' className="text-[16px] px-[12px] font-medium leading-8 tracking-normal text-center">
+                <TabMenuHorizontal.Trigger value='Project' className="text-[16px] px-4 font-medium leading-8 tracking-normal text-center">
                   Project
                 </TabMenuHorizontal.Trigger>
               </TabMenuHorizontal.List>

@@ -217,7 +217,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
         <div className='mx-[16px]' >
           <div className='mb-2 flex items-center justify-between'>
             <div className='flex items-center gap-1'>
-              <h3 className='text-xs font-medium text-text-strong-950'>Tools</h3>
+              <h3 className='text-[14px] font-medium text-text-strong-950'>Tools</h3>
               <button className='text-icon-secondary-400'><RiInformationLine className='size-4' /></button>
             </div>
             {selectedTools.length > 0 && (
@@ -263,7 +263,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       {activeTab === 'Service' && (
         <div className='mx-[16px]' >
           <div className='mb-2 flex items-center gap-1'>
-            <h3 className='text-xs font-medium text-text-strong-950'>Featured Tags</h3>
+            <h3 className='text-[14px] font-medium text-text-strong-950'>Featured Tags</h3>
             <button className='text-icon-secondary-400'><RiInformationLine className='size-4' /></button>
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -326,7 +326,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       {/* Price/Budget Section (Service & Project) */}
       {(activeTab === 'Service' || activeTab === 'Project') && (
         <div className='mx-[16px]' >
-          <h3 className='mb-3 text-xs font-medium text-text-strong-950'>
+          <h3 className='mb-3 text-[14px] font-medium text-text-strong-950'>
             {activeTab === 'Service' ? 'Price' : 'Budget'}
           </h3>
           <PriceRangeSlider

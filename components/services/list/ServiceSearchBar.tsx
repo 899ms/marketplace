@@ -10,6 +10,7 @@ interface ServiceSearchBarProps {
   resetKey?: number; // Add prop to trigger reset when filters are cleared
 }
 
+
 export function ServiceSearchBar({
   onSearch,
   onFilterChange,
@@ -79,6 +80,7 @@ export function ServiceSearchBar({
     }
   };
 
+
   return (
     <div className="mb-6 rounded-[12px] bg-[#E1E4EA] px-[24px] py-[20px]">
       <div className="flex flex-wrap items-center gap-2">
@@ -96,7 +98,7 @@ export function ServiceSearchBar({
 
         {/* Real-time Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('leadTime', value)}>
-          <SelectPrimitive.Trigger className="flex-grow rounded-md border border-gray-300 bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-[calc(20%+8px)]">
+          <SelectPrimitive.Trigger className="flex-grow rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-[calc(20%+8px)] data-[placeholder]:!text-[#000000] group-data-[placeholder]/trigger:!text-black-400">
             <SelectPrimitive.Value placeholder="Lead Time" />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
@@ -108,7 +110,7 @@ export function ServiceSearchBar({
 
         {/* Price Range Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('priceRange', value)}>
-          <SelectPrimitive.Trigger className="flex-grow rounded-md border border-gray-300 bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-[calc(20%+8px)]">
+          <SelectPrimitive.Trigger className="flex-grow rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-[calc(20%+8px)] data-[placeholder]:!text-[#000000]">
             <SelectPrimitive.Value placeholder="Price Range" />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
@@ -120,7 +122,7 @@ export function ServiceSearchBar({
 
         {/* Sort Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('sort', value)}>
-          <SelectPrimitive.Trigger className="flex-grow rounded-md border border-gray-300 bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-[calc(20%+8px)]">
+          <SelectPrimitive.Trigger className="flex-grow rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-[calc(20%+8px)] data-[placeholder]:!text-[#000000]">
             <SelectPrimitive.Value placeholder="Sort By" />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
