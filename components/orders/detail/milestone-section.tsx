@@ -92,16 +92,16 @@ export function MilestoneSection({
       <Accordion.Item value="item-1" className="p-0 rounded-none ring-0 hover:bg-white data-[state=open]:bg-white">
 
         <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200 bg-[#F5F7FA]">
-          <Accordion.Trigger className="w-full text-[16px] text-text-strong-950 p-0 m-0 flex justify-between items-center hover:no-underline">
+          <Accordion.Trigger className="w-full text-[16px] text-text-strong-950 p-0 m-0 flex font-medium justify-between items-center hover:no-underline">
             Timeline
             <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
           </Accordion.Trigger>
         </Accordion.Header>
 
         <Accordion.Content className="p-[16px]">
-          <div className="space-y-[24px] mt-4">
+          <div className="space-y-[24px] mt-4 ">
             {milestones.map((milestone) => (
-              <div key={milestone.id} className="flex items-start gap-3">
+              <div key={milestone.id} className="flex items-start gap-3 pb-2.5">
                 {/* status icon */}
                 <div className="mt-1 flex-shrink-0">
                   {milestone.status === 'completed' ? (
@@ -116,9 +116,9 @@ export function MilestoneSection({
                 </div>
 
                 {/* title+amount on the left, date on the far right */}
-                <div className="flex-1 flex justify-between items-center min-w-0">
-                  <div className="min-w-0">
-                    <h4 className="text-[16px] text-[#0E121B]">
+                <div className="flex-1 flex justify-between items-center min-w-0 mt-[-7px]">
+                  <div className="min-w-0 gap-1">
+                    <h4 className="text-[16px] pb-1 text-[#0E121B]">
                       {milestone.title}
                     </h4>
                     <p className="text-[16px] text-[#0E121B] mt-[4px]">
