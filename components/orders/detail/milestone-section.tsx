@@ -88,16 +88,18 @@ export function MilestoneSection({
   console.log('MilestoneSection rendering with milestones state:', milestones);
 
   return (
-    <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-lg shadow-sm my-4 border border-stroke-soft-200">
+    <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)] mb-4 border border-stroke-soft-200">
       <Accordion.Item value="item-1" className="p-0 rounded-none ring-0 hover:bg-white data-[state=open]:bg-white">
-        <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200 bg-[var(--bg-weak-50)]">
-          <Accordion.Trigger className="w-full text-lg font-semibold text-text-strong-950 p-0 m-0 flex justify-between items-center hover:no-underline">
+
+        <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200 bg-[#F5F7FA]">
+          <Accordion.Trigger className="w-full text-[16px] text-text-strong-950 p-0 m-0 flex justify-between items-center hover:no-underline">
             Timeline
             <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
           </Accordion.Trigger>
         </Accordion.Header>
-        <Accordion.Content className="pt-0 pb-4 px-4">
-          <div className="space-y-4 mt-4">
+
+        <Accordion.Content className="p-[16px]">
+          <div className="space-y-[24px] mt-4">
             {milestones.map((milestone) => (
               <div key={milestone.id} className="flex items-start gap-3">
                 {/* status icon */}
@@ -116,15 +118,15 @@ export function MilestoneSection({
                 {/* title+amount on the left, date on the far right */}
                 <div className="flex-1 flex justify-between items-center min-w-0">
                   <div className="min-w-0">
-                    <h4 className="text-sm font-medium text-text-strong-950 truncate">
+                    <h4 className="text-[16px] text-[#0E121B]">
                       {milestone.title}
                     </h4>
-                    <p className="text-sm text-text-secondary-600 mt-0.5">
+                    <p className="text-[16px] text-[#0E121B] mt-[4px]">
                       ${milestone.amount}
                     </p>
                   </div>
                   {milestone.date && (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-[12px] text-[#525866]">
                       {milestone.date}
                     </p>
                   )}
@@ -208,6 +210,7 @@ export function MilestoneSection({
             </>
           )}
         </Accordion.Content>
+
       </Accordion.Item>
     </Accordion.Root>
   );
