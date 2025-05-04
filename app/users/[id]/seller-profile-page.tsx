@@ -354,7 +354,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
   return (
     <div className='px-8 py-8'>
       {/* Two-column layout - Changed to Flexbox */}
-      <div className='flex gap-8'>
+      <div className='flex gap-[24px]'>
         {/* Left Sidebar Column */}
         <div className='w-[352px] shrink-0'> {/* Set fixed width and prevent shrinking */}
           <div className='sticky'>
@@ -369,7 +369,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
         </div>
 
         {/* Right Main Content Column (Tabs) */}
-        <div className='flex-1 overflow-hidden max-w-[1000px] flex flex-col gap-6'> {/* Use flex-1, keep overflow/max-h/flex/gap */}
+        <div className='flex-1 overflow-hidden max-w-[1000px] flex flex-col gap-6 px-[16px]'> {/* Use flex-1, keep overflow/max-h/flex/gap */}
           {/* Tabs */}
           <div>
             <TabMenuHorizontal.Root
