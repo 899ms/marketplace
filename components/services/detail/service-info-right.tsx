@@ -140,7 +140,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
 
               {/* heart icon top-right */}
               <button className="absolute top-7 right-7 p-1 text-[#525866] hover:text-icon-primary-500">
-                <RiHeart3Line className="size-5" />
+                <RiHeart3Line className="size-6 text-[#525866]" />
               </button>
 
               <Link href={`/users/${service.seller_id}`} passHref legacyBehavior>
@@ -166,8 +166,8 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
 
               {/* rating (no "reviews" text) */}
               <div className="mt-1 flex items-center justify-center gap-1 text-xs text-[#525866] font-normal">
-                <RiStarFill className="size-3.5 text-yellow-400" />
-                <span className="text-gray-600" >4.9 (125)</span>
+                <RiStarFill className="size-4 text-yellow-400" />
+                <span className="text-gray-600 text-[12px]" >4.9 (125)</span>
               </div>
             </div>
             <div className="mt-[8px]">
@@ -190,11 +190,15 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         <div className='mb-[20px] h-px w-full bg-stroke-soft-200'></div>
 
         {/* Pricing, Delivery & Proposals */}
-        <div className='mb-[20px] space-y-3'>
+        <div className='mb-[28px] space-y-3'>
 
           <div className='flex items-center justify-between'>
             <div className='text-[#525866] flex items-center gap-2 '>
-              <RiMoneyCnyCircleLine className='size-[15px]' />
+              <Button.Icon className="flex-shrink-0">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M3.02975 2.38251C4.39977 1.16704 6.16852 0.497123 8 0.500009C12.1423 0.500009 15.5 3.85776 15.5 8.00001C15.5024 9.53294 15.0329 11.0295 14.1553 12.2863L12.125 8.00001H14C14 6.80703 13.6444 5.64112 12.9786 4.65122C12.3128 3.66133 11.367 2.89239 10.262 2.44263C9.15706 1.99287 7.94312 1.88271 6.77525 2.12623C5.60739 2.36975 4.53863 2.95588 3.7055 3.80976L3.0305 2.38326L3.02975 2.38251ZM12.9703 13.6175C11.6002 14.833 9.83148 15.5029 8 15.5C3.85775 15.5 0.5 12.1423 0.5 8.00001C0.5 6.40626 0.99725 4.92876 1.84475 3.71376L3.875 8.00001H2C1.99998 9.19299 2.35559 10.3589 3.02141 11.3488C3.68723 12.3387 4.63303 13.1076 5.73798 13.5574C6.84294 14.0071 8.05688 14.1173 9.22475 13.8738C10.3926 13.6303 11.4614 13.0441 12.2945 12.1903L12.9695 13.6168L12.9703 13.6175ZM8.75 9.15126H11V10.6513H8.75V12.1513H7.25V10.6513H5V9.15126H7.25V8.40126H5V6.90126H6.9395L5.348 5.31051L6.41 4.25001L8 5.84076L9.59075 4.25001L10.652 5.31051L9.0605 6.90201H11V8.40201H8.75V9.15201V9.15126Z" fill="#525866" />
+                </svg>
+              </Button.Icon>
               <span className='text-[14px]'>Price</span>
             </div>
             <span className='text-[24px] text-[#0E121B] text-text-strong-950'>
@@ -204,7 +208,11 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
 
           <div className='flex items-center justify-between'>
             <div className='text-[#525866] flex items-center gap-2'>
-              <RiGroupLine className='size-[15px]' />
+              <Button.Icon className="flex-shrink-0">
+                <svg width="17" height="17" viewBox="0 0 17 17" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M0.5 16.5C0.5 14.9087 1.13214 13.3826 2.25736 12.2574C3.38258 11.1321 4.9087 10.5 6.5 10.5C8.0913 10.5 9.61742 11.1321 10.7426 12.2574C11.8679 13.3826 12.5 14.9087 12.5 16.5H11C11 15.3065 10.5259 14.1619 9.68198 13.318C8.83807 12.4741 7.69347 12 6.5 12C5.30653 12 4.16193 12.4741 3.31802 13.318C2.47411 14.1619 2 15.3065 2 16.5H0.5ZM6.5 9.75C4.01375 9.75 2 7.73625 2 5.25C2 2.76375 4.01375 0.75 6.5 0.75C8.98625 0.75 11 2.76375 11 5.25C11 7.73625 8.98625 9.75 6.5 9.75ZM6.5 8.25C8.1575 8.25 9.5 6.9075 9.5 5.25C9.5 3.5925 8.1575 2.25 6.5 2.25C4.8425 2.25 3.5 3.5925 3.5 5.25C3.5 6.9075 4.8425 8.25 6.5 8.25ZM12.713 11.0273C13.767 11.5019 14.6615 12.2709 15.2889 13.2418C15.9164 14.2126 16.2501 15.344 16.25 16.5H14.75C14.7502 15.633 14.4999 14.7844 14.0293 14.0562C13.5587 13.328 12.8878 12.7512 12.0972 12.3953L12.7123 11.0273H12.713ZM12.197 2.55975C12.9526 2.87122 13.5987 3.40015 14.0533 4.07942C14.5078 4.75869 14.7503 5.55768 14.75 6.375C14.7503 7.40425 14.3658 8.39642 13.6719 9.15662C12.978 9.91682 12.025 10.3901 11 10.4835V8.97375C11.5557 8.89416 12.0713 8.63851 12.471 8.24434C12.8707 7.85017 13.1335 7.33824 13.2209 6.7837C13.3082 6.22916 13.2155 5.66122 12.9563 5.16327C12.6971 4.66531 12.2851 4.26356 11.7808 4.017L12.197 2.55975Z" fill="#525866" />
+                </svg>
+              </Button.Icon>
               <span className='text-[14px]'>Sold</span>
             </div>
             <span className='font-[16px] text-[#0E121B] text-text-strong-950'>
@@ -214,7 +222,12 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
 
           <div className='flex items-center justify-between'>
             <div className='text-[#525866] flex items-center gap-2'>
-              <RiCalendarLine className='size-[15px]' />
+              <Button.Icon className="flex-shrink-0">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11.75 2.25H14.75C14.9489 2.25 15.1397 2.32902 15.2803 2.46967C15.421 2.61032 15.5 2.80109 15.5 3V15C15.5 15.1989 15.421 15.3897 15.2803 15.5303C15.1397 15.671 14.9489 15.75 14.75 15.75H1.25C1.05109 15.75 0.860322 15.671 0.71967 15.5303C0.579018 15.3897 0.5 15.1989 0.5 15V3C0.5 2.80109 0.579018 2.61032 0.71967 2.46967C0.860322 2.32902 1.05109 2.25 1.25 2.25H4.25V0.75H5.75V2.25H10.25V0.75H11.75V2.25ZM10.25 3.75H5.75V5.25H4.25V3.75H2V6.75H14V3.75H11.75V5.25H10.25V3.75ZM14 8.25H2V14.25H14V8.25Z" fill="#525866" />
+                </svg>
+
+              </Button.Icon>
               <span className='text-[14px]'>Deadline</span>
             </div>
             <span className='font-[14px] text-[#0E121B] text-text-strong-950'>
@@ -234,6 +247,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             onClick={handleOpenChat}
             disabled={!currentUser || isLoadingChat || !sellerProfile} // Disable conditions
             aria-label={currentUser?.id === service.seller_id ? "Cannot message yourself" : "Send message to seller"}
+            className="border border-stroke-soft-200 shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)]"
           >
             {isLoadingChat ? (
               <>
@@ -278,6 +292,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             mode='stroke'
             size='small'
             onClick={handleHireClick}
+            className="border border-[#E1E4EA] shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)]"
           >
             Hire
             <Button.Icon as={RiArrowRightSLine} />
@@ -292,7 +307,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         {/* About Seller Section */}
         {service.seller_bio && (
           <div className="mb-[24px]">
-            <h3 className="mb-[10px] text-label-md font-medium text-text-strong-950">
+            <h3 className="mb-[10px] text-[14px] text-text-strong-950">
               About
             </h3>
             <p className="text-text-secondary-600 line-clamp-3 text-paragraph-xs">
@@ -329,7 +344,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         {/* Tags Section - Use service.tags and Tag component */}
         {service.tags && service.tags.length > 0 && (
           <div className='mb-[24px]'>
-            <h3 className='mb-2 text-label-md font-medium text-text-strong-950'>
+            <h3 className='mb-2 text-[14px] text-text-strong-950'>
               Skills
             </h3>
             <div className='flex flex-wrap gap-1.5'>
@@ -344,7 +359,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
 
         {/* Tools Section (Dummy Data) - Use Tag component */}
         <div>
-          <h3 className='mb-2 text-label-md font-medium text-text-strong-950'>
+          <h3 className='mb-2 text-[14px] text-text-strong-950'>
             Tools
           </h3>
           <div className='flex flex-wrap gap-1.5'>

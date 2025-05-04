@@ -30,7 +30,7 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
 
   return (
     <Link href={`/services/${service.id}`} className='group block flex-shrink-0 basis-[calc((100%-32px)/3)] max-w-[253px] max-h-[256px]'>
-      <div className='shadow-sm group-hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all h-full flex flex-col'>
+      <div className='shadow-sm group-hover:shadow-md overflow-hidden rounded-lg border border-t-0  border-stroke-soft-200 bg-bg-white-0 transition-all h-full flex flex-col'>
         {/* Image Section */}
         <div className={`relative w-full h-[164px] ${!imageUrl ? imagePlaceholder : ''}`}>
           {imageUrl ? (
@@ -49,13 +49,13 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
           </div>
         </div>
         {/* Content Section */}
-        <div className='p-3 flex flex-col flex-grow border border-t-0 border-[#E1E4EA]'>
+        <div className='p-3 flex flex-col flex-grow'>
           <p className='text-[14px] text-[14px] text-[#0E121B] mb-1.5 line-clamp-2 font-medium flex-grow'>
             {service.title}
           </p>
           <div className='flex items-center justify-between mt-auto'>
             <div className='text-[12px] text-[#525866] flex items-center gap-0.5'>
-              <RiStarFill className='size-3 text-yellow-400' />
+              <RiStarFill className='size-4 text-yellow-400' />
               {/* Placeholder for rating/reviews */}
               <span>
                 4.5(50+)

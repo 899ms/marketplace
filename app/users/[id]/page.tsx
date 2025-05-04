@@ -16,6 +16,7 @@ import { chatOperations, userOperations, jobOperations } from '@/utils/supabase/
 import { User, Job, Chat, Message } from '@/utils/supabase/types';
 import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
 import { ProfileActionButtons } from '@/components/users/profile/profile-action-buttons';
+import Image from 'next/image';
 
 import {
   RiStarFill,
@@ -165,19 +166,23 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
               </Avatar.Indicator>
             </Avatar.Root>
             <div>
-              <h2 className='font-medium  text-[16px]'>
+              <h2 className='font-medium text-[#525866]  text-[16px]'>
                 {userData.full_name || userData.username}
               </h2>
               <div className='mt-1 flex items-center justify-center gap-1'>
                 <RiStarFill className='size-3.5 text-yellow-400' />
-                <span className='text-text-secondary-600 text-paragraph-xs'>
-                  4.9 (125) {/* Placeholder ratings - could be added to user schema later */}
+                <span className='text-text-secondary-600 text-[#525866] text-paragraph-xs'>
+                  4.9(125) {/* Placeholder ratings - could be added to user schema later */}
                 </span>
               </div>
             </div>
-            <div className='flex items-center justify-center gap-2'>
-              <RiGoogleFill className='size-4 text-text-sub-600' /> <span className="text-[12px]">Google</span>
-              <RiGoogleFill className='size-4 text-text-sub-600' /> <span className="text-[12px]">Google</span>
+            <div className='flex items-center justify-center gap-3 mb-3'>
+              <div className='gap-1 flex flex-row'>
+                <Image src="/images/Chrome.svg" alt="Icon" width={16} height={16} /> <span className="text-[12px]">Google</span>
+              </div>
+              <div className='gap-1 flex flex-row'>
+                <Image src="/images/Chrome.svg" alt="Icon" width={16} height={16} /> <span className="text-[12px]">Google</span>
+              </div>
             </div>
           </div>
 
@@ -196,7 +201,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
           )}
 
           {/* Recent Reviews */}
-          <div>
+          <div className='px-3 py-2'>
             <div className=" flex flex-col sm:flex-row sm:items-center sm:justify-between">
               {/* Left section - Star and text */}
               <div className="flex items-center gap-1 text-label-md font-medium text-text-strong-950">
@@ -207,7 +212,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
               </div>
 
               {/* Right section - Avatars */}
-              <div className="flex items-center border gap-2 rounded-full pt-0.5 pr-2.5 pb-0.5 pl-0.5 bg-bg-white-0 shadow-[0_2px_4px_0_rgba(27,28,29,0.04)]">
+              <div className="flex items-center gap-2 rounded-full pt-0.5 pr-2.5 pb-0.5 pl-0.5 bg-bg-white-0 shadow-[0_2px_4px_0_rgba(27,28,29,0.04)]">
                 <AvatarGroup.Root size="32">
                   {reviewAvatars.map((src, i) => (
                     <Avatar.Root key={i} size="32">
@@ -215,7 +220,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
                     </Avatar.Root>
                   ))}
                 </AvatarGroup.Root>
-                <span className="text-text-secondary-600 text-sm">+4</span>
+                <span className="text-text-secondary-600 text-sm text-[#525866] text-normal">+4</span>
               </div>
             </div>
           </div>
@@ -234,7 +239,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
                 key={tag}
                 variant="light"
                 size="medium"
-                className="bg-white rounded-md border border-stroke-soft-300 text-gray-600 px-2 py-0.5"
+                className="bg-white min-h-[24px] rounded-md border border-stroke-soft-300 text-gray-600 px-2 py-0.5"
               >
                 {tag}
               </Badge.Root>
@@ -262,7 +267,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
           <div className='flex items-center gap-3'>
             <Link
               href='#'
-              className='text-icon-secondary-400 hover:text-icon-primary-500'
+              className='text-icon-secondary-400 hover:text-icon-primary-500 text-[#6441A5]'
             >
               <RiTwitchFill className='size-7' />
             </Link>
@@ -272,12 +277,10 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
             >
               <RiTwitterXFill className='size-7' />
             </Link>
-            <Link
-              href='#'
-              className='text-icon-secondary-400 hover:text-icon-primary-500'
-            >
-              <RiGoogleFill className='size-7' />
+            <Link href="#">
+              <RiGoogleFill className="size-7" style={{ color: 'initial' }} />
             </Link>
+
           </div>
         </div>
       </div>
@@ -348,8 +351,8 @@ const OrderListItem = ({ job, loggedInUserType }: { job: Job; loggedInUserType?:
       <div className='flex items-start justify-between gap-4 px-2'>
         <div className='flex-1 max-w-[80%]'>
           {/* Title */}
-          <h3 className='mb-1 text-paragraph-lg font-medium text-text-strong-950'>
-            {job.title}
+          <h3 className='mb-2.5 text-paragraph-lg font-medium text-[20px] text-text-strong-950'>
+            W{job.title}
           </h3>
 
           {/* Tags */}
@@ -357,6 +360,7 @@ const OrderListItem = ({ job, loggedInUserType }: { job: Job; loggedInUserType?:
             {displayTags.map((tag, i) => (
               <Tag.Root
                 key={i}
+                className=' hover:bg-white hover:border hover:border-black hover:text-black font-medium'
                 data-state={i === 0 ? "active" : "default"}
               >
                 {tag}
@@ -365,14 +369,14 @@ const OrderListItem = ({ job, loggedInUserType }: { job: Job; loggedInUserType?:
           </div>
 
           {/* Description */}
-          <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm mt-2.5'>
+          <p className='text-text-secondary-600 line-clamp-2 text-paragraph-sm mt-3'>
             {job.description || "No description provided."}
           </p>
         </div>
 
         <div className='shrink-0 text-right'>
           <div className='text-gray-600 text-label-sm'>Budget</div>
-          <div className='mb-2 text-label-lg font-medium text-text-strong-950'>
+          <div className='my-2.5 text-label-lg font-medium text-text-strong-950'>
             {getCurrencySymbol(job.currency)}{job.budget.toLocaleString()}
           </div>
           {loggedInUserType === 'seller' && (
@@ -381,7 +385,6 @@ const OrderListItem = ({ job, loggedInUserType }: { job: Job; loggedInUserType?:
               mode='stroke'
               size='small'
               onClick={handleApply}
-              className="mt-2.5"
             >
               Apply
               <Button.Icon as={RiArrowRightSLine} />
@@ -423,19 +426,19 @@ const ReviewListItem = () => {
       {/* Top row with user info and amount */}
       <div className='flex items-start justify-between mb-3'>
         {/* LEFT SIDE: Avatar + User Info */}
-        <div className='flex items-start gap-3'>
+        <div className='flex items-start gap-2.5'>
           <Avatar.Root size='48' className='shrink-0'>
             <Avatar.Image src={review.avatarUrl} alt={review.name} />
           </Avatar.Root>
 
-          <div className='flex flex-col'>
+          <div className='flex flex-col gap-2.5'>
             {/* Row 1: Name */}
             <div className='text-text-secondary-600 text-label-sm font-medium'>
               {review.name}
             </div>
 
             {/* Row 2: Rating and Date */}
-            <div className='flex items-center gap-1.5'>
+            <div className='flex items-center gap-3'>
               <div className='flex items-center gap-0.5'>
                 <RiStarFill className='size-3.5 text-yellow-400' />
                 <span className='text-gray-600 text-paragraph-xs'>
@@ -457,10 +460,10 @@ const ReviewListItem = () => {
 
       {/* Bottom row with title and description */}
       <div>
-        <h3 className='mb-1 text-paragraph-lg font-medium text-text-strong-950'>
+        <h3 className='mb-1 mt-1.5 text-paragraph-lg font-medium text-text-strong-950'>
           {review.title}
         </h3>
-        <p className='text-gray-600 line-clamp-2 text-paragraph-sm'>
+        <p className='text-gray-600 ml-0.5 line-clamp-2 text-paragraph-sm'>
           {review.description}
         </p>
       </div>
@@ -664,11 +667,11 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
             {/* tab bar */}
             <div className="border-t-0">
               <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
-                <TabMenuHorizontal.List className="flex items-center gap-2 border-none border-y-0">
+                <TabMenuHorizontal.List className="flex items-center justify-start w-fit gap-4 border-none border-y-0">
                   <TabMenuHorizontal.Trigger
                     value="Order"
                     className="
-                      px-4 pb-2 font-medium 
+                      pb-2 font-medium 
                       text-gray-400 
                       data-[state=active]:text-black
                       text-[24px]"
@@ -678,7 +681,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
                   <TabMenuHorizontal.Trigger
                     value="Review"
                     className="
-                      px-4 pb-2 font-medium 
+                      pb-2 font-medium 
                       text-gray-400 
                       data-[state=active]:text-black
                       text-[24px]"
