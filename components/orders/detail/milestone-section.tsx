@@ -9,7 +9,8 @@ import {
   RiCheckFill,
   RiTimeLine,
   RiAddLine,
-  RiArrowDownSLine
+  RiArrowDownSLine,
+  RiAddCircleLine
 } from '@remixicon/react';
 
 // Import UserRole type
@@ -201,10 +202,10 @@ export function MilestoneSection({
               {!showAddMilestone && (
                 <button
                   onClick={() => setShowAddMilestone(true)}
-                  className="flex items-center gap-1 text-text-strong-950 hover:text-text-secondary-600 mt-6 ml-9 text-sm font-medium"
+                  className="flex items-center gap-2.5 text-text-strong-950 hover:text-text-secondary-600 mt-6 text-sm font-medium"
                 >
-                  <RiAddLine className="h-5 w-5" />
-                  <span>Add a new milestone</span>
+                  <RiAddCircleLine className="h-7 w-7 text-[#525866]" />
+                  <span className='text-[#525866]'>Add a new milestone</span>
                 </button>
               )}
             </>
