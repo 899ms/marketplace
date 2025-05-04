@@ -14,9 +14,9 @@ export function FinancialSummary({
   refunded,
 }: FinancialSummaryProps) {
   return (
-    <div className="flex gap-4 my-4">
+    <div className="flex gap-[1rem] my-4">
       {/* Financial Details */}
-      <div className="flex-1 grid grid-cols-4 gap-4 bg-bg-weak-50 p-6 rounded-lg h-[100px]">
+      <div className="flex-1 grid grid-cols-4 gap-4 bg-bg-weak-50 p-6 rounded-lg h-[100px] ">
         <div className="flex flex-col justify-center">
           <span className="text-sm text-text-secondary-600">Total Amount</span>
           <span className="text-xl font-medium text-text-strong-950 mt-1">{totalAmount}</span>

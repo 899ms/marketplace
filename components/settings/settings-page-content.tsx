@@ -40,7 +40,7 @@ export default function SettingsPageContent() {
       <OrdersSidebar activeView={currentTab} isSeller={!!isSeller} />
 
       {/* right content – switch on currentTab */}
-      <div className="flex flex-1 flex-col max-w-[1112px] p-6 overflow-y-auto">
+      <div className="flex flex-1 flex-col w-[1132px] pl-7 pt-8 overflow-y-auto">
         {currentTab === 'orders' && <OrdersContent />}
 
         {currentTab === 'my-services' && isSeller && <MyServicesView />}
