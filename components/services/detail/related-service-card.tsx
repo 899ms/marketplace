@@ -29,12 +29,12 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
   const imagePlaceholder = 'bg-gradient-to-br from-blue-400 to-purple-500'; // Existing gradient
 
   return (
-    <Link href={`/services/${service.id}`} className='block group'>
+    <Link href={`/services/${service.id}`} className='group block flex-shrink-0 basis-[calc((100%-32px)/3)] max-w-[253px] max-h-[256px]'>
       <div className='shadow-sm group-hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all h-full flex flex-col'>
         {/* Image Section */}
-        <div className={`relative h-32 w-full ${!imageUrl ? imagePlaceholder : ''}`}>
+        <div className={`relative w-full h-[164px] ${!imageUrl ? imagePlaceholder : ''}`}>
           {imageUrl ? (
-            <img src={imageUrl} alt={service.title} className="size-full object-cover" />
+            <img src={imageUrl} alt={service.title} className="w-full h-full object-cover" />
           ) : (
             <div className="size-full flex items-center justify-center">{/* Maybe add an icon? */}</div>
           )}
@@ -49,12 +49,12 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
           </div>
         </div>
         {/* Content Section */}
-        <div className='p-3 flex flex-col flex-grow'>
-          <p className='text-sm mb-1.5 line-clamp-2 font-medium text-text-strong-950 flex-grow'>
+        <div className='p-3 flex flex-col flex-grow border border-t-0 border-[#E1E4EA]'>
+          <p className='text-[14px] text-[14px] text-[#0E121B] mb-1.5 line-clamp-2 font-medium flex-grow'>
             {service.title}
           </p>
-          <div className='text-xs flex items-center justify-between mt-auto'>
-            <div className='text-text-secondary-600 flex items-center gap-0.5'>
+          <div className='flex items-center justify-between mt-auto'>
+            <div className='text-[12px] text-[#525866] flex items-center gap-0.5'>
               <RiStarFill className='size-3 text-yellow-400' />
               {/* Placeholder for rating/reviews */}
               <span>
@@ -62,7 +62,7 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
               </span>
             </div>
             {/* Use formatted price and currency */}
-            <span className='font-semibold text-text-strong-950'>
+            <span className='text-[12px] font-semibold text-[#0E121B]'>
               {formatCurrency(service.price, service.currency)}
             </span>
           </div>
@@ -71,3 +71,4 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
     </Link>
   );
 }
+

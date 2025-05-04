@@ -31,7 +31,7 @@ export function ImageCarousel({
   const setSlide = (index: number) => setActiveIndex(index);
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 max-w-[824px]">
       {/* Main Image */}
       <div className="relative mb-2 aspect-video w-full overflow-hidden rounded-xl sm:aspect-[4/3] md:aspect-[3/2]">
         <Image
@@ -41,7 +41,7 @@ export function ImageCarousel({
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           style={{ objectFit: 'cover' }}
           priority={activeIndex === 0}
-          className="bg-bg-subtle-100"
+          className="bg-bg-subtle-100 max-h-[600px] h-full"
         />
 
         {/* Arrows */}

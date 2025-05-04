@@ -112,9 +112,9 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
         );
       case 'Portfolio': // Add Portfolio tab
         return (
-          <div className='space-y-4'>
+          <div className='w-full max-w-[824px] px-4 mx-auto'>
             {portfolioServices.length > 0 ? (
-              <div className='grid grid-cols-1 gap-4 sm:grid-cols-2'>
+              <div className='flex flex-wrap gap-4'>
                 {portfolioServices.map((portfolioService) => (
                   <RelatedServiceCard
                     key={portfolioService.id}
