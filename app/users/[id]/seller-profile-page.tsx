@@ -352,12 +352,12 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
   };
 
   return (
-    <div className='px-6 py-5'>
+    <div className='px-8 py-8'>
       {/* Two-column layout - Changed to Flexbox */}
       <div className='flex gap-8'>
         {/* Left Sidebar Column */}
         <div className='w-[352px] shrink-0'> {/* Set fixed width and prevent shrinking */}
-          <div className='sticky top-20'>
+          <div className='sticky'>
             <ProfilePageSidebar
               userProfile={targetSeller}
               currentUser={currentUserProfile}
