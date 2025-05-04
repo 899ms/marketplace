@@ -131,7 +131,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
 
   return (
     <div className='sticky top-20'>
-      <div className='rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-[20px]'>
+      <div className='rounded-[20px] border border-[#E2E4E9] bg-bg-white-0 p-[20px] shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)]'>
         {/* Provider Info - Use service.seller_name, seller_avatar_url */}
         <div className="relative p-[16px]">
           <div className="flex flex-col items-center text-center p-[16px]">
