@@ -201,7 +201,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
           )}
 
           {/* Recent Reviews */}
-          <div>
+          <div className='px-3 py-2'>
             <div className=" flex flex-col sm:flex-row sm:items-center sm:justify-between">
               {/* Left section - Star and text */}
               <div className="flex items-center gap-1 text-label-md font-medium text-text-strong-950">
