@@ -54,7 +54,14 @@ export default function TabsFiltersBar({
               <Tabs.Trigger
                 key={key}
                 value={key}
-                className="rounded-lg px-8 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md"
+                className={
+                  key === 'all'
+                    ? 'rounded-lg px-12 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'
+                    : key === 'inProgress'
+                      ? 'rounded-lg px-4 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'
+                      : key === 'completed'
+                        ? 'rounded-lg px-4 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'
+                        : 'rounded-lg px-8 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'}
               >
                 {key === 'inProgress'
                   ? 'In progress'
@@ -81,7 +88,7 @@ export default function TabsFiltersBar({
             /* Buyer – date picker */
             <Dropdown.Root>
               <Dropdown.Trigger asChild>
-                <button className="inline-flex h-9 items-center gap-1 whitespace-nowrap rounded-md border border-stroke-soft-200 bg-bg-white-0 px-2 text-[12px] text-gray-600 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                <button className="inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-2 text-[14px] text-gray-500 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
                   <Image src={calendarIcon} alt="Calendar" width={20} height={20} />
                   {selectedDate ? selectedDate.toLocaleDateString() : 'Select Date'}
                 </button>
@@ -97,8 +104,8 @@ export default function TabsFiltersBar({
             </Dropdown.Root>
           ) : (
             /* Seller – Filter button */
-            <Button.Root variant='neutral' mode='stroke' size='small' className='text-[#525866] text-[14px] font-medium'>
-              <Button.Icon as={RiFilter3Line} className="w-5 h-4 text-[#525866]" />
+            <Button.Root variant='neutral' mode='stroke' size='small' className='text-gray-500 text-[14px] font-medium'>
+              <Button.Icon as={RiFilter3Line} className="w-5 h-5 text-gray-600" />
               Filter
             </Button.Root>
           )}
@@ -106,8 +113,8 @@ export default function TabsFiltersBar({
           {/* Sort */}
           <Dropdown.Root>
             <Dropdown.Trigger asChild>
-              <Button.Root variant='neutral' mode='stroke' size='small' className='text-[#525866] text-[14px] font-normal'>
-                <Button.Icon as={RiSortAsc} className="w-4 h-5 text-[#99A0AE]" />
+              <Button.Root variant='neutral' mode='stroke' size='small' className='text-gray-500 text-[14px] font-normal'>
+                <Button.Icon as={RiSortAsc} className="w-4 h-5 text-gray-600" />
                 Sort by
                 <Button.Icon as={RiArrowDownSLine} className='w-4 h-5 text-[#99A0AE]' />
               </Button.Root>
