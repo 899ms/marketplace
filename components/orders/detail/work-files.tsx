@@ -62,20 +62,22 @@ export function WorkFiles({
   };
 
   return (
-    <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-lg shadow-sm my-4 border border-stroke-soft-200">
+    <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-lg shadow-sm mb-4 border border-stroke-soft-200">
       <Accordion.Item value="item-1" className="p-0 rounded-none ring-0 hover:bg-white data-[state=open]:bg-white">
+
         <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200">
-          <Accordion.Trigger className="w-full text-lg font-semibold text-text-strong-950 p-0 m-0 flex justify-between items-center hover:no-underline">
-            Work Files
+          <Accordion.Trigger className="w-full text-[16px] text-[#0E121B] font-medium p-0 m-0 flex justify-between items-center hover:no-underline">
+            Work File
             <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
           </Accordion.Trigger>
         </Accordion.Header>
-        <Accordion.Content className="pt-0 pb-4 px-4">
+
+        <Accordion.Content className="p-[16px]">
           {userRole === 'seller' && (
             <div className="mt-4 mb-6">
               <FileUploadRoot
                 htmlFor={fileInputId}
-                className="border-dashed border-2 border-gray-300 rounded-lg p-6 text-center cursor-pointer hover:border-primary-500"
+                className="border-dashed border-2 border-gray-300 rounded-lg p-[16px] text-center cursor-pointer hover:border-primary-500"
               >
                 <div className="flex flex-col items-center justify-center pointer-events-none">
                   <RiUploadCloud2Line className="size-10 text-gray-400 mb-2" />
@@ -115,7 +117,7 @@ export function WorkFiles({
           )}
 
           <div
-            className={`space-y-4 mt-4 pt-4 ${userRole === 'seller' ? 'border-t border-gray-100' : ''
+            className={`space-y-[20px] ${userRole === 'seller' ? 'border-t border-gray-100' : ''
               }`}
           >
             {files.length === 0 && userRole === 'buyer' && (
@@ -125,10 +127,10 @@ export function WorkFiles({
               <p className="text-sm text-gray-500 text-center py-4">Upload your work files using the section above.</p>
             )}
             {files.map((file) => (
-              <div key={file.id} className="flex justify-between items-center pb-4 border-b border-gray-100 last:border-b-0">
+              <div key={file.id} className="flex justify-between items-center p-[16px] pb-[28px] border-b border-[#E1E4EA] last:border-b-0">
                 <div>
-                  <p className="text-sm font-medium text-text-strong-950">{file.name}</p>
-                  <div className="flex gap-2 text-xs text-text-secondary-600 mt-1">
+                  <p className="text-[14px] mb-1 text-[#0E121B]">{file.name}</p>
+                  <div className="flex gap-5 text-[12px] text-[#525866]">
                     <span>{file.size}</span>
                     <span>{file.date}</span>
                   </div>
@@ -138,6 +140,7 @@ export function WorkFiles({
                   mode="stroke"
                   size="small"
                   onClick={() => onDownload?.(file.id)}
+                  className="max-w-[107px] w-full"
                 >
                   Download
                 </Button.Root>

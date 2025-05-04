@@ -9,7 +9,8 @@ import {
   RiCheckFill,
   RiTimeLine,
   RiAddLine,
-  RiArrowDownSLine
+  RiArrowDownSLine,
+  RiAddCircleLine
 } from '@remixicon/react';
 
 // Import UserRole type
@@ -88,18 +89,20 @@ export function MilestoneSection({
   console.log('MilestoneSection rendering with milestones state:', milestones);
 
   return (
-    <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-lg shadow-sm my-4 border border-stroke-soft-200">
+    <Accordion.Root type="single" collapsible defaultValue="item-1" className="w-full bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)] mb-4 border border-stroke-soft-200">
       <Accordion.Item value="item-1" className="p-0 rounded-none ring-0 hover:bg-white data-[state=open]:bg-white">
-        <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200 bg-[var(--bg-weak-50)]">
-          <Accordion.Trigger className="w-full text-lg font-semibold text-text-strong-950 p-0 m-0 flex justify-between items-center hover:no-underline">
+
+        <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200 bg-[#F5F7FA]">
+          <Accordion.Trigger className="w-full text-[16px] text-text-strong-950 p-0 m-0 flex font-medium justify-between items-center hover:no-underline">
             Timeline
             <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
           </Accordion.Trigger>
         </Accordion.Header>
-        <Accordion.Content className="pt-0 pb-4 px-4">
-          <div className="space-y-4 mt-4">
+
+        <Accordion.Content className="p-[16px]">
+          <div className="space-y-[24px] mt-4 ">
             {milestones.map((milestone) => (
-              <div key={milestone.id} className="flex items-start gap-3">
+              <div key={milestone.id} className="flex items-start gap-3 pb-2.5">
                 {/* status icon */}
                 <div className="mt-1 flex-shrink-0">
                   {milestone.status === 'completed' ? (
@@ -114,17 +117,17 @@ export function MilestoneSection({
                 </div>
 
                 {/* title+amount on the left, date on the far right */}
-                <div className="flex-1 flex justify-between items-center min-w-0">
-                  <div className="min-w-0">
-                    <h4 className="text-sm font-medium text-text-strong-950 truncate">
+                <div className="flex-1 flex justify-between items-center min-w-0 mt-[-7px]">
+                  <div className="min-w-0 gap-1">
+                    <h4 className="text-[16px] pb-1 text-[#0E121B]">
                       {milestone.title}
                     </h4>
-                    <p className="text-sm text-text-secondary-600 mt-0.5">
+                    <p className="text-[16px] text-[#0E121B] mt-[4px]">
                       ${milestone.amount}
                     </p>
                   </div>
                   {milestone.date && (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-[12px] text-[#525866]">
                       {milestone.date}
                     </p>
                   )}
@@ -199,15 +202,16 @@ export function MilestoneSection({
               {!showAddMilestone && (
                 <button
                   onClick={() => setShowAddMilestone(true)}
-                  className="flex items-center gap-1 text-text-strong-950 hover:text-text-secondary-600 mt-6 ml-9 text-sm font-medium"
+                  className="flex items-center gap-2.5 text-text-strong-950 hover:text-text-secondary-600 mt-6 text-sm font-medium"
                 >
-                  <RiAddLine className="h-5 w-5" />
-                  <span>Add a new milestone</span>
+                  <RiAddCircleLine className="h-7 w-7 text-[#525866]" />
+                  <span className='text-[#525866]'>Add a new milestone</span>
                 </button>
               )}
             </>
           )}
         </Accordion.Content>
+
       </Accordion.Item>
     </Accordion.Root>
   );

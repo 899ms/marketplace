@@ -2,7 +2,6 @@
 
 import React from 'react';
 import * as Badge from '@/components/ui/badge';
-import { RiBookmarkLine } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
 
 interface ProjectHeaderProps {
@@ -48,7 +47,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ title, category, showBook
             className="!text-gray-400 hover:!text-gray-500"
           >
             <Button.Icon>
-              <RiBookmarkLine />
+              <img src="/assets/images/icons/bookmark.svg" alt="Bookmark" className="size-5" />
             </Button.Icon>
           </Button.Root>
         )}
