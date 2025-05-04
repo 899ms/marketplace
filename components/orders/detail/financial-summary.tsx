@@ -16,7 +16,7 @@ export function FinancialSummary({
   return (
     <div className="flex gap-[1rem] my-4">
       {/* Financial Details */}
-      <div className="flex-1 grid grid-cols-4 gap-4 bg-bg-weak-50 p-6 rounded-lg h-[100px] ">
+      <div className="flex-1 grid grid-cols-4 gap-4 bg-bg-weak-50 p-6 rounded-lg h-[100px]">
         <div className="flex flex-col justify-center">
           <span className="text-sm text-text-secondary-600">Total Amount</span>
           <span className="text-xl font-medium text-text-strong-950 mt-1">{totalAmount}</span>
@@ -36,7 +36,7 @@ export function FinancialSummary({
       </div>
 
       {/* Milestone Box */}
-      <div className="w-[300px] bg-bg-weak-50 p-3 rounded-lg h-[100px] flex flex-col">
+      <div className="flex-1 bg-bg-weak-50 p-3 rounded-lg h-[100px] flex flex-col">
         <div>
           <RiHeartPulseLine className="size-5 text-text-secondary-600" />
         </div>
