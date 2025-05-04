@@ -64,7 +64,7 @@ export default function OrdersSidebar({
 
   /* ------------------ real sidebar ------------------ */
   return (
-    <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 pt-8 px-8">
+    <aside className="w-[240px] shrink-0 border-r border-stroke-soft-200 bg-bg-white-0 p-6">
       <TabMenuVertical.Root defaultValue={activeView} onValueChange={handleValueChange}>
         <TabMenuVertical.List>
           {links.map(({ name, view, icon: Icon }) => (

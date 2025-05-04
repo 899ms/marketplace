@@ -35,18 +35,18 @@ export default function SettingsPageContent() {
 
   /* --------------- main layout --------------- */
   return (
-    <div className=" max-w flex bg-bg-alt-white-100  overflow-hidden mx-auto">
+    <div className="flex min-h-screen bg-bg-alt-white-100 overflow-hidden mx-auto">
       {/* left nav – adds "My services" only if `isSeller` */}
       <OrdersSidebar activeView={currentTab} isSeller={!!isSeller} />
 
       {/* right content – switch on currentTab */}
-      <div className="flex-1 [1112px] p-8">
+      <div className="flex flex-1 flex-col max-w-[1112px] p-6 overflow-y-auto">
         {currentTab === 'orders' && <OrdersContent />}
 
         {currentTab === 'my-services' && isSeller && <MyServicesView />}
 
         {currentTab === 'my-services' && !isSeller && (
-          <main className="flex-1 p-6">
+          <main>
             <p className="text-red-500">
               Access Denied: "My Services" is only available for sellers.
             </p>
@@ -54,7 +54,7 @@ export default function SettingsPageContent() {
         )}
 
         {currentTab === 'billing' && (
-          <main className="flex-1 p-6">
+          <main>
             {/* TODO: BillingView component once implemented */}
             <p className="text-text-sub-400">Billing view coming soon…</p>
           </main>
