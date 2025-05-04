@@ -74,7 +74,7 @@ export default function OrdersSidebar({
               className={cn(
                 'flex h-9 w-full items-center gap-2 rounded-lg px-3 py-2 text-text-soft-600', // Base styles: height, width, flex, gap, padding, border-radius, default text
                 'hover:bg-gray-50', // Hover state
-                'data-[state=active]:bg-gray-100 data-[state=active]:text-text-strong-900', // Active state: background and text color (#F6F8FA equivalent)
+                'data-[state=active]:bg-black-100 data-[state=active]:text-text-strong-900', // Active state: background and text color (#F6F8FA equivalent)
               )}
             >
               <Icon className="h-5 w-5 shrink-0" /> {/* Ensure icon size and prevent shrinking */}
