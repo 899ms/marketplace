@@ -14,6 +14,8 @@ import {
   RiSearch2Line,
   RiArrowDownSLine,      // ← search icon
 } from '@remixicon/react';
+import Image from 'next/image';
+import calendarIcon from '@/assets/images/icons/calendar.svg';
 
 interface Props {
   activeTab: string;
@@ -79,8 +81,8 @@ export default function TabsFiltersBar({
             /* Buyer – date picker */
             <Dropdown.Root>
               <Dropdown.Trigger asChild>
-                <button className="inline-flex h-9 items-center gap-1 whitespace-nowrap rounded-md border border-stroke-soft-200 bg-bg-white-0 px-3 text-[12px] text-gray-600 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
-                  <RiCalendarLine className="size-4" />
+                <button className="inline-flex h-9 items-center gap-1 whitespace-nowrap rounded-md border border-stroke-soft-200 bg-bg-white-0 px-2 text-[12px] text-gray-600 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                  <Image src={calendarIcon} alt="Calendar" width={20} height={20} />
                   {selectedDate ? selectedDate.toLocaleDateString() : 'Select Date'}
                 </button>
               </Dropdown.Trigger>
