@@ -163,7 +163,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             </h3>
             {/* TODO: Implement edit functionality */}
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
-              <RiPencilLine className='size-4 text-[#99A0AE]' />
+              <RiPencilLine className='size-5 text-[#99A0AE]' />
             </button>
           </div>
           <div className='flex flex-wrap gap-1.5'>
@@ -187,7 +187,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             </h3>
             {/* TODO: Implement edit functionality */}
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
-              <RiPencilLine className='size-4 text-[#99A0AE]' />
+              <RiPencilLine className='size-5 text-[#99A0AE]' />
             </button>
           </div>
           <div className='flex items-center gap-3'>
