@@ -33,7 +33,7 @@ export default async function ServiceDetailPage({
   }
 
   return (
-    <div className='container mx-auto  py-7 max-w-[1200px]'>
+    <div className='container mx-auto w-full py-7 max-w-[1218px]'>
       <div className='mb-4'>
         <Breadcrumb.Root>
           <Breadcrumb.Item asChild>
@@ -59,15 +59,15 @@ export default async function ServiceDetailPage({
         You will get wordpress website design
       </h1>
 
-      <div className='grid grid-cols-1 gap-8 md:grid-cols-12'>
-        <div className='md:col-span-8 max-w-[824px]'>
+      <div className='flex gap-[42px] md:grid-cols-12'>
+        <div className='w-full max-w-[824px]'>
           <ServiceInfoLeft
             service={service}
             portfolioServices={portfolioServices}
           />
         </div>
 
-        <div className='md:col-span-4 max-w-[324px]'>
+        <div className='w-full max-w-[352px]'>
           <ServiceInfoRight service={service} />
         </div>
       </div>

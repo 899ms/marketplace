@@ -31,7 +31,7 @@ export function ImageCarousel({
   const setSlide = (index: number) => setActiveIndex(index);
 
   return (
-    <div className="mb-4">
+    <div className="mb-4 max-w-[824px]">
       {/* Main Image */}
       <div className="relative mb-2 aspect-video w-full overflow-hidden rounded-xl sm:aspect-[4/3] md:aspect-[3/2]">
         <Image
