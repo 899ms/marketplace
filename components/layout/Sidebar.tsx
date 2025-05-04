@@ -11,9 +11,12 @@ import {
   RiStarFill,
   RiHomeLine,
   RiFileList2Line,
+  RiBriefcaseLine,
   RiChat1Line,
+  RiBuildingLine,
   RiCouponLine,
   RiQuestionLine,
+  RiArticleLine,
   RiPencilLine,
   RiTwitchFill,
   RiTwitterXFill,
@@ -82,7 +85,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
 
   const handleSaveClick = async () => {
     if (!userProfile) {
-      toast({ title: "Error", description: "User not found.", variant: "light" });
+      toast({ title: "Error", description: "User not found." });
       return;
     }
     if (editableBio === displayBio) {
@@ -102,7 +105,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
       }
     } catch (error) {
       console.error("Error saving bio:", error);
-      toast({ title: "Error", description: "Failed to save bio. Please try again.", variant: "light" });
+      toast({ title: "Error", description: "Failed to save bio. Please try again." });
     } finally {
       setIsSaving(false);
     }
@@ -113,8 +116,6 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
     toast({
       title: "Coming Soon",
       description: "This feature is under development and will be available shortly.",
-      status: "information",
-      variant: "filled" // Optional: Use filled variant for more visibility
     });
   };
   // --- End Notification Handler ---
@@ -138,7 +139,8 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
             </Avatar.Root>
           )}
           <div className='text-center'>
-            <h2 className='text-[16px] font-md text-text-strong-950 text-[#525866]'>
+            <h2 className='text-[16px] font-md text-[#525866];
+]'>
               {displayName}
             </h2>
             <div className='text-text-secondary-600 mt-1 flex items-center justify-center gap-1 text-paragraph-sm'>
@@ -149,14 +151,14 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
             </div>
           </div>
           {/* Static Google Icons */}
-          <div className='flex items-center gap-2'>
+          <div className='flex items-center  font-medium gap-2 '>
             <div className='flex flex-row items-center gap-1 text-[#525866]'>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M8.14258 6.72729V9.4382H11.9868C11.818 10.31 11.3114 11.0482 10.5517 11.5446L12.8699 13.3073C14.2205 12.0855 14.9998 10.291 14.9998 8.15918C14.9998 7.66283 14.9543 7.18551 14.8699 6.72737L8.14258 6.72729Z" fill="#4285F4" />
                 <path d="M4.13966 9.33234L3.61681 9.72456L1.76611 11.1373C2.94145 13.4218 5.35039 15 8.14261 15C10.0712 15 11.688 14.3763 12.8699 13.3073L10.5517 11.5445C9.91532 11.9645 9.10362 12.2191 8.14261 12.2191C6.28545 12.2191 4.70756 10.9909 4.14258 9.33638L4.13966 9.33234Z" fill="#34A853" />
                 <path d="M1.76619 4.86285C1.27919 5.80463 1 6.86737 1 8.00007C1 9.13278 1.27919 10.1955 1.76619 11.1373C1.76619 11.1436 4.14288 9.33003 4.14288 9.33003C4.00002 8.91003 3.91558 8.46461 3.91558 8C3.91558 7.5354 4.00002 7.08997 4.14288 6.66997L1.76619 4.86285Z" fill="#FBBC05" />
                 <path d="M8.14275 3.78726C9.19473 3.78726 10.1298 4.14361 10.8766 4.83089L12.922 2.82638C11.6817 1.69368 10.0714 1 8.14275 1C5.35054 1 2.94145 2.57181 1.76611 4.86272L4.14273 6.66999C4.70764 5.01543 6.2856 3.78726 8.14275 3.78726Z" fill="#EA4335" />
-              </svg><span className="text-[11px]">Google</span>
+              </svg><span className="text-[12px]">Google</span>
             </div>
             <div className='flex flex-row items-center gap-1 text-[#525866]'>
               <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -164,7 +166,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
                 <path d="M4.13966 9.33234L3.61681 9.72456L1.76611 11.1373C2.94145 13.4218 5.35039 15 8.14261 15C10.0712 15 11.688 14.3763 12.8699 13.3073L10.5517 11.5445C9.91532 11.9645 9.10362 12.2191 8.14261 12.2191C6.28545 12.2191 4.70756 10.9909 4.14258 9.33638L4.13966 9.33234Z" fill="#34A853" />
                 <path d="M1.76619 4.86285C1.27919 5.80463 1 6.86737 1 8.00007C1 9.13278 1.27919 10.1955 1.76619 11.1373C1.76619 11.1436 4.14288 9.33003 4.14288 9.33003C4.00002 8.91003 3.91558 8.46461 3.91558 8C3.91558 7.5354 4.00002 7.08997 4.14288 6.66997L1.76619 4.86285Z" fill="#FBBC05" />
                 <path d="M8.14275 3.78726C9.19473 3.78726 10.1298 4.14361 10.8766 4.83089L12.922 2.82638C11.6817 1.69368 10.0714 1 8.14275 1C5.35054 1 2.94145 2.57181 1.76611 4.86272L4.14273 6.66999C4.70764 5.01543 6.2856 3.78726 8.14275 3.78726Z" fill="#EA4335" />
-              </svg><span className="text-[11px]">Google</span>
+              </svg><span className="text-[12px]">Google</span>
             </div>
           </div>
         </div>
@@ -173,10 +175,10 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
         <nav className='px-4 max-w-[300px]  '>
           <ul className='flex flex-col gap-1'>
             <li><SidebarLink href='/home' icon={RiHomeLine} label='Home' /></li>
-            <li><SidebarLink href='/settings' icon={RiFileList2Line} label='Order' /></li>
-            <li><SidebarLink href='/chats' icon={RiChat1Line} label='Chat' /></li>
-            <li><SidebarLink onClick={handleComingSoonClick} icon={RiCouponLine} label='Bonus' /></li>
-            <li><SidebarLink onClick={handleComingSoonClick} icon={RiQuestionLine} label='Help Center' /></li>
+            <li><SidebarLink href='/settings' icon={RiBriefcaseLine} label='Order' /></li>
+            <li><SidebarLink href='/chats' icon={RiBuildingLine} label='Chat' /></li>
+            <li><SidebarLink onClick={handleComingSoonClick} icon={RiBuildingLine} label='Bonus' /></li>
+            <li><SidebarLink onClick={handleComingSoonClick} icon={RiArticleLine} label='Help Center' /></li>
           </ul>
         </nav>
         <Divider.Root />
@@ -191,7 +193,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
                 disabled={!userProfile}
                 aria-label="Edit bio"
               >
-                <RiPencilLine className='size-[13.5px[' />
+                <RiPencilLine className='size-5' />
               </button>
             )}
           </div>

@@ -188,7 +188,7 @@ const SellerActionButtons = ({
 
 // NOTE: ProjectLinkCard requires a link - Job schema doesn't have one.
 const ProjectLinkCard = ({ link }: { link: string }) => (
-  <div className="shadow-sm rounded-[20px] bg-bg-white-0 py-4 border border-stroke-soft-200 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] p-4">
+  <div className="shadow-sm rounded-[20px] bg-bg-white-0 py-4 border border-neutral-300 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] p-4">
     <label
       htmlFor="project-link"
       className="mb-2 block text-label-md font-medium text-text-strong-950"
@@ -432,7 +432,7 @@ export default function ProjectDetailPage() {
     <div className='container mx-auto  py-10 px-1   max-w-[1200px]'>
       {/* Header with Breadcrumbs - updated links */}
       <div className='mb-6 flex items-center justify-between text-[14px]'>
-        <div className='flex flex-wrap items-center gap-2'>
+        <div className='flex flex-wrap items-center gap-3'>
           {/* Updated Home Link */}
           <Link
             href="/home"
@@ -459,7 +459,7 @@ export default function ProjectDetailPage() {
       <div className='flex gap-6'>
         {/* Left Content Area (Project Details) */}
         <div className='w-[824px]'>
-          <div className='p-[24px] shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] rounded-[20px] border border-stroke-soft-200 bg-bg-white-0'>
+          <div className='p-[24px] shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] rounded-[20px] border border-neutral-300 bg-bg-white-0'>
             <ProjectHeader
               title={projectTitle}
               category={projectCategory}
@@ -480,7 +480,7 @@ export default function ProjectDetailPage() {
           {(isOwner || isBuyerVisitor || isAnonymous) && (
             // Sidebar Layout for Owner, Buyer Visitor, Anonymous (No Apply Button)
             <>
-              <div className='shadow-sm rounded-[20px] border border-stroke-soft-200 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)]'>
+              <div className='shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)]'>
                 <ClientProfileCard client={{
                   id: clientDataState?.id ?? '',
                   name: clientName,
@@ -501,7 +501,7 @@ export default function ProjectDetailPage() {
               {/* Anonymous doesn't see applicants */}
               {!isAnonymous && (
                 /* Applicant List Card Wrapper */
-                <div className="shadow-sm rounded-[20px] border border-stroke-soft-200 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] overflow-hidden">
+                <div className="shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
                   <ApplicantsList applicants={mockApplicants} userRole={isOwner ? 'buyer' : 'seller'} />
                 </div>
               )}
@@ -512,7 +512,7 @@ export default function ProjectDetailPage() {
           {isSellerVisitor && (
             // Seller Visitor Sidebar Layout (With Apply Button)
             <>
-              <div className='shadow-[0_16px_32px_-12px_rgba(14,18,27,0.1)] rounded-[20px] border border-[#E2E4E9] bg-bg-white-0'>
+              <div className='shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] rounded-[20px] border border-neutral-300 bg-bg-white-0'>
                 <ClientProfileCard client={{
                   id: clientDataState?.id ?? '',
                   name: clientName,
@@ -540,7 +540,7 @@ export default function ProjectDetailPage() {
                 <p className="text-xs text-red-600 -mt-4 mb-2 text-center">Error: {chatError}</p>
               )}
               {/* Applicant List Card Wrapper */}
-              <div className="shadow-sm rounded-[20px] border border-stroke-soft-200 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)] overflow-hidden">
+              <div className="shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
                 <ApplicantsList applicants={mockApplicants} userRole={'seller'} />
               </div>
               <ProjectLinkCard link={projectLink} />

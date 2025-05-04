@@ -62,15 +62,15 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
             />
           )}
         </div>
-        <div className='p-4'>
+        <div className='px-4 py-2.5'>
           <p className='mb-4 line-clamp-2 font-medium text-[#0E121B] text-[14px]'>
             {displayTitle}
           </p>
-          <div className='text-text-secondary-600 mb-2 flex items-center gap-1 text-paragraph-xs'>
-            <div className='size-5 rounded-full bg-sky-200 mr-1 text-center flex items-center justify-center text-[12px] text-[#124B68] font-medium leading-none'>
+          <div className='text-text-secondary-600 mb-2 mt-5 flex items-center gap-1 text-paragraph-xs'>
+            <div className='size-5 rounded-full bg-sky-200 mr-1 ml-[-2px] text-center flex items-center justify-center text-[12px] text-[#124B68] font-medium leading-none'>
               {sellerInitial}
             </div>
-            <span className='text-[12px] text-[#222530] font-medium'>{displaySellerName}</span>
+            <span className='text-[12px] text-[#222530] font-medium mr-1'>{displaySellerName}</span>
             {/* Google icons */}
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8.14258 6.72729V9.4382H11.9868C11.818 10.31 11.3114 11.0482 10.5517 11.5446L12.8699 13.3073C14.2205 12.0855 14.9998 10.291 14.9998 8.15918C14.9998 7.66283 14.9543 7.18551 14.8699 6.72737L8.14258 6.72729Z" fill="#4285F4" />
@@ -81,8 +81,8 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
           </div>
           <div className='flex items-center justify-between text-paragraph-sm'>
             <div className='text-text-secondary-600 flex items-center gap-0.5'>
-              <RiStarFill className='size-4 text-yellow-500' />
-              <span className='text-[12px] text-sub-600'>4.8 (125)</span> {/* Placeholder Rating */}
+              <RiStarFill className='size-4 text-yellow-500 ml-[-1px]' />
+              <span className='text-[12px] font-normal text-[#525866] text-sub-600'>4.8 (125)</span> {/* Placeholder Rating */}
             </div>
             <span className='font-medium text-[16px]'>
               <span className='text-[12px]'>{getCurrencySymbol(displayCurrency)}</span>
