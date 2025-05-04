@@ -61,18 +61,18 @@ const Step4Preview: React.FC<Step4Props> = ({
       {/* Step 1 Basic */}
 
       <div className='flex flex-col'>
-        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] p-2'>
+        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] py-2 px-4'>
           Step 1 Basic
         </div>
         <div className='p-4'>
-          <p className='text-[14px] text-[#525866] mt-1'>
-            {formData.description || '-'}
+          <p className='text-[14px] text-[#525866] font-medium'>
+            {formData.description || 'Description Text Here...'}
           </p>
         </div>
 
       </div>
       <div className='flex flex-col'>
-        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] p-2'>
+        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] py-2 px-4'>
           Step 2 Skills
         </div>
         <div className='p-2 flex flex-col gap-3 p-4'>
@@ -108,35 +108,35 @@ const Step4Preview: React.FC<Step4Props> = ({
         </div>
       </div>
       <div className='flex flex-col'>
-        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] p-2'>
+        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] py-2 px-4'>
           Step 3 Usage
         </div>
         <div className='p-2 flex flex-col gap-3 p-4'>
           <div className='flex flex-col gap-1'>
-            <p className='text-[#525866] text-[14px] font-semibold capitalize'>{formData.usageOption}</p>
+            <p className='text-[#525866] text-[14px] font-medium capitalize'>{formData.usageOption}</p>
             <p className='text-[#525866] text-[12px]'>{getUsageDescription(formData.usageOption)}</p>
           </div>
           <div className='flex flex-col gap-1'>
-            <p className='text-[#525866] text-[14px] font-semibold capitalize'>{formData.privacyOption}</p>
+            <p className='text-[#525866] text-[14px] font-medium capitalize'>{formData.privacyOption}</p>
             <p className='text-[#525866] text-[12px]'>{getPrivacyDescription(formData.privacyOption)}</p>
           </div>
         </div>
       </div>
       <div className='flex flex-col'>
-        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] p-2'>
-          Step 4 Order Amount & Date
+        <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] py-2 px-4'>
+          Step 4 ORDER AMOUNT & DATE
         </div>
         <div className='p-2 flex flex-col gap-2 p-4'>
           <div className='flex flex-row justify-between items-center'>
-            <p className='text-[#525866] text-[14px]'>Deadline</p>
+            <p className='text-[#525866] font-normal text-[14px]'>Deadline</p>
             <p className='text-[#0E121B] text-[14px]'>{formData.deadline || '-'}</p>
           </div>
           <div className='flex flex-row justify-between items-center'>
-            <p className='text-[#525866] text-[14px]'>Order Amount</p>
+            <p className='text-[#525866] font-normal text-[14px]'>Order Amount</p>
             <p className='text-[#0E121B] text-[14px]'>{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{formData.budget || '-'}</p>
           </div>
           <div className='flex flex-row justify-between items-center'>
-            <p className='text-[#525866] text-[14px]'>Discount {discountCode}</p>
+            <p className='text-[#525866] font-normal text-[14px]'>Discount <span className='font-normal text-[#99A0AE] text-[12px]'>{discountCode}</span></p>
             <p className='text-[#0E121B] text-[14px]'>-{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{discountAmount || '-'}</p>
           </div>
           <div className='flex flex-row justify-between items-end mt-2'>
@@ -170,16 +170,16 @@ const Step4Preview: React.FC<Step4Props> = ({
           variant='neutral'
           mode='stroke'
           onClick={prevStep}
-          className='flex-1'
+          className='flex-1 !rouneded-[8px]'
           type='button'
           disabled={isSubmitting}
         >
-          Previous
+          Draft
         </Button.Root>
         <FancyButton.Root
           variant='neutral'
           onClick={handleSubmit(submitForm)}
-          className='flex flex-1 items-center justify-center'
+          className='flex flex-1 items-center !rouneded-[8px]justify-center'
           type='submit'
           disabled={isSubmitting}
         >

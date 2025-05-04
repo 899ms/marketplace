@@ -36,16 +36,16 @@ const CreateJobMainContent = ({
     <main className='mx-auto flex-1 px-4 pb-6 md:px-10 flex flex-col items-center'>
       {' '}
       {/* Added flex-1 */}
-      <h1 className='text-[32px] mb-1 font-semibold text-[#0A0D14]'>
+      <h1 className='text-[32px] font-medium text-[#0A0D14]'>
         Create job
       </h1>
-      <p className='text-[#525866] text-[18px] mb-8'>
+      <p className='text-[#525866] text-[18px] mb-8 font-medium'>
         Define details, set the budget
       </p>
       <Accordion.Root
         type='single'
         collapsible
-        className='w-full max-w-2xl space-y-3'
+        className='w-full max-w-2xl space-y-9'
         value={accordionValue} // Controlled by local state
         onValueChange={handleValueChange} // Updates local state
       >
@@ -56,7 +56,7 @@ const CreateJobMainContent = ({
             <Accordion.Item
               value={itemValue}
               key={stepNumber}
-              className='shadow-sm overflow-hidden rounded-3xl border !bg-white !border-[#E1E4EA] !px-0'
+              className='overflow-hidden rounded-3xl border !bg-white !border-[#E1E4EA] !px-0 data-[state=open]:shadow-[0px_2px_4px_#0E121B08,0px_6px_10px_#0E121B0F]'
             >
               <Accordion.Trigger className='!p-4 !mx-0 group/trigger flex w-full items-center justify-between text-left hover:bg-bg-weak-50'>
                 {' '}

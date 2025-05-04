@@ -25,26 +25,27 @@ const Step3UsageForm: React.FC<Step3Props> = ({
   } = formMethods;
 
   return (
-    <form onSubmit={(e) => e.preventDefault()} className='space-y-6'>
+    <form onSubmit={(e) => e.preventDefault()} className='space-y-3'>
       {/* Usage Section - Using Controller for custom radio group */}
       <Controller
         name='usageOption'
         control={control}
         render={({ field }) => (
-          <div className='px-4'>
-            <h3 className='mb-2 text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full p-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
+          <div className='px-5'>
+            <h3 className='mb-2 mt-1 text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full px-3 py-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
               Usage
             </h3>
             <div className=''>
               {/* Private Usage Option */}
               <label
-                className='flex cursor-pointer items-start gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-bg-weak-50'
+                className='flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-bg-weak-50'
                 data-checked={field.value === 'private'}
               >
                 <Checkbox.Root
                   id='usage-private'
                   value='private'
                   checked={field.value === 'private'}
+                  className='mt-[-2px]'
                   onCheckedChange={() => field.onChange('private')}
                   ref={field.ref} // Attach ref
                 />
@@ -59,12 +60,13 @@ const Step3UsageForm: React.FC<Step3Props> = ({
               </label>
               {/* Business Usage Option */}
               <label
-                className='flex cursor-pointer items-start gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-bg-weak-50 '
+                className='flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-bg-weak-50 '
                 data-checked={field.value === 'business'}
               >
                 <Checkbox.Root
                   id='usage-business'
                   value='business'
+                  className='mt-[-2px]'
                   checked={field.value === 'business'}
                   onCheckedChange={() => field.onChange('business')}
                 />
@@ -88,19 +90,20 @@ const Step3UsageForm: React.FC<Step3Props> = ({
         name='privacyOption'
         control={control}
         render={({ field }) => (
-          <div className=' px-4'>
-            <h3 className='mb-2 text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full p-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
+          <div className='px-5'>
+            <h3 className='mb-2 text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full px-3 py-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
               Privacy
             </h3>
             <div className=''>
               {/* Public Privacy Option */}
               <label
-                className=' flex cursor-pointer items-start gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-bg-weak-50 '
+                className=' flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-bg-weak-50 '
                 data-checked={field.value === 'public'}
               >
                 <Checkbox.Root
                   id='privacy-public'
                   value='public'
+                  className='mt-[-2px]'
                   checked={field.value === 'public'}
                   onCheckedChange={() => field.onChange('public')}
                   ref={field.ref} // Attach ref
@@ -116,11 +119,12 @@ const Step3UsageForm: React.FC<Step3Props> = ({
               </label>
               {/* Private Privacy Option */}
               <label
-                className='flex cursor-pointer items-start gap-3 rounded-lg px-4 py-2 transition-colors hover:bg-bg-weak-50'
+                className='flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-bg-weak-50'
                 data-checked={field.value === 'private'}
               >
                 <Checkbox.Root
                   id='privacy-private'
+                  className='mt-[-2px]'
                   value='private'
                   checked={field.value === 'private'}
                   onCheckedChange={() => field.onChange('private')}
@@ -143,7 +147,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
       <Divider.Root className='w-full' />
 
       {/* Navigation */}
-      <div className='flex justify-between  px-4'>
+      <div className='flex justify-between !mt-4 px-4'>
         <Button.Root variant='neutral' mode='stroke' onClick={prevStep}>
           Previous
         </Button.Root>

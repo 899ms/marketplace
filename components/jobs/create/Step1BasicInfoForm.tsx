@@ -61,10 +61,10 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
   return (
     <form onSubmit={(e) => e.preventDefault()} className='flex flex-col gap-4 pb-0'>
       {/* Subject/Title */}
-      <div className='flex flex-col gap-1 px-4'>
+      <div className='flex flex-col gap-1.5 px-4'>
         <Label.Root
           htmlFor='title'
-          className='text-[14px] text-[#525866]'
+          className='text-[14px] text-[#525866] font-medium'
         >
           Subject
         </Label.Root>
@@ -81,10 +81,10 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
       </div>
 
       {/* Detail/Description */}
-      <div className='flex flex-col gap-1 px-4 '>
+      <div className='flex flex-col gap-1.5 px-4 '>
         <Label.Root
           htmlFor='description'
-          className='text-[14px] text-[#525866]'
+          className='text-[14px] text-[#525866] font-medium'
         >
           Detail
         </Label.Root>
@@ -104,10 +104,10 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
       {/* Amount & Deadline Row */}
       <div className='grid grid-cols-1 gap-4 md:grid-cols-2 px-4 '>
         {/* Amount/Budget */}
-        <div className='flex flex-col gap-1'>
+        <div className='flex flex-col gap-1.5'>
           <Label.Root
             htmlFor='budget'
-            className='flex items-center gap-1 text-[14px] text-[#525866]'
+            className='flex items-center gap-1 font-medium text-[14px] text-[#525866]'
           >
             Amount
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -159,7 +159,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
         <div className='flex flex-col gap-1'>
           <Label.Root
             htmlFor='deadline'
-            className='flex items-center gap-1 text-[14px] text-[#525866]'
+            className='flex items-center gap-1.5 text-[14px] text-[#525866] font-medium'
           >
             Deadline (Optional)
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">

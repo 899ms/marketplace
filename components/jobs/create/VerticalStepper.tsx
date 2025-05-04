@@ -3,7 +3,7 @@
 import React from 'react';
 import * as Button from '@/components/ui/button';
 import { cn } from '@/utils/cn';
-import { RiArrowRightSLine, RiCustomerService2Line } from '@remixicon/react';
+import { RiArrowRightSLine, RiCustomerService2Line, RiHeadphoneLine } from '@remixicon/react';
 
 // --- Vertical Stepper Component ---
 interface VerticalStepperProps {
@@ -63,11 +63,11 @@ const VerticalStepper = ({
       </div>
       {/* Contact Button */}
       <div className='mt-auto pt-4'>
-        <p className='text-[14px] text-[#525866] mb-2 text-center'>
+        <p className='text-[14px] text-[#525866] mb-4 text-center'>
           Having trouble with transfer?
         </p>
-        <Button.Root variant='neutral' mode='stroke' className='w-full'>
-          <Button.Icon as={RiCustomerService2Line} />
+        <Button.Root variant='neutral' mode='stroke' className='w-full font-medium'>
+          <Button.Icon as={RiHeadphoneLine} />
           Contact
         </Button.Root>
       </div>
