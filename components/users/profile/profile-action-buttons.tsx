@@ -44,7 +44,7 @@ export function ProfileActionButtons({
       <FancyButton.Root
         variant="neutral"
         size="xsmall"
-        className="w-[83px] h-[32px] rounded-[8px]"
+        className="w-[83px] h-[30px] rounded-[8px]"
         onClick={onMessage} // Use the passed-in message handler
         disabled={!currentUser || isLoadingChat || isOwnProfile}
         aria-label={isOwnProfile ? "Cannot message yourself" : "Send message"}
