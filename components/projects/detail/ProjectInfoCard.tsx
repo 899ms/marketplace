@@ -24,7 +24,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
   return (
     <div className="m-[20px]">
       {/* Budget */}
-      <div className="flex items-center justify-between py-2">
+      <div className="flex items-center justify-between pt-2 pb-1">
         <div className="flex items-center gap-2">
           <RiMoneyCnyCircleLine className="text-icon-secondary-400 size-5 text-[#525866]" />
           <span className="text-[14px] font-medium text-gray-600">
@@ -44,7 +44,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
             Release time
           </span>
         </div>
-        <span className="text-xs text-text-secondary-600">
+        <span className="text-[14px] text-text-secondary-600">
           {releaseTime}
         </span>
       </div>
@@ -57,7 +57,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
             Deadline
           </span>
         </div>
-        <span className="text-xs text-text-secondary-600">
+        <span className="text-[14px] text-text-secondary-600">
           {deadline}
         </span>
       </div>
@@ -70,7 +70,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
             Proposals
           </span>
         </div>
-        <span className="text-xs text-text-secondary-600">
+        <span className="text-[14px] text-text-secondary-600">
           {proposals}
         </span>
       </div>

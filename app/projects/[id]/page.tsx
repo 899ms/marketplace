@@ -459,7 +459,7 @@ export default function ProjectDetailPage() {
       <div className='flex gap-6'>
         {/* Left Content Area (Project Details) */}
         <div className='w-[824px]'>
-          <div className='p-[24px] shadow-[0px_23px_32px_-8px_rgba(14,18,27,0.27)] rounded-[20px] border border-[#E2E4E9] bg-bg-white-0'>
+          <div className='p-[24px] shadow-[0px_23px_32px_-8px_rgba(14,18,27,0.17)] rounded-[20px] border border-[#E2E4E9] bg-bg-white-0'>
             <ProjectHeader
               title={projectTitle}
               category={projectCategory}

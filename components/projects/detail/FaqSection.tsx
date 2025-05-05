@@ -40,7 +40,7 @@ const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
             className={`
               overflow-hidden
               border-b-[2px] border-stroke-soft-200
-              ${faq.isOpen ? 'bg-bg-weak-50' : ''}
+              ${faq.isOpen ? 'bg-bg-weak-50 border-b-[0px]' : ''}
             `}
           >
             {/* Question row */}
@@ -52,7 +52,7 @@ const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
                 {/* Black-bordered question mark */}
                 <div className="pt-[2.5px]">
                   <div className="border border-black rounded-full p-[1px] flex items-center justify-center">
-                    <RiQuestionMark className="size-3 text-text-secondary-600" />
+                    <RiQuestionMark className="w-[10px] h-[10px] text-[#525866]" />
                   </div>
                 </div>
                 <div className="text-[14px] flex flex-col gap-2">

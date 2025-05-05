@@ -16,7 +16,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ title, category, showBook
       <div className='flex justify-between items-center'>
         {/* Left side: title + category */}
         <div className='flex items-center gap-2'>
-          <h1 className='font-medium text-[24px] py-[6px] leading-[32px] tracking-normal text-text-strong-950'>
+          <h1 className='font-medium text-[24px] leading-[32px] tracking-normal text-text-strong-950'>
             {title}
           </h1>
           <Badge.Root
@@ -31,7 +31,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({ title, category, showBook
               rounded-full
               bg-neutral-100 border border-neutral-200
               flex items-center justify-center
-              text-text-secondary-600
+              text-[#525866] capitalize
             "
           >
             {category}

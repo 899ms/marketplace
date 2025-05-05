@@ -122,10 +122,10 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
 
   return (
     <aside className='hidden w-[300px] max-h-[682px] shrink-0 lg:block'>
-      <div className='sticky top-20 flex flex-col gap-6 border border-stroke-soft-200 bg-bg-white-0 pb-5 mb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)] rounded-[20px]'>
+      <div className='sticky top-20 flex flex-col border border-stroke-soft-200 bg-bg-white-0 pb-5 mb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)] rounded-[20px]'>
         {' '}
         {/* Profile Section */}
-        <div className='flex flex-col items-center gap-2  pt-8 px-4 max-w-[300px] max-h-[228px]'>
+        <div className='flex flex-col items-center gap-2 pt-8 px-4 max-w-[300px] max-h-[228px]'>
           {displayAvatar ? (
             <Avatar.Root size='80'>
               <Avatar.Image src={displayAvatar} alt={displayName} />
@@ -170,7 +170,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
             </div>
           </div>
         </div>
-        <Divider.Root />
+        <Divider.Root className="mt-[2rem] mb-[16px]" />
         {/* Navigation Section */}
         <nav className='px-4 max-w-[300px]  '>
           <ul className='flex flex-col gap-1'>
@@ -181,7 +181,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
             <li><SidebarLink onClick={handleComingSoonClick} icon={RiArticleLine} label='Help Center' /></li>
           </ul>
         </nav>
-        <Divider.Root />
+        <Divider.Root className="mt-[2rem] mb-[16px]" />
         {/* About Section */}
         <div className='px-4 max-w-[300px] max-h-[202px]  flex flex-col'>
           <div className='mb-4 flex items-center justify-between'>
@@ -197,41 +197,43 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
               </button>
             )}
           </div>
-          {isEditingBio ? (
-            <div className="space-y-2">
-              <Textarea
-                value={editableBio}
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEditableBio(e.target.value)} // Added type for event
-                placeholder="Tell us about yourself..."
-                rows={4}
-                className="text-sm"
-                disabled={isSaving}
-              />
-              <div className="flex justify-end space-x-2">
-                <Button
-                  variant="neutral"
-                  mode="stroke"
-                  size="small"
-                  onClick={handleCancelClick}
+          {
+            isEditingBio ? (
+              <div className="space-y-2">
+                <Textarea
+                  value={editableBio}
+                  onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEditableBio(e.target.value)} // Added type for event
+                  placeholder="Tell us about yourself..."
+                  rows={4}
+                  className="text-sm"
                   disabled={isSaving}
-                >
-                  Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  size="small"
-                  onClick={handleSaveClick}
-                  disabled={isSaving || editableBio === displayBio}
-                >
-                  {isSaving ? 'Saving...' : 'Save'}
-                </Button>
+                />
+                <div className="flex justify-end space-x-2">
+                  <Button
+                    variant="neutral"
+                    mode="stroke"
+                    size="small"
+                    onClick={handleCancelClick}
+                    disabled={isSaving}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    variant="primary"
+                    size="small"
+                    onClick={handleSaveClick}
+                    disabled={isSaving || editableBio === displayBio}
+                  >
+                    {isSaving ? 'Saving...' : 'Save'}
+                  </Button>
+                </div>
               </div>
-            </div>
-          ) : (
-            <p className='text-[12px] text-[#525866]'>
-              {displayBio}
-            </p>
-          )}
+            ) : (
+              <p className='text-[12px] text-[#525866]'>
+                {displayBio}
+              </p>
+            )
+          }
           {/* Static Social Icons */}
           <div className='flex items-center gap-3 mt-4'>
             <Link href='#' className='text-icon-secondary-400 hover:text-icon-primary-500'>
@@ -249,9 +251,9 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
               </svg>
             </Link>
           </div>
-        </div>
-      </div>
-    </aside>
+        </div >
+      </div >
+    </aside >
   );
 };
 

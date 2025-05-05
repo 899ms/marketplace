@@ -74,7 +74,7 @@ export default function Navbar() {
     <nav className='fixed top-0 left-0 right-0 z-50 bg-white'>
       <div className='mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between px-8 py-5 gap-4 border-b border-stroke-soft-200 shadow-sm'>
         {/* Left Section: Logo and Nav Links */}
-        <div className='flex items-center gap-8'>
+        <div className='flex items-center gap-4'>
           {/* Logo */}
           <Link
             href='/home'

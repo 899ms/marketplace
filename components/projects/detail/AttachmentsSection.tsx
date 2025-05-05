@@ -64,13 +64,13 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
               {isAudio ? (
                 <button
                   onClick={() => handlePlayAudio(attachment)}
-                  className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer text-left w-full md:w-auto bg-[#FDFDFD] gap-8"
+                  className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer text-left w-full md:w-auto bg-[#FDFDFD] gap-16"
                   title={`Play ${attachment.name}`}
                 >
                   <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>
                     {attachment.name}
                   </span>
-                  <RiPlayCircleFill className="size-6 text-gray-500 flex-shrink-0" />
+                  <RiPlayCircleFill className="size-6 text-[#525866] flex-shrink-0" />
                 </button>
               ) : (
                 <a
