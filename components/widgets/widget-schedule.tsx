@@ -34,7 +34,7 @@ export default function WidgetSchedule({
     <WidgetBox.Root {...rest}>
       <WidgetBox.Header>
         <WidgetBox.HeaderIcon as={RiCalendarLine} />
-        Schedule
+        Calendar
         <Button.Root variant='neutral' mode='stroke' size='xsmall'>
           See All
         </Button.Root>

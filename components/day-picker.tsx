@@ -184,7 +184,7 @@ function DayPicker({ defaultDate, onDayChange }: DayPickerProps) {
 
         <div className='grid flex-1'>
           <div className='grid grid-cols-5 gap-1 [grid-area:1/1]'>
-            <div className='pointer-events-none col-start-3 col-end-4 row-start-1 h-14 rounded-lg bg-primary-base' />
+            <div className='pointer-events-none col-start-3 col-end-4 row-start-1 h-14 rounded-lg bg-[#0E121B]' />
           </div>
           <div className='relative grid grid-cols-5 gap-1 overflow-hidden [grid-area:1/1]'>
             {renderDays()}
