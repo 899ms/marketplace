@@ -81,14 +81,14 @@ export function ProjectSearchBar({
 
   return (
     <div className='mb-4 rounded-lg bg-[#E1E4EA] px-6 py-5'> {/* Adjust background color if needed */}
-      <div className='flex flex-wrap items-center gap-4'>
+      <div className='flex flex-wrap items-center gap-[8px]'>
         {/* Search Input */}
-        <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3'>
-          <RiSearchLine className='absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-500' />
+        <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3 max-w-[310px] '>
+          <RiSearchLine className='absolute left-3 top-1/2 size-5 -translate-y-1/2 text-[#525866]' />
           <Input
             type='search'
             placeholder='Search projects...' // Updated placeholder
-            className='w-full rounded-md border border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px]' // Adjusted styles
+            className='w-full max-w-[310px] rounded-[10px] border font-[400] border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE]' // Adjusted styles
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -96,7 +96,7 @@ export function ProjectSearchBar({
 
         {/* Deadline Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('deadline', value)}>
-          <SelectPrimitive.Trigger className='flex-grow rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-1/5 data-[placeholder]:!text-[#000000]'>
+          <SelectPrimitive.Trigger className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]'>
             <SelectPrimitive.Value placeholder='Deadline' /> {/* Updated placeholder */}
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
@@ -109,7 +109,8 @@ export function ProjectSearchBar({
 
         {/* Purpose Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('purpose', value)}>
-          <SelectPrimitive.Trigger className='flex-grow rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-1/5 data-[placeholder]:!text-[#000000]'>
+          <SelectPrimitive.Trigger
+            className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]'>
             <SelectPrimitive.Value placeholder='Purpose' /> {/* Updated placeholder */}
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
@@ -122,7 +123,7 @@ export function ProjectSearchBar({
 
         {/* Posting Date Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('postingDate', value)}>
-          <SelectPrimitive.Trigger className='flex-grow rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-1/5 data-[placeholder]:!text-[#000000]'>
+          <SelectPrimitive.Trigger className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]'>
             <SelectPrimitive.Value placeholder='Posting Date' /> {/* Updated placeholder */}
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
