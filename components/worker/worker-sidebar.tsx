@@ -158,7 +158,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         {/* Tags Section */}
         <div className='px-4'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-secondary-600  font-medium text-[12px]'>
+            <h3 className='text-text-secondary-600 text-[#0A0D14] font-medium text-[12px]'>
               Tags
             </h3>
             {/* TODO: Implement edit functionality */}
@@ -182,7 +182,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         {/* Links Section */}
         <div className='px-5'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-secondary-600   text-[12px] font-[500]'>
+            <h3 className='text-text-secondary-600  text-[#0A0D14]  text-[12px] font-[500]'>
               Links
             </h3>
             {/* TODO: Implement edit functionality */}

@@ -25,15 +25,15 @@ interface SectionHeaderProps {
 export function SectionHeader({ title, href = '#' }: SectionHeaderProps) {
   return (
     <div className='mb-4 flex items-center justify-between'>
-      <h2 className='text-[18px] font-semibold text-[#0A0D14]'>{title}</h2>
+      <h2 className='text-[18px] font-medium text-[#0A0D14]'>{title}</h2>
       <LinkButton.Root
         size='small'
-        className='text-[14px] text-[#222530]'
+        className='text-[14px] text-[#222530] font-medium'
         asChild
       >
         <Link href={href} className=''>
           More
-          <LinkButton.Icon as={RiArrowRightSLine} />
+          <LinkButton.Icon as={RiArrowRightSLine} className='size-5' />
         </Link>
       </LinkButton.Root>
     </div>
