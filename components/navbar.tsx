@@ -29,7 +29,6 @@ import {
 import { useState } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
-import usFlagIcon from '@/assets/images/icons/United_States.svg'; // Import the SVG file
 
 export default function Navbar() {
   // --- Get Auth State using useAuth hook ---
@@ -150,7 +149,7 @@ export default function Navbar() {
 
               {/* Use imported SVG variable */}
               <Image
-                src={usFlagIcon} // Use the imported variable
+                src="/images/icons/United_States.svg" // Updated path for public directory
                 alt="Select Language"
                 width={24}
                 height={24}
@@ -171,10 +170,9 @@ export default function Navbar() {
                     {user.user_metadata?.avatar_url ? <Avatar.Root size='32'>
                       {/* Use user avatar or fallback */}
                       <Avatar.Image
-                        src={
-                          user.user_metadata?.avatar_url ||
-                          'https://via.placeholder.com/40'
-                        } // Use actual avatar_url from metadata
+                        src={ // Use ternary to handle empty string
+                          user.user_metadata.avatar_url ? user.user_metadata.avatar_url : 'https://via.placeholder.com/40'
+                        }
                         alt={
                           user.user_metadata?.full_name ||
                           user.email ||
@@ -192,10 +190,9 @@ export default function Navbar() {
                     <div className='mb-1 flex cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-bg-neutral-subtle-100'> {/* Added cursor-pointer, hover effect, and rounded corners */}
                       <Avatar.Root size='40'>
                         <Avatar.Image
-                          src={
-                            user.user_metadata?.avatar_url ||
-                            'https://via.placeholder.com/40'
-                          } // Use actual avatar_url from metadata
+                          src={ // Use ternary to handle empty string
+                            user.user_metadata?.avatar_url ? user.user_metadata.avatar_url : 'https://via.placeholder.com/40'
+                          }
                           alt={
                             user.user_metadata?.full_name ||
                             user.email ||
