@@ -187,50 +187,52 @@ export default function Navbar() {
                     <RiArrowDropDownFill className='text-icon-sub-500 hidden size-8 md:inline' />                  </button>
                 </Dropdown.Trigger>
                 <Dropdown.Content align='end' className='w-72'>
-                  {/* User Info Section */}
-                  <div className='mb-1 flex items-center gap-3 p-2'>
-                    <Avatar.Root size='40'>
-                      <Avatar.Image
-                        src={
-                          user.user_metadata?.avatar_url ||
-                          'https://via.placeholder.com/40'
-                        } // Use actual avatar_url from metadata
-                        alt={
-                          user.user_metadata?.full_name ||
-                          user.email ||
-                          'User Avatar'
-                        } // Use name or email for alt text
-                      />
-                    </Avatar.Root>
-                    <div className='flex-1'>
-                      <div className='text-label-sm text-text-strong-950'>
-                        {user.user_metadata?.full_name || user.email || 'User'}{' '}
-                        {/* Display user name or email */}
-                      </div>
-                      <div className='mt-0.5 flex items-center gap-1'>
-                        <span className='text-paragraph-xs text-text-sub-600'>
-                          ID: {user.id} {/* Use actual user ID */}
-                        </span>
-                        <button
-                          onClick={() => copy(user.id)} // Copy actual user ID
-                          title='Copy ID'
-                          className='text-icon-secondary-400 hover:text-icon-primary-500'
-                        >
-                          <RiFileCopyLine className='size-3.5' />
-                        </button>
-                        {hasCopied && (
-                          <Badge.Root
-                            variant='light'
-                            color='green'
-                            size='small'
+                  {/* User Info Section - Wrapped with Link */}
+                  <Link href={`/users/${user.id}`} passHref>
+                    <div className='mb-1 flex cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-bg-neutral-subtle-100'> {/* Added cursor-pointer, hover effect, and rounded corners */}
+                      <Avatar.Root size='40'>
+                        <Avatar.Image
+                          src={
+                            user.user_metadata?.avatar_url ||
+                            'https://via.placeholder.com/40'
+                          } // Use actual avatar_url from metadata
+                          alt={
+                            user.user_metadata?.full_name ||
+                            user.email ||
+                            'User Avatar'
+                          } // Use name or email for alt text
+                        />
+                      </Avatar.Root>
+                      <div className='flex-1'>
+                        <div className='text-label-sm text-text-strong-950'>
+                          {user.user_metadata?.full_name || user.email || 'User'}{' '}
+                          {/* Display user name or email */}
+                        </div>
+                        <div className='mt-0.5 flex items-center gap-1'>
+                          <span className='text-paragraph-xs text-text-sub-600'>
+                            ID: {user.id} {/* Use actual user ID */}
+                          </span>
+                          <button
+                            onClick={() => copy(user.id)} // Copy actual user ID
+                            title='Copy ID'
+                            className='text-icon-secondary-400 hover:text-icon-primary-500'
                           >
-                            Copied
-                          </Badge.Root>
-                        )}
+                            <RiFileCopyLine className='size-3.5' />
+                          </button>
+                          {hasCopied && (
+                            <Badge.Root
+                              variant='light'
+                              color='green'
+                              size='small'
+                            >
+                              Copied
+                            </Badge.Root>
+                          )}
+                        </div>
                       </div>
+                      {/* <Badge.Root variant='light' color='green' size='medium'>PRO</Badge.Root> /* Optional PRO badge if needed */}
                     </div>
-                    {/* <Badge.Root variant='light' color='green' size='medium'>PRO</Badge.Root> /* Optional PRO badge if needed */}
-                  </div>
+                  </Link>
 
                   <Divider.Root className='mx-2 my-1' />
 
@@ -259,7 +261,7 @@ export default function Navbar() {
                   </Link>
 
                   {/* Orders */}
-                  <Link href='/orders' passHref>
+                  <Link href='/settings?tab=orders' passHref>
                     {' '}
                     {/* Link to orders page */}
                     <Dropdown.Item>
