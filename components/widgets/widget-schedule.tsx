@@ -31,7 +31,7 @@ export default function WidgetSchedule({
   // }, [selectedDay]);
 
   return (
-    <WidgetBox.Root {...rest}>
+    <WidgetBox.Root {...rest} className="ring-0">
       <WidgetBox.Header>
         <WidgetBox.HeaderIcon as={RiCalendarLine} />
         Calendar
