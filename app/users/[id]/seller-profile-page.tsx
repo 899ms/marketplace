@@ -87,6 +87,9 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
   const [services, setServices] = useState<Service[]>([]);
   const [isLoadingServices, setIsLoadingServices] = useState(true);
   const [errorServices, setErrorServices] = useState<string | null>(null);
+  const [sellerProfile, setSellerProfile] = useState<User | null>(targetSeller);
+  const [isLoadingSellerProfile, setIsLoadingSellerProfile] = useState(false);
+  const [errorSellerProfile, setErrorSellerProfile] = useState<string | null>(null);
 
   // --- Chat State & Handlers (Copied from page.tsx) ---
   const [activeChat, setActiveChat] = useState<Chat | null>(null);
@@ -106,13 +109,31 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
     fetchCurrentUserProfile();
   }, [currentUser]);
 
+  // --- Refetch Seller Profile ---
+  const refetchSellerProfile = async () => {
+    if (!targetSeller?.id) return;
+
+    setIsLoadingSellerProfile(true);
+    setErrorSellerProfile(null);
+    try {
+      const profile = await userOperations.getUserById(targetSeller.id);
+      setSellerProfile(profile);
+    } catch (error) {
+      console.error('Error refetching seller profile:', error);
+      setErrorSellerProfile('Failed to reload profile data.');
+    } finally {
+      setIsLoadingSellerProfile(false);
+    }
+  };
+  // --- End Refetch Seller Profile ---
+
   const handleOpenChat = async () => {
-    if (!currentUser || !targetSeller) {
+    if (!currentUser || !sellerProfile) {
       setChatError('Could not load user profiles. Please try again later.');
       console.error('Cannot open chat: Missing current user or viewed user profile.');
       return;
     }
-    if (currentUser.id === targetSeller.id) {
+    if (currentUser.id === sellerProfile.id) {
       setChatError("You cannot start a chat with yourself.");
       return;
     }
@@ -123,7 +144,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
     setActiveChatMessages([]);
 
     try {
-      const chat = await chatOperations.findOrCreateChat(currentUser.id, targetSeller.id);
+      const chat = await chatOperations.findOrCreateChat(currentUser.id, sellerProfile.id);
       if (chat) {
         setActiveChat(chat);
         setIsLoadingMessages(true);
@@ -150,12 +171,9 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
 
   // --- Hire Handler ---
   const handleHire = () => {
-    // TODO: Implement actual hire logic (e.g., navigate to create job/offer page?)
     toast({
       title: "Hire Clicked (Placeholder)",
-      description: `Proceed to hire ${targetSeller?.full_name || targetSeller?.username || 'this seller'}.`,
-      status: "information",
-      variant: "filled"
+      description: `Proceed to hire ${sellerProfile?.full_name || sellerProfile?.username || 'this seller'}.`,
     });
   };
   // --- End Hire Handler ---
@@ -186,11 +204,18 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
   }, [targetSeller?.id]);
 
   const renderTabContent = () => {
+    if (isLoadingSellerProfile) {
+      return <div className="p-4 text-center"><RiLoader4Line className="animate-spin inline-block size-6 mr-2" /> Loading profile...</div>;
+    }
+    if (errorSellerProfile || !sellerProfile) {
+      return <div className="p-4 text-red-600 text-center">{errorSellerProfile || 'Failed to load profile.'}</div>;
+    }
+
     switch (activeTab) {
       case 'about':
         return (
           <>
-            <AboutSection about={targetSeller.bio ?? 'This seller hasn\'t added a bio yet.'} />
+            <AboutSection about={sellerProfile.bio ?? 'This seller hasn\'t added a bio yet.'} />
 
             {/* 1) Work - Use workerData */}
             <div className="mt-8 flex items-center justify-between">
@@ -217,16 +242,15 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
               </button>
             </div>
             <div className="divide-y divide-stroke-soft-200">
-              {/* Use user.music_data if available */}
-              {targetSeller.music_data && targetSeller.music_data.length > 0 ? (
-                targetSeller.music_data.map((item: MusicItem, i) => (
+              {sellerProfile.music_data && sellerProfile.music_data.length > 0 ? (
+                sellerProfile.music_data.map((item: MusicItem, i) => (
                   <WorkItem
                     key={i}
                     url={item.url}
                     title={item.title}
                     remarks={item.remarks ?? ''}
-                    sellerName={targetSeller.full_name ?? targetSeller.username ?? 'Seller'}
-                    sellerAvatarUrl={targetSeller.avatar_url ?? null}
+                    sellerName={sellerProfile.full_name ?? sellerProfile.username ?? 'Seller'}
+                    sellerAvatarUrl={sellerProfile.avatar_url ?? null}
                     duration={`0:${(i % 60).toString().padStart(2, '0')}`}
                     bpm={`${90 + (i * 5) % 60} BPM`}
                     genres={['Pop', 'Electronic', 'Vocal'].slice(i % 2, (i % 2) + 2)}
@@ -280,16 +304,15 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
       case 'work':
         return (
           <div className='divide-y divide-stroke-soft-200'>
-            {/* TODO: Add loading state for music_data if fetched separately */}
-            {targetSeller.music_data && targetSeller.music_data.length > 0 ? (
-              targetSeller.music_data.map((item: MusicItem, index) => (
+            {sellerProfile.music_data && sellerProfile.music_data.length > 0 ? (
+              sellerProfile.music_data.map((item: MusicItem, index) => (
                 <WorkItem
                   key={index}
                   url={item.url}
                   title={item.title}
                   remarks={item.remarks ?? ''}
-                  sellerName={targetSeller.full_name ?? targetSeller.username ?? 'Seller'}
-                  sellerAvatarUrl={targetSeller.avatar_url ?? null}
+                  sellerName={sellerProfile.full_name ?? sellerProfile.username ?? 'Seller'}
+                  sellerAvatarUrl={sellerProfile.avatar_url ?? null}
                   duration={`0:${(index % 60).toString().padStart(2, '0')}`}
                   bpm={`${90 + (index * 5) % 60} BPM`}
                   genres={['Pop', 'Electronic', 'Vocal'].slice(index % 2, (index % 2) + 2)}
@@ -344,33 +367,29 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
     }
   };
 
-  // TODO: Add state and handler for updated music data if needed for refresh
-  const handleUploadComplete = (updatedMusicData: any[]) => {
-    console.log('Upload complete, new music data:', updatedMusicData);
-    // Here you could potentially update local state to refresh the work items
-    // For now, just logging it.
+  const handleUploadComplete = () => {
+    console.log('Upload complete, refetching seller profile...');
+    refetchSellerProfile();
   };
 
   return (
     <div className='px-8 py-8'>
-      {/* Two-column layout - Changed to Flexbox */}
       <div className='flex gap-[24px]'>
-        {/* Left Sidebar Column */}
-        <div className='w-[352px] shrink-0'> {/* Set fixed width and prevent shrinking */}
+        <div className='w-[352px] shrink-0'>
           <div className='sticky'>
-            <ProfilePageSidebar
-              userProfile={targetSeller}
-              currentUser={currentUserProfile}
-              isLoadingChat={isLoadingChat}
-              onHire={handleHire}
-              onMessage={handleOpenChat}
-            />
+            {sellerProfile && (
+              <ProfilePageSidebar
+                userProfile={sellerProfile}
+                currentUser={currentUserProfile}
+                isLoadingChat={isLoadingChat}
+                onHire={handleHire}
+                onMessage={handleOpenChat}
+              />
+            )}
           </div>
         </div>
 
-        {/* Right Main Content Column (Tabs) */}
-        <div className='flex-1 overflow-hidden max-w-[1000px] flex flex-col gap-6 px-[16px]'> {/* Use flex-1, keep overflow/max-h/flex/gap */}
-          {/* Tabs */}
+        <div className='flex-1 overflow-hidden max-w-[1000px] flex flex-col gap-6 px-[16px]'>
           <div>
             <TabMenuHorizontal.Root
               value={activeTab}
@@ -393,12 +412,10 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
             </TabMenuHorizontal.Root>
           </div>
 
-          {/* Tab Content Area */}
           <div>{renderTabContent()}</div>
         </div>
       </div>
 
-      {/* File Upload Modal - Use the new MusicUploadDialog */}
       <MusicUploadDialog
         open={isUploadModalOpen}
         onOpenChange={setIsUploadModalOpen}
@@ -406,14 +423,13 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
         onUploadComplete={handleUploadComplete}
       />
 
-      {/* Conditionally render Chat Popup (Copied from page.tsx) */}
-      {activeChat && currentUserProfile && targetSeller && currentUser && (
+      {activeChat && currentUserProfile && sellerProfile && currentUser && (
         <ChatPopupWrapper
           key={activeChat.id}
           chat={activeChat}
           initialMessages={activeChatMessages}
           currentUserProfile={currentUserProfile}
-          otherUserProfile={targetSeller}
+          otherUserProfile={sellerProfile}
           currentUserId={currentUser.id}
           isLoadingMessages={isLoadingMessages}
           onClose={handleCloseChat}
