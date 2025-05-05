@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { UseFormReturn } from 'react-hook-form';
 import { CreateServiceFormData } from '@/app/worker/services/create/schema';
@@ -22,6 +22,14 @@ import {
 
 import { useCreateServiceForm } from '@/hooks/useCreateServiceForm';
 import * as FancyButton from '@/components/ui/fancy-button';
+
+// Define initial tag suggestions
+const initialTagSuggestions = [
+  'Music Production',
+  'Mixing',
+  'Mastering',
+
+];
 
 interface Step1BasicInfoProps {
   formMethods: UseFormReturn<CreateServiceFormData>;
@@ -135,6 +143,11 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
     );
   };
 
+  // Set initial tags on mount
+  useEffect(() => {
+    setValue('tags', initialTagSuggestions.slice(0, 8));
+  }, [setValue]);
+
   const isValidToMoveNext = () => {
     const { title, description } = getValues();
     return title?.length > 0 && description?.length >= 10;
@@ -228,6 +241,9 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
                 </Tag.Root>
               ))}
             </div>
+          )}
+          {errors.tags && (
+            <p className='text-xs mt-1 text-red-500'>{errors.tags.message}</p>
           )}
         </div>
 

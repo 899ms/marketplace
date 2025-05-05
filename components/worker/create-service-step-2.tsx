@@ -142,8 +142,16 @@ export function Step2Pricing({
                 </Select.Content>
               </Select.Root>
             </div>
-            {errors.price && <p className='text-red-500 text-xs'>{errors.price.message?.toString()}</p>}
-            {errors.currency && <p className='text-red-500 text-xs'>{errors.currency.message?.toString()}</p>}
+            {errors.price && (
+              <p className='text-[11px] text-red-500'>
+                {errors.price.message?.toString()}
+              </p>
+            )}
+            {errors.currency && (
+              <p className='text-[11px] text-red-500'>
+                {errors.currency.message?.toString()}
+              </p>
+            )}
           </div>
 
           {/* Lead Time Field */}
@@ -162,7 +170,11 @@ export function Step2Pricing({
                 />
               </Input.Wrapper>
             </Input.Root>
-            {errors.lead_time && <p className='text-red-500 text-xs'>{errors.lead_time.message?.toString()}</p>}
+            {errors.lead_time && (
+              <p className='text-[11px] text-red-500'>
+                {errors.lead_time.message?.toString()}
+              </p>
+            )}
           </div>
         </div>
 
@@ -174,14 +186,14 @@ export function Step2Pricing({
               key={item.id}
               className='flex flex-col gap-4 rounded-md sm:flex-row sm:items-end'
             >
-              <div className='flex-grow w-[80%]'>
+              <div className='flex flex-grow flex-col gap-1'>
                 <Label.Root
                   htmlFor={`additionalServices.${index}.name`}
                   className='text-label-sm text-text-strong-950'
                 >
                   Additional Service Name
                 </Label.Root>
-                <Input.Root className='mt-1'>
+                <Input.Root>
                   <Input.Wrapper>
                     <Input.Input
                       id={`additionalServices.${index}.name`}
@@ -190,19 +202,27 @@ export function Step2Pricing({
                     />
                   </Input.Wrapper>
                 </Input.Root>
-                {errors.additionalServices?.[index]?.name && <p className='text-red-500 text-xs'>{errors.additionalServices?.[index]?.name?.message?.toString()}</p>}
+                <div className='h-4'>
+                  {errors.additionalServices?.[index]?.name && (
+                    <p className='text-[11px] text-red-500'>
+                      {
+                        errors.additionalServices?.[index]?.name?.message?.toString()
+                      }
+                    </p>
+                  )}
+                </div>
               </div>
 
-              <div className='w-full sm:w-auto w-[20%]'>
+              <div className='flex w-full flex-col gap-1 sm:w-[120px]'>
                 <Label.Root
                   htmlFor={`additionalServices.${index}.price`}
                   className='text-[14px] font-medium text-[#0E121B]'
                 >
                   Pricing ({currency})
                 </Label.Root>
-                <Input.Root className='mt-1'>
+                <Input.Root>
                   <Input.Wrapper>
-                    <div className='px-3 text-text-sub-600'>
+                    <div className='px-2 text-text-sub-600'>
                       {currency === 'USD'
                         ? '$'
                         : currency === 'EUR'
@@ -228,7 +248,15 @@ export function Step2Pricing({
                     />
                   </Input.Wrapper>
                 </Input.Root>
-                {errors.additionalServices?.[index]?.price && <p className='text-red-500 text-xs'>{errors.additionalServices?.[index]?.price?.message?.toString()}</p>}
+                <div className='h-4'>
+                  {errors.additionalServices?.[index]?.price && (
+                    <p className='text-[11px] text-red-500'>
+                      {
+                        errors.additionalServices?.[index]?.price?.message?.toString()
+                      }
+                    </p>
+                  )}
+                </div>
               </div>
 
               <Button.Root
@@ -236,7 +264,7 @@ export function Step2Pricing({
                 mode='ghost'
                 size='small'
                 onClick={() => remove(index)}
-                className='mt-auto h-9 w-full flex-shrink-0 sm:mb-[1px] sm:w-auto'
+                className='mb-4 h-9 w-full flex-shrink-0 sm:w-auto'
                 type='button'
               >
                 <Button.Icon as={RiDeleteBinLine} className='text-red-500' />

@@ -102,7 +102,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
       </div>
 
       {/* Amount & Deadline Row */}
-      <div className='grid grid-cols-1 gap-4 md:grid-cols-2 px-4 '>
+      <div className='grid grid-cols-1 gap-4 px-4 grid-cols-[2fr,1fr]'>
         {/* Amount/Budget */}
         <div className='flex flex-col gap-1.5'>
           <Label.Root
@@ -156,7 +156,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
         </div>
 
         {/* Deadline */}
-        <div className='flex flex-col gap-1'>
+        <div className='flex flex-col gap-1.5'>
           <Label.Root
             htmlFor='deadline'
             className='flex items-center gap-1.5 text-[14px] text-[#525866] font-medium'
