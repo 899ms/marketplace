@@ -82,15 +82,15 @@ export function ServiceSearchBar({
 
 
   return (
-    <div className="mb-6 rounded-[12px] bg-[#E1E4EA] px-[24px] py-[20px]">
-      <div className="flex flex-wrap items-center gap-2">
+    <div className='mb-4 rounded-lg bg-[#E1E4EA] px-6 py-5'>
+      <div className='flex flex-wrap items-center gap-[8px]'>
         {/* Search Input */}
-        <div className="relative flex-grow sm:flex-grow-0 sm:basis-1/3">
-          <RiSearchLine className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-gray-500" />
+        <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3 max-w-[310px] '>
+          <RiSearchLine className='absolute left-3 top-1/2 size-5 -translate-y-1/2 text-[#525866]' />
           <Input
             type="search"
             placeholder="Search services..."
-            className="w-full rounded-10 border border-gray-300 bg-white pl-9 pr-3 py-2 text-[14px]"
+            className="w-full max-w-[310px] rounded-[10px] border font-[400] border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE]"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -98,7 +98,7 @@ export function ServiceSearchBar({
 
         {/* Real-time Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('leadTime', value)}>
-          <SelectPrimitive.Trigger className="flex-grow rounded-[0.6rem] !min-h-[43px] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-[calc(20%+8px)] data-[placeholder]:!text-[#000000] group-data-[placeholder]/trigger:!text-black-400">
+          <SelectPrimitive.Trigger className="w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000] group-data-[placeholder]/trigger:!text-black-400">
             <SelectPrimitive.Value placeholder="Lead Time" />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
@@ -110,7 +110,7 @@ export function ServiceSearchBar({
 
         {/* Price Range Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('priceRange', value)}>
-          <SelectPrimitive.Trigger className="flex-grow rounded-[0.6rem] !min-h-[43px] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-[calc(20%+8px)] data-[placeholder]:!text-[#000000]">
+          <SelectPrimitive.Trigger className="w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]">
             <SelectPrimitive.Value placeholder="Price Range" />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
@@ -122,7 +122,7 @@ export function ServiceSearchBar({
 
         {/* Sort Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('sort', value)}>
-          <SelectPrimitive.Trigger className="flex-grow rounded-[0.6rem] !min-h-[43px] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] sm:flex-grow-0 sm:basis-[calc(20%+8px)] data-[placeholder]:!text-[#000000]">
+          <SelectPrimitive.Trigger className="w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]">
             <SelectPrimitive.Value placeholder="Sort By" />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
