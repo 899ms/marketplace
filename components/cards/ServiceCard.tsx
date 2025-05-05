@@ -62,7 +62,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
             />
           )}
         </div>
-        <div className='p-4'>
+        <div className='p-[12px]'>
           <p className='mb-4 line-clamp-2 font-medium text-[#0E121B] text-[14px]'>
             {displayTitle}
           </p>
