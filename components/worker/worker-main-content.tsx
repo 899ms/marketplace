@@ -25,15 +25,15 @@ interface SectionHeaderProps {
 export function SectionHeader({ title, href = '#' }: SectionHeaderProps) {
   return (
     <div className='mb-4 flex items-center justify-between'>
-      <h2 className='text-[18px] font-semibold text-[#0A0D14]'>{title}</h2>
+      <h2 className='text-[18px] font-medium text-[#0A0D14]'>{title}</h2>
       <LinkButton.Root
         size='small'
-        className='text-[14px] text-[#222530]'
+        className='text-[14px] text-[#222530] font-medium'
         asChild
       >
         <Link href={href} className=''>
           More
-          <LinkButton.Icon as={RiArrowRightSLine} />
+          <LinkButton.Icon as={RiArrowRightSLine} className='size-5' />
         </Link>
       </LinkButton.Root>
     </div>
@@ -70,7 +70,7 @@ export function ProjectCard({ job }: ProjectCardProps) {
           </div>
           <div className='flex flex-col gap-2'>
             <p className='text-[14px] text-[#525866]'>Budget</p>
-            <p className='text-[18px] font-medium text-[#0A0D14]'>
+            <p className='text-[18px] font-medium text-[#0E121B]'>
               {budgetDisplay}
             </p>
           </div>
@@ -80,7 +80,7 @@ export function ProjectCard({ job }: ProjectCardProps) {
           <Button.Root mode='stroke' size='small' variant='neutral' asChild className='flex-shrink-0 shadow-sm'>
             <Link href={`/projects/${job.id}`}>
               Apply
-              <Button.Icon as={RiArrowRightSLine} />
+              <Button.Icon as={RiArrowRightSLine} className='text-[#525866]' />
             </Link>
           </Button.Root>
         </div>

@@ -95,7 +95,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             </span>
             <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866]'>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <g clip-path="url(#clip0_24005_11186)">
+                <g clipPath="url(#clip0_24005_11186)">
                   <path d="M6.59977 4.99316C6.22644 4.99316 5.93311 5.29316 5.93311 5.65983C5.93311 6.0265 6.23311 6.3265 6.59977 6.3265C6.96644 6.3265 7.26644 6.0265 7.26644 5.65983C7.26644 5.29316 6.96644 4.99316 6.59977 4.99316Z" fill="#5A36BF" />
                   <path d="M14.8068 3.36016C14.2468 2.06016 13.0135 1.3335 11.2935 1.3335H5.70683C3.56683 1.3335 1.8335 3.06683 1.8335 5.20683V10.7935C1.8335 12.5135 2.56016 13.7468 3.86016 14.3068C3.98683 14.3602 4.1335 14.3268 4.22683 14.2335L14.7335 3.72683C14.8335 3.62683 14.8668 3.48016 14.8068 3.36016ZM7.52016 8.16016C7.26016 8.4135 6.92016 8.5335 6.58016 8.5335C6.24016 8.5335 5.90016 8.40683 5.64016 8.16016C4.96016 7.52016 4.2135 6.50016 4.50016 5.28683C4.7535 4.18683 5.72683 3.6935 6.58016 3.6935C7.4335 3.6935 8.40683 4.18683 8.66016 5.2935C8.94016 6.50016 8.1935 7.52016 7.52016 8.16016Z" fill="#5A36BF" />
                   <path d="M13.4798 13.6868C13.6264 13.8335 13.6064 14.0735 13.4264 14.1735C12.8398 14.5002 12.1264 14.6668 11.2931 14.6668H5.70643C5.5131 14.6668 5.4331 14.4402 5.56643 14.3068L9.5931 10.2802C9.72644 10.1468 9.9331 10.1468 10.0664 10.2802L13.4798 13.6868Z" fill="#5A36BF" />
@@ -158,7 +158,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         {/* Tags Section */}
         <div className='px-4'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-secondary-600  font-medium text-[12px]'>
+            <h3 className='text-text-secondary-600 text-[#0A0D14] font-medium text-[12px]'>
               Tags
             </h3>
             {/* TODO: Implement edit functionality */}
@@ -182,7 +182,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         {/* Links Section */}
         <div className='px-5'>
           <div className='mb-3 flex items-center justify-between'>
-            <h3 className='text-text-secondary-600   text-[12px] font-[500]'>
+            <h3 className='text-text-secondary-600  text-[#0A0D14]  text-[12px] font-[500]'>
               Links
             </h3>
             {/* TODO: Implement edit functionality */}

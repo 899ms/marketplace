@@ -4,8 +4,10 @@ import React from 'react';
 import { RiCalendarLine } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
+import WidgetSchedule from '../widgets/widget-schedule';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import { User } from '@/utils/supabase/types';
+import { DayPicker } from 'react-day-picker';
 
 // --- Calendar Widget ---
 export function CalendarWidget() {
@@ -15,8 +17,8 @@ export function CalendarWidget() {
       <div className='flex flex-col gap-2'>
         <div className='flex flex-row justify-between'>
           <div className='flex flex-row gap-1 items-center'>
-            <RiCalendarLine className='mr-2 size-6 text-gray-700' />
-            <p className='text-[16px] text-gray-700 font-medium'>Calendar</p>
+            <RiCalendarLine className='mr-2 size-6 text-[#525866]' />
+            <p className='text-[16px] text-[#0E121B] font-medium'>Calendar</p>
           </div>
           <Button.Root mode='stroke' size='xxsmall' variant='neutral' className='p-2'>See All</Button.Root>
         </div>
@@ -119,7 +121,8 @@ export function WorkerRightSidebar({ userProfile }: WorkerRightSidebarProps) {
   return (
     <aside className='hidden w-64 shrink-0 lg:block min-w-[352px]'>
       <div className='shadow-sm sticky top-20 flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-white-0  mb-6'>
-        <CalendarWidget />
+
+        <WidgetSchedule />
         <Divider.Root className='!mb-0 !pb-0' />
         <MeetingsWidget />
       </div>
