@@ -219,36 +219,6 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
               />
             </Input.Wrapper>
           </Input.Root>
-          {/* Suggested Tags */}
-          <div className='mt-2 flex flex-wrap gap-1.5 items-center'>
-
-            {[
-              'Music Production',
-              'Mixing',
-              'Mastering',
-              'Songwriting',
-              'Beat Making',
-            ].map((suggestion) => (
-              <Tag.Root
-                key={suggestion}
-
-
-                onClick={() => {
-                  const currentTags = getValues('tags') || [];
-                  if (
-                    !currentTags.includes(suggestion) &&
-                    currentTags.length < 8
-                  ) {
-                    setValue('tags', [...currentTags, suggestion], {
-                      shouldValidate: true,
-                    });
-                  }
-                }}
-              >
-                {suggestion}
-              </Tag.Root>
-            ))}
-          </div>
           {tags.length > 0 && (
             <div className='mt-2 flex flex-wrap gap-1.5'>
               {tags.map((tag, index) => (
