@@ -113,7 +113,7 @@ export function ContractTermsSection({
         )}
       />
       {errors.paymentType && (
-        <p className='text-sm mt-1 text-red-500'>
+        <p className='text-sm mt-1 text-red-500 text-[14px]'>
           {errors.paymentType.message}
         </p>
       )}

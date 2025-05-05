@@ -56,28 +56,30 @@ export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
   return (
     <>
       {/* Profile Section */}
-      <div className='flex flex-col items-center gap-3 pt-4 px-4 mb-4'>
-        {!worker.avatar && worker.avatar !== "" ? <Avatar.Root size='80'>
-          <Avatar.Image src={worker.avatar} alt={worker.name} />
-          <Avatar.Indicator position='bottom'>
-            <Avatar.Status status='online' />
-          </Avatar.Indicator>
-        </Avatar.Root> :
-          <Avatar.Root size='80' color='yellow'>{worker.name.charAt(0).toUpperCase()}</Avatar.Root>}
-        <div className='text-center'>
-          <h2 className='text-[16px] font-medium text-[#525866]'>
-            {worker.name}
-          </h2>
-          <div className='text-text-secondary-600 flex items-center justify-center gap-1 text-paragraph-sm'>
-            <RiStarFill className='size-4 text-yellow-500' />
-            <span className='text-[#525866]'>
-              {worker.rating.toFixed(1)} ({worker.reviewCount})
-            </span>
+      <div className='flex flex-col items-center gap-2 pt-[52px] pb-[32px] px-5 mb-4 mb-0'>
+        <div className='flex flex-col items-center gap-1'>
+          {!worker.avatar && worker.avatar !== "" ? <Avatar.Root size='80'>
+            <Avatar.Image src={worker.avatar} alt={worker.name} />
+            <Avatar.Indicator position='bottom'>
+              <Avatar.Status status='online' />
+            </Avatar.Indicator>
+          </Avatar.Root> :
+            <Avatar.Root size='80' color='yellow'>{worker.name.charAt(0).toUpperCase()}</Avatar.Root>}
+          <div className='text-center flex flex-col gap-[3px]'>
+            <h2 className='text-[16px] font-medium text-[#525866]'>
+              {worker.name}
+            </h2>
+            <div className='text-text-secondary-600 flex items-center justify-center gap-1 text-paragraph-sm'>
+              <RiStarFill className='size-4 text-yellow-500' />
+              <span className='text-[#525866] text-[12px]'>
+                {worker.rating.toFixed(1)} ({worker.reviewCount})
+              </span>
+            </div>
           </div>
         </div>
         <div className='flex items-center gap-2'>
           {/* Placeholder Google Logos */}
-          <div className='flex flex-row items-center gap-1 text-[#525866]'>
+          <div className='flex flex-row items-center gap-1 text-[#525866] text-[12px]'>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8.00015 11.5C9.93325 11.5 11.5003 9.93283 11.5003 7.99973C11.5003 6.06663 9.93325 4.49951 8.00015 4.49951C6.06704 4.49951 4.5 6.06663 4.5 7.99973C4.5 9.93283 6.06704 11.5 8.00015 11.5Z" fill="white" />
               <path d="M4.96887 9.75042L1.93811 4.50098C1.32358 5.56505 1 6.77214 1 8.00098C1 9.22982 1.32343 10.4369 1.93789 11.501C2.55235 12.5651 3.43615 13.4487 4.50037 14.0629C5.56459 14.677 6.77182 15.0002 8.00059 14.9999L11.0313 9.75042V9.74962C10.7244 10.282 10.2826 10.7241 9.75055 11.0315C9.21848 11.3389 8.61485 11.5008 8.00036 11.5009C7.38588 11.501 6.7822 11.3393 6.25004 11.032C5.71788 10.7248 5.27602 10.2828 4.96887 9.75057V9.75042Z" fill="#229342" />
@@ -86,7 +88,7 @@ export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
               <path d="M8.00044 4.50022H14.0619C13.4477 3.436 12.5641 2.5522 11.4999 1.93774C10.4358 1.32333 9.22868 0.999907 7.99993 1C6.77116 1.00007 5.56407 1.32366 4.50007 1.93826C3.43603 2.55283 2.55256 3.43671 1.93848 4.50103L4.96924 9.75048L4.97005 9.75092C4.66254 9.21889 4.50055 8.61527 4.50036 8.00077C4.50016 7.38627 4.66178 6.78255 4.96894 6.25033C5.27606 5.71811 5.71804 5.27613 6.25018 4.96894C6.78233 4.66175 7.38606 4.5 8.00059 4.50015L8.00044 4.50022Z" fill="#E33B2E" />
             </svg>
             Google</div>
-          <div className='flex flex-row items-center gap-1 text-[#525866]'><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <div className='flex flex-row items-center gap-1 text-[#525866]  text-[12px]'><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M8.14258 6.72729V9.4382H11.9868C11.818 10.31 11.3114 11.0482 10.5517 11.5446L12.8699 13.3073C14.2205 12.0855 14.9998 10.291 14.9998 8.15918C14.9998 7.66283 14.9543 7.18551 14.8699 6.72737L8.14258 6.72729Z" fill="#4285F4" />
             <path d="M4.13966 9.33234L3.61681 9.72456L1.76611 11.1373C2.94145 13.4218 5.35039 15 8.14261 15C10.0712 15 11.688 14.3763 12.8699 13.3073L10.5517 11.5445C9.91532 11.9645 9.10362 12.2191 8.14261 12.2191C6.28545 12.2191 4.70756 10.9909 4.14258 9.33638L4.13966 9.33234Z" fill="#34A853" />
             <path d="M1.76619 4.86285C1.27919 5.80463 1 6.86737 1 8.00007C1 9.13278 1.27919 10.1955 1.76619 11.1373C1.76619 11.1436 4.14288 9.33003 4.14288 9.33003C4.00002 8.91003 3.91558 8.46461 3.91558 8C3.91558 7.5354 4.00002 7.08997 4.14288 6.66997L1.76619 4.86285Z" fill="#FBBC05" />
@@ -96,25 +98,25 @@ export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
         </div>
 
       </div>
-      <div className='px-4'>
+      <div className='px-4 m-0'>
         <Divider.Root className='' />
       </div>
 
       {/* About Section - Added */}
-      <div className='p-4'>
-        <h2 className='mb-2 text-[18px] font-medium text-[#0E121B]'>
+      <div className='py-4 px-5'>
+        <h2 className='mb-2 text-[14px] font-medium text-[#0E121B]'>
           About
         </h2>
-        <p className='text-[14px] text-[#525866]'>{worker.about}</p>
+        <p className='text-[12px] text-[#525866]'>{worker.about}</p>
       </div>
 
-      <div className='px-4'>
+      <div className='px-5'>
         <Divider.Root className='' />
       </div>
 
       {/* Skills Section */}
-      <div className='p-4'>
-        <h2 className='mb-3 text-label-lg font-medium text-text-strong-950'>
+      <div className='py-4 px-5'>
+        <h2 className='mb-3 text-[14px] font-medium text-text-strong-950'>
           Skills
         </h2>
         <div className='flex flex-wrap gap-1.5'>
@@ -128,15 +130,15 @@ export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
         </div>
       </div>
 
-      <div className='px-4'>
+      {/* <div className='px-5'>
         <Divider.Root className='' />
-      </div>
+      </div> */}
 
       {/* Awards Section Removed */}
 
       {/* Tools/Products Section - Example based on screenshot */}
-      <div className='p-4'>
-        <h2 className='mb-3 text-label-lg font-medium text-text-strong-950'>
+      <div className='pb-5 px-5'>
+        <h2 className='mb-3 text-[14px] font-medium text-text-strong-950 mt-0'>
           Tools / Products
         </h2>
         <div className='flex flex-wrap gap-1.5'>
