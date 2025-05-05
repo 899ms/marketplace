@@ -18,7 +18,7 @@ const VerticalStepper = ({
   onStepClick,
 }: VerticalStepperProps) => {
   return (
-    <aside className='pt-6 shadow-sm sticky top-20 hidden h-[calc(100vh-10rem)] w-64 shrink-0 flex-col justify-between rounded-xl border border-stroke-soft-200 bg-[#F5F7FA] p-4 lg:flex xl:w-72'>
+    <aside className='pt-6 shadow-sm sticky top-20 hidden h-[calc(100vh-10rem)] w-64 shrink-0 flex-col justify-between rounded-xl bg-[#F5F7FA] p-4 lg:flex xl:w-72 max-w-[264px]'>
       <div className=''>
         <p className='text-[16px] text-[#99A0AE] mb-4 font-medium'>
           Transfer Sequence

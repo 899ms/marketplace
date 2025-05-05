@@ -33,7 +33,7 @@ const CreateJobMainContent = ({
   };
 
   return (
-    <main className='mx-auto flex-1 px-4 pb-6 md:px-10 flex flex-col items-center'>
+    <main className='mx-auto flex-1 px-4 pb-6 md:px-10 flex flex-col items-center max-w-[600px] ml-[165px]'>
       {' '}
       {/* Added flex-1 */}
       <h1 className='text-[32px] font-medium text-[#0A0D14]'>
@@ -56,7 +56,7 @@ const CreateJobMainContent = ({
             <Accordion.Item
               value={itemValue}
               key={stepNumber}
-              className='overflow-hidden rounded-3xl border !bg-white !border-[#E1E4EA] !px-0 data-[state=open]:shadow-[0px_2px_4px_#0E121B08,0px_6px_10px_#0E121B0F]'
+              className='overflow-hidden rounded-3xl border !bg-white !border-[#E1E4EA] !px-0 data-[state=open]:shadow-[0px_2px_4px_#0E121B08,0px_6px_10px_#0E121B0F] data-[state=closed]:shadow-none'
             >
               <Accordion.Trigger className='!p-4 !mx-0 group/trigger flex w-full items-center justify-between text-left hover:bg-bg-weak-50'>
                 {' '}
