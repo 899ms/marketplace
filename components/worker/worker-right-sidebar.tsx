@@ -17,8 +17,8 @@ export function CalendarWidget() {
       <div className='flex flex-col gap-2'>
         <div className='flex flex-row justify-between'>
           <div className='flex flex-row gap-1 items-center'>
-            <RiCalendarLine className='mr-2 size-6 text-gray-700' />
-            <p className='text-[16px] text-gray-700 font-medium'>Calendar</p>
+            <RiCalendarLine className='mr-2 size-6 text-[#525866]' />
+            <p className='text-[16px] text-[#0E121B] font-medium'>Calendar</p>
           </div>
           <Button.Root mode='stroke' size='xxsmall' variant='neutral' className='p-2'>See All</Button.Root>
         </div>
