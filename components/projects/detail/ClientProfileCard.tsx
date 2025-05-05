@@ -19,7 +19,7 @@ interface ClientProfileCardProps {
 const ClientProfileCard: React.FC<ClientProfileCardProps> = ({ client }) => {
   return (
     <div className="m-[20px]">
-      <div className="m-[32px] flex flex-col items-center text-center">
+      <div className="m-[32px] mt-[52px] flex flex-col items-center text-center">
         <Link href={`/users/${client.id}`} passHref legacyBehavior>
           <a className="inline-block">
             <Avatar.Root size="72">

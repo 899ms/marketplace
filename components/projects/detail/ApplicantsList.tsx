@@ -18,7 +18,7 @@ const ApplicantsList: React.FC<ApplicantsListProps> = ({ applicants, userRole })
       {/* 95% width separator */}
     </div>
 
-    <div className="w-[90%] mx-auto my-2 mb-[16px] h-px bg-stroke-soft-200" />
+    <div className="w-[90%] mx-auto mb-2 mb-[16px] h-px bg-stroke-soft-200" />
 
     {/* Cards */}
     <div>

@@ -42,7 +42,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
 
           <div className="flex-1">
             {/* Name */}
-            <p className="text-[14px] font-medium text-text-strong-950">
+            <p className="text-[14px] font-medium text-text-strong-950 leading-6">
               {applicant.name}
             </p>
 
@@ -72,7 +72,7 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
 
         {/* Right-side action */}
         {showReplaced ? (
-          <span className="text-[12px] rounded-full bg-green-100 px-3 py-1 font-medium text-green-600">
+          <span className="text-[12px] rounded-full bg-green-100 px-2 py-[0.125rem] font-medium text-green-600">
             Hired
           </span>
         ) : isSeller ? (
