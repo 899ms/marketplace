@@ -4,6 +4,7 @@ import React from 'react';
 import { useAudioPlayer } from '@/contexts/AudioContext';
 import * as Badge from '@/components/ui/badge';
 import { RiPlayCircleFill, RiPauseCircleFill, RiBookmarkLine } from '@remixicon/react';
+import { Bookmark } from 'lucide-react';
 
 interface WorkItemProps {
   url: string;
@@ -34,17 +35,17 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
   };
 
   return (
-    <div className="flex items-center justify-between border-b border-stroke-soft-200 py-[12px]">
+    <div className="flex items-center justify-between py-[12px]">
       {/* 1. Play + Info */}
-      <div className="flex items-center gap-3 min-w-0">
+      <div className="flex items-center gap-2.5 w-[200px]">
         <button
           onClick={handlePlayClick}
           className="bg-bg-subtle-100 hover:bg-bg-subtle-200 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors"
         >
           {isActiveTrack && isPlaying ? (
-            <RiPauseCircleFill className="size-8 text-text-strong-950" />
+            <RiPauseCircleFill className="size-8 text-[#525866]" />
           ) : (
-            <RiPlayCircleFill className="size-8 text-text-strong-950" />
+            <RiPlayCircleFill className="size-8 text-[#525866]" />
           )}
         </button>
         <div className="min-w-0">
@@ -60,7 +61,7 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
             key={idx}
             variant="light"
             size="medium"
-            className="bg-[var(--bg-weak-100,#F6F8FA)] rounded-md border border-stroke-soft-300 text-gray-600 px-2 py-0.5"
+            className="bg-[#F6F8FA] font-medium rounded-md text-[#525866] px-2 py-1"
           >
             {genre}
           </Badge.Root>
@@ -68,13 +69,13 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
       </div>
 
       {/* 3. Duration/BPM + Bookmark */}
-      <div className="flex items-center gap-7">
-        <div className="text-left">
-          <p className="text-paragraph-sm text-gray-600">{duration ?? '--:--'}</p>
-          <p className="text-xs text-gray-600">{bpm ?? '-- BPM'}</p>
+      <div className="flex items-center w-[125px] justify-between ">
+        <div className="text-left text-[#525866] text-[12px]">
+          <p className="">{duration ?? '--:--'}</p>
+          <p className="">{bpm ?? '-- BPM'}</p>
         </div>
         <button className="text-[#525866] hover:text-icon-primary-500 shrink-0">
-          <RiBookmarkLine className="size-5" />
+          <Bookmark className="w-[16px] h-[14px] text-[#525866]" />
         </button>
       </div>
     </div>

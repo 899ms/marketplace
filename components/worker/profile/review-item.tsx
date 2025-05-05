@@ -10,7 +10,7 @@ interface ReviewItemProps {
 
 export function ReviewItem({ review }: ReviewItemProps) {
   return (
-    <div className="border-stroke-soft-200 py-4">
+    <div className="border-stroke-soft-200 py-4 border-b">
       {/* Top row: avatar + name on left, price + like on right */}
       <div className="flex items-start justify-between mb-3">
         {/* left */}
@@ -18,11 +18,11 @@ export function ReviewItem({ review }: ReviewItemProps) {
           <Avatar.Root size="48">
             <Avatar.Image src={review.reviewerAvatar} alt={review.reviewer} />
           </Avatar.Root>
-          <div className="flex flex-col">
+          <div className="flex flex-col gap-2 mt-1">
             <p className="text-text-secondary-600 text-label-sm font-medium">
               {review.reviewer}
             </p>
-            <div className="flex items-center gap-2 text-paragraph-xs text-gray-600">
+            <div className="flex items-center gap-3 text-paragraph-xs text-gray-600">
               <div className="flex items-center gap-0.5">
                 <RiStarFill className="size-3.5 text-yellow-400" />
                 <span>{review.rating}</span>
@@ -33,7 +33,7 @@ export function ReviewItem({ review }: ReviewItemProps) {
         </div>
 
         {/* right */}
-        <div className="flex flex-col items-end">
+        <div className="flex flex-col items-center my-auto">
           <span className="text-label-lg font-medium text-text-strong-950">
             ${review.price.toFixed(2)}
           </span>
@@ -41,8 +41,8 @@ export function ReviewItem({ review }: ReviewItemProps) {
       </div>
 
       {/* Bottom row: title + description */}
-      <div>
-        <h3 className="mb-1 text-paragraph-lg font-medium text-text-strong-950">
+      <div className=''>
+        <h3 className="mb-1 mt-4 text-paragraph-lg font-medium text-text-strong-950">
           {review.contractTitle}
         </h3>
         <p className="text-gray-600 line-clamp-2 text-paragraph-sm">
