@@ -14,7 +14,7 @@ import {
   subMonths,
 } from 'date-fns';
 
-import { cn, cnExt } from '@/utils/cn';
+import { cn } from '@/utils/cn';
 import * as CompactButton from '@/components/ui/compact-button';
 
 type DayPickerProps = {
@@ -102,7 +102,7 @@ function DayPicker({ defaultDate, onDayChange }: DayPickerProps) {
       <button
         key={format(day, 'yyyy-MM-dd')}
         type='button'
-        className={cnExt(
+        className={cn(
           'relative z-10 flex h-14 w-full shrink-0 select-none flex-col items-center justify-center gap-1 rounded-lg',
           'first:left-0 first:-translate-x-full',
           'last:right-0 last:translate-x-full',
@@ -125,7 +125,7 @@ function DayPicker({ defaultDate, onDayChange }: DayPickerProps) {
         }}
       >
         <span
-          className={cnExt(
+          className={cn(
             'text-paragraph-xs text-text-sub-600 transition duration-200 ease-out',
             {
               'text-static-white': isSameDay(day, selectedDayTemp),
@@ -135,7 +135,7 @@ function DayPicker({ defaultDate, onDayChange }: DayPickerProps) {
           {format(day, 'EE')}
         </span>
         <span
-          className={cnExt(
+          className={cn(
             'text-label-md text-text-strong-950 transition duration-200 ease-out',
             {
               'text-static-white': isSameDay(day, selectedDayTemp),
@@ -184,7 +184,7 @@ function DayPicker({ defaultDate, onDayChange }: DayPickerProps) {
 
         <div className='grid flex-1'>
           <div className='grid grid-cols-5 gap-1 [grid-area:1/1]'>
-            <div className='pointer-events-none col-start-3 col-end-4 row-start-1 h-14 rounded-lg bg-primary-base' />
+            <div className='pointer-events-none col-start-3 col-end-4 row-start-1 h-14 rounded-lg bg-[#0E121B]' />
           </div>
           <div className='relative grid grid-cols-5 gap-1 overflow-hidden [grid-area:1/1]'>
             {renderDays()}

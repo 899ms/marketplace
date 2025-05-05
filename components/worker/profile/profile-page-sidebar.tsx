@@ -29,8 +29,29 @@ import { User } from '@/utils/supabase/types';
 import * as Button from '@/components/ui/button'; // Add Button import
 import * as AvatarGroup from '@/components/ui/avatar-group'; // Add AvatarGroup import
 import { ProfileActionButtons } from '../../users/profile/profile-action-buttons'; // Use relative path
+import * as AvatarGroupCompact from '@/components/ui/avatar-group-compact';
 
 // --- Helper Components (Keep SidebarLink as it's used) ---
+
+
+export function AvatarGroupDemo() {
+  return (
+    <AvatarGroupCompact.Root size='24'>
+      <AvatarGroupCompact.Stack>
+        <Avatar.Root>
+          <Avatar.Image src='https://i.pravatar.cc/40?img=32' />
+        </Avatar.Root>
+        <Avatar.Root>
+          <Avatar.Image src='https://i.pravatar.cc/40?img=45' />
+        </Avatar.Root>
+        <Avatar.Root>
+          <Avatar.Image src='https://i.pravatar.cc/40?img=12' />
+        </Avatar.Root>
+      </AvatarGroupCompact.Stack>
+      <AvatarGroupCompact.Overflow>+4</AvatarGroupCompact.Overflow>
+    </AvatarGroupCompact.Root>
+  );
+}
 interface SidebarLinkProps {
   href?: string;
   icon: React.ElementType;
@@ -244,16 +265,7 @@ export function ProfilePageSidebar({
                 <span className="text-[14px] text-[#0A0D14] ml-[5px]">Recent reviews</span> {/* Changed text-sm to text-xs */}
               </div>
               {/* Right section - Avatars (Styled) */}
-              <div className="flex items-center gap-2 rounded-full pt-0.5 pr-2.5 pb-0.5 pl-0.5 bg-bg-white-0 shadow-[0_2px_4px_0_rgba(27,28,29,0.04)] border">
-                <AvatarGroup.Root size="24"> {/* Changed size 28 to 24 */}
-                  {reviewAvatars.map((src, i) => (
-                    <Avatar.Root key={i} size="24"> {/* Changed size 28 to 24 */}
-                      <Avatar.Image src={src} />
-                    </Avatar.Root>
-                  ))}
-                </AvatarGroup.Root>
-                <span className="text-[#525866] text-[12px]">+4</span> {/* Changed text-sm to text-xs */}
-              </div>
+              <AvatarGroupDemo />
             </div>
           </div>
           {/* Sections outside the wrapper */}

@@ -23,7 +23,7 @@ export function AgreementSection({ form }: AgreementSectionProps) {
 
     <div className='flex flex-col gap-2'>
 
-      <div className='rounded-lg border border-stroke-soft-200 p-4 mb-4'>
+      <div className='rounded-[12px] border border-stroke-soft-200 p-4 mb-4'>
         <Accordion.Root type='single' collapsible className='space-y-2'>
           <Accordion.Item value='a' className='ring-0 !bg-white'>
             <Accordion.Trigger className='text-[#0E121B] text-[16px] font-medium flex items-center justify-between'>
@@ -47,7 +47,7 @@ export function AgreementSection({ form }: AgreementSectionProps) {
             </Accordion.Content>
           </Accordion.Item>
 
-          <Divider.Root className='w-full w-[97%] mx-auto' />
+          {/* <Divider.Root className='w-full w-[97%] mx-auto' /> */}
 
         </Accordion.Root>
       </div>
@@ -87,7 +87,7 @@ export function AgreementSection({ form }: AgreementSectionProps) {
             .
           </Label>
           {errors.agreeToTerms && (
-            <p className='text-sm text-red-500'>{errors.agreeToTerms.message}</p>
+            <p className='text-sm text-red-500 text-[14px]'>{errors.agreeToTerms.message}</p>
           )}
         </div>
       </div>

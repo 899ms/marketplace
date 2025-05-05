@@ -46,8 +46,8 @@ export default function SendOfferPage() {
   // TODO: Fetch actual data based on offerid (worker details, order details, etc.)
 
   return (
-    <div className='container mx-auto px-12 py-8'>
-      <h1 className='text-[40px] text-[#0E121B] mb-8 font-bold'>Send an offer</h1>
+    <div className='container mx-auto  py-10 px-1   max-w-[1200px]'>
+      <h1 className='text-[40px] text-[#0E121B] mb-8 font-medium'>Send an offer</h1>
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-7'>
         {/* Left Column: Form */}
         <div className='lg:col-span-5'>
@@ -56,7 +56,7 @@ export default function SendOfferPage() {
 
         {/* Right Column: Offer Profile Sidebar */}
 
-        <div className='lg:col-span-2 rounded-xl border border-stroke-soft-200'>
+        <div className='lg:col-span-2 border border-stroke-soft-200 mt-[92px] rounded-[20px] h-fit shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.10)]'>
           <div className='sticky top-20 space-y-2'>
             {/* 
               TODO: Fetch actual worker data instead of using mock data. 

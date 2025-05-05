@@ -45,7 +45,7 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
 
 
   return (
-    <div className='flex items-center gap-4 w-full'>
+    <div className='flex items-start gap-4 w-full mt-[20px]'>
 
       <div className='flex flex-col gap-1 w-1/2'>
         <Label className='flex items-center gap-1 text-[14px] font-medium text-[#0E121B]'>
@@ -104,18 +104,18 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
           </Select.Root>
         </div>
         {errors.amount && (
-          <p className='text-xs mt-1 text-red-500'>
+          <p className='text-xs mt-1 text-red-500 text-[14px]'>
             {errors.amount?.message?.toString()}
           </p>
         )}
         {errors.currency && (
-          <p className='text-xs mt-1 text-red-500'>
+          <p className='text-xs mt-1 text-red-500 text-[14px]'>
             {errors.currency?.message?.toString()}
           </p>
         )}
       </div>
       {/* Deadline Date Picker */}
-      <div className='w-1/2'>
+      <div className='w-1/2 flex flex-col gap-1' >
         <Label className='flex items-center gap-1 text-[14px] font-medium text-[#0E121B]'>
           Deadline (Optional)
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -134,7 +134,7 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
                 <Button
                   type='button'
                   className={cn(
-                    'mt-1 w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50',
+                    'w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50',
                     !field.value && 'text-muted-foreground',
                   )}
                 >
@@ -161,7 +161,7 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
           )}
         />
         {errors.deadline && (
-          <p className='text-sm mt-1 text-red-500'>
+          <p className='text-sm mt-1 text-red-500 text-[14px]'>
             {errors.deadline.message}
           </p>
         )}

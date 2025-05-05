@@ -32,6 +32,29 @@ import {
 import { useNotification } from '@/hooks/use-notification';
 import SellerProfilePage from '@/app/users/[id]/seller-profile-page';
 
+import * as AvatarGroupCompact from '@/components/ui/avatar-group-compact';
+
+
+export function AvatarGroupDemo() {
+  return (
+    <AvatarGroupCompact.Root size='24'>
+      <AvatarGroupCompact.Stack>
+        <Avatar.Root>
+          <Avatar.Image src='https://i.pravatar.cc/40?img=32' />
+        </Avatar.Root>
+        <Avatar.Root>
+          <Avatar.Image src='https://i.pravatar.cc/40?img=45' />
+        </Avatar.Root>
+        <Avatar.Root>
+          <Avatar.Image src='https://i.pravatar.cc/40?img=12' />
+        </Avatar.Root>
+      </AvatarGroupCompact.Stack>
+      <AvatarGroupCompact.Overflow>+4</AvatarGroupCompact.Overflow>
+    </AvatarGroupCompact.Root>
+  );
+}
+
+
 // Helper function to get currency symbol
 const getCurrencySymbol = (currency: string): string => {
   switch (currency?.toUpperCase()) {
@@ -212,16 +235,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
               </div>
 
               {/* Right section - Avatars */}
-              <div className="flex items-center gap-2 rounded-full pt-0.5 pr-2.5 pb-0.5 pl-0.5 bg-bg-white-0 shadow-[0_2px_4px_0_rgba(27,28,29,0.04)]">
-                <AvatarGroup.Root size="32">
-                  {reviewAvatars.map((src, i) => (
-                    <Avatar.Root key={i} size="32">
-                      <Avatar.Image src={src} />
-                    </Avatar.Root>
-                  ))}
-                </AvatarGroup.Root>
-                <span className="text-text-secondary-600 text-sm text-[#525866] text-normal">+4</span>
-              </div>
+              <AvatarGroupDemo />
             </div>
           </div>
         </div> {/* End of New Wrapper Div */}
