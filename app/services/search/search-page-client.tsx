@@ -55,8 +55,6 @@ export default function SearchPageClient() {
   const defaultWorkerFilters = {
     searchTerm: '',
     skills: [] as string[],
-    tags: [] as string[],
-    tools: [] as string[],
     isAvailable: false,
     isProfessional: false,
     sortBy: 'created_at' as string,
@@ -185,8 +183,6 @@ export default function SearchPageClient() {
           offset,
           searchTerm,
           skills,
-          // tags: workerFilters.tags, // Pass tags - TODO: Uncomment when backend supports this
-          // tools: workerFilters.tools, // Pass tools - TODO: Uncomment when backend supports this
           isAvailable,
           isProfessional,
           sortBy,
@@ -363,24 +359,6 @@ export default function SearchPageClient() {
     setResetKey((prev) => prev + 1);
   };
 
-  // Handle worker skills change
-  const handleWorkerSkillsChange = (skills: string[]) => {
-    setWorkerFilters((prev) => ({ ...prev, skills }));
-    setWorkerPage(1);
-  };
-
-  // Handle worker tags change
-  const handleWorkerTagsChange = (tags: string[]) => {
-    setWorkerFilters((prev) => ({ ...prev, tags }));
-    setWorkerPage(1);
-  };
-
-  // Handle worker tools change
-  const handleWorkerToolsChange = (tools: string[]) => {
-    setWorkerFilters((prev) => ({ ...prev, tools }));
-    setWorkerPage(1);
-  };
-
   // Calculate total pages
   const totalServicePages = Math.max(
     1,
@@ -454,12 +432,6 @@ export default function SearchPageClient() {
               onWorkerSearch={handleWorkerSearch}
               onWorkerToggleChange={handleToggleChange}
               workerSearchTerm={workerFilters.searchTerm}
-              onWorkerSkillsChange={handleWorkerSkillsChange}
-              onWorkerTagsChange={handleWorkerTagsChange}
-              onWorkerToolsChange={handleWorkerToolsChange}
-              workerSkills={workerFilters.skills}
-              workerTags={workerFilters.tags}
-              workerTools={workerFilters.tools}
               onProjectBudgetRangeChange={handleProjectBudgetRangeChange}
               onProjectSkillsChange={handleProjectSkillsChange}
               onClearAllFilters={handleClearAllFilters}

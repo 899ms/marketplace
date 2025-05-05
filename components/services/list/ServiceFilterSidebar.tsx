@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import * as Tag from '@/components/ui/tag';
 import * as Switch from '@/components/ui/switch';
 import { RiInformationLine, RiCloseLine, RiSparklingFill, RiInformationFill } from '@remixicon/react';
@@ -34,13 +34,7 @@ interface ServiceFilterSidebarProps {
   // Worker specific callbacks
   onWorkerSearch?: (term: string) => void;
   onWorkerToggleChange?: (option: string, value: boolean) => void;
-  onWorkerSkillsChange?: (skills: string[]) => void;
-  onWorkerTagsChange?: (tags: string[]) => void;
-  onWorkerToolsChange?: (tools: string[]) => void;
   workerSearchTerm?: string;
-  workerSkills?: string[];
-  workerTags?: string[];
-  workerTools?: string[];
   // Project specific callbacks
   onProjectBudgetRangeChange?: (range: [number, number]) => void;
   onProjectSkillsChange?: (skills: string[]) => void;
@@ -55,143 +49,119 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
   onServiceSkillsChange,
   onWorkerSearch,
   onWorkerToggleChange,
-  onWorkerSkillsChange,
-  onWorkerTagsChange,
-  onWorkerToolsChange,
   workerSearchTerm,
-  workerSkills = [],
-  workerTags = [],
-  workerTools = [],
   onProjectBudgetRangeChange,
   onProjectSkillsChange,
   onClearAllFilters,
   resetKey,
 }) => {
-  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
-  const [selectedTools, setSelectedTools] = useState<string[]>([]);
-  const [selectedFeaturedTags, setSelectedFeaturedTags] = useState<string[]>([]);
+  const [selectedSkills, setSelectedSkills] = useState(['Retrowave']);
+  const [selectedTools, setSelectedTools] = useState(['Retrowave']);
+  const [selectedFeaturedTags, setSelectedFeaturedTags] = useState([
+    'Retrowave',
+  ]);
   const [isAvailable, setIsAvailable] = useState(false);
   const [isProfessional, setIsProfessional] = useState(false);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1000]); // Default full range
 
-  useEffect(() => {
-    if (activeTab === 'Worker') {
-      setSelectedSkills(workerSkills);
-      setSelectedFeaturedTags(workerTags);
-      setSelectedTools(workerTools);
-    } else {
-    }
-  }, [activeTab, workerSkills, workerTags, workerTools, resetKey]);
+  // --- Updated Filter Handlers --- //
 
-  useEffect(() => {
-    setSelectedSkills([]);
-    setSelectedTools([]);
-    setSelectedFeaturedTags([]);
-    setIsAvailable(false);
-    setIsProfessional(false);
-    setPriceRange([0, 1000]);
-  }, [resetKey]);
-
+  // Combined handler for Skills/Tags
   const handleSkillToggle = (skill: string) => {
     const newSkills = selectedSkills.includes(skill)
       ? selectedSkills.filter((s) => s !== skill)
       : [...selectedSkills, skill];
     setSelectedSkills(newSkills);
+    // Call appropriate parent handler based on tab
     if (activeTab === 'Service' && onServiceSkillsChange) onServiceSkillsChange(newSkills);
-    if (activeTab === 'Worker' && onWorkerSkillsChange) onWorkerSkillsChange(newSkills);
     if (activeTab === 'Project' && onProjectSkillsChange) onProjectSkillsChange(newSkills);
+    // Workers don't use this skills filter currently
   };
   const removeSkill = (skill: string) => {
     const newSkills = selectedSkills.filter((s) => s !== skill);
     setSelectedSkills(newSkills);
     if (activeTab === 'Service' && onServiceSkillsChange) onServiceSkillsChange(newSkills);
-    if (activeTab === 'Worker' && onWorkerSkillsChange) onWorkerSkillsChange(newSkills);
     if (activeTab === 'Project' && onProjectSkillsChange) onProjectSkillsChange(newSkills);
   };
   const clearSkills = () => {
     setSelectedSkills([]);
     if (activeTab === 'Service' && onServiceSkillsChange) onServiceSkillsChange([]);
-    if (activeTab === 'Worker' && onWorkerSkillsChange) onWorkerSkillsChange([]);
     if (activeTab === 'Project' && onProjectSkillsChange) onProjectSkillsChange([]);
   };
 
+  // Combined handler for Price/Budget Range
   const handlePriceRangeChange = (value: [number, number]) => {
     setPriceRange(value);
     if (activeTab === 'Service' && onServicePriceRangeChange) onServicePriceRangeChange(value);
     if (activeTab === 'Project' && onProjectBudgetRangeChange) onProjectBudgetRangeChange(value);
   };
 
+  // Combined handler for Toggles (Available/Professional)
   const handleToggleChange = (option: string, checked: boolean) => {
     if (option === 'available') setIsAvailable(checked);
     if (option === 'professional') setIsProfessional(checked);
+    // Only workers use these toggles currently
     if (activeTab === 'Worker' && onWorkerToggleChange) onWorkerToggleChange(option, checked);
   };
 
+  // Tool handlers (only used for Service/Worker, not needed for Project)
   const handleToolToggle = (tool: string) => {
-    const newTools = selectedTools.includes(tool)
-      ? selectedTools.filter((t) => t !== tool)
-      : [...selectedTools, tool];
-    setSelectedTools(newTools);
-    if (activeTab === 'Worker' && onWorkerToolsChange) onWorkerToolsChange(newTools);
+    setSelectedTools((prev) =>
+      prev.includes(tool) ? prev.filter((t) => t !== tool) : [...prev, tool],
+    );
+    // TODO: Add onToolsChange callback if needed for Service/Worker
   };
   const removeTool = (tool: string) => {
-    const newTools = selectedTools.filter((t) => t !== tool);
-    setSelectedTools(newTools);
-    if (activeTab === 'Worker' && onWorkerToolsChange) onWorkerToolsChange(newTools);
+    setSelectedTools((prev) => prev.filter((t) => t !== tool));
+    // TODO: Add onToolsChange callback if needed for Service/Worker
   };
-  const clearTools = () => {
-    setSelectedTools([]);
-    if (activeTab === 'Worker' && onWorkerToolsChange) onWorkerToolsChange([]);
-  };
+  const clearTools = () => setSelectedTools([]);
 
+  // Featured Tag handlers (only used for Service/Worker, not needed for Project)
   const handleFeaturedTagToggle = (tag: string) => {
-    const newTags = selectedFeaturedTags.includes(tag)
-      ? selectedFeaturedTags.filter((t) => t !== tag)
-      : [...selectedFeaturedTags, tag];
-    setSelectedFeaturedTags(newTags);
-    if (activeTab === 'Worker' && onWorkerTagsChange) onWorkerTagsChange(newTags);
+    setSelectedFeaturedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
+    );
+    // TODO: Add onFeaturedTagsChange callback if needed for Service/Worker
   };
   const removeFeaturedTag = (tag: string) => {
-    const newTags = selectedFeaturedTags.filter((t) => t !== tag);
-    setSelectedFeaturedTags(newTags);
-    if (activeTab === 'Worker' && onWorkerTagsChange) onWorkerTagsChange(newTags);
-  };
-  const clearFeaturedTags = () => {
-    setSelectedFeaturedTags([]);
-    if (activeTab === 'Worker' && onWorkerTagsChange) onWorkerTagsChange([]);
+    setSelectedFeaturedTags((prev) => prev.filter((t) => t !== tag));
+    // TODO: Add onFeaturedTagsChange callback if needed for Service/Worker
   };
 
+  // Clear all filters handler
   const handleClearAllFilters = () => {
+    // Reset local state
+    setSelectedSkills([]);
+    setSelectedTools([]);
+    setSelectedFeaturedTags([]);
+    setIsAvailable(false);
+    setIsProfessional(false);
+    setPriceRange([0, 1000]); // Reset to full range
+
+    // Notify parent component
     if (onClearAllFilters) onClearAllFilters();
   };
 
+  // Mock data (keep or replace with fetched options)
   const availableSkills = ['Digital Painting', 'Retrowave', 'NFT'];
   const availableTools = ['Digital Painting', 'Retrowave', 'NFT'];
   const availableFeaturedTags = ['Digital Painting', 'Retrowave', 'NFT'];
 
-  const showWorkerSearch = activeTab === 'Worker';
-  const showSkills = activeTab === 'Service' || activeTab === 'Worker' || activeTab === 'Project';
-  const showTools = activeTab === 'Service' || activeTab === 'Worker';
-  const showFeaturedTags = activeTab === 'Service' || activeTab === 'Worker';
-  const showPriceRange = activeTab === 'Service';
-  const showBudgetRange = activeTab === 'Project';
-  const showWorkerToggles = activeTab === 'Worker';
-
   return (
     <aside className='flex flex-col w-full h-full text-sm'>
-      {showWorkerSearch && (
-        <div className="mb-4 px-4">
-          <WorkerSearchBar
-            onSearch={onWorkerSearch}
-            searchTerm={workerSearchTerm}
-            resetKey={resetKey}
-          />
-          <hr className='border-stroke-soft-200 mt-[16px]' />
-        </div>
+      {/* Worker Search Bar */}
+      {activeTab === 'Worker' && (
+        <WorkerSearchBar
+          onSearch={onWorkerSearch}
+          searchTerm={workerSearchTerm}
+          resetKey={resetKey}
+        />
       )}
 
-      {showSkills && (
-        <div className='mx-[16px]'>
+      {/* Skills Section (Service & Project) */}
+      {(activeTab === 'Service' || activeTab === 'Project') && (
+        <div className='mx-[16px]' >
           <div className='mb-2 flex items-center justify-between'>
             <h3 className='text-[14px] font-medium text-text-strong-950'>Skills</h3>
             {selectedSkills.length > 0 && (
@@ -215,6 +185,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
               </Tag.Root>
             ))}
           </TagInputContainer>
+
           <div className="flex flex-wrap gap-1.5">
             {availableSkills
               .filter((skill) => !selectedSkills.includes(skill))
@@ -223,10 +194,14 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                   key={skill}
                   asChild
                   variant="gray"
-                  className={cn(
-                    'cursor-pointer border !border-stroke-soft-200',
-                    idx % 2 === 0 ? 'bg-bg-white-0' : 'bg-bg-alt-100',
-                  )}
+                  className={`
+                    cursor-pointer 
+                    border-gray-100             /* gray-600 border */
+                    ${idx % 2 === 0
+                      ? "bg-white border-[E1E4EA]"
+                      : "bg-gray-100"
+                    }
+                  `}
                 >
                   <button onClick={() => handleSkillToggle(skill)}>
                     {skill}
@@ -238,59 +213,16 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
         </div>
       )}
 
-      {showFeaturedTags && (
-        <div className='mx-[16px]'>
-          <div className='mb-2 flex items-center justify-between'>
-            <div className='flex items-center gap-1'>
-              <h3 className='text-[14px] font-medium text-text-strong-950'>Featured Tags</h3>
-              <RiSparklingFill className="w-4 text-[#CACFD8] h-4" />
-            </div>
-            {selectedFeaturedTags.length > 0 && (
-              <button onClick={clearFeaturedTags} className='text-[12px] text-[#525866] font-medium underline hover:text-text-primary-600'>
-                Clear
-              </button>
-            )}
-          </div>
-          <TagInputContainer>
-            {selectedFeaturedTags.map((tag) => (
-              <Tag.Root key={tag} className="!border font-medium !border-[#525866] text-[#525866]">
-                {tag}
-                <Tag.Icon as={RiCloseLine} onClick={() => removeFeaturedTag(tag)} className='ml-1 cursor-pointer text-[#525866]' />
-              </Tag.Root>
-            ))}
-          </TagInputContainer>
-          <div className='flex flex-wrap gap-1.5'>
-            {availableFeaturedTags
-              .filter((tag) => !selectedFeaturedTags.includes(tag))
-              .map((tag, idx) => (
-                <Tag.Root
-                  key={tag}
-                  asChild
-                  variant="gray"
-                  className={cn(
-                    'cursor-pointer border !border-stroke-soft-200',
-                    idx % 2 === 0 ? 'bg-bg-white-0' : 'bg-bg-alt-100',
-                  )}
-                >
-                  <button onClick={() => handleFeaturedTagToggle(tag)}>
-                    {tag}
-                  </button>
-                </Tag.Root>
-              ))}
-          </div>
-          <hr className='border-stroke-soft-200 my-[16px]' />
-        </div>
-      )}
-
-      {showTools && (
-        <div className='mx-[16px]'>
+      {/* Tools Section (Service Only) */}
+      {activeTab === 'Service' && (
+        <div className='mx-[16px]' >
           <div className='mb-2 flex items-center justify-between'>
             <div className='flex items-center gap-1'>
               <h3 className='text-[14px] font-medium text-text-strong-950'>Tools</h3>
               <RiInformationFill className="w-4 text-[#CACFD8] h-4" />
             </div>
             {selectedTools.length > 0 && (
-              <button onClick={clearTools} className='text-[12px] text-[#525866] font-medium underline hover:text-text-primary-600'>
+              <button onClick={clearTools} className='text-[12px] text-[#525866] underline hover:text-text-primary-600'>
                 Clear
               </button>
             )}
@@ -311,83 +243,139 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                   key={tool}
                   asChild
                   variant="gray"
-                  className={cn(
-                    'cursor-pointer border !border-stroke-soft-200',
-                    idx % 2 === 0 ? 'bg-bg-white-0' : 'bg-bg-alt-100',
-                  )}
+                  className={`
+                    cursor-pointer 
+                    border-gray-100             /* gray-600 border */
+                    ${idx % 2 === 0
+                      ? "bg-white border-[E1E4EA] "
+                      : "bg-gray-100"
+                    }
+                  `}
                 >
-                  <button onClick={() => handleToolToggle(tool)}>
-                    {tool}
-                  </button>
+                  <button onClick={() => handleToolToggle(tool)}>{tool}</button>
                 </Tag.Root>
               ))}
           </div>
-          <hr className='border-stroke-soft-200 my-[16px]' />
+          <hr className='my-6 border-stroke-soft-200 my-[16px]' />
         </div>
       )}
 
-      {showPriceRange && (
-        <div className='mx-[16px]'>
-          <h3 className='mb-3 text-[14px] font-medium text-text-strong-950'>Price Range (USD)</h3>
+      {/* Featured Tags Section (Service Only) */}
+      {activeTab === 'Service' && (
+        <div className='mx-[16px]' >
+          <div className='mb-2 flex items-center gap-1'>
+            <h3 className='text-[14px] font-medium text-text-strong-950'>Featured Tags</h3>
+            <button className='text-icon-secondary-400'><RiInformationFill className='size-4 text-[#CACFD8]' /></button>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {availableFeaturedTags.map((tag) => {
+              const isSelected = selectedFeaturedTags.includes(tag)
+              return (
+                <Tag.Root
+                  key={tag}
+                  asChild
+                  variant="stroke"
+                  className={`
+                    bg-white
+                    cursor-pointer
+                    flex items-center
+                    ${isSelected ?
+                      'text-[#525866] !border font-medium !border-[#525866]' :
+                      'text-[#525866]'
+                    }
+                  `}
+                >
+                  <button onClick={() => handleFeaturedTagToggle(tag)} className="flex items-center">
+                    <Tag.Icon>
+                      <Image src="/images/Monday.com.svg" alt="Icon" width={16} height={16} />
+                    </Tag.Icon>
+                    <span>{tag}</span>
+                    {isSelected && (
+                      <Tag.Icon as={RiCloseLine} className="ml-1 cursor-pointer text-[#525866]" />
+                    )}
+                  </button>
+                </Tag.Root>
+              )
+            })}
+          </div>
+
+          <hr className='my-6 border-stroke-soft-200 my-[16px]' />
+        </div>
+      )}
+
+      {/* Available and professional services toggles */}
+      <div className="space-y-3 pl-4">
+        {/* Item 1 */}
+        <div className="flex items-start gap-2">
+          {/* Icon */}
+          <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
+          {/* Text */}
+          <div className='mt-0.5'>
+            <p className="text-base font-normal text-[14px] text-[#1F2937]">Available</p>
+            <p className="text-[12px] font-normal text-[#6B7280]">Recent Online</p>
+          </div>
+        </div>
+
+        {/* Item 2 */}
+        <div className="flex items-start gap-2">
+          {/* Icon */}
+          <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
+          {/* Text */}
+          <div className='mt-0.5'>
+            <p className="text-base font-normal text-[14px] text-[#1F2937]">Professional Services</p>
+            <p className="text-[12px] font-normal text-[#6B7280]">Vetted skills and expertise</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Toggle Options Section (Worker Only) */}
+      {activeTab === 'Worker' && (
+        <div className='space-y-4 mx-[16px]'>
+          {/* <div className='flex items-start gap-3'>
+            <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
+            <div>
+              <label htmlFor='available-toggle' className='text-[14px] cursor-pointer font-medium text-text-strong-950'>Available</label>
+              <p className='text-[12px] text-text-secondary-600'>Recent Online</p>
+            </div>
+          </div>
+          <div className='flex items-center gap-3'>
+            <Switch.Root id='professional-toggle' checked={isProfessional} onCheckedChange={(checked) => handleToggleChange('professional', checked)} />
+            <div>
+              <label htmlFor='professional-toggle' className='text-[14px] cursor-pointer font-medium text-text-strong-950'>Professional Services</label>
+              <p className='text-[12px] text-text-secondary-600'>Vetted skills and expertise</p>
+            </div>
+          </div>
+          <hr className='my-6 border-stroke-soft-200 my-[16px]' /> */}
+        </div>
+      )}
+
+      {/* Price/Budget Section (Service & Project) */}
+      {(activeTab === 'Service' || activeTab === 'Project') && (
+        <div className='mx-[16px]' >
+          <h3 className='mb-3 text-[14px] font-medium text-text-strong-950'>
+            {activeTab === 'Service' ? 'Price' : 'Budget'}
+          </h3>
           <PriceRangeSlider
-            min={0}
-            max={1000}
+            value={priceRange}
+            onValueChange={handlePriceRangeChange}
+            max={1000} // Example max value, adjust as needed
             step={10}
-            value={priceRange}
-            onValueChange={handlePriceRangeChange}
+            minStepsBetweenThumbs={1}
           />
-          <hr className='border-stroke-soft-200 my-[16px]' />
         </div>
       )}
 
-      {showBudgetRange && (
-        <div className='mx-[16px]'>
-          <h3 className='mb-3 text-[14px] font-medium text-text-strong-950'>Budget Range (USD)</h3>
-          <PriceRangeSlider
-            min={0}
-            max={5000}
-            step={50}
-            value={priceRange}
-            onValueChange={handlePriceRangeChange}
-          />
-          <hr className='border-stroke-soft-200 my-[16px]' />
-        </div>
-      )}
-
-      {showWorkerToggles && (
-        <div className='mx-[16px] space-y-3'>
-          <div className='flex items-center justify-between'>
-            <label htmlFor='available-switch' className='flex items-center gap-1 text-[14px] font-medium text-text-strong-950'>
-              Available Now
-              <RiInformationFill className='h-4 w-4 text-[#CACFD8]' />
-            </label>
-            <Switch.Root
-              id='available-switch'
-              checked={isAvailable}
-              onCheckedChange={(checked) => handleToggleChange('available', checked)}
-            />
-          </div>
-          <div className='flex items-center justify-between'>
-            <label htmlFor='professional-switch' className='flex items-center gap-1 text-[14px] font-medium text-text-strong-950'>
-              Verified Professional
-              <RiSparklingFill className='h-4 w-4 text-[#CACFD8]' />
-            </label>
-            <Switch.Root
-              id='professional-switch'
-              checked={isProfessional}
-              onCheckedChange={(checked) => handleToggleChange('professional', checked)}
-            />
-          </div>
-          <hr className='border-stroke-soft-200 my-[16px]' />
-        </div>
-      )}
-
-      <div className='mt-auto px-4 pb-4'>
+      {/* Clear Filters Button */}
+      <div className="mt-5 px-4">
         <button
           onClick={handleClearAllFilters}
-          className='w-full text-center text-[14px] font-medium text-[#525866] underline hover:text-text-primary-600'
+          className={cn(
+            'w-full flex items-center text-[#525866] font-medium justify-center gap-1 rounded-[10px] border border-stroke-soft-200',
+            'bg-bg-white-0 px-4 py-2.5 text-[14px] font-medium leading-[20px] shadow-[0px_1px_2px_0px_#5258660F] transition',
+            'hover:bg-bg-white-100 focus:outline-none focus:ring-2 focus:ring-text-primary-600'
+          )}
         >
-          Clear All Filters
+          Clear Filters
         </button>
       </div>
     </aside>
