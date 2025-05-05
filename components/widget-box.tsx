@@ -1,4 +1,4 @@
-import { cnExt } from '@/utils/cn';
+import { cn } from '@/utils/cn';
 import type { PolymorphicComponentProps } from '@/utils/polymorphic';
 
 function WidgetBox({
@@ -7,7 +7,7 @@ function WidgetBox({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cnExt(
+      className={cn(
         'w-full rounded-2xl bg-bg-white-0 p-4 shadow-regular-xs ring-1 ring-inset ring-stroke-soft-200',
         className,
       )}
@@ -22,7 +22,7 @@ function WidgetBoxHeader({
 }: React.HTMLAttributes<HTMLDivElement>) {
   return (
     <div
-      className={cnExt(
+      className={cn(
         'grid auto-cols-auto grid-flow-col grid-cols-1 items-center gap-2 has-[>svg:first-child]:grid-cols-[auto,minmax(0,1fr)]',
         'h-12 pb-4 text-label-md',
         className,
@@ -40,7 +40,7 @@ function WidgetBoxHeaderIcon<T extends React.ElementType>({
   const Component = as || 'div';
   return (
     <Component
-      className={cnExt('size-6 text-text-sub-600', className)}
+      className={cn('size-6 text-text-sub-600', className)}
       {...rest}
     />
   );

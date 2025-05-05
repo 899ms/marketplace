@@ -4,8 +4,10 @@ import React from 'react';
 import { RiCalendarLine } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
 import * as Divider from '@/components/ui/divider';
+import WidgetSchedule from '../widgets/widget-schedule';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import { User } from '@/utils/supabase/types';
+import { DayPicker } from 'react-day-picker';
 
 // --- Calendar Widget ---
 export function CalendarWidget() {
@@ -119,7 +121,8 @@ export function WorkerRightSidebar({ userProfile }: WorkerRightSidebarProps) {
   return (
     <aside className='hidden w-64 shrink-0 lg:block min-w-[352px]'>
       <div className='shadow-sm sticky top-20 flex flex-col rounded-xl border border-stroke-soft-200 bg-bg-white-0  mb-6'>
-        <CalendarWidget />
+
+        <WidgetSchedule />
         <Divider.Root className='!mb-0 !pb-0' />
         <MeetingsWidget />
       </div>
