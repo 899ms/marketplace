@@ -69,11 +69,11 @@ export function ProjectCard({
     >
       <div className='grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]'>
         {/* Left Column (Content) */}
-        <div className='flex flex-col gap-1.5'>
+        <div className='flex flex-col gap-3'>
           {/* Title and Info Badges */}
-          <div className='flex flex-wrap items-center items-start gap-x-3'>
+          <div className='flex flex-wrap items-center items-start gap-x-4'>
             <h3 className='text-[20px] font-medium text-text-strong-950'>{title}</h3>
-            <div className='flex flex-wrap gap-1.5'>
+            <div className='flex flex-wrap gap-1'>
               {infoBadges.map((badge) => (
                 <Badge.Root
                   key={badge.label}
@@ -83,6 +83,7 @@ export function ProjectCard({
                     'bg-[#F6F8FA]',
                     'px-[16px] py-[11px]',
                     'border border-[#E2E4E9]',
+                    'h-7',
                     'rounded-full',
                     'text-[#6a6a6a] text-[0.875rem] leading-[16px]'
                   )}
@@ -94,12 +95,12 @@ export function ProjectCard({
           </div>
 
           {/* Skill Tags */}
-          <div className='flex flex-wrap gap-1.5'>
+          <div className='flex flex-wrap gap-1.5 font-medium text-[12px]'>
             {skillTags.map((skill, index) => (
               <Tag.Root
                 key={skill}
                 variant={index === 0 ? 'stroke' : 'gray'}
-                className={index === 0 ? 'border-black' : ''}
+                className={index === 0 ? 'border border-black text-black' : 'border border-[#E2E4E9] bg-white text-[#525866]'}
               >
                 {skill}
               </Tag.Root>
@@ -107,20 +108,33 @@ export function ProjectCard({
           </div>
 
           {/* Description */}
-          <p className='line-clamp-3 text-[14px] text-[#0E121B] text-text-secondary-600 py-1'>
+          <p className='line-clamp-3 text-[14px] text-[#0E121B] text-text-secondary-600'>
             {description}
           </p>
 
           {/* Client Info */}
-          <div className='flex items-center gap-1 pt-2'>
-            <Avatar.Root className='w-[20px] h-[20px]'>
-              <Avatar.Image src={client.avatarUrl} alt={`${client.name}'s avatar`} />
+          <div className='flex items-center gap-2.5 pt-2'>
+            <Avatar.Root size="20" className='bg-[#C0EAFF] text-[#124B68]'>
+              {client.name?.charAt(0).toUpperCase()}
             </Avatar.Root>
+            {/* {client.avatarUrl ? (
+              <Avatar.Root className="w-[20px] h-[20px]">
+                <Avatar.Image
+                  src={client.avatarUrl}
+                  alt={`${client.name}'s avatar`}
+                  className="w-full h-full rounded-full object-cover"
+                />
+              </Avatar.Root>
+            ) : (
+              <Avatar.Root size="40" color="blue">
+                {client.name?.charAt(0).toUpperCase()}
+              </Avatar.Root>
+            )} */}
             <span className='text-[12px] font-medium text-[#525866]'>
               {client.name}
             </span>
             <div className='flex items-center gap-0.5 text-[12px] text-[#525866]'>
-              <RiStarFill className='text-yellow-500 w-[1.25rem] h-[1.25rem]' />
+              <RiStarFill className='text-yellow-500 size-4' />
               <span>
                 {client.rating.toFixed(1)}({client.reviewCount})
               </span>

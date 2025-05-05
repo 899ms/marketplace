@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import * as Avatar from '@/components/ui/avatar';
 import * as Drawer from '@/components/ui/drawer';
@@ -9,6 +9,7 @@ import { useAuth } from '@/utils/supabase/AuthContext';
 import { chatOperations, userOperations } from '@/utils/supabase/database';
 import { useNotification } from '@/hooks/use-notification';
 import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
+import * as FancyButton from '@/components/ui/fancy-button';
 import {
   RiCloseLine,
   RiSendPlaneLine,
@@ -69,6 +70,25 @@ const placeholderWorkerData = {
   ],
 };
 
+const dummyMusicData = [
+  {
+    url: 'https://example.com/audio1.mp3',
+    title: 'Dreamscape',
+    remarks: 'A dreamy electronic beat',
+  },
+  {
+    url: 'https://example.com/audio2.mp3',
+    title: 'Pulse Rush',
+    remarks: 'Energetic synth vibes',
+  },
+  {
+    url: 'https://example.com/audio3.mp3',
+    title: 'Midnight Groove',
+    remarks: 'Lo-fi ambient track for focus',
+  },
+];
+
+
 const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   isOpen,
   onClose,
@@ -87,10 +107,21 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   const [isLoadingChat, setIsLoadingChat] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [isClamped, setIsClamped] = useState(false);
+  const textRef = useRef<HTMLParagraphElement>(null);
 
   const displayName = worker?.full_name || worker?.username || (isLoading ? 'Loading...' : 'Worker');
   const displayAvatar = worker?.avatar_url ?? undefined;
   const displayBio = worker?.bio || (isLoading ? 'Loading bio...' : 'No bio provided.');
+
+  useEffect(() => {
+    const el = textRef.current;
+    if (el) {
+      const isOverflowing = el.scrollHeight > el.clientHeight;
+      setIsClamped(isOverflowing);
+    }
+  }, [displayBio]);
 
   useEffect(() => {
     const fetchCurrentUserProfile = async () => {
@@ -177,10 +208,10 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
         <div className="flex flex-col flex-grow">
           {/* header */}
           <div className="px-[24px] pt-4 flex-shrink-0">
-            <div className="flex items-center justify-between h-[60px]">
+            <div className="flex items-center justify-between h-[40px] px-1">
               <Drawer.Close asChild>
                 <button className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-                  <RiCloseLine className="size-[20px] m-[16px] text-text-secondary-600" />
+                  <RiCloseLine className="size-6 text-[#0E121B]" />
                   <span className="sr-only">Close</span>
                 </button>
               </Drawer.Close>
@@ -190,24 +221,27 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                   href={worker ? `/users/${worker.id}` : '#'}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`flex items-center gap-1.5 text-[14px] font-medium text-blue-600 underline underline-offset-2 hover:text-blue-700 ${!worker || isLoading ? 'pointer-events-none opacity-50' : ''}`}>
+                  className={`flex items-center gap-1.5 text-[14px] font-medium text-[#335CFF] underline underline-offset-2 hover:text-blue-700 ${!worker || isLoading ? 'pointer-events-none opacity-50' : ''}`}>
                   Open in new tab
                 </Link>
-                <RiArrowRightCircleLine className="size-5 text-[#525866]" />
+                <RiArrowRightCircleLine className="size-6 text-[#525866]" />
               </div>
             </div>
 
             {isLoading ? (
-              <div className="mt-5 flex h-[88px] items-center justify-center px-5">
+              <div className="mt-5 flex h-[88px] items-center justify-center">
                 <RiLoader4Line className="size-8 animate-spin text-text-secondary-600" />
               </div>
             ) : worker ? (
-              <div className="mt-5 flex items-center justify-between px-5">
+              <div className="mt-5 flex items-center justify-between px-3">
                 <div className="flex items-center gap-4">
                   <Link href={`/users/${worker.id}`} passHref legacyBehavior>
                     <a className="inline-block">
                       <Avatar.Root size="64">
                         <Avatar.Image src={displayAvatar ? displayAvatar : undefined} alt={displayName} />
+                        <Avatar.Indicator position="bottom">
+                          <Avatar.Status status="online" />
+                        </Avatar.Indicator>
                       </Avatar.Root>
                     </a>
                   </Link>
@@ -226,11 +260,11 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                         <span>4.8 (100+)</span>
                       </div>
                     </div>
-                    <div className="mt-1 flex items-center gap-1 text-[12px] text-text-secondary-600">
+                    <div className="mt-1 ml-[-1px] flex items-center gap-1 text-[12px] text-text-secondary-600">
+                      <RiGoogleFill className="h-4 w-4" />
                       <RiGoogleFill className="size-4" />
                       <RiGoogleFill className="size-4" />
-                      <RiGoogleFill className="size-4" />
-                      <span>Music Producer</span>
+                      <span className='text-[#525866] font-medium'>Music Producer</span>
                     </div>
                   </div>
                 </div>
@@ -239,6 +273,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                   <button
                     className="
                       w-[100px]            /* 100px wide */
+                      h-8
                       rounded-lg           /* 8px radius */
                       border border-[#E1E4EA]  /* 1px #E1E4EA */
                       bg-white             /* #FFFFFF */
@@ -254,65 +289,57 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     disabled={disableActions}
                     aria-label={currentUserProfile?.id === worker?.id ? "Cannot hire yourself" : `Hire ${displayName}`}
                   >
-                    <div className="flex items-center gap-[2px]">
+                    <div className="flex items-center text-[14px] font-medium gap-[2px]">
                       Hire <RiArrowDropRightLine className="size-7" />
                     </div>
                   </button>
-                  <button
-                    className="
-                      w-[100px]
-                      rounded-lg
-                      border border-transparent /* no visible border */
-                      bg-text-strong-950       /* your #20232D */
-                      px-[6px] py-[6px]
-                      flex items-center justify-center gap-[2px]
-                      text-sm font-medium text-white
-                      shadow-[0_0_0_1px_rgba(36,38,40,1),0_1px_2px_0_rgba(27,28,29,0.48)]
-                      /* 0 0 0 1px rgba(36,38,40,1) + 0 1px 2px 0 rgba(27,28,29,0.48) */
-                      transition-colors
-                      hover:bg-text-strong-900
-                      disabled:opacity-50 disabled:cursor-not-allowed
-                    "
+
+
+                  <FancyButton.Root
+                    size="medium"
+                    className="w-[100px] h-8 gap-[2px] px-[6px] py-[6px] font-medium text-sm text-white bg-text-strong-950 shadow-[0_0_0_1px_rgba(36,38,40,1),0_1px_2px_0_rgba(27,28,29,0.48)] hover:bg-text-strong-900 disabled:opacity-50 disabled:cursor-not-allowed"
                     onClick={handleOpenChat}
                     disabled={disableActions || isLoadingChat}
-                    aria-label={currentUserProfile?.id === worker?.id ? "Cannot message yourself" : `Message ${displayName}`}
+                    aria-label={
+                      currentUserProfile?.id === worker?.id
+                        ? "Cannot message yourself"
+                        : `Message ${displayName}`
+                    }
                   >
                     {isLoadingChat ? (
                       <RiLoader4Line className="animate-spin" size={18} />
                     ) : (
-                      <>
-                        <div className='flex items-center gap-[2px]'>
-
-                          Touch
-                          <svg
-                            width="20"
-                            height="20"
-                            viewBox="0 0 21 20"
-                            fill="none"
-                            xmlns="http://www.w3.org/2000/svg"
-                            className="w-5 h-5 stroke-current text-white"
-                          >
-                            <path
-                              d="M6.66641 5.2668L13.7414 2.90846C16.9164 1.85013 18.6414 3.58346 17.5914 6.75846L15.2331 13.8335C13.6497 18.5918 11.0497 18.5918 9.46641 13.8335L8.76641 11.7335L6.66641 11.0335C1.90807 9.45013 1.90807 6.85846 6.66641 5.2668Z"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                            <path
-                              d="M8.92578 11.375L11.9091 8.3833"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            />
-                          </svg>
-                        </div>
-                      </>
+                      <div className="flex items-center text-[14px] font-medium gap-[2px]">
+                        Touch
+                        <svg
+                          width="20"
+                          height="20"
+                          viewBox="0 0 21 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="w-5 h-5 stroke-current text-white"
+                        >
+                          <path
+                            d="M6.66641 5.2668L13.7414 2.90846C16.9164 1.85013 18.6414 3.58346 17.5914 6.75846L15.2331 13.8335C13.6497 18.5918 11.0497 18.5918 9.46641 13.8335L8.76641 11.7335L6.66641 11.0335C1.90807 9.45013 1.90807 6.85846 6.66641 5.2668Z"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                          <path
+                            d="M8.92578 11.375L11.9091 8.3833"
+                            stroke="currentColor"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      </div>
                     )}
-                  </button>
-                  <button className="rounded-full text-gray-400 transition-colors hover:bg-bg-weak-50 hover:text-red-500">
-                    <RiHeart3Line className="size-[30px]" />
+                  </FancyButton.Root>
+
+                  <button className="rounded-full text-[#525866] transition-colors hover:bg-bg-weak-50 hover:text-red-500">
+                    <RiHeart3Line className="size-[28px] hover:fill-red" />
                   </button>
                 </div>
               </div>
@@ -329,7 +356,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
           <div className="mt-[16px] h-px bg-stroke-soft-200 w-[95%] mx-auto flex-shrink-0" />
 
           {!isLoading && worker && (
-            <div className="px-[24px] pt-4 flex-shrink-0">
+            <div className="px-[36px] pt-4 flex-shrink-0">
               <Tabs.Root value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
                 <Tabs.List className="flex justify-start gap-5 px-0">
                   {[
@@ -348,7 +375,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                         border-transparent 
                         bg-transparent 
                         px-0
-                        py-3 
+                        py-2 
                         text-[20px] 
                         font-medium 
                         text-text-secondary-600 
@@ -366,7 +393,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
             </div>
           )}
 
-          <div className="flex-1 overflow-y-auto px-[24px] py-5">
+          <div className="flex-1 overflow-y-auto px-[36px] py-5">
             {isLoading ? (
               <div className="flex h-full items-center justify-center">
                 <RiLoader4Line className="size-10 animate-spin text-text-secondary-600" />
@@ -375,16 +402,31 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
               <>
                 {activeTab === 'about' && (
                   <>
-                    <AboutSection about={displayBio} />
+                    <div className="relative max-w-[95%] text-[#525866] text-paragraph-sm">
+                      <p
+                        ref={textRef}
+                        className={`${expanded ? '' : 'line-clamp-5'} transition-all`}
+                      >
+                        {displayBio}
+                      </p>
 
-                    <div className="mt-8 flex items-center justify-between">
-                      <h3 className="text-[20px] font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
+                      {!expanded && isClamped && (
+                        <button
+                          onClick={() => setExpanded(true)}
+                          className="mt-1 text-sm font-medium text-blue-600 hover:underline"
+                        >
+                          More
+                        </button>
+                      )}
+                    </div>
+                    <div className="mt-6 flex items-center justify-between">
+                      <h3 className="text-[20px] font-medium text-text-strong-950 pb-2 border-b-[2px] border-black">
                         Work
                       </h3>
                     </div>
-                    <div className="divide-y divide-stroke-soft-200">
-                      {worker.music_data && worker.music_data.length > 0 ? (
-                        worker.music_data.map((item: MusicItem, i) => (
+                    <div className="divide-y divide-stroke-soft-200 mt-1 border-b">
+                      {worker?.music_data && worker?.music_data.length > 0 ? (
+                        worker?.music_data.map((item: MusicItem, i) => (
                           <WorkItem
                             key={i}
                             url={item.url}
@@ -398,11 +440,11 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                           />
                         ))
                       ) : (
-                        <p className="py-4 text-sm text-text-secondary-600">No work items uploaded yet.</p>
+                        <p className="py-4 text-[14px] text-[#525866]">No work items uploaded yet.</p>
                       )}
                     </div>
 
-                    <h3 className="mt-8 inline-block text-[20px] font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
+                    <h3 className="mt-6 inline-block text-[20px] font-medium text-text-strong-950 pb-1 border-b-[2px] border-text-strong-950">
                       Service
                     </h3>
                     <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -416,14 +458,14 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                           />
                         ))
                       ) : (
-                        <p className="text-sm text-text-secondary-600 col-span-full">No services found for this worker.</p>
+                        <p className="text-[14px] text-[#525866]">No services found for this worker.</p>
                       )}
                     </div>
 
-                    <h3 className="mt-8 inline-block text-[20px] font-semibold text-text-strong-950 pb-1 border-b border-text-strong-950">
+                    <h3 className="mt-6 inline-block text-[20px] font-medium border-black text-text-strong-950 pb-1 border-b-[2px]">
                       Review
                     </h3>
-                    <div className="mt-4 space-y-5">
+                    <div className="mt-4">
                       {placeholderWorkerData.reviews.map((r) => (
                         <ReviewItem key={r.id} review={r} />
                       ))}
