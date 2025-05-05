@@ -261,7 +261,7 @@ export default function Navbar() {
                   </Link>
 
                   {/* Orders */}
-                  <Link href='/orders' passHref>
+                  <Link href='/settings?tab=orders' passHref>
                     {' '}
                     {/* Link to orders page */}
                     <Dropdown.Item>
