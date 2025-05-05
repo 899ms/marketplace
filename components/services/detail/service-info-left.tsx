@@ -55,9 +55,9 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
     switch (activeTab) {
       case 'Details':
         return (
-          <div className='space-y-6'>
+          <div className='space-y-4 pl-4'>
             {/* Service Description Section */}
-            <div className='space-y-2'>
+            <div className=''>
               <p className='text-sm text-text-secondary-600 whitespace-pre-wrap'>
                 {service.description || 'No description provided.'}
               </p>
@@ -87,17 +87,17 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
       case 'Options': // Use actual service.additional_services
         const additionalServices = service.additional_services;
         return (
-          <div className='divide-y divide-stroke-soft-200 rounded-lg border border-stroke-soft-200'>
+          <div className='divide-y px-4  divide-stroke-soft-200 rounded-lg border border-stroke-soft-200'>
             {additionalServices && additionalServices.length > 0 ? (
               additionalServices.map((option, index) => (
                 <div
                   key={index} // Consider using a more stable key if options have IDs
-                  className='flex items-center justify-between px-4 py-3'
+                  className='flex items-center justify-between py-5'
                 >
-                  <span className='text-sm text-text-secondary-600'>
+                  <span className='text-[16px] text-[#525866]'>
                     {option.name}
                   </span>
-                  <span className='text-sm font-medium text-text-strong-950'>
+                  <span className='text-[18px] font-medium text-text-strong-950'>
                     {/* TODO: Consider currency formatting based on service.currency */}
                     ${option.price}
                   </span>
@@ -133,7 +133,7 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
         );
       case 'Review': // Keep dummy reviews for now
         return (
-          <div className='divide-y divide-stroke-soft-200'>
+          <div className='divide-y mt-[-24px] ml-3 divide-stroke-soft-200'>
             {[1, 2, 3].map((i) => (
               <ReviewItem
                 key={i}
@@ -156,15 +156,16 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
   return (
     <>
       {/* Image Carousel */}
-      <ImageCarousel
-        images={service.images?.map(img => img.url) || []}
-        altPrefix={service.title}
-      />
-
+      <div className='pb-4'>
+        <ImageCarousel
+          images={service.images?.map(img => img.url) || []}
+          altPrefix={service.title}
+        />
+      </div>
       {/* Tabs Navigation */}
-      <div className='mb-6 border-t-0 border-b-0'>
+      <div className='mb-6 ml-4'>
         <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
-          <TabMenuHorizontal.List className="border-0 border-t-0 border-b-0">
+          <TabMenuHorizontal.List className="border-none">
             <TabMenuHorizontal.Trigger value='Details' className="text-[24px] font-medium">
               Details
             </TabMenuHorizontal.Trigger>
