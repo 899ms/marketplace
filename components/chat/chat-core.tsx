@@ -494,7 +494,7 @@ export default function ChatCore({
 
     try {
       if (fileToUpload) {
-        // --- Determine message type based on file --- 
+        // --- Determine message type based on file ---
         const fileType = fileToUpload.type;
         if (fileType.startsWith('image/')) {
           finalMessageType = 'image';
@@ -503,13 +503,41 @@ export default function ChatCore({
         } else {
           finalMessageType = 'file'; // Fallback for other types
         }
-        // --- End Determine message type --- 
+        // --- End Determine message type ---
 
         console.log(`Uploading file: ${fileToUpload.name} (${fileToUpload.size} bytes) - Type: ${finalMessageType}`);
 
         try {
           const timestamp = Date.now();
-          const uniqueFileName = `${timestamp}-${fileToUpload.name}`.replace(/\s+/g, '_');
+
+          // --- Sanitize filename for object storage key compatibility ---
+          const originalFileName = fileToUpload.name;
+          const fileNameParts = originalFileName.split('.');
+          const fileExtension = fileNameParts.length > 1 ? '.' + fileNameParts.pop() : '';
+          let baseName = fileNameParts.join('.'); // Handles filenames with multiple dots before the extension
+
+          // Replace non-alphanumeric (excluding hyphen, underscore) characters with an underscore
+          baseName = baseName.replace(/[^a-zA-Z0-9_-]+/g, '_');
+          // Collapse multiple consecutive underscores into a single underscore
+          baseName = baseName.replace(/_{2,}/g, '_');
+          // Remove leading or trailing underscores that might have resulted from replacements
+          baseName = baseName.replace(/^_+|_+$/g, '');
+
+          // If the baseName becomes empty after sanitization (e.g., "().txt" or "+++"), provide a default.
+          if (!baseName && fileExtension) { // Handles cases like "().txt"
+            baseName = 'file';
+          } else if (!baseName && !fileExtension) { // Handles cases like "()"
+            baseName = 'file';
+            // fileExtension remains empty
+          }
+          // Ensure baseName is not empty if there's no extension either (e.g. if original name was just "+++")
+          if (!baseName) {
+            baseName = 'file';
+          }
+
+          const uniqueFileName = `${timestamp}-${baseName}${fileExtension}`;
+          // --- End Sanitize filename ---
+
           const filePath = `public/${chat.id}/${currentUserId}/${uniqueFileName}`;
 
           const { data: uploadData, error: uploadError } = await supabase.storage
