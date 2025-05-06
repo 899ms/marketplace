@@ -573,7 +573,7 @@ export default function ChatCore({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && !isSending) {
-      const maxSize = 5 * 1024 * 1024; // Keep 5MB limit for now, adjust if needed
+      const maxSize = 25 * 1024 * 1024; // Keep 5MB limit for now, adjust if needed
       if (file.size > maxSize) {
         alert('File is too large. Maximum size is 5MB.');
         if (fileInputRef.current) fileInputRef.current.value = '';
