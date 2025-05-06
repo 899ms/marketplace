@@ -97,6 +97,17 @@ export default function SearchPageClient() {
   const [resetKey, setResetKey] = useState(0);
   const itemsPerPage = 9;
 
+  // Update activeTab when URL search param changes
+  useEffect(() => {
+    const currentTab = searchParams.get('tab');
+    const validatedCurrentTab = isValidTabValue(currentTab)
+      ? currentTab
+      : 'Service';
+    if (validatedCurrentTab !== activeTab) {
+      setActiveTab(validatedCurrentTab);
+    }
+  }, [searchParams, activeTab]);
+
   // Worker profile handlers
   const openWorkerProfile = async (workerId: string) => {
     setIsDrawerOpen(true);
