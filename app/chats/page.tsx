@@ -170,9 +170,9 @@ export default function ChatsPage() {
 
   // Main 3-Column Layout
   return (
-    <div className="flex h-[calc(100vh-70px)] w-full overflow-hidden bg-bg-subtle-50">
+    <div className="flex h-[calc(100vh-70px)] w-full overflow-hidden bg-bg-subtle-50 px-[32px] pt-1">
       {/* Left Column: Chat List */}
-      <div className="w-full max-w-xs shrink-0 lg:w-[200px] border-x border-t border-[#E2E4E9] h-full">
+      <div className="w-full max-w-xs shrink-0 lg:w-[200px] border-r border-t border-[#E2E4E9] h-full">
         <h1 className="sticky top-0 z-10 bg-bg-white-0 px-6 py-4 text-[24px] text-[#0E121B] font-medium">Chat</h1>
         {chats.length === 0 ? (
           <div className="h-full flex items-center justify-center">
@@ -216,7 +216,7 @@ export default function ChatsPage() {
       </div>
 
       {/* Right Column: Details Panel */}
-      <div className="hidden w-full max-w-sm shrink-0 lg:block">
+      <div className="hidden w-full max-w-[20rem] shrink-0 lg:block">
         <ChatDetailsPanel
           chat={selectedChat || null}
           otherUserProfile={otherUserProfile}

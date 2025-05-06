@@ -124,10 +124,10 @@ export default function ChatDetailsPanel({ chat, otherUserProfile, currentUserPr
           </svg>
         </div>
       </div>
-      <div className='flex flex-col gap-2 p-4 overflow-y-auto custom-scrollbar'>
+      <div className='flex flex-col gap-2 p-[24px] overflow-y-auto custom-scrollbar'>
         <Accordion.Root type='multiple' className='space-y-6' defaultValue={['a', 'b', 'c', 'd']}>
           <Accordion.Item value='a' className='p-0'>
-            <Accordion.Trigger className='m-0 w-full bg-[#F5F7FA] rounded-t-lg flex items-center justify-between'>
+            <Accordion.Trigger className='m-0 w-full bg-[#F5F7FA] rounded-[8px] flex items-center justify-between px-[16px] py-[10px]'>
               <p className='text-[#0E121B] text-[16px] font-medium'>Details</p>
               <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowUpSLine} />
             </Accordion.Trigger>
@@ -151,13 +151,13 @@ export default function ChatDetailsPanel({ chat, otherUserProfile, currentUserPr
                 </div>
                 <div className='flex flex-row items-center justify-between border-b border-[#E2E4E9] pb-4 mt-2'>
                   <p className='text-[#525866] text-[12px]'>Amount</p>
-                  <p className='text-[#0E121B] text-[24px] font-medium'>{formatCurrency(contractDetails?.amount, contractDetails?.currency)}</p>
+                  <p className='text-[#0E121B] text-[16px] font-medium'>{formatCurrency(contractDetails?.amount, contractDetails?.currency)}</p>
                 </div>
               </div>
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value='b' className='p-0'>
-            <Accordion.Trigger className='m-0 w-full bg-[#F5F7FA] -t-lg flex items-center justify-between'>
+            <Accordion.Trigger className='m-0 w-full bg-[#F5F7FA] rounded-[8px]  px-[16px] py-[10px] flex items-center justify-between'>
               <p className='text-[#0E121B] text-[16px] font-medium'>Files</p>
               <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowUpSLine} />
             </Accordion.Trigger>
@@ -179,7 +179,7 @@ export default function ChatDetailsPanel({ chat, otherUserProfile, currentUserPr
             </Accordion.Content>
           </Accordion.Item>
           <Accordion.Item value='c' className='p-0'>
-            <Accordion.Trigger className='m-0 w-full bg-[#F5F7FA] -t-lg flex items-center justify-between'>
+            <Accordion.Trigger className='m-0 w-full bg-[#F5F7FA] rounded-[8px] px-[16px] py-[10px] flex items-center justify-between'>
               <p className='text-[#0E121B] text-[16px] font-medium'>People</p>
               <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowUpSLine} />
             </Accordion.Trigger>
@@ -225,7 +225,7 @@ export default function ChatDetailsPanel({ chat, otherUserProfile, currentUserPr
           </Accordion.Item>
 
           <Accordion.Item value='d' className='p-0'>
-            <Accordion.Trigger className='m-0 w-full bg-[#F5F7FA] -t-lg flex items-center justify-between'>
+            <Accordion.Trigger className='m-0 w-full bg-[#F5F7FA] rounded-[8px] px-[16px] py-[10px] flex items-center justify-between'>
               <p className='text-[#0E121B] text-[16px] font-medium'>Milestones</p>
               <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowUpSLine} />
             </Accordion.Trigger>

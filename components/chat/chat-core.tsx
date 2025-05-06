@@ -609,7 +609,7 @@ export default function ChatCore({
 
   return (
     <div className={`${containerClass} ${containerModeClass} overflow-hidden`}>
-      <div className='flex items-center justify-between border-y border-gray-200 dark:border-gray-700 p-3 flex-shrink-0'>
+      <div className='flex items-center justify-between border-y border-gray-200 dark:border-gray-700 py-3 pl-[1.375rem] pr-[0.875rem] flex-shrink-0'>
         <div className='flex items-center space-x-3'>
           <div className='relative'>
 
@@ -676,7 +676,7 @@ export default function ChatCore({
         </div>
       </div>
 
-      <div className='flex-1 overflow-y-auto p-4 md:px-6 space-y-4 min-h-0 custom-scrollbar'>
+      <div className='flex-1 overflow-y-auto p-4 md:px-6 space-y-4 min-h-0 custom-scrollbar border-r border-[#E2E4E9]'>
         {sortedDateKeys.map((dateKey) => (
           <Fragment key={dateKey}>
             <div className="relative my-4">
@@ -684,7 +684,7 @@ export default function ChatCore({
                 <div className="w-full border-t border-gray-200 dark:border-gray-600" />
               </div>
               <div className="relative flex justify-center">
-                <span className="bg-white dark:bg-gray-800 px-2 text-xs text-gray-500 dark:text-gray-400">
+                <span className="bg-white dark:bg-gray-800 px-2 text-xs text-gray-500 dark:text-gray-400 text-[11px]">
                   {formatDateSeparator(dateKey)}
                 </span>
               </div>
@@ -711,96 +711,96 @@ export default function ChatCore({
         <div ref={messagesEndRef} />
       </div>
 
-
-      <form onSubmit={handleSendMessage} className='p-4 mx-4 mb-4 rounded-lg border border-[#E1E4EA] flex flex-col gap-4 flex-shrink-0'>
-        <div className='border-b border-[#E1E4EA] pb-2 w-full'>
-          <textarea
-            ref={textareaRef}
-            placeholder='Type your message...'
-            className='w-full border-none outline-none resize-none min-h-[24px] max-h-[72px]'
-            rows={1}
-            value={newMessage}
-            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-              setNewMessage(e.target.value);
-              // Auto-resize textarea
-              const textarea = e.target;
-              textarea.style.height = 'auto';
-              const newHeight = Math.min(textarea.scrollHeight, 72); // 72px = 3 rows
-              textarea.style.height = `${newHeight}px`;
-            }}
-            onKeyDown={handleTextareaKeyDown}
-            disabled={isSending}
-            autoComplete='off'
-          />
-        </div>
-        <div className='flex flex-col gap-2'>
-          <div className='flex flex-row'>
-            {selectedFile && (
-              <div className='rounded-lg h-24 w-24 border border-[#E1E4EA] p-2 relative flex items-center justify-center'>
-                {selectedFile.type.startsWith('image/') ? (
-                  <img src={URL.createObjectURL(selectedFile)} alt="Attachment Preview" className='w-full h-full object-contain rounded-md' />
-                ) : (
-                  <div className="flex flex-col items-center justify-center gap-1 text-center w-full overflow-hidden">
-                    {(() => { // IIFE to compute icon props
-                      const fileExt = selectedFile.name.split('.').pop()?.toUpperCase() || 'FILE';
-                      const iconColor = fileExt === 'MP3' ? 'blue' : fileExt === 'PDF' ? 'red' : 'gray';
-                      return <FileFormatIcon.Root format={fileExt} color={iconColor} />;
-                    })()}
-                    <span
-                      className="block w-full text-sm text-gray-600 dark:text-gray-400 truncate px-1"
-                      title={selectedFile.name}
-                    >
-                      {selectedFile.name}
-                    </span>
-                    <span className="text-[10px] text-gray-400 dark:text-gray-500">
-                      {formatBytes(selectedFile.size)}
-                    </span>
-                  </div>
-                )}
-                <X size={20} onClick={clearSelectedFile} className='absolute top-1 right-1 cursor-pointer text-[#525866] p-0.5 rounded-full bg-white/80 hover:bg-white' />
-              </div>
-            )}
+      <div className='border-r border-[#E2E4E9]'>
+        <form onSubmit={handleSendMessage} className='p-4 mx-4 mb-4 rounded-lg border border-[#E1E4EA] flex flex-col gap-4 flex-shrink-0'>
+          <div className='border-b border-[#E1E4EA] pb-2 w-full'>
+            <textarea
+              ref={textareaRef}
+              placeholder='Type your message...'
+              className='w-full border-none outline-none resize-none min-h-[24px] max-h-[72px] text-[14px]'
+              rows={1}
+              value={newMessage}
+              onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                setNewMessage(e.target.value);
+                // Auto-resize textarea
+                const textarea = e.target;
+                textarea.style.height = 'auto';
+                const newHeight = Math.min(textarea.scrollHeight, 72); // 72px = 3 rows
+                textarea.style.height = `${newHeight}px`;
+              }}
+              onKeyDown={handleTextareaKeyDown}
+              disabled={isSending}
+              autoComplete='off'
+            />
           </div>
-
-
-          <div className='flex flex-row justify-between items-center'>
-            <div className='flex flex-row gap-4 items-center'>
-              <div className='cursor-pointer'>
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M9 18C4.0293 18 0 13.9707 0 9C0 4.0293 4.0293 0 9 0C13.9707 0 18 4.0293 18 9C18 13.9707 13.9707 18 9 18ZM9 16.2C10.9096 16.2 12.7409 15.4414 14.0912 14.0912C15.4414 12.7409 16.2 10.9096 16.2 9C16.2 7.09044 15.4414 5.25909 14.0912 3.90883C12.7409 2.55857 10.9096 1.8 9 1.8C7.09044 1.8 5.25909 2.55857 3.90883 3.90883C2.55857 5.25909 1.8 7.09044 1.8 9C1.8 10.9096 2.55857 12.7409 3.90883 14.0912C5.25909 15.4414 7.09044 16.2 9 16.2ZM4.5 9.9H6.3C6.3 10.6161 6.58446 11.3028 7.09081 11.8092C7.59716 12.3155 8.28392 12.6 9 12.6C9.71608 12.6 10.4028 12.3155 10.9092 11.8092C11.4155 11.3028 11.7 10.6161 11.7 9.9H13.5C13.5 11.0935 13.0259 12.2381 12.182 13.082C11.3381 13.9259 10.1935 14.4 9 14.4C7.80653 14.4 6.66193 13.9259 5.81802 13.082C4.97411 12.2381 4.5 11.0935 4.5 9.9ZM5.4 8.1C5.04196 8.1 4.69858 7.95777 4.44541 7.70459C4.19223 7.45142 4.05 7.10804 4.05 6.75C4.05 6.39196 4.19223 6.04858 4.44541 5.79541C4.69858 5.54223 5.04196 5.4 5.4 5.4C5.75804 5.4 6.10142 5.54223 6.35459 5.79541C6.60777 6.04858 6.75 6.39196 6.75 6.75C6.75 7.10804 6.60777 7.45142 6.35459 7.70459C6.10142 7.95777 5.75804 8.1 5.4 8.1ZM12.6 8.1C12.242 8.1 11.8986 7.95777 11.6454 7.70459C11.3922 7.45142 11.25 7.10804 11.25 6.75C11.25 6.39196 11.3922 6.04858 11.6454 5.79541C11.8986 5.54223 12.242 5.4 12.6 5.4C12.958 5.4 13.3014 5.54223 13.5546 5.79541C13.8078 6.04858 13.95 6.39196 13.95 6.75C13.95 7.10804 13.8078 7.45142 13.5546 7.70459C13.3014 7.95777 12.958 8.1 12.6 8.1Z" fill="#525866" />
-                </svg>
-
-              </div>
-              <div className='cursor-pointer'>
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  className="hidden"
-                  accept="image/*,.mp3,audio/mpeg"
-                />
-                <div
-                  onClick={() => isSending ? null : handleAttachmentClick()}
-                >
-                  <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M9.80078 10.35V5.4C9.80078 4.44522 9.4215 3.52955 8.74637 2.85442C8.07124 2.17928 7.15556 1.8 6.20078 1.8C5.246 1.8 4.33033 2.17928 3.6552 2.85442C2.98007 3.52955 2.60078 4.44522 2.60078 5.4V10.35C2.60078 11.9015 3.21712 13.3895 4.31421 14.4866C5.41129 15.5837 6.89926 16.2 8.45078 16.2C10.0023 16.2 11.4903 15.5837 12.5874 14.4866C13.6844 13.3895 14.3008 11.9015 14.3008 10.35V1.8H16.1008V10.35C16.1008 12.3789 15.2948 14.3247 13.8601 15.7594C12.4255 17.194 10.4797 18 8.45078 18C6.42188 18 4.47607 17.194 3.04141 15.7594C1.60676 14.3247 0.800781 12.3789 0.800781 10.35V5.4C0.800781 3.96783 1.36971 2.59432 2.3824 1.58162C3.3951 0.568927 4.76861 0 6.20078 0C7.63295 0 9.00646 0.568927 10.0192 1.58162C11.0319 2.59432 11.6008 3.96783 11.6008 5.4V10.35C11.6008 11.1854 11.2689 11.9866 10.6782 12.5774C10.0874 13.1681 9.28621 13.5 8.45078 13.5C7.61535 13.5 6.81414 13.1681 6.2234 12.5774C5.63266 11.9866 5.30078 11.1854 5.30078 10.35V5.4H7.10078V10.35C7.10078 10.708 7.24301 11.0514 7.49619 11.3046C7.74936 11.5578 8.09274 11.7 8.45078 11.7C8.80882 11.7 9.1522 11.5578 9.40538 11.3046C9.65855 11.0514 9.80078 10.708 9.80078 10.35Z" fill="#525866" />
-                  </svg>
+          <div className='flex flex-col gap-2'>
+            <div className='flex flex-row'>
+              {selectedFile && (
+                <div className='rounded-lg h-24 w-24 border border-[#E1E4EA] p-2 relative flex items-center justify-center'>
+                  {selectedFile.type.startsWith('image/') ? (
+                    <img src={URL.createObjectURL(selectedFile)} alt="Attachment Preview" className='w-full h-full object-contain rounded-md' />
+                  ) : (
+                    <div className="flex flex-col items-center justify-center gap-1 text-center w-full overflow-hidden">
+                      {(() => { // IIFE to compute icon props
+                        const fileExt = selectedFile.name.split('.').pop()?.toUpperCase() || 'FILE';
+                        const iconColor = fileExt === 'MP3' ? 'blue' : fileExt === 'PDF' ? 'red' : 'gray';
+                        return <FileFormatIcon.Root format={fileExt} color={iconColor} />;
+                      })()}
+                      <span
+                        className="block w-full text-sm text-gray-600 dark:text-gray-400 truncate px-1"
+                        title={selectedFile.name}
+                      >
+                        {selectedFile.name}
+                      </span>
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500">
+                        {formatBytes(selectedFile.size)}
+                      </span>
+                    </div>
+                  )}
+                  <X size={20} onClick={clearSelectedFile} className='absolute top-1 right-1 cursor-pointer text-[#525866] p-0.5 rounded-full bg-white/80 hover:bg-white' />
                 </div>
-
-              </div>
+              )}
             </div>
-            <FancyButton.Root
-              type='submit'
-              disabled={(!newMessage.trim() && !selectedFile) || isSending}
-            >
-              Send
-              {!isSending ? <FancyButton.Icon as={SendIcon} /> :
-                <FancyButton.Icon as={LoaderCircle} className='animate-spin' />}
-            </FancyButton.Root>
-          </div>
-        </div>
-      </form>
 
+
+            <div className='flex flex-row justify-between items-center'>
+              <div className='flex flex-row gap-4 items-center'>
+                <div className='cursor-pointer'>
+                  <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M9 18C4.0293 18 0 13.9707 0 9C0 4.0293 4.0293 0 9 0C13.9707 0 18 4.0293 18 9C18 13.9707 13.9707 18 9 18ZM9 16.2C10.9096 16.2 12.7409 15.4414 14.0912 14.0912C15.4414 12.7409 16.2 10.9096 16.2 9C16.2 7.09044 15.4414 5.25909 14.0912 3.90883C12.7409 2.55857 10.9096 1.8 9 1.8C7.09044 1.8 5.25909 2.55857 3.90883 3.90883C2.55857 5.25909 1.8 7.09044 1.8 9C1.8 10.9096 2.55857 12.7409 3.90883 14.0912C5.25909 15.4414 7.09044 16.2 9 16.2ZM4.5 9.9H6.3C6.3 10.6161 6.58446 11.3028 7.09081 11.8092C7.59716 12.3155 8.28392 12.6 9 12.6C9.71608 12.6 10.4028 12.3155 10.9092 11.8092C11.4155 11.3028 11.7 10.6161 11.7 9.9H13.5C13.5 11.0935 13.0259 12.2381 12.182 13.082C11.3381 13.9259 10.1935 14.4 9 14.4C7.80653 14.4 6.66193 13.9259 5.81802 13.082C4.97411 12.2381 4.5 11.0935 4.5 9.9ZM5.4 8.1C5.04196 8.1 4.69858 7.95777 4.44541 7.70459C4.19223 7.45142 4.05 7.10804 4.05 6.75C4.05 6.39196 4.19223 6.04858 4.44541 5.79541C4.69858 5.54223 5.04196 5.4 5.4 5.4C5.75804 5.4 6.10142 5.54223 6.35459 5.79541C6.60777 6.04858 6.75 6.39196 6.75 6.75C6.75 7.10804 6.60777 7.45142 6.35459 7.70459C6.10142 7.95777 5.75804 8.1 5.4 8.1ZM12.6 8.1C12.242 8.1 11.8986 7.95777 11.6454 7.70459C11.3922 7.45142 11.25 7.10804 11.25 6.75C11.25 6.39196 11.3922 6.04858 11.6454 5.79541C11.8986 5.54223 12.242 5.4 12.6 5.4C12.958 5.4 13.3014 5.54223 13.5546 5.79541C13.8078 6.04858 13.95 6.39196 13.95 6.75C13.95 7.10804 13.8078 7.45142 13.5546 7.70459C13.3014 7.95777 12.958 8.1 12.6 8.1Z" fill="#525866" />
+                  </svg>
+
+                </div>
+                <div className='cursor-pointer'>
+                  <input
+                    type="file"
+                    ref={fileInputRef}
+                    onChange={handleFileChange}
+                    className="hidden"
+                    accept="image/*,.mp3,audio/mpeg"
+                  />
+                  <div
+                    onClick={() => isSending ? null : handleAttachmentClick()}
+                  >
+                    <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M9.80078 10.35V5.4C9.80078 4.44522 9.4215 3.52955 8.74637 2.85442C8.07124 2.17928 7.15556 1.8 6.20078 1.8C5.246 1.8 4.33033 2.17928 3.6552 2.85442C2.98007 3.52955 2.60078 4.44522 2.60078 5.4V10.35C2.60078 11.9015 3.21712 13.3895 4.31421 14.4866C5.41129 15.5837 6.89926 16.2 8.45078 16.2C10.0023 16.2 11.4903 15.5837 12.5874 14.4866C13.6844 13.3895 14.3008 11.9015 14.3008 10.35V1.8H16.1008V10.35C16.1008 12.3789 15.2948 14.3247 13.8601 15.7594C12.4255 17.194 10.4797 18 8.45078 18C6.42188 18 4.47607 17.194 3.04141 15.7594C1.60676 14.3247 0.800781 12.3789 0.800781 10.35V5.4C0.800781 3.96783 1.36971 2.59432 2.3824 1.58162C3.3951 0.568927 4.76861 0 6.20078 0C7.63295 0 9.00646 0.568927 10.0192 1.58162C11.0319 2.59432 11.6008 3.96783 11.6008 5.4V10.35C11.6008 11.1854 11.2689 11.9866 10.6782 12.5774C10.0874 13.1681 9.28621 13.5 8.45078 13.5C7.61535 13.5 6.81414 13.1681 6.2234 12.5774C5.63266 11.9866 5.30078 11.1854 5.30078 10.35V5.4H7.10078V10.35C7.10078 10.708 7.24301 11.0514 7.49619 11.3046C7.74936 11.5578 8.09274 11.7 8.45078 11.7C8.80882 11.7 9.1522 11.5578 9.40538 11.3046C9.65855 11.0514 9.80078 10.708 9.80078 10.35Z" fill="#525866" />
+                    </svg>
+                  </div>
+
+                </div>
+              </div>
+              <FancyButton.Root
+                type='submit'
+                disabled={(!newMessage.trim() && !selectedFile) || isSending}
+              >
+                Send
+                {!isSending ? <FancyButton.Icon as={SendIcon} /> :
+                  <FancyButton.Icon as={LoaderCircle} className='animate-spin' />}
+              </FancyButton.Root>
+            </div>
+          </div>
+        </form>
+      </div>
 
     </div>
   );
