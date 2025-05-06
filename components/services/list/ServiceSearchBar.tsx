@@ -82,7 +82,7 @@ export function ServiceSearchBar({
 
 
   return (
-    <div className='mb-4 rounded-lg bg-[#E1E4EA] px-6 py-5'>
+    <div className='mb-[24px] rounded-lg bg-[#E1E4EA] px-6 py-5'>
       <div className='flex flex-wrap items-center gap-[8px]'>
         {/* Search Input */}
         <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3 max-w-[310px] '>
