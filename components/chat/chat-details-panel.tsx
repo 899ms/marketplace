@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Chat, User, Contract, ContractMilestone } from '@/utils/supabase/types';
 import { contractOperations, contractMilestoneOperations } from '@/utils/supabase/database';
 import * as Avatar from '@/components/ui/avatar';
@@ -36,6 +37,7 @@ const formatCurrency = (amount?: number | null, currency: string = 'USD') => {
 };
 
 export default function ChatDetailsPanel({ chat, otherUserProfile, currentUserProfile }: ChatDetailsPanelProps) {
+  const router = useRouter();
   const [contractDetails, setContractDetails] = useState<Contract | null>(null);
   const [milestones, setMilestones] = useState<ContractMilestone[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -115,15 +117,32 @@ export default function ChatDetailsPanel({ chat, otherUserProfile, currentUserPr
   // Render Details Panel Content
   return (
     <div className="flex h-full flex-col">
-      <div className='flex justify-end border-y border-gray-200 p-3 flex-shrink-0'>
-        <div className='flex items-center gap-2 h-10 cursor-pointer'>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 7H21" stroke="#484848" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M3 12H21" stroke="#484848" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M3 17H21" stroke="#484848" stroke-width="1.5" stroke-linecap="round" />
+      <div className="flex justify-end items-center gap-2 border-y border-gray-200 p-3 flex-shrink-0">
+        {/* ── Send Contract button (now first / left) ── */}
+        <button
+          onClick={() => {
+            const recipientId = otherUserProfile?.id;
+            if (recipientId) router.push(`/sendoffer/${recipientId}`);
+          }} className="
+            inline-flex items-center px-3 py-1.5 text-xs font-small
+            text-primary-600 border border-primary-600 rounded-md
+            text-[12px]
+          "
+        >
+          Send&nbsp;Contract
+        </button>
+
+        {/* ── Hamburger icon ── */}
+        <button type="button" className="h-10 flex items-center cursor-pointer">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path d="M3 7H21" stroke="#484848" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M3 12H21" stroke="#484848" strokeWidth="1.5" strokeLinecap="round" />
+            <path d="M3 17H21" stroke="#484848" strokeWidth="1.5" strokeLinecap="round" />
           </svg>
-        </div>
+        </button>
       </div>
+
       <div className='flex flex-col gap-2 p-[24px] overflow-y-auto custom-scrollbar'>
         <Accordion.Root type='multiple' className='space-y-6' defaultValue={['a', 'b', 'c', 'd']}>
           <Accordion.Item value='a' className='p-0'>
