@@ -23,15 +23,20 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
     currentTrack,
     currentSeller,
     isPlaying,
+    togglePlayPause
   } = useAudioPlayer();
 
   const isActiveTrack = currentTrack?.url === url;
 
   const handlePlayClick = () => {
-    loadTrack(
-      { url, title, remarks },
-      { name: sellerName, avatarUrl: sellerAvatarUrl }
-    );
+    if (isActiveTrack) {
+      togglePlayPause(); // Just toggle state
+    } else {
+      loadTrack(
+        { url, title, remarks },
+        { name: sellerName, avatarUrl: sellerAvatarUrl }
+      );
+    }
   };
 
   return (

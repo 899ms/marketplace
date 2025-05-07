@@ -250,8 +250,15 @@ function ChatMessageRenderer({
       avatarUrl: senderProfile.avatar_url || null,
     };
 
-    audioPlayer.loadTrack(track, seller);
+    if (audioPlayer.currentTrack?.url === track.url) {
+      // Toggle play/pause if same track
+      audioPlayer.togglePlayPause();
+    } else {
+      // Load and play new track
+      audioPlayer.loadTrack(track, seller);
+    }
   };
+
 
   let contentElement = null;
 
