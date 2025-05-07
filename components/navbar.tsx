@@ -59,34 +59,30 @@ export default function Navbar() {
     // No need to redirect here, AuthProvider listener will update state
   };
 
-  // Optional: Basic loading state
-  if (loading) {
-    return (
-      <nav className='fixed top-0 left-0 right-0 z-50 bg-white shadow-sm'>
-        <div className='flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8'>
-          {/* Simplified loading state or skeleton */}
-          <div>Loading...</div>
-        </div>
-      </nav>
-    );
-  }
+
 
   const handleMouseLeave = useCallback(
     (e: React.MouseEvent) => {
       if (!dropdownRef.current) return;
-
       const rect = dropdownRef.current.getBoundingClientRect();
       const { clientX: x, clientY: y } = e;
-
       const isOutside =
         x < rect.left || x > rect.right || y < rect.top || y > rect.bottom;
 
-      if (isOutside) {
-        setDropdownOpen(false);
-      }
+      if (isOutside) setDropdownOpen(false);
     },
     [setDropdownOpen]
   );
+
+  if (loading) {
+    return (
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
+        <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div>Loading…</div>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className='fixed top-0 left-0 right-0 z-50 bg-white'>
