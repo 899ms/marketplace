@@ -82,22 +82,29 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   }, []); // Runs only once on mount
 
   const loadTrack = useCallback((track: MusicItem, seller: SellerInfo) => {
-    if (audioRef.current) {
-      if (audioRef.current.src !== track.url) {
-        audioRef.current.src = track.url;
-        audioRef.current.load(); // Important to load the new source
-        setCurrentTrack(track);
-        setCurrentSeller(seller);
-        // Reset time/duration for new track
-        setCurrentTime(0);
-        setDuration(0);
-        audioRef.current.play().catch(e => console.error("Error playing audio:", e));
+    if (!audioRef.current) return;
+
+    // If it's a different track, load and play it
+    if (!currentTrack || audioRef.current.src !== track.url) {
+      audioRef.current.src = track.url;
+      audioRef.current.load();
+
+      setCurrentTrack(track);
+      setCurrentSeller(seller);
+      setCurrentTime(0);
+      setDuration(0);
+
+      audioRef.current.play().catch((e) => console.error("Error playing audio:", e));
+    } else {
+      // If it's the same track, toggle play/pause
+      if (audioRef.current.paused) {
+        audioRef.current.play().catch((e) => console.error("Error playing audio:", e));
       } else {
-        // If it's the same track, just toggle play/pause
-        togglePlayPause();
+        audioRef.current.pause();
       }
     }
-  }, []);
+  }, [currentTrack]);
+
 
   const togglePlayPause = useCallback(() => {
     if (!audioRef.current || !currentTrack) return;

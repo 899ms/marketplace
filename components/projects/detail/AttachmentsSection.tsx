@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { RiDownload2Line, RiPlayCircleFill } from '@remixicon/react';
+import { RiPauseCircleFill, RiPlayCircleFill, RiDownload2Line } from '@remixicon/react';
 import { BaseFileData, User, MusicItem } from '@/utils/supabase/types';
 import { useAudioPlayer } from '@/contexts/AudioContext';
 
@@ -24,9 +24,10 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
   attachments,
   client,
 }) => {
-  const { loadTrack } = useAudioPlayer();
+  const { loadTrack, togglePlayPause, currentTrack, isPlaying } = useAudioPlayer();
 
   if (!attachments || attachments.length === 0) return null;
+
 
   const handlePlayAudio = (attachment: BaseFileData) => {
     if (!client) {
@@ -38,12 +39,17 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
       url: attachment.url,
       title: attachment.name,
     };
+
     const sellerInfo = {
       name: client.full_name ?? 'Unknown User',
       avatarUrl: client.avatar_url ?? null,
     };
 
-    loadTrack(trackData, sellerInfo);
+    if (currentTrack?.url === attachment.url) {
+      togglePlayPause();
+    } else {
+      loadTrack(trackData, sellerInfo);
+    }
   };
 
   return (
@@ -70,7 +76,11 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
                   <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>
                     {attachment.name}
                   </span>
-                  <RiPlayCircleFill className="size-6 text-[#525866] flex-shrink-0" />
+                  {currentTrack?.url === attachment.url && isPlaying ? (
+                    <RiPauseCircleFill className="size-6 text-[#525866] flex-shrink-0" />
+                  ) : (
+                    <RiPlayCircleFill className="size-6 text-[#525866] flex-shrink-0" />
+                  )}
                 </button>
               ) : (
                 <a
@@ -84,9 +94,10 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
                   <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>
                     {attachment.name}
                   </span>
-                  <RiPlayCircleFill className="size-6 text-gray-500 flex-shrink-0" />
+                  <RiDownload2Line className="size-6 text-gray-500 flex-shrink-0" />
                 </a>
               )}
+
             </li>
           );
         })}
