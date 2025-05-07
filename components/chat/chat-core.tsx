@@ -576,6 +576,7 @@ export default function ChatCore({
         }
       }
 
+
       console.log(`Sending message. Type: ${finalMessageType}, Content: "${textContent}", Data:`, attachmentData);
       const sentMessage = await chatOperations.sendMessage({
         chat_id: chat.id,
