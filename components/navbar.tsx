@@ -26,7 +26,7 @@ import {
   RiArrowDownFill,
   RiArrowDropDownFill, // Added for Live Chat
 } from '@remixicon/react';
-import { useState } from 'react';
+import { useRef, useState, useCallback } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 
@@ -39,6 +39,8 @@ export default function Navbar() {
 
   const [isDarkMode, setIsDarkMode] = useState(false);
   const { copy, hasCopied } = useCopyToClipboard();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   // const userId = '1235984'; // Use user.id instead
 
   // TODO: Implement Dark Mode toggle logic (e.g., using next-themes)
@@ -68,6 +70,23 @@ export default function Navbar() {
       </nav>
     );
   }
+
+  const handleMouseLeave = useCallback(
+    (e: React.MouseEvent) => {
+      if (!dropdownRef.current) return;
+
+      const rect = dropdownRef.current.getBoundingClientRect();
+      const { clientX: x, clientY: y } = e;
+
+      const isOutside =
+        x < rect.left || x > rect.right || y < rect.top || y > rect.bottom;
+
+      if (isOutside) {
+        setDropdownOpen(false);
+      }
+    },
+    [setDropdownOpen]
+  );
 
   return (
     <nav className='fixed top-0 left-0 right-0 z-50 bg-white'>
@@ -164,9 +183,9 @@ export default function Navbar() {
               </button>
 
               {/* --- Account Dropdown --- */}
-              <Dropdown.Root>
+              <Dropdown.Root open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <Dropdown.Trigger asChild>
-                  <button className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center rounded-10 border border-stroke-soft-200 p-1 pr-2 h-10 bg-white'>
+                  <button onClick={() => setDropdownOpen((prev) => !prev)} className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center rounded-10 border border-stroke-soft-200 p-1 pr-2 h-10 bg-white'>
                     {user.user_metadata?.avatar_url ? <Avatar.Root size='32'>
                       {/* Use user avatar or fallback */}
                       <Avatar.Image
@@ -184,133 +203,139 @@ export default function Navbar() {
                     <span className='hidden md:inline text-sm pl-2 pr-0.5 font-medium'>Account</span>
                     <RiArrowDropDownFill className='text-icon-sub-500 hidden size-8 md:inline' />                  </button>
                 </Dropdown.Trigger>
-                <Dropdown.Content align='end' className='w-72'>
-                  {/* User Info Section - Wrapped with Link */}
-                  <Link href={`/users/${user.id}`} passHref>
-                    <div className='mb-1 flex cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-bg-neutral-subtle-100'> {/* Added cursor-pointer, hover effect, and rounded corners */}
-                      <Avatar.Root size='40'>
-                        <Avatar.Image
-                          src={ // Use ternary to handle empty string
-                            user.user_metadata?.avatar_url ? user.user_metadata.avatar_url : 'https://via.placeholder.com/40'
-                          }
-                          alt={
-                            user.user_metadata?.full_name ||
-                            user.email ||
-                            'User Avatar'
-                          } // Use name or email for alt text
-                        />
-                      </Avatar.Root>
-                      <div className='flex-1'>
-                        <div className='text-label-sm text-text-strong-950'>
-                          {user.user_metadata?.full_name || user.email || 'User'}{' '}
-                          {/* Display user name or email */}
-                        </div>
-                        <div className='mt-0.5 flex items-center gap-1'>
-                          <span className='text-paragraph-xs text-text-sub-600'>
-                            ID: {user.id} {/* Use actual user ID */}
-                          </span>
-                          <button
-                            onClick={() => copy(user.id)} // Copy actual user ID
-                            title='Copy ID'
-                            className='text-icon-secondary-400 hover:text-icon-primary-500'
-                          >
-                            <RiFileCopyLine className='size-3.5' />
-                          </button>
-                          {hasCopied && (
-                            <Badge.Root
-                              variant='light'
-                              color='green'
-                              size='small'
+                <div
+                  ref={dropdownRef}
+                  onMouseLeave={handleMouseLeave}
+                >
+                  <Dropdown.Content align='end' className='w-72'>
+                    {/* User Info Section - Wrapped with Link */}
+                    <Link href={`/users/${user.id}`} passHref>
+                      <div className='mb-1 flex cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-bg-neutral-subtle-100'> {/* Added cursor-pointer, hover effect, and rounded corners */}
+                        <Avatar.Root size='40'>
+                          <Avatar.Image
+                            src={ // Use ternary to handle empty string
+                              user.user_metadata?.avatar_url ? user.user_metadata.avatar_url : 'https://via.placeholder.com/40'
+                            }
+                            alt={
+                              user.user_metadata?.full_name ||
+                              user.email ||
+                              'User Avatar'
+                            } // Use name or email for alt text
+                          />
+                        </Avatar.Root>
+                        <div className='flex-1'>
+                          <div className='text-label-sm text-text-strong-950'>
+                            {user.user_metadata?.full_name || user.email || 'User'}{' '}
+                            {/* Display user name or email */}
+                          </div>
+                          <div className='mt-0.5 flex items-center gap-1'>
+                            <span className='text-paragraph-xs text-text-sub-600'>
+                              ID: {user.id} {/* Use actual user ID */}
+                            </span>
+                            <button
+                              onClick={() => copy(user.id)} // Copy actual user ID
+                              title='Copy ID'
+                              className='text-icon-secondary-400 hover:text-icon-primary-500'
                             >
-                              Copied
-                            </Badge.Root>
-                          )}
+                              <RiFileCopyLine className='size-3.5' />
+                            </button>
+                            {hasCopied && (
+                              <Badge.Root
+                                variant='light'
+                                color='green'
+                                size='small'
+                              >
+                                Copied
+                              </Badge.Root>
+                            )}
+                          </div>
+                        </div>
+                        {/* <Badge.Root variant='light' color='green' size='medium'>PRO</Badge.Root> /* Optional PRO badge if needed */}
+                      </div>
+                    </Link>
+
+                    <Divider.Root className='mx-2 my-1' />
+
+                    {/* Dark Mode Toggle */}
+                    <Dropdown.Item
+                      className='cursor-default hover:bg-transparent focus:bg-transparent data-[highlighted]:bg-transparent' // Prevent hover/focus style
+                      onSelect={(e) => e.preventDefault()} // Prevent closing on select
+                    >
+                      <Dropdown.ItemIcon as={RiMoonLine} />
+                      Dark Mode
+                      <span className='flex-1' />
+                      <Switch.Root
+                        checked={isDarkMode}
+                        onCheckedChange={handleDarkModeToggle}
+                      />
+                    </Dropdown.Item>
+
+                    {/* Account Settings */}
+                    <Link href='/settings' passHref>
+                      {' '}
+                      {/* Link to settings page */}
+                      <Dropdown.Item>
+                        <Dropdown.ItemIcon as={RiSettings3Line} />
+                        Account Settings
+                      </Dropdown.Item>
+                    </Link>
+
+                    {/* Orders */}
+                    <Link href='/settings?tab=orders' passHref>
+                      {' '}
+                      {/* Link to orders page */}
+                      <Dropdown.Item>
+                        <Dropdown.ItemIcon as={RiFileList2Line} />
+                        Orders
+                      </Dropdown.Item>
+                    </Link>
+
+                    <Divider.Root className='mx-2 my-1' />
+
+                    {/* Support Section */}
+                    <Dropdown.Label>SUPPORT</Dropdown.Label>
+                    {/* TODO: Add links to help/chat pages */}
+                    <Dropdown.Item>
+                      <Dropdown.ItemIcon as={RiQuestionLine} />
+                      Help Center
+                    </Dropdown.Item>
+                    <Dropdown.Item>
+                      <Dropdown.ItemIcon as={RiChat1Line} />
+                      Live chat
+                    </Dropdown.Item>
+
+                    <Divider.Root className='mx-2 my-1' />
+
+                    {/* Balance Section - TODO: Fetch actual balance */}
+                    <div className='flex items-center justify-between p-2'>
+                      <div>
+                        <div className='text-text-secondary-600 text-label-sm'>
+                          Balance
+                        </div>
+                        <div className='text-label-md font-medium text-text-strong-950'>
+                          12,000.05 {/* Example balance */}
                         </div>
                       </div>
-                      {/* <Badge.Root variant='light' color='green' size='medium'>PRO</Badge.Root> /* Optional PRO badge if needed */}
+                      <Button.Root variant='primary' mode='stroke' size='small'>
+                        Top up
+                      </Button.Root>
                     </div>
-                  </Link>
 
-                  <Divider.Root className='mx-2 my-1' />
+                    <Divider.Root className='mx-2 my-1' />
 
-                  {/* Dark Mode Toggle */}
-                  <Dropdown.Item
-                    className='cursor-default hover:bg-transparent focus:bg-transparent data-[highlighted]:bg-transparent' // Prevent hover/focus style
-                    onSelect={(e) => e.preventDefault()} // Prevent closing on select
-                  >
-                    <Dropdown.ItemIcon as={RiMoonLine} />
-                    Dark Mode
-                    <span className='flex-1' />
-                    <Switch.Root
-                      checked={isDarkMode}
-                      onCheckedChange={handleDarkModeToggle}
-                    />
-                  </Dropdown.Item>
-
-                  {/* Account Settings */}
-                  <Link href='/settings' passHref>
-                    {' '}
-                    {/* Link to settings page */}
-                    <Dropdown.Item>
-                      <Dropdown.ItemIcon as={RiSettings3Line} />
-                      Account Settings
+                    {/* Logout */}
+                    <Dropdown.Item
+                      className='text-error-base'
+                      onSelect={handleLogout}
+                    >
+                      {' '}
+                      {/* Call handleLogout on select */}
+                      <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
+                      Logout
                     </Dropdown.Item>
-                  </Link>
+                  </Dropdown.Content>
+                </div>
 
-                  {/* Orders */}
-                  <Link href='/settings?tab=orders' passHref>
-                    {' '}
-                    {/* Link to orders page */}
-                    <Dropdown.Item>
-                      <Dropdown.ItemIcon as={RiFileList2Line} />
-                      Orders
-                    </Dropdown.Item>
-                  </Link>
-
-                  <Divider.Root className='mx-2 my-1' />
-
-                  {/* Support Section */}
-                  <Dropdown.Label>SUPPORT</Dropdown.Label>
-                  {/* TODO: Add links to help/chat pages */}
-                  <Dropdown.Item>
-                    <Dropdown.ItemIcon as={RiQuestionLine} />
-                    Help Center
-                  </Dropdown.Item>
-                  <Dropdown.Item>
-                    <Dropdown.ItemIcon as={RiChat1Line} />
-                    Live chat
-                  </Dropdown.Item>
-
-                  <Divider.Root className='mx-2 my-1' />
-
-                  {/* Balance Section - TODO: Fetch actual balance */}
-                  <div className='flex items-center justify-between p-2'>
-                    <div>
-                      <div className='text-text-secondary-600 text-label-sm'>
-                        Balance
-                      </div>
-                      <div className='text-label-md font-medium text-text-strong-950'>
-                        12,000.05 {/* Example balance */}
-                      </div>
-                    </div>
-                    <Button.Root variant='primary' mode='stroke' size='small'>
-                      Top up
-                    </Button.Root>
-                  </div>
-
-                  <Divider.Root className='mx-2 my-1' />
-
-                  {/* Logout */}
-                  <Dropdown.Item
-                    className='text-error-base'
-                    onSelect={handleLogout}
-                  >
-                    {' '}
-                    {/* Call handleLogout on select */}
-                    <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
-                    Logout
-                  </Dropdown.Item>
-                </Dropdown.Content>
               </Dropdown.Root>
               {/* --- End Account Dropdown --- */}
             </>
