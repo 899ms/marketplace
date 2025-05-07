@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import ServiceCard from '@/components/cards/ServiceCard';
 import WorkerCard from '@/components/cards/WorkerCard';
@@ -25,6 +25,7 @@ function isValidTabValue(value: string | null): value is ActiveTabValue {
 // Renamed component
 export default function SearchPageClient() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const initialTab = searchParams.get('tab');
   const validatedInitialTab = isValidTabValue(initialTab) ? initialTab : 'Service';
 
@@ -403,10 +404,13 @@ export default function SearchPageClient() {
 
   // Handle tab change
   const handleTabChange = (value: string) => {
-    setActiveTab(value as ActiveTabValue);
-    if (value === 'Service') setServiceIsLoading(true);
-    else if (value === 'Worker') setWorkerIsLoading(true);
-    else if (value === 'Project') setProjectIsLoading(true);
+    const newTab = value as ActiveTabValue;
+    // Update URL to reflect the new tab
+    const currentParams = new URLSearchParams(Array.from(searchParams.entries()));
+    currentParams.set('tab', newTab);
+    router.push(`/services/search?${currentParams.toString()}`);
+    // setActiveTab(newTab); // Removed direct state update
+    // Loading states will be handled by useEffects that depend on activeTab
   };
 
   return (
