@@ -37,6 +37,7 @@ export default function GlobalAudioPlayer() {
     togglePlayPause,
     seek,
     setVolume,
+    toggleMute,
   } = useAudioPlayer();
 
   const [isVisible, setIsVisible] = useState(true);
@@ -74,7 +75,9 @@ export default function GlobalAudioPlayer() {
                 className="flex items-center gap-2 bg-white border-t border-l border-r border-stroke-soft-200 shadow-md text-black px-6 py-2 rounded-t-xl shadow-md hover:bg-neutral-1600 transition-colors"
                 aria-label="Toggle player visibility"
               >
-                <VolumeIcon className="w-5 h-5" />
+                <span onClick={(e) => { e.stopPropagation(); toggleMute(); }} className="cursor-pointer" aria-label={volume === 0 ? "Unmute" : "Mute"}>
+                  <VolumeIcon className="w-5 h-5" />
+                </span>
                 {isVisible ? (
                   <RiArrowDownSLine className="w-5 h-5" />
                 ) : (

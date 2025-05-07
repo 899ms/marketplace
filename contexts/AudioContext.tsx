@@ -16,8 +16,10 @@ interface AudioContextType {
   currentTime: number;
   duration: number;
   volume: number;
+  isMuted: boolean;
   loadTrack: (track: MusicItem, seller: SellerInfo) => void;
   togglePlayPause: () => void;
+  toggleMute: () => void;
   seek: (time: number) => void;
   setVolume: (volume: number) => void;
 }
@@ -43,6 +45,8 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
   const [currentTime, setCurrentTime] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const [volume, setVolume] = useState<number>(1); // Volume 0 to 1
+  const [isMuted, setIsMuted] = useState<boolean>(false);
+  const previousVolumeRef = useRef<number>(1);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
@@ -130,7 +134,30 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
       audioRef.current.volume = clampedVolume;
     }
     setVolume(clampedVolume); // Update state regardless for UI feedback
-  }, []);
+    if (clampedVolume > 0 && isMuted) {
+      setIsMuted(false);
+    } else if (clampedVolume === 0 && !isMuted) {
+      setIsMuted(true);
+    }
+  }, [isMuted]);
+
+  const toggleMute = useCallback(() => {
+    if (!audioRef.current) return;
+
+    if (isMuted) {
+      // Unmute: restore previous volume or default to 0.5 if previous was 0
+      const newVolume = previousVolumeRef.current > 0 ? previousVolumeRef.current : 0.5;
+      audioRef.current.volume = newVolume;
+      setVolume(newVolume);
+      setIsMuted(false);
+    } else {
+      // Mute: store current volume, then set to 0
+      previousVolumeRef.current = audioRef.current.volume;
+      audioRef.current.volume = 0;
+      setVolume(0);
+      setIsMuted(true);
+    }
+  }, [isMuted]);
 
   const value: AudioContextType = {
     currentTrack,
@@ -139,8 +166,10 @@ export const AudioProvider: React.FC<AudioProviderProps> = ({ children }) => {
     currentTime,
     duration,
     volume,
+    isMuted,
     loadTrack,
     togglePlayPause,
+    toggleMute,
     seek,
     setVolume: setVolumeCallback,
   };
