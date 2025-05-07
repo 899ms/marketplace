@@ -19,6 +19,7 @@ function Calendar({
   return (
     <DayPicker
       showOutsideDays={showOutsideDays}
+      disabled={rest.disabled ?? undefined}
       classNames={{
         multiple_months: '',
         caption_start: 'p-5',

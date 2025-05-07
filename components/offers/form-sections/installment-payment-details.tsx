@@ -185,22 +185,21 @@ export function InstallmentPaymentDetails({
               <Controller
                 name={`milestones.${index}.dueDate`}
                 control={control}
-                render={({ field: milestoneField }) => (
-                  <Popover
-                    open={deadlineCalendarOpen}
-                    onOpenChange={setDeadlineCalendarOpen}
-                  >
+                render={({ field }) => (
+                  <Popover open={deadlineCalendarOpen} onOpenChange={setDeadlineCalendarOpen}>
                     <PopoverTrigger asChild>
                       <Button
                         type='button'
                         className={cn(
                           'mt-1 w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50',
-                          !milestoneField.value && 'text-muted-foreground',
+                          !field.value && 'text-muted-foreground',
                         )}
                       >
                         <RiCalendarLine className='mr-2 h-4 w-4 text-[#0E121B]' />
-                        {milestoneField.value ? (
-                          <p className='text-[14px] text-[#0E121B]'>{format(milestoneField.value, 'PPP')}</p>
+                        {field.value ? (
+                          <p className='text-[14px] text-[#0E121B]'>
+                            {format(field.value, 'PPP')}
+                          </p>
                         ) : (
                           <span className='text-[14px] text-[#525866]'>DD / MM / YYYY</span>
                         )}
@@ -209,22 +208,36 @@ export function InstallmentPaymentDetails({
                     <PopoverContent className='w-auto p-0'>
                       <Calendar
                         mode='single'
-                        selected={milestoneField.value || undefined}
+                        selected={field.value || undefined}
                         onSelect={(date) => {
-                          milestoneField.onChange(date);
+                          const today = new Date();
+                          today.setHours(0, 0, 0, 0);
+
+                          if (date && date < today) {
+                            form.setValue(`milestones.${index}.dueDate`, undefined);
+                            form.setError(`milestones.${index}.dueDate`, {
+                              type: 'manual',
+                              message: 'Select a future date',
+                            });
+                            return;
+                          }
+
+                          field.onChange(date);
                           setDeadlineCalendarOpen(false);
                         }}
+                        disabled={{ before: new Date() }}
                         initialFocus
                       />
                     </PopoverContent>
                   </Popover>
                 )}
               />
-              {errors.deadline && (
+              {errors.milestones?.[index]?.dueDate && (
                 <p className='text-sm mt-1 text-red-500'>
-                  {errors.deadline.message}
+                  {errors.milestones[index]?.dueDate?.message}
                 </p>
               )}
+
             </div>
 
           </div>

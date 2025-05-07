@@ -47,6 +47,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
   const {
     register,
     setValue,
+    setError,
     formState: { errors },
     watch
   } = formMethods;
@@ -176,7 +177,40 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
                 id='deadline'
                 placeholder='DD / MM / YYYY'
                 type='date'
-                {...register('deadline')}
+                min={new Date().toISOString().split('T')[0]}
+                {...register('deadline', {
+                  validate: (value) => {
+                    if (!value) return true; // Optional field
+                    const selectedDate = new Date(value);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+                    if (selectedDate < today) {
+                      return 'Deadline cannot be in the past';
+                    }
+                    return true;
+                  }
+                })}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value) {
+                    const selectedDate = new Date(value);
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0);
+
+                    if (selectedDate < today) {
+                      e.target.value = '';
+                      setValue('deadline', '', { shouldValidate: false }); // don't validate yet
+
+                      // Delay setting error to allow React Hook Form to register it properly
+                      setTimeout(() => {
+                        setError('deadline', {
+                          type: 'manual',
+                          message: 'Choose a future date',
+                        });
+                      }, 0);
+                    }
+                  }
+                }}
               />
             </Input.Wrapper>
           </Input.Root>

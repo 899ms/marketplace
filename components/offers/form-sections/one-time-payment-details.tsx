@@ -126,45 +126,74 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
           name='deadline'
           control={control}
           render={({ field }) => (
-            <Popover
-              open={deadlineCalendarOpen}
-              onOpenChange={setDeadlineCalendarOpen}
-            >
+            <Popover open={deadlineCalendarOpen} onOpenChange={setDeadlineCalendarOpen}>
               <PopoverTrigger asChild>
-                <Button
-                  type='button'
-                  className={cn(
-                    'w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50',
-                    !field.value && 'text-muted-foreground',
+                <div className='relative w-full mt-1'>
+                  <Button
+                    type='button'
+                    className={cn(
+                      'w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50 pr-10',
+                      !field.value && 'text-muted-foreground',
+                    )}
+                  >
+                    <RiCalendarLine className='mr-2 h-4 w-4 text-[#0E121B]' />
+                    {field.value ? (
+                      <p className='text-[14px] text-[#0E121B]'>{format(field.value, 'PPP')}</p>
+                    ) : (
+                      <span className='text-[14px] text-[#525866]'>DD / MM / YYYY</span>
+                    )}
+                  </Button>
+                  {field.value && (
+                    <button
+                      type='button'
+                      onClick={() => {
+                        field.onChange(undefined);
+                        form.clearErrors('deadline');
+                      }}
+                      className='absolute right-2 top-1/2 -translate-y-1/2 text-[#525866] hover:text-red-500'
+                      aria-label='Clear date'
+                    >
+                      ×
+                    </button>
                   )}
-                >
-                  <RiCalendarLine className='mr-2 h-4 w-4 text-[#0E121B]' />
-                  {field.value ? (
-                    <p className='text-[14px] text-[#0E121B]'>{format(field.value, 'PPP')}</p>
-                  ) : (
-                    <span>DD / MM / YYYY</span>
-                  )}
-                </Button>
+                </div>
               </PopoverTrigger>
               <PopoverContent className='w-auto p-0'>
                 <Calendar
                   mode='single'
                   selected={field.value || undefined}
                   onSelect={(date) => {
+                    const today = new Date();
+                    today.setHours(0, 0, 0, 0); // Normalize for comparison
+
+                    if (date && date < today) {
+                      field.onChange(undefined);
+                      form.setError('deadline', {
+                        type: 'manual',
+                        message: 'Please select a future date.',
+                      });
+                      return;
+                    }
+
+                    form.clearErrors('deadline');
                     field.onChange(date);
                     setDeadlineCalendarOpen(false);
                   }}
+                  disabled={{ before: new Date() }}
                   initialFocus
                 />
+
               </PopoverContent>
             </Popover>
           )}
         />
+
         {errors.deadline && (
           <p className='text-sm mt-1 text-red-500 text-[14px]'>
             {errors.deadline.message}
           </p>
         )}
+
       </div>
       {/* Empty div for grid alignment */}
       <div></div>
