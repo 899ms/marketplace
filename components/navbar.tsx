@@ -77,8 +77,28 @@ export default function Navbar() {
   if (loading) {
     return (
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm">
-        <div className="flex h-16 items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div>Loading…</div>
+        <div className="mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between px-8 py-5 gap-4 border-b border-stroke-soft-200">
+          {/* Left: logo + links */}
+          <div className="flex items-center gap-4">
+            <div className="h-10 w-10 rounded bg-gray-200 animate-pulse" />
+            <div className="hidden lg:flex items-center gap-5">
+              <div className="h-4 w-20 rounded bg-gray-200 animate-pulse" />
+              <div className="h-4 w-20 rounded bg-gray-200 animate-pulse" />
+              <div className="h-4 w-20 rounded bg-gray-200 animate-pulse" />
+              <div className="h-4 w-16 rounded bg-gray-200 animate-pulse" />
+            </div>
+          </div>
+
+          {/* Right: search + buttons */}
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:block h-10 w-[220px] rounded bg-gray-200 animate-pulse" />
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-20 rounded bg-gray-200 animate-pulse" />
+              <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
+              <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
+              <div className="h-8 w-8 rounded-full bg-gray-200 animate-pulse" />
+            </div>
+          </div>
         </div>
       </nav>
     );
