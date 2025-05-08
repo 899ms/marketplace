@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   UseFormReturn,
   Controller,
@@ -63,6 +63,12 @@ export function InstallmentPaymentDetails({
     control,
     name: 'milestones',
   });
+
+  useEffect(() => {
+    if (fields.length === 0) {
+      append({ description: '', amount: 0, dueDate: undefined });
+    }
+  }, []);
 
   const addMilestone = () => {
     append({

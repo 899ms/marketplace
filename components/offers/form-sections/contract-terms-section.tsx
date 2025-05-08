@@ -47,6 +47,11 @@ export function ContractTermsSection({
               } else {
                 setValue('amount', undefined, { shouldValidate: true });
                 setValue('deadline', undefined);
+                setValue(
+                  'milestones',
+                  [{ description: '', amount: 0, dueDate: undefined }],
+                  { shouldValidate: true }
+                );
               }
             }}
             defaultValue={field.value}
