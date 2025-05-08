@@ -20,11 +20,11 @@ import { AgreementSection } from './form-sections/agreement-section';
 import { FormActions } from './form-sections/form-actions';
 
 interface SendOfferFormProps {
-  offerId?: string; // Make offerId optional if it's not always needed or comes from route
+  sellerId?: string; // Make sellerId optional if it's not always needed or comes from route
   // Add other props like default values, user details etc. if necessary
 }
 
-export function SendOfferForm({ offerId }: SendOfferFormProps) {
+export function SendOfferForm({ sellerId }: SendOfferFormProps) {
   // Use the custom hook to manage form state and logic
   const {
     formMethods,
@@ -112,6 +112,7 @@ export function SendOfferForm({ offerId }: SendOfferFormProps) {
           sellers={sellers}
           jobs={jobs}
           isLoading={isLoadingData}
+          sellerId={sellerId ?? ''}
         />
 
         <ContractTermsSection form={formMethods} paymentType={paymentType} />

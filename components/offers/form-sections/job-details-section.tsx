@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { UseFormReturn, Controller } from 'react-hook-form';
 import {
   Root as Select,
@@ -28,6 +28,7 @@ interface JobDetailsSectionProps {
   sellers: Pick<User, 'id' | 'username' | 'full_name'>[]; // Add sellers prop
   jobs: Pick<Job, 'id' | 'title'>[]; // Add jobs prop
   isLoading: boolean; // Add isLoading prop
+  sellerId: string;
 }
 
 export function JobDetailsSection({
@@ -35,7 +36,9 @@ export function JobDetailsSection({
   sellers,
   jobs,
   isLoading, // Destructure new props
+  sellerId,
 }: JobDetailsSectionProps) {
+
   const {
     register,
     control,
@@ -55,6 +58,12 @@ export function JobDetailsSection({
     { label: 'Skilled', value: 'Skilled' as SkillLevel },
     { label: 'Expert', value: 'Expert' as SkillLevel },
   ];
+
+  useEffect(() => {
+    if (sellerId && sellers.find(s => s.id === sellerId)) {
+      setValue('sendTo', sellerId);
+    }
+  }, [sellerId, sellers, setValue]);
 
   const handleSkillLevelSelect = (value: string) => {
     const currentSkillLevels = getValues('skillLevels') || [];
@@ -86,10 +95,11 @@ export function JobDetailsSection({
           <Controller
             name='sendTo'
             control={control}
+            defaultValue={sellerId}
             render={({ field }) => (
               <Select
                 onValueChange={field.onChange}
-                defaultValue={field.value}
+                value={field.value}
                 disabled={isLoading || sellers.length === 0}
               >
                 <SelectTrigger className=''>

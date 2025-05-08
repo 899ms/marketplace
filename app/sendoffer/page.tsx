@@ -4,12 +4,7 @@ import React from 'react';
 import { useParams } from 'next/navigation';
 import { SendOfferForm } from '@/components/offers/send-offer-form';
 import { OfferProfileSidebar } from '@/components/offers/offer-profile-sidebar';
-
-interface SendOfferPageProps {
-  // params: {
-  //   offerid: string;
-  // };
-}
+import { useSearchParams } from 'next/navigation'
 
 // Updated mock worker data for the OfferProfileSidebar
 const mockOfferWorker = {
@@ -34,16 +29,9 @@ const mockOfferWorker = {
 // Alternatively, wrap SendOfferForm in Suspense if fetching data server-side.
 export default function SendOfferPage() {
   // Use the useParams hook to get route parameters
-  const params = useParams<{ offerid: string }>(); // Specify expected param shape
-  const offerid = params.offerid; // Access directly from hook result
 
-  // Handle case where offerid might not be available initially (optional but good practice)
-  if (!offerid) {
-    // Render loading state or return null/error
-    return <div>Loading offer details...</div>;
-  }
+  const sellerId = useSearchParams().get('seller_id')
 
-  // TODO: Fetch actual data based on offerid (worker details, order details, etc.)
 
   return (
     <div className='container mx-auto  py-10 px-1   max-w-[1200px]'>
@@ -51,7 +39,7 @@ export default function SendOfferPage() {
       <div className='grid grid-cols-1 gap-8 lg:grid-cols-7'>
         {/* Left Column: Form */}
         <div className='lg:col-span-5'>
-          <SendOfferForm offerId={offerid} />
+          <SendOfferForm sellerId={sellerId ?? ''} />
         </div>
 
         {/* Right Column: Offer Profile Sidebar */}

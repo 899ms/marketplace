@@ -121,15 +121,18 @@ export default function ChatDetailsPanel({ chat, otherUserProfile, currentUserPr
         {/* ── Send Contract button (now first / left) ── */}
         <button
           onClick={() => {
-            const recipientId = otherUserProfile?.id;
-            if (recipientId) router.push(`/sendoffer/${recipientId}`);
-          }} className="
+            const sellerId = otherUserProfile?.id;
+            if (sellerId) {
+              router.push(`/sendoffer?seller_id=${sellerId}`);
+            }
+          }}
+          className="
             inline-flex items-center px-3 py-1.5 text-xs font-small
             text-primary-600 border border-primary-600 rounded-md
             text-[12px]
           "
         >
-          Send&nbsp;Contract
+          Send Contract
         </button>
 
         {/* ── Hamburger icon ── */}
