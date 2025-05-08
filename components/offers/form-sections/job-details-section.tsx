@@ -143,6 +143,7 @@ export function JobDetailsSection({
           <Controller
             name='selectOrder'
             control={control}
+            defaultValue=''
             render={({ field }) => (
               <Select
                 onValueChange={field.onChange}

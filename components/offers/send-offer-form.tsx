@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import type { SendOfferFormData } from './schema';
 import { useSendOfferForm } from '@/hooks/useSendOfferForm';
+import { jobOperations } from '@/utils/supabase/database';
 
 // Import UI components
 // Import Root as Alert based on ui/alert.tsx structure
@@ -70,6 +71,42 @@ export function SendOfferForm({ sellerId }: SendOfferFormProps) {
   };
 
   const isLoadingData = isLoadingSellers || isLoadingJobs;
+
+
+  // 1) watch the selected job ID
+  const selectedJobId = watch('selectOrder');
+
+  // 2) fetch when it changes
+  useEffect(() => {
+    if (!selectedJobId) return;
+    console.log('→ selectedJobId changed:', selectedJobId);
+
+    jobOperations.getJobById(selectedJobId).then((job) => {
+      console.log('→ fetched job record:', job);
+
+      if (!job) return;
+      // before setValue, log what you’re about to set:
+      console.log('→ populating form with:',
+        {
+          contractTitle: job.title,
+          description: job.description,
+          amount: job.budget,
+          currency: job.currency,
+          deadline: job.deadline,
+          attachments: job.files,
+        }
+      );
+
+      setValue('attachments', []);
+      setValue('contractTitle', job.title);
+      setValue('description', job.description || '');
+      setValue('amount', job.budget ?? 0);
+      setValue('currency', job.currency);
+      setValue('deadline', job.deadline ? new Date(job.deadline) : undefined);
+      setValue('attachments', job.files || []);
+    });
+  }, [selectedJobId, setValue]);
+
 
   return (
     // Pass formMethods down, sections can destructure what they need
