@@ -7,6 +7,7 @@ import {
   RiCalendarLine,
   RiGroupLine,
 } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
 
 interface ProjectInfoCardProps {
   budget: string;
@@ -21,6 +22,8 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
   deadline,
   proposals,
 }) => {
+  const { t } = useTranslation('common');
+
   return (
     <div className="m-[20px]">
       {/* Budget */}
@@ -28,7 +31,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
         <div className="flex items-center gap-2">
           <RiMoneyCnyCircleLine className="text-icon-secondary-400 size-5 text-[#525866]" />
           <span className="text-[14px] font-medium text-gray-600">
-            Budget
+            {t('projects.info.budget')}
           </span>
         </div>
         <span className="text-[24px] text-text-strong-950">
@@ -41,7 +44,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
         <div className="flex items-center gap-2">
           <RiTimeLine className="text-icon-secondary-400 size-5 text-[#525866]" />
           <span className="text-[14px] font-medium text-gray-600">
-            Release time
+            {t('projects.info.releaseTime')}
           </span>
         </div>
         <span className="text-[14px] text-text-secondary-600">
@@ -54,7 +57,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
         <div className="flex items-center gap-2">
           <RiCalendarLine className="text-icon-secondary-400 size-5 text-[#525866]" />
           <span className="text-[14px] font-medium text-gray-600">
-            Deadline
+            {t('projects.info.deadline')}
           </span>
         </div>
         <span className="text-[14px] text-text-secondary-600">
@@ -67,7 +70,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
         <div className="flex items-center gap-2">
           <RiGroupLine className="text-icon-secondary-400 size-5 text-[#525866]" />
           <span className="text-[14px] font-medium text-gray-600">
-            Proposals
+            {t('projects.info.proposals')}
           </span>
         </div>
         <span className="text-[14px] text-text-secondary-600">

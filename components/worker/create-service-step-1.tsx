@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { UseFormReturn } from 'react-hook-form';
-import { CreateServiceFormData } from '@/app/worker/services/create/schema';
+import { CreateServiceFormData } from '@/app/[lang]/worker/services/create/schema';
 import * as Button from '@/components/ui/button';
 import * as FileUpload from '@/components/ui/file-upload';
 import * as Input from '@/components/ui/input';

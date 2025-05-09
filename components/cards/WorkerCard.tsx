@@ -2,6 +2,7 @@ import React from 'react';
 import * as Avatar from '@/components/ui/avatar';
 import * as Tag from '@/components/ui/tag';
 import { User } from '@/utils/supabase/types';
+import Translate from '@/components/Translate';
 
 import {
   RiStarFill,
@@ -73,13 +74,13 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
             </div>
             <div className='text-text-secondary-600 mb-2 flex items-center gap-1.5 text-[12px]'>
               <span className='inline-flex items-center gap-0.5'>
-                <RiMoneyDollarCircleLine className='size-5' /> Salary{' '}
+                <RiMoneyDollarCircleLine className='size-5' /> <Translate id="worker.salary" />
               </span>
               <span className='inline-flex items-center gap-0.5'>
-                <RiBriefcaseLine className='size-5' /> Work
+                <RiBriefcaseLine className='size-5' /> <Translate id="worker.work" />
               </span>
               <span className='inline-flex items-center gap-0.5'>
-                <RiSparklingLine className='size-5' /> Special
+                <RiSparklingLine className='size-5' /> <Translate id="worker.special" />
               </span>
             </div>
           </div>

@@ -5,6 +5,7 @@ import * as Accordion from "@/components/ui/accordion";
 import * as Button from "@/components/ui/button";
 import { RiArrowDownSLine, RiUploadCloud2Line, RiCloseLine } from '@remixicon/react';
 import { Root as FileUploadRoot } from "@/components/ui/file-upload";
+import { useTranslation } from 'react-i18next';
 
 type UserRole = 'buyer' | 'seller';
 
@@ -28,6 +29,7 @@ export function WorkFiles({
   onDownload,
   onUpload
 }: WorkFilesProps) {
+  const { t } = useTranslation('common');
   const [uploadedFiles, setUploadedFiles] = React.useState<File[]>([]);
   const [isUploading, setIsUploading] = React.useState(false);
   const fileInputId = React.useId();
@@ -67,7 +69,7 @@ export function WorkFiles({
 
         <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200">
           <Accordion.Trigger className="w-full text-[16px] text-[#0E121B] font-medium p-0 m-0 flex justify-between items-center hover:no-underline">
-            Work File
+            {t('orders.workFiles.title')}
             <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
           </Accordion.Trigger>
         </Accordion.Header>
@@ -81,8 +83,8 @@ export function WorkFiles({
               >
                 <div className="flex flex-col items-center justify-center pointer-events-none">
                   <RiUploadCloud2Line className="size-10 text-gray-400 mb-2" />
-                  <span className="text-sm font-medium text-text-strong-950">Choose a file or drag & drop it here.</span>
-                  <p className="text-xs text-text-secondary-600 mt-1">JPEG, PNG, PDF, and MP4 formats, up to 50 MB.</p>
+                  <span className="text-sm font-medium text-text-strong-950">{t('orders.workFiles.chooseFile')}</span>
+                  <p className="text-xs text-text-secondary-600 mt-1">{t('orders.workFiles.fileTypes')}</p>
                 </div>
               </FileUploadRoot>
               <input
@@ -109,7 +111,7 @@ export function WorkFiles({
                     disabled={isUploading || uploadedFiles.length === 0}
                     className="w-full mt-2"
                   >
-                    {isUploading ? 'Uploading...' : `Upload ${uploadedFiles.length} File(s)`}
+                    {isUploading ? t('orders.workFiles.uploading') : t('orders.workFiles.uploadFiles', { count: uploadedFiles.length })}
                   </Button.Root>
                 </div>
               )}
@@ -117,14 +119,13 @@ export function WorkFiles({
           )}
 
           <div
-            className={`space-y-[20px] ${userRole === 'seller' ? 'border-t border-gray-100' : ''
-              }`}
+            className={`space-y-[20px] ${userRole === 'seller' ? 'border-t border-gray-100' : ''}`}
           >
             {files.length === 0 && userRole === 'buyer' && (
-              <p className="text-sm text-gray-500 text-center py-4">No work files have been uploaded yet.</p>
+              <p className="text-sm text-gray-500 text-center py-4">{t('orders.workFiles.noFilesBuyer')}</p>
             )}
             {files.length === 0 && userRole === 'seller' && !uploadedFiles.length && (
-              <p className="text-sm text-gray-500 text-center py-4">Upload your work files using the section above.</p>
+              <p className="text-sm text-gray-500 text-center py-4">{t('orders.workFiles.noFilesSeller')}</p>
             )}
             {files.map((file) => (
               <div key={file.id} className="flex justify-between items-center p-[16px] pb-[28px] border-b border-[#E1E4EA] last:border-b-0">
@@ -142,7 +143,7 @@ export function WorkFiles({
                   onClick={() => onDownload?.(file.id)}
                   className="max-w-[107px] w-full"
                 >
-                  Download
+                  {t('orders.workFiles.download')}
                 </Button.Root>
               </div>
             ))}

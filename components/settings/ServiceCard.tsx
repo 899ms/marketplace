@@ -6,15 +6,18 @@ import * as Badge from '@/components/ui/badge';
 import { cn } from '@/utils/cn';
 import type { Service } from '@/utils/supabase/types';
 import * as Tag from '@/components/ui/tag';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   service: Service;
 }
 
 export default function ServiceCard({ service }: Props) {
+  const { t } = useTranslation('common');
+
   const statusTags = [
-    { text: 'Not Yet Published', variant: 'warning' as const },
-    { text: 'To be improved', variant: 'info' as const },
+    { text: t('serviceCard.status.notPublished'), variant: 'warning' as const },
+    { text: t('serviceCard.status.toBeImproved'), variant: 'info' as const },
   ];
   const ordersCount = 15;
   const salesAmount = 0;
@@ -50,8 +53,6 @@ export default function ServiceCard({ service }: Props) {
             ))}
           </div>
         </div>
-
-
       </div>
 
       <div className="flex shrink-0 items-center gap-16 text-right">
@@ -60,21 +61,21 @@ export default function ServiceCard({ service }: Props) {
             {currencySymbol}
             {service.price.toLocaleString()}
           </span>
-          <span className="text-[12px] text-[#525866] font-medium">Price</span>
+          <span className="text-[12px] text-[#525866] font-medium">{t('serviceCard.price')}</span>
         </div>
         <div className="flex flex-col">
           <span className="text-[#0E121B] text-[16px] font-normal text-center">{ordersCount}</span>
-          <span className="text-[12px] text-[#525866] font-medium">Orders</span>
+          <span className="text-[12px] text-[#525866] font-medium">{t('serviceCard.orders')}</span>
         </div>
         <div className="flex flex-col">
           <span className="text-[#0E121B] text-[16px] font-normal text-center">
             {`${currencySymbol} ${salesAmount.toLocaleString()}`}
           </span>
-          <span className="text-[12px] text-[#525866] font-medium">Sales amount</span>
+          <span className="text-[12px] text-[#525866] font-medium">{t('serviceCard.salesAmount')}</span>
         </div>
         <div className="flex flex-col">
           <span className="text-[#0E121B] text-[16px] font-normal text-center">{favoritesCount}</span>
-          <span className="text-[12px] text-[#525866] font-medium">Favorites</span>
+          <span className="text-[12px] text-[#525866] font-medium">{t('serviceCard.favorites')}</span>
         </div>
       </div>
     </div>

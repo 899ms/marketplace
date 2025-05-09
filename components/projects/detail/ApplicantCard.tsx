@@ -4,6 +4,7 @@ import React from 'react';
 import * as Avatar from '@/components/ui/avatar';
 import { RiStarFill, RiMessage3Line } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 export interface Applicant {
   id: string;
@@ -23,6 +24,7 @@ interface ApplicantCardProps {
 }
 
 const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) => {
+  const { t } = useTranslation('common');
   const isSeller = userRole === 'seller';
   const showReplaced = userRole === 'buyer' && applicant.hired && applicant.replacedBy;
   const showMessage = userRole === 'buyer' && !applicant.hired;
@@ -46,10 +48,10 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
               {applicant.name}
             </p>
 
-            {/* “Replaced by …” for hired buyers */}
+            {/* "Replaced by …" for hired buyers */}
             {showReplaced && (
               <p className="text-[12px] text-gray-600">
-                Replaced by {applicant.replacedBy}
+                {t('projects.applicants.replacedBy', { name: applicant.replacedBy })}
               </p>
             )}
 
@@ -73,11 +75,11 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
         {/* Right-side action */}
         {showReplaced ? (
           <span className="text-[12px] rounded-full bg-green-100 px-2 py-[0.125rem] font-medium text-green-600">
-            Hired
+            {t('projects.applicants.hired')}
           </span>
         ) : isSeller ? (
           <Button.Root variant="neutral" mode="stroke" size="small" className="h-auto text-[12px] py-[4px] px-[10px]">
-            view
+            {t('projects.applicants.view')}
           </Button.Root>
         ) : showMessage ? (
           <Button.Root

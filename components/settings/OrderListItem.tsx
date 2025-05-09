@@ -5,6 +5,7 @@ import * as Badge from '@/components/ui/badge';
 import * as Button from '@/components/ui/button';
 import { clsx } from 'clsx';
 import { RiArrowRightSLine } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
 
 /* ------------------------------------------------------------------ */
 /** Minimal shape—extend or replace with your real order type. */
@@ -17,7 +18,7 @@ export interface OrderListItemProps {
 }
 
 /* ------------------------------------------------------------------ */
-/** Compact “card” style order preview suitable for a list or drawer. */
+/** Compact "card" style order preview suitable for a list or drawer. */
 export default function OrderListItem({
   title,
   tags,
@@ -25,6 +26,8 @@ export default function OrderListItem({
   budget,
   onApply,
 }: OrderListItemProps) {
+  const { t } = useTranslation('common');
+
   return (
     <div className="flex items-start justify-between gap-4 border-b border-stroke-soft-200 py-4">
       {/* -------- Text block -------- */}
@@ -61,7 +64,7 @@ export default function OrderListItem({
 
       {/* -------- Budget + action -------- */}
       <div className="shrink-0 text-right">
-        <div className="text-label-sm text-gray-600">Budget</div>
+        <div className="text-label-sm text-gray-600">{t('orders.budget')}</div>
         <div className="mb-2 text-label-lg font-medium text-text-strong-950">
           ${budget.toLocaleString()}
         </div>
@@ -71,7 +74,7 @@ export default function OrderListItem({
           size="small"
           onClick={onApply}
         >
-          Apply
+          {t('orders.apply')}
           <Button.Icon as={RiArrowRightSLine} />
         </Button.Root>
       </div>

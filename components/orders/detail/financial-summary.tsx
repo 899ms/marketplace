@@ -1,5 +1,8 @@
+'use client';
+
 import { RiHandHeartLine, RiHeartPulseLine } from '@remixicon/react';
 import * as Button from "@/components/ui/button";
+import { useTranslation } from 'react-i18next';
 
 interface FinancialSummaryProps {
   totalAmount: string;
@@ -14,24 +17,26 @@ export function FinancialSummary({
   inEscrow,
   refunded,
 }: FinancialSummaryProps) {
+  const { t } = useTranslation('common');
+
   return (
     <div className="flex gap-[24px] my-[24px]">
       {/* Financial Details */}
       <div className="flex-1 grid grid-cols-4 gap-[116px] bg-[#F5F7FA] px-[24px] py-[26px] rounded-[12px] h-[100px] max-w-[876px]">
         <div className="flex flex-col justify-center max-w-[120px]">
-          <span className="text-[12px] text-[#525866] font-medium ">Total Amount</span>
+          <span className="text-[12px] text-[#525866] font-medium ">{t('orders.financialSummary.totalAmount')}</span>
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{totalAmount}</span>
         </div>
         <div className="flex flex-col justify-center max-w-[120px]">
-          <span className="text-[12px] text-[#525866] font-medium ">Received</span>
+          <span className="text-[12px] text-[#525866] font-medium ">{t('orders.financialSummary.received')}</span>
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{received}</span>
         </div>
         <div className="flex flex-col justify-center max-w-[120px]">
-          <span className="text-[12px] text-[#525866] font-medium ">In Escrow</span>
+          <span className="text-[12px] text-[#525866] font-medium ">{t('orders.financialSummary.inEscrow')}</span>
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{inEscrow}</span>
         </div>
         <div className="flex flex-col justify-center max-w-[120px]">
-          <span className="text-[12px] text-[#525866] font-medium ">Refunded</span>
+          <span className="text-[12px] text-[#525866] font-medium ">{t('orders.financialSummary.refunded')}</span>
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{refunded}</span>
         </div>
       </div>
@@ -45,12 +50,12 @@ export function FinancialSummary({
             </svg>
           </Button.Icon>
         </div>
-        <h4 className="text-[12px] text-[#0E121B] font-medium text-text-strong-950 mt-[5px]">Milestone</h4>
+        <h4 className="text-[12px] text-[#0E121B] font-medium text-text-strong-950 mt-[5px]">{t('orders.financialSummary.milestone')}</h4>
         <div className="mt-[8px]">
           <p className="text-[12px] text-[#525866]">
-            For only $4.99 per month!
+            {t('orders.financialSummary.milestonePrice')}
             <a href="#" className="underline hover:text-text-primary-500 ml-1">
-              Learn More
+              {t('orders.financialSummary.learnMore')}
             </a>
           </p>
         </div>

@@ -1,40 +1,39 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { cn } from '@/utils/cn';
 import Image from 'next/image';
 import artistImage from '@/assets/images/artist_image_banner.png';
 // import Image from 'next/image'; // Uncomment if using Next Image
 
 // --- Banner Component ---
-const dummyBanners = [
-  {
-    title: 'R & B Hits',
-    description:
-      'All mine, Lie again, Petty call me everyday, Out of time, No love, Bad habit, and so much more',
-    image: artistImage,
-  },
-  {
-    title: 'Indie Rock Anthems',
-    description:
-      'Latest tracks from underground favorites and rising stars. Explore the new sounds.',
-    image: artistImage,
-  },
-  {
-    title: 'Smooth Jazz Grooves',
-    description:
-      'Relax and unwind with the smoothest jazz tunes. Perfect for a chill evening.',
-    image: artistImage,
-  },
-];
-
 const Banner = () => {
+  const { t } = useTranslation('common');
   const [currentBannerIndex, setCurrentBannerIndex] = useState(0);
+
+  const banners = [
+    {
+      title: t('home.banner.rnb.title'),
+      description: t('home.banner.rnb.description'),
+      image: artistImage,
+    },
+    {
+      title: t('home.banner.indie.title'),
+      description: t('home.banner.indie.description'),
+      image: artistImage,
+    },
+    {
+      title: t('home.banner.jazz.title'),
+      description: t('home.banner.jazz.description'),
+      image: artistImage,
+    },
+  ];
 
   useEffect(() => {
     const intervalId = setInterval(() => {
       setCurrentBannerIndex(
-        (prevIndex) => (prevIndex + 1) % dummyBanners.length,
+        (prevIndex) => (prevIndex + 1) % banners.length,
       );
     }, 5000); // Change banner every 5 seconds
 
@@ -42,7 +41,7 @@ const Banner = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const currentBanner = dummyBanners[currentBannerIndex];
+  const currentBanner = banners[currentBannerIndex];
 
   return (
     <div className='shadow-lg relative mb-6 max-w-[1052px] min-h-[244px] overflow-hidden rounded-[20px] bg-[#253337] p-6 pl-12 text-white flex items-center'>
@@ -54,7 +53,7 @@ const Banner = () => {
         </p>
         {/* Indicator Dots - Update based on current index */}
         <div className='flex gap-1.5 mt-8'>
-          {dummyBanners.map((_, index) => (
+          {banners.map((_, index) => (
             <span
               key={index}
               className={cn(

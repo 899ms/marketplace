@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { RiAddLine, RiSubtractLine, RiQuestionMark } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
 
 interface FaqItem {
   question: string;
@@ -15,6 +16,7 @@ interface FaqSectionProps {
 
 const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
   const [faqs, setFaqs] = useState(initialFaqs);
+  const { t } = useTranslation('common');
 
   const toggleFaq = (index: number) => {
     setFaqs(current =>
@@ -30,7 +32,7 @@ const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
     <div className="pt-[20px]">
       {/* Header */}
       <h2 className="text-base font-semibold leading-6 tracking-[-0.015em] text-[#161922] mb-[12px]">
-        Frequently Asked Questions
+        {t('projects.faq.title')}
       </h2>
 
       <div className="space-y-4">

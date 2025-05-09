@@ -3,6 +3,7 @@
 import React, { Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { useAuth } from '@/utils/supabase/AuthContext';
+import { useTranslation } from 'react-i18next';
 
 import OrdersSidebar from '@/components/settings/OrdersSidebar';
 import OrdersContent from '@/components/settings/OrdersContent';
@@ -25,7 +26,7 @@ const SidebarSkeleton = () => (
 
 const ContentSkeleton = () => (
   <main className="flex-1 p-6 space-y-6 animate-pulse">
-    {/* top KPI boxes */}
+    {/* top KPI boxes */}
     <div className="grid grid-cols-3 gap-4">
       {Array.from({ length: 3 }).map((_, i) => (
         <div key={i} className="h-20 rounded bg-gray-200" />
@@ -46,6 +47,7 @@ const ContentSkeleton = () => (
 /* ---------------------------------------------------------- */
 
 export default function SettingsPageContent() {
+  const { t } = useTranslation('common');
   const searchParams = useSearchParams();
   const currentTab = (searchParams.get('tab') as ActiveView) || 'orders';
 
@@ -79,7 +81,7 @@ export default function SettingsPageContent() {
           {currentTab === 'my-services' && !isSeller && (
             <main>
               <p className="text-red-500">
-                Access Denied: “My Services” is only available for sellers.
+                {t('settingsPage.accessDenied')}
               </p>
             </main>
           )}
@@ -87,7 +89,7 @@ export default function SettingsPageContent() {
           {currentTab === 'billing' && (
             <main>
               {/* TODO: BillingView component once implemented */}
-              <p className="text-text-sub-400">Billing view coming soon…</p>
+              <p className="text-text-sub-400">{t('settingsPage.billingComingSoon')}</p>
             </main>
           )}
         </Suspense>

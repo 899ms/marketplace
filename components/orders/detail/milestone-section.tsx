@@ -5,6 +5,7 @@ import * as Accordion from "@/components/ui/accordion";
 import * as Button from "@/components/ui/button";
 import { Input as InputField, Root as InputRoot } from "@/components/ui/input";
 import * as Tag from "@/components/ui/tag";
+import { useTranslation } from 'react-i18next';
 import {
   RiCheckFill,
   RiTimeLine,
@@ -26,7 +27,7 @@ interface Milestone {
 }
 
 interface MilestoneSectionProps {
-  userRole: UserRole; // Add userRole prop
+  userRole: UserRole;
   contractId: string;
   milestones: Milestone[];
   onConfirmPayment?: (milestoneId: string) => void;
@@ -34,12 +35,14 @@ interface MilestoneSectionProps {
 }
 
 export function MilestoneSection({
-  userRole, // Destructure userRole
+  userRole,
   contractId,
   milestones: initialMilestones,
   onConfirmPayment,
   isConfirmingId
 }: MilestoneSectionProps) {
+  const { t } = useTranslation('common');
+
   // Log initial props
   console.log('MilestoneSection received initialMilestones:', initialMilestones);
 
@@ -80,7 +83,7 @@ export function MilestoneSection({
     } else {
       console.error("Failed to add milestone:", result.error);
       const { notification } = await import('@/hooks/use-notification');
-      notification({ status: 'error', title: 'Error', description: result.error || 'Failed to add milestone.' });
+      notification({ type: 'error', title: t('orders.milestoneSection.errors.addFailed'), description: result.error || t('orders.milestoneSection.errors.addFailed') });
     }
     setIsSaving(false);
   };
@@ -94,7 +97,7 @@ export function MilestoneSection({
 
         <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200 bg-[#F5F7FA]">
           <Accordion.Trigger className="w-full text-[16px] text-text-strong-950 p-0 m-0 flex font-medium justify-between items-center hover:no-underline">
-            Timeline
+            {t('orders.milestoneSection.timeline')}
             <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
           </Accordion.Trigger>
         </Accordion.Header>
@@ -133,14 +136,14 @@ export function MilestoneSection({
                   )}
                 </div>
 
-                {/* only buyers see “Confirm Payment” on pending items */}
+                {/* only buyers see "Confirm Payment" on pending items */}
                 {userRole === 'buyer' && milestone.status === 'pending' && (
                   <Tag.Root
                     onClick={() => onConfirmPayment?.(milestone.id)}
                     className={`ml-4 flex-shrink-0 cursor-pointer text-text-strong-950 ${isConfirmingId === milestone.id ? 'opacity-50 pointer-events-none' : ''
                       }`}
                   >
-                    {isConfirmingId === milestone.id ? 'Confirming...' : 'Confirm Payment'}
+                    {isConfirmingId === milestone.id ? t('orders.milestoneSection.confirming') : t('orders.milestoneSection.confirmPayment')}
                   </Tag.Root>
                 )}
               </div>
@@ -156,7 +159,7 @@ export function MilestoneSection({
                     <InputRoot size="small">
                       <InputField
                         name="description"
-                        placeholder="Milestone title"
+                        placeholder={t('orders.milestoneSection.milestoneTitle')}
                         value={newMilestoneTitle}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneTitle(e.target.value)}
                         required
@@ -168,7 +171,7 @@ export function MilestoneSection({
                     <InputRoot size="small">
                       <InputField
                         name="amount"
-                        placeholder="Amount"
+                        placeholder={t('orders.milestoneSection.amount')}
                         type="number"
                         value={newMilestoneAmount}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneAmount(e.target.value)}
@@ -182,7 +185,7 @@ export function MilestoneSection({
                     <InputRoot size="small">
                       <InputField
                         name="dueDate"
-                        placeholder="Due Date (Optional)"
+                        placeholder={t('orders.milestoneSection.dueDate')}
                         type="date"
                         value={newMilestoneDueDate}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneDueDate(e.target.value)}
@@ -191,10 +194,10 @@ export function MilestoneSection({
                     </InputRoot>
                   </div>
                   <Button.Root type="submit" size="small" disabled={isSaving}>
-                    {isSaving ? 'Saving...' : 'Save'}
+                    {isSaving ? t('orders.milestoneSection.saving') : t('orders.milestoneSection.save')}
                   </Button.Root>
                   <Button.Root variant="neutral" mode="ghost" size="small" type="button" onClick={() => setShowAddMilestone(false)} disabled={isSaving}>
-                    Cancel
+                    {t('orders.milestoneSection.cancel')}
                   </Button.Root>
                 </form>
               )}
@@ -205,7 +208,7 @@ export function MilestoneSection({
                   className="flex items-center gap-2.5 text-text-strong-950 hover:text-text-secondary-600 mt-6 text-sm font-medium"
                 >
                   <RiAddCircleLine className="h-7 w-7 text-[#525866]" />
-                  <span className='text-[#525866]'>Add a new milestone</span>
+                  <span className='text-[#525866]'>{t('orders.milestoneSection.addNewMilestone')}</span>
                 </button>
               )}
             </>

@@ -1,7 +1,10 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { RiSearchLine } from '@remixicon/react'; // Removed RiArrowDownSLine as Select likely includes it
 import { Input } from '@/components/ui/input';
 import * as SelectPrimitive from '@/components/ui/select'; // Import as namespace
+import { useTranslation } from 'react-i18next';
 
 interface ServiceSearchBarProps {
   onSearch: (term: string) => void;
@@ -17,6 +20,7 @@ export function ServiceSearchBar({
   searchTerm: externalSearchTerm,
   resetKey = 0
 }: ServiceSearchBarProps) {
+  const { t } = useTranslation('common');
   const [searchTerm, setSearchTerm] = useState('');
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
   const prevSearchTerm = useRef(searchTerm);
@@ -89,7 +93,7 @@ export function ServiceSearchBar({
           <RiSearchLine className='absolute left-3 top-1/2 size-5 -translate-y-1/2 text-[#525866]' />
           <Input
             type="search"
-            placeholder="Search services..."
+            placeholder={t('services.search.placeholder')}
             className="w-full max-w-[310px] rounded-[10px] border font-[400] border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE]"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -99,37 +103,37 @@ export function ServiceSearchBar({
         {/* Real-time Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('leadTime', value)}>
           <SelectPrimitive.Trigger className="w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000] group-data-[placeholder]/trigger:!text-black-400">
-            <SelectPrimitive.Value placeholder="Lead Time" />
+            <SelectPrimitive.Value placeholder={t('services.search.leadTime')} />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
-            <SelectPrimitive.Item value="7">7 days</SelectPrimitive.Item>
-            <SelectPrimitive.Item value="14">14 days</SelectPrimitive.Item>
-            <SelectPrimitive.Item value="30">30 days</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="7">{t('services.search.days', { count: 7 })}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="14">{t('services.search.days', { count: 14 })}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="30">{t('services.search.days', { count: 30 })}</SelectPrimitive.Item>
           </SelectPrimitive.Content>
         </SelectPrimitive.Root>
 
         {/* Price Range Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('priceRange', value)}>
           <SelectPrimitive.Trigger className="w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]">
-            <SelectPrimitive.Value placeholder="Price Range" />
+            <SelectPrimitive.Value placeholder={t('services.search.priceRange')} />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
-            <SelectPrimitive.Item value="low">$0 - $50</SelectPrimitive.Item>
-            <SelectPrimitive.Item value="medium">$51 - $200</SelectPrimitive.Item>
-            <SelectPrimitive.Item value="high">$201+</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="low">{t('services.search.priceRanges.low')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="medium">{t('services.search.priceRanges.medium')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="high">{t('services.search.priceRanges.high')}</SelectPrimitive.Item>
           </SelectPrimitive.Content>
         </SelectPrimitive.Root>
 
         {/* Sort Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('sort', value)}>
           <SelectPrimitive.Trigger className="w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]">
-            <SelectPrimitive.Value placeholder="Sort By" />
+            <SelectPrimitive.Value placeholder={t('services.search.sortBy')} />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
-            <SelectPrimitive.Item value="newest">Newest First</SelectPrimitive.Item>
-            <SelectPrimitive.Item value="oldest">Oldest First</SelectPrimitive.Item>
-            <SelectPrimitive.Item value="price_asc">Price: Low to High</SelectPrimitive.Item>
-            <SelectPrimitive.Item value="price_desc">Price: High to Low</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="newest">{t('services.search.sortOptions.newest')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="oldest">{t('services.search.sortOptions.oldest')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="price_asc">{t('services.search.sortOptions.priceAsc')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value="price_desc">{t('services.search.sortOptions.priceDesc')}</SelectPrimitive.Item>
           </SelectPrimitive.Content>
         </SelectPrimitive.Root>
       </div>

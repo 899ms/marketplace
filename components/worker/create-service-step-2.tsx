@@ -5,7 +5,7 @@ import { UseFormReturn, useFieldArray } from 'react-hook-form';
 import {
   CreateServiceFormData,
   isStep2Complete,
-} from '@/app/worker/services/create/schema';
+} from '@/app/[lang]/worker/services/create/schema';
 import * as Button from '@/components/ui/button';
 import * as Input from '@/components/ui/input';
 import * as Label from '@/components/ui/label';

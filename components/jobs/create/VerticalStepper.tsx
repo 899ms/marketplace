@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import * as Button from '@/components/ui/button';
 import { cn } from '@/utils/cn';
 import { RiArrowRightSLine, RiCustomerService2Line, RiHeadphoneLine } from '@remixicon/react';
@@ -17,11 +18,13 @@ const VerticalStepper = ({
   steps,
   onStepClick,
 }: VerticalStepperProps) => {
+  const { t } = useTranslation('common');
+
   return (
     <aside className='pt-6 shadow-sm sticky top-20 hidden h-[calc(100vh-10rem)] w-64 shrink-0 flex-col justify-between rounded-xl bg-[#F5F7FA] p-4 lg:flex xl:w-72 max-w-[264px]'>
       <div className=''>
         <p className='text-[16px] text-[#99A0AE] mb-4 font-medium'>
-          Transfer Sequence
+          {t('jobs.create.stepper.sequence')}
         </p>
         <nav>
           <ul className='flex flex-col gap-1'>
@@ -64,11 +67,11 @@ const VerticalStepper = ({
       {/* Contact Button */}
       <div className='mt-auto pt-4'>
         <p className='text-[14px] text-[#525866] mb-4 text-center'>
-          Having trouble with transfer?
+          {t('jobs.create.stepper.trouble')}
         </p>
         <Button.Root variant='neutral' mode='stroke' className='w-full font-medium'>
           <Button.Icon as={RiHeadphoneLine} />
-          Contact
+          {t('jobs.create.stepper.contact')}
         </Button.Root>
       </div>
     </aside>

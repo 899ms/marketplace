@@ -23,6 +23,8 @@ import {
   RiCalendarLine,
   RiLoader4Line // Added loader icon
 } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 // Remove the old specific data interfaces
 /*
@@ -38,6 +40,7 @@ interface ServiceInfoRightProps {
 const dummyTools = ['Adobe Audition', 'Pro Tools', 'Logic Pro X', 'FL Studio'];
 
 export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
+  const { t } = useTranslation('common');
   const { user: currentUser } = useAuth(); // Get current user
   const [sellerProfile, setSellerProfile] = useState<User | null>(null); // State for seller profile
   const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null); // State for current user profile
@@ -143,12 +146,12 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
                 <RiHeart3Line className="size-7 text-[#525866]" />
               </button>
 
-              <Link href={`/users/${service.seller_id}`} passHref legacyBehavior>
+              <Link href={`/${i18n.language}/users/${service.seller_id}`} passHref legacyBehavior>
                 <a className="inline-block">
                   <Avatar.Root size="80">
                     <Avatar.Image
                       src={service.seller_avatar_url || 'https://via.placeholder.com/56'}
-                      alt={service.seller_name || 'Seller'}
+                      alt={service.seller_name || t('services.info.unknownSeller')}
                     />
                     {/* online-status dot */}
                     <Avatar.Indicator position="bottom">
@@ -158,9 +161,9 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
                 </a>
               </Link>
 
-              <Link href={`/users/${service.seller_id}`} passHref>
+              <Link href={`/${i18n.language}/users/${service.seller_id}`} passHref>
                 <h2 className="text-[16px] mt-[6px] font-medium text-[#525866] hover:underline">
-                  {service.seller_name || 'Unknown Seller'}
+                  {service.seller_name || t('services.info.unknownSeller')}
                 </h2>
               </Link>
 

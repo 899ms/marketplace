@@ -3,21 +3,23 @@
 import React from 'react';
 import * as Avatar from '@/components/ui/avatar';
 import { RiStarFill } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
 
 /* ------------------------------------------------------------------ */
 /** Compact block showing one buyer/seller review —
  *  identical markup to the original monolith, now isolated.
  */
 export default function ReviewListItem() {
+  const { t } = useTranslation('common');
+
   /* Static mock data — swap out for props / real API later */
   const review = {
     avatarUrl: 'https://via.placeholder.com/40',
-    name: 'Cleve Music',
+    name: 'Cleve Music',
     rating: 4.9,
-    date: 'Jan 8, 2023',
-    title: 'Contract title text here…',
-    description:
-      "Working with Ralph on a UX audit for our website was a game‑changer. Ralph didn't just identify pain points—he offered innovative solutions that empowered me to make key business decisions with confidence…",
+    date: 'Jan 8, 2023',
+    title: t('reviewListItem.contractTitle'),
+    description: t('reviewListItem.description'),
     amount: 1_000.0,
   };
 
@@ -50,7 +52,7 @@ export default function ReviewListItem() {
         </div>
 
         <div className="shrink-0 text-label-lg font-medium text-text-strong-950">
-          ${review.amount.toFixed(2)}
+          {t('reviewListItem.amount', { amount: review.amount.toFixed(2) })}
         </div>
       </div>
 

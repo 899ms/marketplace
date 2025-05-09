@@ -19,6 +19,7 @@ import { WorkFiles } from "./work-files";
 import { confirmMilestonePayment } from '@/app/actions/milestone-actions';
 import { uploadContractAttachments } from '@/app/actions/contract-actions';
 import { useNotification } from '@/hooks/use-notification';
+import { useTranslation } from 'react-i18next';
 
 // Define user role type
 type UserRole = 'buyer' | 'seller';
@@ -51,6 +52,7 @@ export function OrderDetailsClient({
   // --- Hooks --- 
   const { notification } = useNotification();
   const { user: authUser, loading: authLoading } = useAuth();
+  const { t } = useTranslation('common');
 
   // --- Derived State --- 
   const userRole: UserRole = currentUserId === seller.id ? 'seller' : 'buyer';
@@ -86,7 +88,7 @@ export function OrderDetailsClient({
   const handleOpenChat = async () => {
     if (!currentUserProfile || !otherParty || isLoadingChat) {
       console.warn('Cannot open chat: Missing user profiles or already loading.');
-      if (!currentUserProfile) setChatError("Your profile isn't loaded yet.");
+      if (!currentUserProfile) setChatError(t('orders.details.chatError'));
       return;
     }
     setIsLoadingChat(true);
@@ -104,8 +106,12 @@ export function OrderDetailsClient({
       }
     } catch (err: any) {
       console.error('Error opening chat:', err);
-      setChatError(err.message || 'Failed to open chat.');
-      notification({ status: 'error', title: 'Chat Error', description: err.message || 'Failed to open chat.' });
+      setChatError(err.message || t('orders.details.failedToOpenChat'));
+      notification({
+        type: 'foreground',
+        title: t('orders.details.chatError'),
+        description: err.message || t('orders.details.failedToOpenChat')
+      });
     }
     setIsLoadingChat(false);
   };
@@ -120,7 +126,11 @@ export function OrderDetailsClient({
   // --- Other Event Handlers (handleConfirmPayment, handleDownload, handleUpload) --- 
   const handleConfirmPayment = async (milestoneId: string) => {
     if (userRole !== 'buyer') {
-      notification({ status: 'error', title: 'Action Denied', description: 'Only the buyer can confirm payments.' });
+      notification({
+        type: 'foreground',
+        title: t('orders.details.actionDenied'),
+        description: t('orders.details.buyerOnlyConfirm')
+      });
       return;
     }
     if (isConfirming) return;
@@ -131,15 +141,15 @@ export function OrderDetailsClient({
 
     if (result.success) {
       notification({
-        status: 'success',
-        title: 'Success',
-        description: 'Milestone payment confirmed!',
+        type: 'foreground',
+        title: t('orders.details.success'),
+        description: t('orders.details.milestoneConfirmed'),
       });
     } else {
       notification({
-        status: 'error',
-        title: 'Error',
-        description: result.error || 'Failed to confirm payment.',
+        type: 'foreground',
+        title: t('orders.details.error'),
+        description: result.error || t('orders.details.failedToConfirm'),
       });
     }
     setIsConfirming(null);
@@ -153,12 +163,20 @@ export function OrderDetailsClient({
   const handleUpload = async (files: File[]) => {
     console.log(`handleUpload called with ${files.length} files`);
     if (userRole !== 'seller') {
-      notification({ status: 'error', title: 'Action Denied', description: 'Only the seller can upload files.' });
+      notification({
+        type: 'foreground',
+        title: t('orders.details.actionDenied'),
+        description: t('orders.details.sellerOnlyUpload')
+      });
       return;
     }
 
     if (!files || files.length === 0) {
-      notification({ status: 'warning', title: 'No Files', description: 'Please select files to upload.' });
+      notification({
+        type: 'foreground',
+        title: t('orders.details.noFiles'),
+        description: t('orders.details.selectFiles')
+      });
       return;
     }
 
@@ -171,32 +189,30 @@ export function OrderDetailsClient({
       const result = await uploadContractAttachments(contract.id, formData);
       if (result.success) {
         notification({
-          status: 'success',
-          title: 'Upload Successful',
+          type: 'foreground',
+          title: t('orders.details.uploadSuccess'),
           description: result.message || `${files.length} file(s) uploaded.`
         });
       } else {
-        throw new Error(result.error || 'Upload failed');
+        throw new Error(result.error || t('orders.details.couldNotUpload'));
       }
     } catch (error: any) {
       console.error("Upload failed:", error);
       notification({
-        status: 'error',
-        title: 'Upload Failed',
-        description: error.message || 'Could not upload files.',
+        type: 'foreground',
+        title: t('orders.details.uploadFailed'),
+        description: error.message || t('orders.details.couldNotUpload'),
       });
     }
   };
 
   // --- Rehire Handler --- 
   const handleRehireClick = () => {
-    // TODO: Implement actual rehire logic later
     console.log(`Rehiring user: ${otherParty.full_name} (ID: ${otherParty.id})`);
     notification({
-      status: 'success',
-      title: 'Rehire Initiated',
-      description: `You have successfully initiated the rehire process for ${otherParty.full_name}.`,
-      variant: 'filled', // Optional: make it stand out
+      type: 'foreground',
+      title: t('orders.details.rehireInitiated'),
+      description: t('orders.details.rehireSuccess', { name: otherParty.full_name })
     });
   };
   // --- End Rehire Handler ---

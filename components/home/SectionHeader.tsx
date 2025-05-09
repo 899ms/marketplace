@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import * as LinkButton from '@/components/ui/link-button';
 import { RiArrowRightSLine } from '@remixicon/react';
+import Translate from '@/components/Translate';
 
 // --- Section Header Component ---
 interface SectionHeaderProps {
@@ -19,7 +20,7 @@ const SectionHeader = ({ title, href = '#' }: SectionHeaderProps) => {
         asChild
       >
         <Link href={href} className='leading-none underline'>
-          More
+          <Translate id="home.sections.more" />
           <LinkButton.Icon as={RiArrowRightSLine} className='size-6' />
         </Link>
       </LinkButton.Root>

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { UseFormReturn, useFieldArray } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { Root as Label } from '@/components/ui/label';
 import * as Button from '@/components/ui/button';
 import {
@@ -51,6 +52,7 @@ export function AttachmentsSection({
   form,
   setIsUploadingFiles,
 }: AttachmentsSectionProps) {
+  const { t } = useTranslation('common');
   const {
     control,
     register,
@@ -102,7 +104,7 @@ export function AttachmentsSection({
       updateManagedFileStatus(
         attachment.localId,
         'error',
-        'User not logged in',
+        t('offers.attachments.errors.notLoggedIn'),
       );
       return;
     }
@@ -227,15 +229,16 @@ export function AttachmentsSection({
               <RiDeleteBinLine
                 className="cursor-pointer"
                 onClick={() => handleRemoveFile(file.localId)}
+                aria-label={t('offers.attachments.removeFile')}
               />
             </div>
           ))
         ) : (
-          <div className="text-gray-500">No files attached</div>
+          <div className="text-gray-500">{t('offers.attachments.noFiles')}</div>
         )}
       </div>
       <Label htmlFor="contract-file-upload" className="cursor-pointer">
-        <span className="px-2 py-1 border rounded">Attach File</span>
+        <span className="px-2 py-1 border rounded">{t('offers.attachments.attachFile')}</span>
         <input
           id="contract-file-upload"
           type="file"
@@ -243,6 +246,7 @@ export function AttachmentsSection({
           multiple
           onChange={handleFileChange}
           accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
+          aria-label={t('offers.attachments.fileInput')}
         />
       </Label>
     </div>

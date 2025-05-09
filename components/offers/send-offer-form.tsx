@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { SendOfferFormData } from './schema';
 import { useSendOfferForm } from '@/hooks/useSendOfferForm';
 import { jobOperations } from '@/utils/supabase/database';
@@ -26,6 +27,8 @@ interface SendOfferFormProps {
 }
 
 export function SendOfferForm({ sellerId }: SendOfferFormProps) {
+  const { t } = useTranslation('common');
+
   // Use the custom hook to manage form state and logic
   const {
     formMethods,
@@ -45,7 +48,7 @@ export function SendOfferForm({ sellerId }: SendOfferFormProps) {
   if (!formMethods) {
     // Handle the case where the hook hasn't returned the methods yet
     // You might want a more sophisticated loading indicator
-    return <div>Loading form...</div>;
+    return <div>{t('offers.sendOfferForm.loading')}</div>;
   }
 
   // Get watch function to monitor paymentType changes
@@ -85,7 +88,7 @@ export function SendOfferForm({ sellerId }: SendOfferFormProps) {
       console.log('→ fetched job record:', job);
 
       if (!job) return;
-      // before setValue, log what you’re about to set:
+      // before setValue, log what you're about to set:
       console.log('→ populating form with:',
         {
           contractTitle: job.title,
@@ -115,7 +118,7 @@ export function SendOfferForm({ sellerId }: SendOfferFormProps) {
       {isLoadingData && (
         <div className='absolute inset-0 z-10 flex items-center justify-center bg-white/50'>
           {/* <Spinner size="large" /> */}
-          <p>Loading form data...</p> {/* Removed ml-2 as spinner is missing */}
+          <p>{t('offers.sendOfferForm.loadingData')}</p> {/* Removed ml-2 as spinner is missing */}
         </div>
       )}
 
@@ -123,7 +126,7 @@ export function SendOfferForm({ sellerId }: SendOfferFormProps) {
       {error && (
         <Alert status='error' size='small' className='items-center'>
           <div>
-            <p className='font-medium'>Error</p>
+            <p className='font-medium'>{t('offers.sendOfferForm.error')}</p>
             <p className='text-sm'>{error}</p>
           </div>
         </Alert>
@@ -133,8 +136,8 @@ export function SendOfferForm({ sellerId }: SendOfferFormProps) {
       {success && (
         <Alert status='success' size='small' className='items-center'>
           <div>
-            <p className='font-medium'>Success</p>
-            <p className='text-sm'>Offer sent successfully!</p>
+            <p className='font-medium'>{t('offers.sendOfferForm.success')}</p>
+            <p className='text-sm'>{t('offers.sendOfferForm.offerSent')}</p>
           </div>
         </Alert>
       )}

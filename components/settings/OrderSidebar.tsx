@@ -17,15 +17,19 @@ import {
   RiTwitterXFill,
   RiGoogleFill,
 } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 /* ------------------------------------------------------------------ */
-/** Right‑hand “seller profile” card originally embedded in your file.
- *  It’s purely cosmetic and role‑agnostic.
+/** Right‑hand "seller profile" card originally embedded in your file.
+ *  It's purely cosmetic and role‑agnostic.
  */
 export default function OrderSidebar() {
-  /* static placeholder data – you’ll likely swap with real API later */
+  const { t } = useTranslation('common');
+
+  /* static placeholder data – you'll likely swap with real API later */
   const user = {
-    name: 'Cleve Music',
+    name: 'Cleve Music',
     avatarUrl: 'https://via.placeholder.com/80',
     rating: 4.9,
     reviews: 125,
@@ -74,9 +78,9 @@ export default function OrderSidebar() {
 
           <div className="flex items-center justify-center gap-2">
             <RiGoogleFill className="size-5 text-text-sub-600" />
-            Google
+            {t('orderSidebar.google')}
             <RiGoogleFill className="size-5 text-text-sub-600" />
-            Google
+            {t('orderSidebar.google')}
           </div>
         </div>
 
@@ -88,7 +92,7 @@ export default function OrderSidebar() {
             size="xsmall"
             className="flex h-[32px] w-[85px] items-center justify-center gap-[6px] rounded-lg border border-stroke-soft-200 bg-bg-white-0 px-2 shadow-sm"
           >
-            <span className="text-paragraph-xs">Follow</span>
+            <span className="text-paragraph-xs">{t('orderSidebar.follow')}</span>
             <Button.Icon as={RiHeart3Line} className="size-[18px]" />
           </Button.Root>
 
@@ -98,7 +102,7 @@ export default function OrderSidebar() {
             size="xsmall"
             className="flex h-[32px] w-[83px] items-center justify-center gap-[6px] rounded-lg border border-[#242628] bg-[#20232D] px-2 shadow-md"
           >
-            <span className="text-paragraph-xs text-bg-white-0">Touch</span>
+            <span className="text-paragraph-xs text-bg-white-0">{t('orderSidebar.touch')}</span>
             <Button.Icon as={RiSendPlane2Fill} className="size-[18px]" />
           </Button.Root>
         </div>
@@ -108,7 +112,7 @@ export default function OrderSidebar() {
           <div className="mb-2 flex flex-col sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-1 text-label-md font-medium text-text-strong-950">
               <RiStarSFill className="size-6" />
-              <span>Recent reviews</span>
+              <span>{t('orderSidebar.recentReviews')}</span>
             </div>
 
             <div className="mt-1 flex items-center gap-2 sm:mt-0">
@@ -131,7 +135,7 @@ export default function OrderSidebar() {
         {/* ---------- Tags ---------- */}
         <div>
           <h3 className="mb-2 text-label-md font-medium text-text-strong-950">
-            Tags
+            {t('orderSidebar.tags')}
           </h3>
           <div className="flex flex-wrap gap-1.5">
             {tags.map((tag) => (
@@ -153,7 +157,7 @@ export default function OrderSidebar() {
         <div>
           <div className="mb-2 flex items-center justify-between">
             <h3 className="text-label-md font-medium text-text-strong-950">
-              About
+              {t('orderSidebar.about')}
             </h3>
             <button className="text-icon-secondary-400 hover:text-icon-primary-500">
               <RiPencilLine className="size-4" />

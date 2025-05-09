@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Root as Button } from '@/components/ui/button';
 // import { Loader2 } from 'lucide-react'; // Or your preferred spinner
 import * as FancyButton from '@/components/ui/fancy-button';
@@ -11,6 +12,8 @@ interface FormActionsProps {
 }
 
 export function FormActions({ isSubmitting, onCancel }: FormActionsProps) {
+  const { t } = useTranslation('common');
+
   return (
     <div className='flex gap-2 w-full'>
       <Button
@@ -19,7 +22,7 @@ export function FormActions({ isSubmitting, onCancel }: FormActionsProps) {
         className='text-black w-1/2 rounded-md border border-gray-300 bg-white px-4 py-2 hover:bg-gray-50'
         onClick={onCancel} // Add cancel handler if provided
       >
-        Cancel
+        {t('offers.formActions.cancel')}
       </Button>
       <FancyButton.Root
         type='submit'
@@ -29,10 +32,10 @@ export function FormActions({ isSubmitting, onCancel }: FormActionsProps) {
         {isSubmitting ? (
           <>
             {/* <Loader2 className="mr-2 h-4 w-4 animate-spin" /> */}
-            <span className='animate-pulse'>Sending...</span>
+            <span className='animate-pulse'>{t('offers.formActions.sending')}</span>
           </>
         ) : (
-          'Continue'
+          t('offers.formActions.continue')
         )}
       </FancyButton.Root>
     </div>

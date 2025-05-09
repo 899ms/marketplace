@@ -1,13 +1,15 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseFormReturn, Controller } from 'react-hook-form';
 import * as Button from '@/components/ui/button';
 import * as Checkbox from '@/components/ui/checkbox';
-import { CreateJobFormData } from '@/app/jobs/create/schema';
+import { CreateJobFormData } from '@/app/[lang]/jobs/create/schema';
 import FormFieldError from './FormFieldError';
 import * as FancyButton from '@/components/ui/fancy-button';
 import * as Divider from '@/components/ui/divider';
+
 interface Step3Props {
   formMethods: UseFormReturn<CreateJobFormData>;
   nextStep: () => void;
@@ -19,6 +21,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
   nextStep,
   prevStep,
 }) => {
+  const { t } = useTranslation('common');
   const {
     control,
     formState: { errors },
@@ -33,7 +36,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
         render={({ field }) => (
           <div className='px-5'>
             <h3 className='mb-2 mt-1 text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full px-3 py-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
-              Usage
+              {t('jobs.create.usage.title')}
             </h3>
             <div className=''>
               {/* Private Usage Option */}
@@ -47,14 +50,14 @@ const Step3UsageForm: React.FC<Step3Props> = ({
                   checked={field.value === 'private'}
                   className='mt-[-2px]'
                   onCheckedChange={() => field.onChange('private')}
-                  ref={field.ref} // Attach ref
+                  ref={field.ref}
                 />
                 <div className='grid gap-1'>
                   <span className='text-[14px] font-medium text-[#525866] leading-none'>
-                    Private
+                    {t('jobs.create.usage.private.title')}
                   </span>
                   <span className='text-[12px] text-[#525866] font-normal'>
-                    For purposes such as hobbies and interests.
+                    {t('jobs.create.usage.private.description')}
                   </span>
                 </div>
               </label>
@@ -72,10 +75,10 @@ const Step3UsageForm: React.FC<Step3Props> = ({
                 />
                 <div className='grid gap-1'>
                   <span className='text-[14px] font-medium text-[#525866] leading-none'>
-                    Business
+                    {t('jobs.create.usage.business.title')}
                   </span>
                   <span className='text-[12px] text-[#525866] font-normal'>
-                    For purposes such as signing contracts and issuing.
+                    {t('jobs.create.usage.business.description')}
                   </span>
                 </div>
               </label>
@@ -92,7 +95,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
         render={({ field }) => (
           <div className='px-5'>
             <h3 className='mb-2 text-[12px] text-[#99A0AE] font-medium uppercase bg-[#F5F7FA] rounded-md w-full px-3 py-2' style={{ letterSpacing: '0.05em', lineHeight: '16px' }}>
-              Privacy
+              {t('jobs.create.privacy.title')}
             </h3>
             <div className=''>
               {/* Public Privacy Option */}
@@ -106,14 +109,14 @@ const Step3UsageForm: React.FC<Step3Props> = ({
                   className='mt-[-2px]'
                   checked={field.value === 'public'}
                   onCheckedChange={() => field.onChange('public')}
-                  ref={field.ref} // Attach ref
+                  ref={field.ref}
                 />
                 <div className='grid gap-1'>
                   <span className='text-[14px] font-medium text-[#525866] leading-none'>
-                    Public
+                    {t('jobs.create.privacy.public.title')}
                   </span>
                   <span className='text-[12px] text-[#525866] font-normal'>
-                    Any worker can apply for the job.
+                    {t('jobs.create.privacy.public.description')}
                   </span>
                 </div>
               </label>
@@ -131,10 +134,10 @@ const Step3UsageForm: React.FC<Step3Props> = ({
                 />
                 <div className='grid gap-1'>
                   <span className='text-[14px] font-medium text-[#525866] leading-none'>
-                    Private
+                    {t('jobs.create.privacy.private.title')}
                   </span>
                   <span className='text-[12px] text-[#525866] font-normal'>
-                    Only those who have been invited can take part in the work.
+                    {t('jobs.create.privacy.private.description')}
                   </span>
                 </div>
               </label>
@@ -149,10 +152,10 @@ const Step3UsageForm: React.FC<Step3Props> = ({
       {/* Navigation */}
       <div className='flex justify-between !mt-4 px-4'>
         <Button.Root variant='neutral' mode='stroke' onClick={prevStep}>
-          Previous
+          {t('jobs.create.previous')}
         </Button.Root>
         <FancyButton.Root variant='neutral' onClick={nextStep}>
-          Next
+          {t('jobs.create.next')}
         </FancyButton.Root>
       </div>
     </form>

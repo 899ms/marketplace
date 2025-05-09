@@ -8,6 +8,7 @@ import {
   RiInformationLine,
   RiLinksLine,
 } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
 
 import * as Button from '@/components/ui/button';
 import * as CompactButton from '@/components/ui/compact-button';
@@ -60,6 +61,7 @@ export default function MusicUploadDialog({
   userId,
   onUploadComplete,
 }: MusicUploadDialogProps) {
+  const { t } = useTranslation('common');
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [remarks, setRemarks] = useState('');
@@ -91,10 +93,10 @@ export default function MusicUploadDialog({
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
       if (selectedFile.size > 50 * 1024 * 1024) {
-        setUploadError('File size exceeds 50MB limit.');
+        setUploadError(t('musicUpload.errors.fileSize'));
         setFile(null);
       } else if (!selectedFile.type.startsWith('audio/')) {
-        setUploadError('Invalid file type. Please upload an audio file.');
+        setUploadError(t('musicUpload.errors.fileType'));
         setFile(null);
       } else {
         setFile(selectedFile);
@@ -110,9 +112,10 @@ export default function MusicUploadDialog({
 
   const handleUpload = async () => {
     if (!file || !title || !userId) {
-      setUploadError(
-        `Missing required fields: ${!file ? 'File' : ''} ${!title ? 'Title' : ''}`,
-      );
+      const missingFields = [];
+      if (!file) missingFields.push('File');
+      if (!title) missingFields.push('Title');
+      setUploadError(t('musicUpload.errors.missingFields', { fields: missingFields.join(' ') }));
       return;
     }
 
@@ -137,29 +140,26 @@ export default function MusicUploadDialog({
 
       if (result.success) {
         toast({
-          title: 'Upload Successful',
-          description: `${file.name} has been added to your music library.`,
-          status: 'success',
+          title: t('musicUpload.success.title'),
+          description: t('musicUpload.success.description', { fileName: file.name }),
         });
         onUploadComplete?.(result.updatedMusicData as MusicItem[] || []);
         onOpenChange(false);
       } else {
         const errorMessage = typeof result.error === 'string' ? result.error : result.error?.message || 'Upload failed.';
-        setUploadError(`Upload failed: ${errorMessage}`);
+        setUploadError(t('musicUpload.errors.uploadFailed', { message: errorMessage }));
         toast({
-          title: 'Upload Failed',
+          title: t('musicUpload.errors.uploadFailed', { message: errorMessage }),
           description: errorMessage,
-          status: 'error',
         });
       }
     } catch (error: any) {
       clearInterval(interval);
       const errorMessage = error.message || 'An unexpected error occurred.';
-      setUploadError(`Upload failed: ${errorMessage}`);
+      setUploadError(t('musicUpload.errors.uploadFailed', { message: errorMessage }));
       toast({
-        title: 'Upload Failed',
+        title: t('musicUpload.errors.uploadFailed', { message: errorMessage }),
         description: errorMessage,
-        status: 'error',
       });
     } finally {
       setIsUploading(false);
@@ -205,8 +205,8 @@ export default function MusicUploadDialog({
       <Modal.Content className='max-w-[440px] shadow-custom-md max-h-[85vh] overflow-y-auto'>
         <Modal.Header
           icon={RiUploadCloud2Line}
-          title='Upload Music'
-          description='Select and upload your music files'
+          title={t('musicUpload.title')}
+          description={t('musicUpload.description')}
         />
         <Modal.Body className='space-y-6'>
           <FileUpload.Root
@@ -226,10 +226,10 @@ export default function MusicUploadDialog({
             <FileUpload.Icon as={RiUploadCloud2Line} />
             <div className='space-y-1.5'>
               <div className='text-label-sm text-text-strong-950'>
-                Choose a file or drag & drop it here
+                {t('musicUpload.chooseFile')}
               </div>
               <div className='text-paragraph-xs text-text-sub-600'>
-                Audio formats (MP3, WAV, etc.), up to 50 MB.
+                {t('musicUpload.fileTypes')}
               </div>
             </div>
           </FileUpload.Root>
@@ -252,7 +252,7 @@ export default function MusicUploadDialog({
                           <span className='text-paragraph-xs text-text-sub-600'>∙</span>
                           <RiLoader2Fill className='size-4 shrink-0 animate-spin text-primary-base' />
                           <span className='text-paragraph-xs text-text-strong-950'>
-                            Uploading...
+                            {t('musicUpload.uploading')}
                           </span>
                         </>
                       )}
@@ -280,29 +280,29 @@ export default function MusicUploadDialog({
             </Alert.Root>
           )}
 
-          <Divider.Root variant='line-text'>OR</Divider.Root>
+          <Divider.Root variant='line-text'>{t('musicUpload.or')}</Divider.Root>
           <div className='flex flex-col gap-1'>
             <Label.Root className='flex items-center gap-1 text-label-sm text-text-strong-950'>
-              Import from URL Link
+              {t('musicUpload.importFromUrl')}
               <IconInfoCustomFill className='size-4 text-text-disabled-300' />
             </Label.Root>
             <Input.Root>
               <Input.Wrapper>
                 <Input.Icon as={RiLinksLine} />
-                <Input.Input placeholder='Paste file URL' disabled={isUploading} />
+                <Input.Input placeholder={t('musicUpload.pasteUrl')} disabled={isUploading} />
               </Input.Wrapper>
             </Input.Root>
           </div>
 
           <div className='flex flex-col gap-1'>
             <Label.Root htmlFor="music-title" className='text-label-sm text-text-strong-950'>
-              Title
+              {t('musicUpload.titleLabel')}
             </Label.Root>
             <Input.Root>
               <Input.Wrapper>
                 <Input.Input
                   id="music-title"
-                  placeholder='Enter music title'
+                  placeholder={t('musicUpload.titlePlaceholder')}
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   disabled={isUploading}
@@ -314,11 +314,11 @@ export default function MusicUploadDialog({
 
           <div className='flex flex-col gap-1'>
             <Label.Root htmlFor="music-remarks" className='text-label-sm text-text-strong-950'>
-              Remarks (Optional)
+              {t('musicUpload.remarks')}
             </Label.Root>
             <Textarea.Root
               id="music-remarks"
-              placeholder='Add any remarks about this track...'
+              placeholder={t('musicUpload.remarksPlaceholder')}
               value={remarks}
               onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setRemarks(e.target.value)}
               disabled={isUploading}
@@ -329,13 +329,13 @@ export default function MusicUploadDialog({
 
           <div className='flex flex-col gap-1'>
             <Label.Root className='flex items-center gap-1 text-label-sm text-text-strong-950'>
-              Add Tags (max. 8)
+              {t('musicUpload.tags.label')}
               <RiInformationLine className='text-icon-secondary-400 size-4' />
             </Label.Root>
             <Input.Root>
               <Input.Wrapper>
                 <Input.Input
-                  placeholder='Add a tag'
+                  placeholder={t('musicUpload.tags.placeholder')}
                   value={tagInput}
                   onChange={(e) => setTagInput(e.target.value)}
                   onKeyDown={handleAddTag}
@@ -357,7 +357,7 @@ export default function MusicUploadDialog({
 
           <div className='flex flex-col gap-3'>
             <Label.Root className='text-label-sm text-text-strong-950'>
-              Display Preferences
+              {t('musicUpload.displayPreferences')}
             </Label.Root>
             <div className='flex items-center gap-3'>
               <Checkbox.Root id='display-profile' defaultChecked disabled={isUploading} />
@@ -365,7 +365,7 @@ export default function MusicUploadDialog({
                 htmlFor='display-profile'
                 className='text-text-secondary-600 flex items-center gap-1.5 text-paragraph-sm font-normal'
               >
-                Display on profile
+                {t('musicUpload.displayProfile')}
                 <Badge.Root size='small' color='yellow' className='ml-1'>
                   NEW
                 </Badge.Root>
@@ -377,7 +377,7 @@ export default function MusicUploadDialog({
                 htmlFor='disable-commenting'
                 className='text-text-secondary-600 text-paragraph-sm font-normal'
               >
-                Disable commenting
+                {t('musicUpload.disableCommenting')}
               </Label.Root>
             </div>
           </div>
@@ -389,7 +389,7 @@ export default function MusicUploadDialog({
             onClick={() => onOpenChange(false)}
             disabled={isUploading}
           >
-            Cancel
+            {t('musicUpload.cancel')}
           </Button.Root>
           <Button.Root
             variant='neutral'
@@ -398,7 +398,7 @@ export default function MusicUploadDialog({
             disabled={!file || !title || isUploading}
           >
             {isUploading ? <RiLoader2Fill className="animate-spin mr-2" /> : null}
-            {isUploading ? 'Uploading...' : 'Upload'}
+            {isUploading ? t('musicUpload.uploading') : t('musicUpload.upload')}
           </Button.Root>
         </Modal.Footer>
       </Modal.Content>

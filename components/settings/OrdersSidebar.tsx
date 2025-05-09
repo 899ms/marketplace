@@ -14,6 +14,9 @@ import {
 import type { ActiveView } from './settings-page-content';
 import { useRouter } from 'next/navigation';
 import { Icons } from "@/assets/images/icons/icons";
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
+
 /* ------------------------------------------------------------------ */
 /** Left navigation panel shown on every settings page.
  *  ‑ Buyers see "Orders" + "Billing"
@@ -30,20 +33,21 @@ export default function OrdersSidebar({
   activeView,
   isSeller,
 }: Props) {
+  const { t } = useTranslation('common');
   const { loading, profileLoading } = useAuth();
   const router = useRouter();
 
   /* -------- build link list dynamically -------- */
   const baseLinks = [
-    { name: 'Orders', view: 'orders' as ActiveView, icon: Icons.Clock },
-    { name: 'Billing', view: 'billing' as ActiveView, icon: Icons.DollarCircle },
+    { name: t('ordersSidebar.orders'), view: 'orders' as ActiveView, icon: Icons.Clock },
+    { name: t('ordersSidebar.billing'), view: 'billing' as ActiveView, icon: Icons.DollarCircle },
   ];
   const links = [
     ...baseLinks,
     ...(isSeller
       ? [
         {
-          name: 'My services',
+          name: t('ordersSidebar.myServices'),
           view: 'my-services' as ActiveView,
           icon: Icons.Crown,
         },
@@ -59,7 +63,7 @@ export default function OrdersSidebar({
   }
 
   const handleValueChange = (value: string) => {
-    router.push(`/settings?tab=${value}`);
+    router.push(`/${i18n.language}/settings?tab=${value}`);
   };
 
   /* ------------------ real sidebar ------------------ */

@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface ProjectDetailsSectionProps {
   description: string[];
@@ -11,6 +12,8 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
   description,
   requirements,
 }) => {
+  const { t } = useTranslation('common');
+
   return (
     <div className='pt-[20px]'>
       <h2
@@ -24,7 +27,7 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
           text-[16px]
         "
       >
-        Project Details
+        {t('projects.details.title')}
       </h2>
 
       {description.map((paragraph, idx) => (
@@ -46,7 +49,7 @@ const ProjectDetailsSection: React.FC<ProjectDetailsSectionProps> = ({
       {requirements.length > 0 && (
         <>
           <h3 className='text-md mb-2 mt-6 font-medium text-text-strong-950'>
-            Requirements
+            {t('projects.details.requirements')}
           </h3>
           <ul className='space-y-2 pl-5'>
             {requirements.map((requirement, idx) => (

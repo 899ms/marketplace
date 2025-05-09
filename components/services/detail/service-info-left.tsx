@@ -9,6 +9,7 @@ import { ImageCarousel } from './image-carousel';
 import { ReviewItem } from './review-item'; // Import ReviewItem for dummy reviews
 import { RiStarFill, RiCheckLine } from '@remixicon/react';
 import { RelatedServiceCard } from './related-service-card'; // Ensure this is imported
+import { useTranslation } from 'react-i18next';
 
 // Remove the old specific data interfaces
 /*
@@ -47,6 +48,7 @@ const dummyOptions = [
 */
 
 export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftProps) {
+  const { t } = useTranslation('common');
   // Add state for managing the active tab
   const [activeTab, setActiveTab] = useState('Details');
 
@@ -59,14 +61,14 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
             {/* Service Description Section */}
             <div className=''>
               <p className='text-sm text-text-secondary-600 whitespace-pre-wrap'>
-                {service.description || 'No description provided.'}
+                {service.description || t('services.info.noDescription')}
               </p>
             </div>
             {/* Services Included Section */}
             {service.includes && service.includes.length > 0 && (
               <div className='space-y-2'>
                 <h3 className='font-semibold text-text-strong-950'>
-                  What's Included
+                  {t('services.info.whatsIncluded')}
                 </h3>
                 <ul className='space-y-1'>
                   {service.includes.map((item, idx) => (
@@ -105,7 +107,7 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
               ))
             ) : (
               <p className="px-4 py-3 text-sm text-text-secondary-600">
-                No additional options available for this service.
+                {t('services.info.noOptions')}
               </p>
             )}
           </div>
@@ -126,7 +128,7 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
               </div>
             ) : (
               <p className='text-sm text-text-secondary-600'>
-                No other services found for this seller.
+                {t('services.info.noPortfolio')}
               </p>
             )}
           </div>
@@ -141,7 +143,7 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
                   id: String(i),
                   user: { name: 'Cleve Music', avatar: 'https://via.placeholder.com/40', rating: 4.9 },
                   date: 'Jan 8, 2023',
-                  text: 'This is a placeholder review text. The service was great!',
+                  text: t('services.info.reviewPlaceholder'),
                   amount: 1000.00, // Example amount
                 }}
               />
@@ -167,16 +169,16 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
         <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
           <TabMenuHorizontal.List className="border-none">
             <TabMenuHorizontal.Trigger value='Details' className="text-[24px] font-medium">
-              Details
+              {t('services.info.tabs.details')}
             </TabMenuHorizontal.Trigger>
             <TabMenuHorizontal.Trigger value='Options' className="text-[24px] font-medium">
-              Options
+              {t('services.info.tabs.options')}
             </TabMenuHorizontal.Trigger>
             <TabMenuHorizontal.Trigger value='Portfolio' className="text-[24px] font-medium">
-              Portfolio
+              {t('services.info.tabs.portfolio')}
             </TabMenuHorizontal.Trigger>
             <TabMenuHorizontal.Trigger value='Review' className="text-[24px] font-medium">
-              Review {/* Restore placeholder comment */}
+              {t('services.info.tabs.review')}
             </TabMenuHorizontal.Trigger>
           </TabMenuHorizontal.List>
         </TabMenuHorizontal.Root>

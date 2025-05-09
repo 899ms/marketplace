@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image'; // Need next/image for the carousel part
 import { UseFormReturn } from 'react-hook-form';
-import { CreateServiceFormData } from '@/app/worker/services/create/schema';
+import { CreateServiceFormData } from '@/app/[lang]/worker/services/create/schema';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
 // Removed imports not used in the reference Step3Review (Badge, ServiceInfoLeft, etc.)
