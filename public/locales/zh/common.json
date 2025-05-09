@@ -234,9 +234,36 @@
       "noBio": "该用户尚未添加个人简介。",
       "contactForPricing": "联系询价",
       "socialLinksUnavailable": "暂无社交链接",
+      "title": "工作者档案",
+      "openInNewTab": "在新标签页中打开",
+      "musicProducer": "音乐制作人",
       "actions": {
-        "hire": "雇佣我",
-        "contact": "联系我"
+        "hire": "雇佣",
+        "contact": "联系我",
+        "touch": "联系",
+        "cannotHireSelf": "不能雇佣自己",
+        "cannotMessageSelf": "不能给自己发消息",
+        "message": "联系{{name}}"
+      },
+      "error": {
+        "loadFailed": "无法加载工作者档案。"
+      },
+      "page": {
+        "tabs": {
+          "about": "关于",
+          "work": "作品",
+          "services": "服务",
+          "reviews": "评价"
+        },
+        "work": {
+          "noWork": "暂无上传的作品。"
+        },
+        "services": {
+          "noServices": "该工作者暂无服务。"
+        },
+        "reviews": {
+          "noReviews": "暂无评价。"
+        }
       }
     },
     "mainContent": {
@@ -251,7 +278,9 @@
     "sidebar": {
       "calendar": {
         "title": "日历",
-        "seeAll": "查看全部"
+        "seeAll": "查看全部",
+        "today": "今天",
+        "events": "个事件"
       },
       "meetings": {
         "title": "会议",
@@ -268,6 +297,25 @@
           "15days": "15天",
           "30days": "30天"
         }
+      },
+      "tags": {
+        "title": "标签",
+        "edit": "编辑标签"
+      },
+      "links": {
+        "title": "链接",
+        "edit": "编辑链接"
+      },
+      "navigation": {
+        "home": "首页",
+        "order": "订单",
+        "chat": "聊天",
+        "bonus": "奖金",
+        "helpCenter": "帮助中心"
+      },
+      "comingSoon": {
+        "title": "即将推出",
+        "description": "此功能正在开发中。"
       }
     }
   },
@@ -1091,5 +1139,10 @@
       "title": "日历",
       "seeAll": "查看全部"
     }
+  },
+  "common": {
+    "close": "关闭",
+    "more": "更多",
+    "error": "错误"
   }
 }

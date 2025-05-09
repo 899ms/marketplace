@@ -29,6 +29,8 @@ import { ServiceCard } from '@/components/worker/profile/service-card';
 import { ReviewItem } from '@/components/worker/profile/review-item';
 import { User, Service, Chat, Message, MusicItem } from '@/utils/supabase/types';
 import MusicUploadDialog from '@/components/blocks/music-upload-dialog';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 interface WorkerProfileDrawerProps {
   isOpen: boolean;
@@ -96,6 +98,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   services,
   isLoading,
 }) => {
+  const { t } = useTranslation('common');
   const authContext = useAuth();
   const { notification: toast } = useNotification();
   const [activeTab, setActiveTab] = useState<'about' | 'work' | 'services' | 'reviews'>('about');
@@ -202,7 +205,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
         style={{ maxWidth: '800px' }}
       >
         <DialogPrimitive.Title className="sr-only">
-          {`Worker Profile: ${displayName}`}
+          {`${t('worker.profile.title')}: ${displayName}`}
         </DialogPrimitive.Title>
 
         <div className="flex flex-col flex-grow">
@@ -212,17 +215,17 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
               <Drawer.Close asChild>
                 <button className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
                   <RiCloseLine className="size-6 text-[#0E121B]" />
-                  <span className="sr-only">Close</span>
+                  <span className="sr-only">{t('common.close')}</span>
                 </button>
               </Drawer.Close>
 
               <div className='flex items-center gap-1.5'>
                 <Link
-                  href={worker ? `/users/${worker.id}` : '#'}
+                  href={worker ? `/${i18n.language}/users/${worker.id}` : '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={`flex items-center gap-1.5 text-[14px] font-medium text-[#335CFF] underline underline-offset-2 hover:text-blue-700 ${!worker || isLoading ? 'pointer-events-none opacity-50' : ''}`}>
-                  Open in new tab
+                  {t('worker.profile.openInNewTab')}
                 </Link>
                 <RiArrowRightCircleLine className="size-6 text-[#525866]" />
               </div>
@@ -235,7 +238,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
             ) : worker ? (
               <div className="mt-5 flex items-center justify-between px-3">
                 <div className="flex items-center gap-4">
-                  <Link href={`/users/${worker.id}`} passHref legacyBehavior>
+                  <Link href={`/${i18n.language}/users/${worker.id}`} passHref legacyBehavior>
                     <a className="inline-block">
                       <Avatar.Root size="64">
                         <Avatar.Image src={displayAvatar ? displayAvatar : undefined} alt={displayName} />
@@ -248,7 +251,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
 
                   <div>
                     <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                      <Link href={`/users/${worker.id}`} passHref legacyBehavior>
+                      <Link href={`/${i18n.language}/users/${worker.id}`} passHref legacyBehavior>
                         <a className="inline-block hover:underline">
                           <h2 className="text-[18px] font-semibold text-text-strong-950">
                             {displayName}
@@ -264,7 +267,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       <RiGoogleFill className="h-4 w-4" />
                       <RiGoogleFill className="size-4" />
                       <RiGoogleFill className="size-4" />
-                      <span className='text-[#525866] font-medium'>Music Producer</span>
+                      <span className='text-[#525866] font-medium'>{t('worker.profile.musicProducer')}</span>
                     </div>
                   </div>
                 </div>
@@ -272,28 +275,27 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                 <div className="flex items-center gap-3">
                   <button
                     className="
-                      w-[100px]            /* 100px wide */
+                      w-[100px]            
                       h-8
-                      rounded-lg           /* 8px radius */
-                      border border-[#E1E4EA]  /* 1px #E1E4EA */
-                      bg-white             /* #FFFFFF */
-                      px-[6px] py-[6px]    /* 6px padding all around */
-                      flex items-center justify-center gap-[2px] /* 2px between icon/text */
-                      text-sm font-medium text-[#525866] /* 14px/20px, 500, #525866 */
-                      shadow-[0_1px_2px_0_rgba(10,13,20,0.03)] /* 0 1px 2px 0 rgba(10,13,20,0.03) */
+                      rounded-lg           
+                      border border-[#E1E4EA]  
+                      bg-white             
+                      px-[6px] py-[6px]    
+                      flex items-center justify-center gap-[2px] 
+                      text-sm font-medium text-[#525866] 
+                      shadow-[0_1px_2px_0_rgba(10,13,20,0.03)] 
                       transition-colors
                       hover:bg-bg-weak-50
                       disabled:opacity-50 disabled:cursor-not-allowed
                     "
                     onClick={handleHireClick}
                     disabled={disableActions}
-                    aria-label={currentUserProfile?.id === worker?.id ? "Cannot hire yourself" : `Hire ${displayName}`}
+                    aria-label={currentUserProfile?.id === worker?.id ? t('worker.profile.actions.cannotHireSelf') : t('worker.profile.actions.hire', { name: displayName })}
                   >
                     <div className="flex items-center text-[14px] font-medium gap-[2px]">
-                      Hire <RiArrowDropRightLine className="size-7" />
+                      {t('worker.profile.actions.hire')} <RiArrowDropRightLine className="size-7" />
                     </div>
                   </button>
-
 
                   <FancyButton.Root
                     size="medium"
@@ -302,15 +304,15 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     disabled={disableActions || isLoadingChat}
                     aria-label={
                       currentUserProfile?.id === worker?.id
-                        ? "Cannot message yourself"
-                        : `Message ${displayName}`
+                        ? t('worker.profile.actions.cannotMessageSelf')
+                        : t('worker.profile.actions.message', { name: displayName })
                     }
                   >
                     {isLoadingChat ? (
                       <RiLoader4Line className="animate-spin" size={18} />
                     ) : (
                       <div className="flex items-center text-[14px] font-medium gap-[2px]">
-                        Touch
+                        {t('worker.profile.actions.touch')}
                         <svg
                           width="20"
                           height="20"
@@ -345,11 +347,11 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
               </div>
             ) : (
               <div className="mt-5 flex h-[88px] items-center justify-center px-5 text-text-secondary-600">
-                Could not load worker profile.
+                {t('worker.profile.error.loadFailed')}
               </div>
             )}
             {chatError && (
-              <p className="text-xs text-red-600 px-5 mt-2 text-center">Error: {chatError}</p>
+              <p className="text-xs text-red-600 px-5 mt-2 text-center">{t('common.error')}: {chatError}</p>
             )}
           </div>
 
@@ -360,10 +362,10 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
               <Tabs.Root value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
                 <Tabs.List className="flex justify-start gap-5 px-0">
                   {[
-                    { key: 'about', label: 'About' },
-                    { key: 'work', label: 'Work' },
-                    { key: 'services', label: `Service` },
-                    { key: 'reviews', label: 'Review' },
+                    { key: 'about', label: t('worker.profile.page.tabs.about') },
+                    { key: 'work', label: t('worker.profile.page.tabs.work') },
+                    { key: 'services', label: t('worker.profile.page.tabs.services') },
+                    { key: 'reviews', label: t('worker.profile.page.tabs.reviews') },
                   ].map(({ key, label }) => (
                     <Tabs.Trigger
                       key={key}
@@ -415,13 +417,13 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                           onClick={() => setExpanded(true)}
                           className="mt-1 text-sm font-medium text-blue-600 hover:underline"
                         >
-                          More
+                          {t('common.more')}
                         </button>
                       )}
                     </div>
                     <div className="mt-6 flex items-center justify-between">
                       <h3 className="text-[20px] font-medium text-text-strong-950 pb-2 border-b-[2px] border-black">
-                        Work
+                        {t('worker.profile.page.tabs.work')}
                       </h3>
                     </div>
                     <div className="divide-y divide-stroke-soft-200 mt-1 border-b">
@@ -440,12 +442,12 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                           />
                         ))
                       ) : (
-                        <p className="py-4 text-[14px] text-[#525866]">No work items uploaded yet.</p>
+                        <p className="py-4 text-[14px] text-[#525866]">{t('worker.profile.page.work.noWork')}</p>
                       )}
                     </div>
 
                     <h3 className="mt-6 inline-block text-[20px] font-medium text-text-strong-950 pb-1 border-b-[2px] border-text-strong-950">
-                      Service
+                      {t('worker.profile.page.tabs.services')}
                     </h3>
                     <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                       {services && services.length > 0 ? (
@@ -458,12 +460,12 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                           />
                         ))
                       ) : (
-                        <p className="text-[14px] text-[#525866]">No services found for this worker.</p>
+                        <p className="text-[14px] text-[#525866]">{t('worker.profile.page.services.noServices')}</p>
                       )}
                     </div>
 
                     <h3 className="mt-6 inline-block text-[20px] font-medium border-black text-text-strong-950 pb-1 border-b-[2px]">
-                      Review
+                      {t('worker.profile.page.tabs.reviews')}
                     </h3>
                     <div className="mt-4">
                       {placeholderWorkerData.reviews.map((r) => (
@@ -491,7 +493,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       ))
                     ) : (
                       <div className="text-center text-text-secondary-600 py-10">
-                        <p>No work items uploaded yet.</p>
+                        <p>{t('worker.profile.page.work.noWork')}</p>
                       </div>
                     )}
                   </div>
@@ -512,7 +514,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       </div>
                     ) : (
                       <div className="text-center text-text-secondary-600 py-10">
-                        <p>This worker currently has no services listed.</p>
+                        <p>{t('worker.profile.page.services.noServices')}</p>
                       </div>
                     )}
                   </>
@@ -526,7 +528,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       ))
                     ) : (
                       <div className="text-center text-text-secondary-600 py-10">
-                        <p>No reviews available yet.</p>
+                        <p>{t('worker.profile.page.reviews.noReviews')}</p>
                       </div>
                     )}
                   </div>
@@ -534,7 +536,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
               </>
             ) : (
               <div className="flex h-full items-center justify-center text-text-secondary-600">
-                Could not load worker profile content.
+                {t('worker.profile.error.loadFailed')}
               </div>
             )}
           </div>

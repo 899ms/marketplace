@@ -234,9 +234,36 @@
       "noBio": "This user hasn't added a bio yet.",
       "contactForPricing": "Contact for pricing",
       "socialLinksUnavailable": "Social links unavailable",
+      "title": "Worker Profile",
+      "openInNewTab": "Open in new tab",
+      "musicProducer": "Music Producer",
       "actions": {
-        "hire": "Hire Me",
-        "contact": "Contact Me"
+        "hire": "Hire",
+        "contact": "Contact Me",
+        "touch": "Touch",
+        "cannotHireSelf": "Cannot hire yourself",
+        "cannotMessageSelf": "Cannot message yourself",
+        "message": "Message {{name}}"
+      },
+      "error": {
+        "loadFailed": "Could not load worker profile."
+      },
+      "page": {
+        "tabs": {
+          "about": "About",
+          "work": "Work",
+          "services": "Service",
+          "reviews": "Review"
+        },
+        "work": {
+          "noWork": "No work items uploaded yet."
+        },
+        "services": {
+          "noServices": "No services found for this worker."
+        },
+        "reviews": {
+          "noReviews": "No reviews available yet."
+        }
       }
     },
     "mainContent": {
@@ -251,7 +278,9 @@
     "sidebar": {
       "calendar": {
         "title": "Calendar",
-        "seeAll": "See All"
+        "seeAll": "See All",
+        "today": "Today",
+        "events": "events"
       },
       "meetings": {
         "title": "Meetings",
@@ -268,6 +297,25 @@
           "15days": "15 Days",
           "30days": "30 Days"
         }
+      },
+      "tags": {
+        "title": "Tags",
+        "edit": "Edit tags"
+      },
+      "links": {
+        "title": "Links",
+        "edit": "Edit links"
+      },
+      "navigation": {
+        "home": "Home",
+        "order": "Order",
+        "chat": "Chat",
+        "bonus": "Bonus",
+        "helpCenter": "Help Center"
+      },
+      "comingSoon": {
+        "title": "Coming Soon",
+        "description": "This feature is under development."
       }
     }
   },
@@ -1091,5 +1139,10 @@
       "title": "Calendar",
       "seeAll": "See All"
     }
+  },
+  "common": {
+    "close": "Close",
+    "more": "More",
+    "error": "Error"
   }
 }

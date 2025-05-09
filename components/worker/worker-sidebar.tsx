@@ -3,6 +3,8 @@
 import React from 'react';
 import Link from 'next/link';
 import { useNotification } from '@/hooks/use-notification';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 import * as Avatar from '@/components/ui/avatar';
 import * as Divider from '@/components/ui/divider';
@@ -37,6 +39,7 @@ interface WorkerSidebarProps {
 // --- Worker Dashboard Sidebar ---
 export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
   const { notification } = useNotification();
+  const { t } = useTranslation('common');
 
   const user = {
     name: userProfile.full_name ?? 'User',
@@ -56,7 +59,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
 
   const handleComingSoonClick = () => {
     notification({
-      description: 'Coming Soon: This feature is under development.',
+      description: t('worker.sidebar.comingSoon.description'),
     });
   };
 
@@ -91,7 +94,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
                 <path d="M11.2935 1.3335H5.70683C3.28016 1.3335 1.8335 2.78016 1.8335 5.20683V10.7935C1.8335 13.2202 3.28016 14.6668 5.70683 14.6668H11.2935C13.7202 14.6668 15.1668 13.2202 15.1668 10.7935V5.20683C15.1668 2.78016 13.7202 1.3335 11.2935 1.3335ZM10.0068 8.00016C10.5268 8.18016 11.2202 8.56016 11.2202 9.7535C11.2202 10.7802 10.4202 11.6135 9.4335 11.6135H9.00016V12.0002C9.00016 12.2735 8.7735 12.5002 8.50016 12.5002C8.22683 12.5002 8.00016 12.2735 8.00016 12.0002V11.6135H7.76016C6.66683 11.6135 5.78016 10.6868 5.78016 9.5535C5.78016 9.28016 6.00016 9.0535 6.28016 9.0535C6.5535 9.0535 6.78016 9.28016 6.78016 9.5535C6.78016 10.1402 7.22016 10.6135 7.76016 10.6135H8.00016V8.3535L6.9935 8.00016C6.4735 7.82016 5.78016 7.44016 5.78016 6.24683C5.78016 5.22016 6.58016 4.38683 7.56683 4.38683H8.00016V4.00016C8.00016 3.72683 8.22683 3.50016 8.50016 3.50016C8.7735 3.50016 9.00016 3.72683 9.00016 4.00016V4.38683H9.24016C10.3335 4.38683 11.2202 5.3135 11.2202 6.44683C11.2202 6.72016 11.0002 6.94683 10.7202 6.94683C10.4468 6.94683 10.2202 6.72016 10.2202 6.44683C10.2202 5.86016 9.78016 5.38683 9.24016 5.38683H9.00016V7.64683L10.0068 8.00016Z" fill="#F27B2C" />
               </svg>
               {' '}
-              Salary
+              {t('worker.salary')}
             </span>
             <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866]'>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -107,13 +110,13 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
                   </clipPath>
                 </defs>
               </svg>
-              Work
+              {t('worker.work')}
             </span>
             <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866]'>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9.65327 2.33977L10.8266 4.68643C10.9866 5.0131 11.4133 5.32643 11.7733 5.38643L13.8999 5.73977C15.2599 5.96643 15.5799 6.9531 14.5999 7.92643L12.9466 9.57977C12.6666 9.85977 12.5133 10.3998 12.5999 10.7864L13.0733 12.8331C13.4466 14.4531 12.5866 15.0798 11.1533 14.2331L9.15994 13.0531C8.79994 12.8398 8.20661 12.8398 7.83994 13.0531L5.84661 14.2331C4.41994 15.0798 3.55327 14.4464 3.92661 12.8331L4.39994 10.7864C4.48661 10.3998 4.33327 9.85977 4.05327 9.57977L2.39994 7.92643C1.42661 6.9531 1.73994 5.96643 3.09994 5.73977L5.22661 5.38643C5.57994 5.32643 6.00661 5.0131 6.16661 4.68643L7.33994 2.33977C7.97994 1.06643 9.01994 1.06643 9.65327 2.33977Z" fill="#253EA7" />
               </svg>
-              Specia
+              {t('worker.special')}
             </span>
           </div>
         </div>
@@ -122,34 +125,34 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         <nav className='max-w-[300px] max-h-[228px] px-4 '>
           <ul className='flex flex-col gap-1'>
             <li>
-              <SidebarLink href='/home' icon={RiHomeLine} label='Home' />
+              <SidebarLink href={`/${i18n.language}/home`} icon={RiHomeLine} label={t('worker.sidebar.navigation.home')} />
             </li>
             <li>
               <SidebarLink
-                href='/settings'
+                href={`/${i18n.language}/settings`}
                 icon={RiBriefcaseLine}
-                label='Order'
+                label={t('worker.sidebar.navigation.order')}
               />
             </li>
             <li>
               <SidebarLink
-                href='/chats'
+                href={`/${i18n.language}/chats`}
                 icon={RiBuildingLine}
-                label='Chat'
+                label={t('worker.sidebar.navigation.chat')}
               />
             </li>
             <li>
               <SidebarLink
                 onClick={handleComingSoonClick}
                 icon={RiBuildingLine}
-                label='Bonus'
+                label={t('worker.sidebar.navigation.bonus')}
               />
             </li>
             <li>
               <SidebarLink
                 onClick={handleComingSoonClick}
                 icon={RiArticleLine}
-                label='Help Center'
+                label={t('worker.sidebar.navigation.helpCenter')}
               />
             </li>
           </ul>
@@ -159,7 +162,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         <div className='px-4'>
           <div className='mb-3 flex items-center justify-between'>
             <h3 className='text-text-secondary-600 text-[#0A0D14] font-medium text-[12px]'>
-              Tags
+              {t('worker.sidebar.tags.title')}
             </h3>
             {/* TODO: Implement edit functionality */}
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
@@ -170,7 +173,6 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             {tags.map((tag, idx) => (
               <Tag.Root
                 key={idx}
-
                 className='text-[12px] text-[#525866] font-medium font-[500]'
               >
                 {tag}
@@ -183,7 +185,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
         <div className='px-5'>
           <div className='mb-3 flex items-center justify-between'>
             <h3 className='text-text-secondary-600  text-[#0A0D14]  text-[12px] font-[500]'>
-              Links
+              {t('worker.sidebar.links.title')}
             </h3>
             {/* TODO: Implement edit functionality */}
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
@@ -214,7 +216,6 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
                 <path d="M14.2143 7.68093C15.7923 7.68093 17.1949 8.21546 18.315 9.24639L21.3832 6.2396C19.5228 4.54053 17.1072 3.5 14.2143 3.5C10.026 3.5 6.41241 5.85774 4.64941 9.29413L8.21432 12.0051C9.06168 9.5232 11.4286 7.68093 14.2143 7.68093Z" fill="#EA4335" />
                 <path d="M8.20971 15.9987L7.42545 16.587L4.64941 18.7061C6.41241 22.1329 10.0258 24.5002 14.2141 24.5002C17.1069 24.5002 19.5322 23.5647 21.305 21.9611L17.8277 19.317C16.8732 19.947 15.6556 20.3288 14.2141 20.3288C11.4284 20.3288 9.06156 18.4866 8.21409 16.0047L8.20971 15.9987Z" fill="#34A853" />
               </svg>
-
             </Link>
           </div>
         </div>
