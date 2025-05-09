@@ -1,10 +1,8 @@
-'use client'; // Keep if state/effects are used, otherwise remove
-
 import React from 'react';
 import { RiCheckLine } from '@remixicon/react';
-import { cn } from '@/utils/cn'; // Assuming utils path is correct
+import { cn } from '@/utils/cn';
 import * as Divider from '@/components/ui/divider';
-// --- Stepper Component ---
+import Translate from '@/components/Translate';
 
 interface StepperProps {
   currentStep: number;
@@ -41,7 +39,7 @@ export function Stepper({ currentStep, steps }: StepperProps) {
                       : 'text-[#525866]',
                   )}
                 >
-                  {label}
+                  <Translate id={`worker.services.create.stepper.step${stepNumber}`} />
                 </span>
               </div>
               {stepNumber < steps.length && (
@@ -53,6 +51,5 @@ export function Stepper({ currentStep, steps }: StepperProps) {
       </div>
       <Divider.Root className='w-[60%] pb-12' />
     </div>
-
   );
 }

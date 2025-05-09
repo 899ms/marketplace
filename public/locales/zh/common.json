@@ -140,16 +140,16 @@
   "home": {
     "banner": {
       "rnb": {
-        "title": "R&B 热门",
-        "description": "All mine, Lie again, Petty call me everyday, Out of time, No love, Bad habit, 以及更多"
+        "title": "R&B 热门歌曲",
+        "description": "All mine, Lie again, Petty call me everyday, Out of time, No love, Bad habit 等更多热门歌曲"
       },
       "indie": {
         "title": "独立摇滚精选",
         "description": "来自地下音乐人和新星的精选曲目。探索新声音。"
       },
       "jazz": {
-        "title": "舒缓爵士乐",
-        "description": "放松身心，享受最舒缓的爵士乐。完美的休闲夜晚。"
+        "title": "轻松爵士乐",
+        "description": "放松身心，享受最柔和的爵士乐。完美的休闲夜晚。"
       }
     },
     "sections": {
@@ -178,10 +178,48 @@
         "page": {
           "title": "创建服务",
           "steps": {
-            "terms": "工作者条款",
+            "terms": "价格和详情",
             "submit": "提交",
             "review": "审核"
           }
+        },
+        "step1": {
+          "subject": "服务标题",
+          "subjectPlaceholder": "输入服务标题...",
+          "detail": "详情",
+          "detailPlaceholder": "详情",
+          "tags": {
+            "label": "添加标签",
+            "placeholder": "添加标签"
+          },
+          "cancel": "关闭",
+          "next": "下一步"
+        },
+        "step2": {
+          "pricing": "定价",
+          "leadTime": "交付时间",
+          "leadTimePlaceholder": "例如：7",
+          "additionalServiceName": "附加服务名称",
+          "additionalServicePlaceholder": "例如：额外修改",
+          "addAdditionalService": "添加附加服务",
+          "previous": "上一步",
+          "next": "下一步"
+        },
+        "step3": {
+          "title": "您将获得 {{title}}",
+          "details": "详情",
+          "whatsIncluded": "包含内容",
+          "options": "选项",
+          "price": "价格",
+          "leadTime": "交付时间",
+          "edit": "编辑",
+          "posting": "发布中...",
+          "post": "发布"
+        },
+        "stepper": {
+          "step1": "基本信息",
+          "step2": "定价",
+          "step3": "预览"
         }
       }
     },
@@ -199,6 +237,37 @@
       "actions": {
         "hire": "雇佣我",
         "contact": "联系我"
+      }
+    },
+    "mainContent": {
+      "more": "更多",
+      "budget": "预算",
+      "apply": "申请",
+      "projects": "项目",
+      "noProjects": "未找到最近的项目。",
+      "untitledProject": "未命名项目",
+      "noDescription": "暂无描述。"
+    },
+    "sidebar": {
+      "calendar": {
+        "title": "日历",
+        "seeAll": "查看全部"
+      },
+      "meetings": {
+        "title": "会议",
+        "with": "与 {{name}} 的会议",
+        "deadline": "截止日期 {{date}}",
+        "budget": "¥{{amount}}",
+        "status": {
+          "submitted": "已提交",
+          "pending": "待处理",
+          "timeout": "已超时"
+        },
+        "tabs": {
+          "7days": "7天",
+          "15days": "15天",
+          "30days": "30天"
+        }
       }
     }
   },

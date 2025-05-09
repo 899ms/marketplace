@@ -178,10 +178,48 @@
         "page": {
           "title": "Create Service",
           "steps": {
-            "terms": "Worker Terms",
+            "terms": "Price and Details",
             "submit": "Submit",
             "review": "Review"
           }
+        },
+        "step1": {
+          "subject": "Service title",
+          "subjectPlaceholder": "Enter service title...",
+          "detail": "Details",
+          "detailPlaceholder": "Details",
+          "tags": {
+            "label": "Add tags",
+            "placeholder": "Add tags"
+          },
+          "cancel": "Close",
+          "next": "Next step"
+        },
+        "step2": {
+          "pricing": "Pricing",
+          "leadTime": "Lead Time",
+          "leadTimePlaceholder": "e.g., 7",
+          "additionalServiceName": "Additional Service Name",
+          "additionalServicePlaceholder": "e.g., Extra Revision",
+          "addAdditionalService": "Add Additional Service",
+          "previous": "Previous",
+          "next": "Next"
+        },
+        "step3": {
+          "title": "You will get {{title}}",
+          "details": "Details",
+          "whatsIncluded": "What's Included",
+          "options": "Options",
+          "price": "Price",
+          "leadTime": "Lead Time",
+          "edit": "Edit",
+          "posting": "Posting...",
+          "post": "Post"
+        },
+        "stepper": {
+          "step1": "Basic Info",
+          "step2": "Pricing",
+          "step3": "Review"
         }
       }
     },
@@ -199,6 +237,37 @@
       "actions": {
         "hire": "Hire Me",
         "contact": "Contact Me"
+      }
+    },
+    "mainContent": {
+      "more": "More",
+      "budget": "Budget",
+      "apply": "Apply",
+      "projects": "Projects",
+      "noProjects": "No recent projects found.",
+      "untitledProject": "Untitled Project",
+      "noDescription": "No description provided."
+    },
+    "sidebar": {
+      "calendar": {
+        "title": "Calendar",
+        "seeAll": "See All"
+      },
+      "meetings": {
+        "title": "Meetings",
+        "with": "Meeting with {{name}}",
+        "deadline": "Deadline {{date}}",
+        "budget": "${{amount}}",
+        "status": {
+          "submitted": "Submitted",
+          "pending": "Pending",
+          "timeout": "Timeout"
+        },
+        "tabs": {
+          "7days": "7 Days",
+          "15days": "15 Days",
+          "30days": "30 Days"
+        }
       }
     }
   },
