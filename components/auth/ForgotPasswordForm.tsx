@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { authOperations } from '@/utils/supabase';
+import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 import * as Input from '@/components/ui/input';
 import * as Button from '@/components/ui/button';
@@ -11,6 +12,7 @@ import {
   RiCheckboxCircleLine,
   RiMailLine,
 } from '@remixicon/react';
+import Link from 'next/link';
 
 // Custom Alert component using the AlertUI components
 const Alert = ({
@@ -47,6 +49,7 @@ const emailSchema = z.object({
 });
 
 export default function ForgotPasswordForm() {
+  const { t } = useTranslation('common');
   const [email, setEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -91,11 +94,10 @@ export default function ForgotPasswordForm() {
             className='mx-auto mb-4 size-16 text-success-base'
           />
           <h2 className='text-2xl font-bold tracking-tight text-text-strong-950'>
-            Check Your Email
+            {t('auth.forgotPassword.checkedEmailTitle')}
           </h2>
           <p className='mt-4 text-paragraph-sm text-text-sub-600'>
-            Weve sent a password reset link to <strong>{email}</strong>. Please
-            check your inbox and follow the instructions.
+            {t('auth.forgotPassword.checkedEmailDesc', { email })}
           </p>
           <div className='mt-6'>
             <Button.Root
@@ -105,7 +107,9 @@ export default function ForgotPasswordForm() {
               className='w-full'
               asChild
             >
-              <a href='/auth/login'>Back to Login</a>
+              <Link href={`/${t('lang')}/auth/login`}>         {/* lang key */}
+                {t('auth.forgotPassword.backToLogin')}
+              </Link>
             </Button.Root>
           </div>
         </div>
@@ -117,10 +121,10 @@ export default function ForgotPasswordForm() {
     <div className='w-full max-w-md space-y-6'>
       <div className='text-center'>
         <h2 className='text-2xl font-bold tracking-tight text-text-strong-950'>
-          Forgot Password
+          {t('auth.forgotPassword.title')}
         </h2>
         <p className='mt-2 text-paragraph-sm text-text-sub-600'>
-          Enter your email and well send you a link to reset your password
+          {t('auth.forgotPassword.description')}
         </p>
       </div>
 
@@ -141,7 +145,7 @@ export default function ForgotPasswordForm() {
               <Input.Input
                 id='email'
                 type='email'
-                placeholder='Email address'
+                placeholder={t('auth.forgotPassword.emailPlaceholder')}
                 value={email}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
                   setEmail(e.target.value)
@@ -162,17 +166,22 @@ export default function ForgotPasswordForm() {
             className='w-full'
             type='submit'
           >
-            {loading ? 'Sending...' : 'Send Reset Link'}
+            {loading
+              ? t('auth.forgotPassword.sending')
+              : t('auth.forgotPassword.sendResetLink')}
           </Button.Root>
         </div>
       </form>
 
       <div className='text-center text-paragraph-sm'>
         <p className='text-text-sub-600'>
-          Remember your password?{' '}
-          <a href='/auth/login' className='text-primary-base hover:underline'>
-            Back to Login
-          </a>
+          {t('auth.forgotPassword.remember')} {' '}
+          <Link
+            href={`/${t('lang')}/auth/login`}
+            className='text-primary-base hover:underline'
+          >
+            {t('auth.forgotPassword.backToLogin')}
+          </Link>
         </p>
       </div>
     </div>

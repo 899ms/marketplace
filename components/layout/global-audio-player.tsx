@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAudioPlayer } from '@/contexts/AudioContext';
 import * as Avatar from '@/components/ui/avatar';
 import * as Slider from '@/components/ui/slider';
@@ -27,6 +28,7 @@ const formatTime = (seconds: number): string => {
 };
 
 export default function GlobalAudioPlayer() {
+  const { t } = useTranslation('common');
   const {
     currentTrack,
     currentSeller,
@@ -73,9 +75,13 @@ export default function GlobalAudioPlayer() {
               <button
                 onClick={() => setIsVisible(!isVisible)}
                 className="flex items-center gap-2 bg-white border-t border-l border-r border-stroke-soft-200 shadow-md text-black px-6 py-2 rounded-t-xl shadow-md hover:bg-neutral-1600 transition-colors"
-                aria-label="Toggle player visibility"
+                aria-label={t('audioPlayer.toggleVisibility')}
               >
-                <span onClick={(e) => { e.stopPropagation(); toggleMute(); }} className="cursor-pointer" aria-label={volume === 0 ? "Unmute" : "Mute"}>
+                <span
+                  onClick={(e) => { e.stopPropagation(); toggleMute(); }}
+                  className="cursor-pointer"
+                  aria-label={volume === 0 ? t('audioPlayer.unmute') : t('audioPlayer.mute')}
+                >
                   <VolumeIcon className="w-5 h-5" />
                 </span>
                 {isVisible ? (
@@ -111,12 +117,16 @@ export default function GlobalAudioPlayer() {
                 <div className="flex flex-col items-center justify-center flex-grow mx-4 md:mx-8">
                   {/* Controls */}
                   <div className="flex items-center gap-3 md:gap-4 mb-1">
-                    <button className="text-text-secondary-600 hover:text-text-strong-950 transition-colors">
+                    <button
+                      className="text-text-secondary-600 hover:text-text-strong-950 transition-colors"
+                      aria-label={t('audioPlayer.previous')}
+                    >
                       <RiSkipBackFill className="w-5 h-5 md:w-6 md:h-6" />
                     </button>
                     <button
                       onClick={togglePlayPause}
                       className="bg-gray-900 hover:bg-gray-700 text-white rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center transition-colors"
+                      aria-label={isPlaying ? t('audioPlayer.pause') : t('audioPlayer.play')}
                     >
                       {isPlaying ? (
                         <RiPauseFill className="w-4 h-4 md:w-5 md:h-5" />
@@ -124,7 +134,10 @@ export default function GlobalAudioPlayer() {
                         <RiPlayFill className="w-4 h-4 md:w-5 md:h-5" />
                       )}
                     </button>
-                    <button className="text-text-secondary-600 hover:text-text-strong-950 transition-colors">
+                    <button
+                      className="text-text-secondary-600 hover:text-text-strong-950 transition-colors"
+                      aria-label={t('audioPlayer.next')}
+                    >
                       <RiSkipForwardFill className="w-5 h-5 md:w-6 md:h-6" />
                     </button>
                   </div>
@@ -162,11 +175,15 @@ export default function GlobalAudioPlayer() {
                       step={0.01}
                       onValueChange={handleVolumeChange}
                       className="w-full cursor-pointer [&>span:first-of-type>span]:bg-black"
+                      aria-label={t('audioPlayer.volume')}
                     >
                       <Slider.Thumb />
                     </Slider.Root>
                   </div>
-                  <button className="text-text-secondary-600 hover:text-text-strong-950 transition-colors">
+                  <button
+                    className="text-text-secondary-600 hover:text-text-strong-950 transition-colors"
+                    aria-label={t('audioPlayer.playlist')}
+                  >
                     <RiPlayList2Line className="w-5 h-5" />
                   </button>
                 </div>

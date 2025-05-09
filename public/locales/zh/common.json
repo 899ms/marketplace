@@ -1,0 +1,133 @@
+{
+  "lang": "zh",
+  "auth": {
+    "common": {
+      "error": "错误"
+    },
+    "forgotPassword": {
+      "title": "忘记密码",
+      "description": "输入您的电子邮件，我们将发送一个链接来重置您的密码",
+      "emailPlaceholder": "电子邮箱",
+      "sending": "发送中…",
+      "sendResetLink": "发送重置链接",
+      "checkedEmailTitle": "请检查您的邮箱",
+      "checkedEmailDesc": "我们已向 {{email}} 发送了密码重置链接。请检查收件箱并按照说明操作。",
+      "backToLogin": "返回登录",
+      "remember": "记住密码？"
+    },
+    "login": {
+      "welcomeBack": "欢迎回来",
+      "enterCredentials": "请输入您的凭据以访问您的帐户",
+      "loginFailed": "登录失败",
+      "emailPlaceholder": "电子邮箱",
+      "passwordPlaceholder": "密码",
+      "forgotPassword": "忘记密码？",
+      "loggingIn": "正在登录…",
+      "login": "登录",
+      "dontHaveAccount": "还没有帐户？",
+      "signUp": "注册",
+      "errors": {
+        "profileFetchFailed": "加载您的个人资料失败。请重试。",
+        "invalidRole": "帐户角色缺失或无效。请联系支持。",
+        "profileFetchException": "加载您的个人资料时出错。请重试。",
+        "default": "发生错误。请重试。",
+        "profileLoadFail": "登录成功，但加载用户数据失败。",
+        "missingUser": "登录似乎成功，但用户数据丢失。",
+        "unexpected": "登录过程中发生意外错误。"
+      }
+    },
+    "signup": {
+      "title": "创建帐户",
+      "description": "输入您的信息以创建帐户",
+      "signupFailed": "注册失败",
+      "userTypeLabel": "我是：",
+      "buyer": "买家（想要雇佣）",
+      "seller": "卖家（寻找工作）",
+      "fullNamePlaceholder": "全名",
+      "emailPlaceholder": "电子邮箱",
+      "passwordPlaceholder": "密码",
+      "passwordHelper": "密码长度至少为 8 个字符",
+      "creating": "正在创建帐户…",
+      "signUp": "注册",
+      "successTitle": "注册成功！",
+      "successDesc": "我们已向您发送验证电子邮件。请检查收件箱。",
+      "goToLogin": "前往登录",
+      "alreadyHaveAccount": "已有帐户？",
+      "logIn": "登录",
+      "unexpectedError": "发生意外错误"
+    }
+  },
+  "navbar": {
+    "logo": {
+      "alt": "市场标志"
+    },
+    "links": {
+      "findWorker": "寻找工作者",
+      "findServices": "寻找服务",
+      "findProjects": "寻找项目",
+      "bonus": "奖金"
+    },
+    "search": {
+      "placeholder": "发现更多"
+    },
+    "buttons": {
+      "create": "创建"
+    },
+    "language": {
+      "alt": "选择语言"
+    },
+    "account": {
+      "title": "账户",
+      "avatarAlt": "用户头像",
+      "defaultName": "用户",
+      "id": "ID",
+      "copyId": "复制ID",
+      "copied": "已复制",
+      "darkMode": "深色模式",
+      "settings": "账户设置",
+      "orders": "订单",
+      "balance": "余额",
+      "topUp": "充值",
+      "logout": "退出登录"
+    },
+    "support": {
+      "title": "支持",
+      "helpCenter": "帮助中心",
+      "liveChat": "在线聊天"
+    },
+    "auth": {
+      "login": "登录",
+      "freeStart": "免费开始"
+    }
+  },
+  "sidebar": {
+    "about": "关于",
+    "editBio": "编辑简介",
+    "bioPlaceholder": "告诉我们关于你自己...",
+    "cancel": "取消",
+    "save": "保存",
+    "saving": "保存中...",
+    "navigation": {
+      "home": "首页",
+      "order": "订单",
+      "chat": "聊天",
+      "bonus": "奖金",
+      "helpCenter": "帮助中心"
+    },
+    "comingSoon": {
+      "title": "即将推出",
+      "description": "此功能正在开发中，即将推出。"
+    }
+  },
+  "audioPlayer": {
+    "toggleVisibility": "切换播放器显示",
+    "mute": "静音",
+    "unmute": "取消静音",
+    "play": "播放",
+    "pause": "暂停",
+    "previous": "上一首",
+    "next": "下一首",
+    "volume": "音量",
+    "playlist": "播放列表"
+  }
+}

@@ -1,13 +1,11 @@
-import React from 'react';
 import { createSupabaseServerClient } from '@/utils/supabase/server';
 import { redirect } from 'next/navigation';
-import LoginForm from '@/components/auth/LoginForm';
-import LoginFormSkeleton from '@/components/auth/LoginFormSkeleton';
-import { Suspense } from 'react';
+import ForgotPasswordForm from '@/components/auth/ForgotPasswordForm';
 
 export const dynamic = 'force-dynamic';
 
-export default async function LoginPage() {
+export default async function ForgotPasswordPage({ params }: { params: { lang: string } }) {
+  const { lang } = params;
   const supabase = await createSupabaseServerClient();
 
   // Check if the user is already authenticated
@@ -16,15 +14,13 @@ export default async function LoginPage() {
 
   // If already authenticated, redirect to dashboard
   if (isAuthenticated) {
-    redirect('/home');
+    redirect(`/${params.lang}/dashboard`);
   }
 
   return (
     <div className='flex min-h-screen items-center justify-center bg-bg-weak-50 px-4 py-12 sm:px-6 lg:px-8'>
       <div className='w-full max-w-md space-y-8'>
-        <Suspense fallback={<LoginFormSkeleton />}>
-          <LoginForm />
-        </Suspense>
+        <ForgotPasswordForm />
       </div>
     </div>
   );

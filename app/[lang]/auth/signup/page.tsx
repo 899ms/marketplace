@@ -6,7 +6,8 @@ import SignupForm from '@/components/auth/SignupForm';
 
 export const dynamic = 'force-dynamic';
 
-export default async function SignupPage() {
+export default async function SignupPage({ params }: { params: { lang: string } }) {
+  const { lang } = params;
   const supabase = await createSupabaseServerClient();
 
   // Check if the user is already authenticated
@@ -15,7 +16,7 @@ export default async function SignupPage() {
 
   // If already authenticated, redirect to dashboard
   if (isAuthenticated) {
-    redirect('/dashboard');
+    redirect(`/${params.lang}/dashboard`);
   }
 
   return (

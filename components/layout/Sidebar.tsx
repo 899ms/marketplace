@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 import * as Avatar from '@/components/ui/avatar';
 import * as Divider from '@/components/ui/divider';
-import { Root as Button } from '@/components/ui/button'; // Corrected import
-import { Root as Textarea } from '@/components/ui/textarea'; // Corrected import
-import { notification as toast } from '@/hooks/use-notification'; // Corrected import for toast
+import { Root as Button } from '@/components/ui/button';
+import { Root as Textarea } from '@/components/ui/textarea';
+import { notification as toast } from '@/hooks/use-notification';
 import {
   RiStarFill,
   RiHomeLine,
@@ -33,6 +35,7 @@ interface SidebarProps {
 
 // Sidebar Component
 const Sidebar = ({ userProfile }: SidebarProps) => {
+  const { t } = useTranslation('common');
   const [isEditingBio, setIsEditingBio] = useState(false);
   const [editableBio, setEditableBio] = useState('');
   const [isSaving, setIsSaving] = useState(false);
@@ -114,8 +117,8 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
   // --- Notification Handler --- 
   const handleComingSoonClick = () => {
     toast({
-      title: "Coming Soon",
-      description: "This feature is under development and will be available shortly.",
+      title: t('sidebar.comingSoon.title'),
+      description: t('sidebar.comingSoon.description'),
     });
   };
   // --- End Notification Handler ---
@@ -174,24 +177,24 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
         {/* Navigation Section */}
         <nav className='px-4 max-w-[300px]  '>
           <ul className='flex flex-col gap-1'>
-            <li><SidebarLink href='/home' icon={RiHomeLine} label='Home' /></li>
-            <li><SidebarLink href='/settings' icon={RiBriefcaseLine} label='Order' /></li>
-            <li><SidebarLink href='/chats' icon={RiBuildingLine} label='Chat' /></li>
-            <li><SidebarLink onClick={handleComingSoonClick} icon={RiBuildingLine} label='Bonus' /></li>
-            <li><SidebarLink onClick={handleComingSoonClick} icon={RiArticleLine} label='Help Center' /></li>
+            <li><SidebarLink href={`/${i18n.language}/home`} icon={RiHomeLine} label={t('sidebar.navigation.home')} /></li>
+            <li><SidebarLink href={`/${i18n.language}/settings`} icon={RiBriefcaseLine} label={t('sidebar.navigation.order')} /></li>
+            <li><SidebarLink href={`/${i18n.language}/chats`} icon={RiBuildingLine} label={t('sidebar.navigation.chat')} /></li>
+            <li><SidebarLink onClick={handleComingSoonClick} icon={RiBuildingLine} label={t('sidebar.navigation.bonus')} /></li>
+            <li><SidebarLink onClick={handleComingSoonClick} icon={RiArticleLine} label={t('sidebar.navigation.helpCenter')} /></li>
           </ul>
         </nav>
         <Divider.Root className="mt-[2rem] mb-[16px]" />
         {/* About Section */}
         <div className='px-4 max-w-[300px] max-h-[202px]  flex flex-col'>
           <div className='mb-4 flex items-center justify-between'>
-            <h3 className='text-[14px] text-[#525866]  font-medium'>About</h3>
+            <h3 className='text-[14px] text-[#525866]  font-medium'>{t('sidebar.about')}</h3>
             {!isEditingBio && (
               <button
                 onClick={handleEditClick}
                 className='text-[#99A0AE] hover:text-icon-primary-500 disabled:opacity-50'
                 disabled={!userProfile}
-                aria-label="Edit bio"
+                aria-label={t('sidebar.editBio')}
               >
                 <RiPencilLine className='size-5' />
               </button>
@@ -203,7 +206,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
                 <Textarea
                   value={editableBio}
                   onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setEditableBio(e.target.value)} // Added type for event
-                  placeholder="Tell us about yourself..."
+                  placeholder={t('sidebar.bioPlaceholder')}
                   rows={4}
                   className="text-sm"
                   disabled={isSaving}
@@ -216,7 +219,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
                     onClick={handleCancelClick}
                     disabled={isSaving}
                   >
-                    Cancel
+                    {t('sidebar.cancel')}
                   </Button>
                   <Button
                     variant="primary"
@@ -224,7 +227,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
                     onClick={handleSaveClick}
                     disabled={isSaving || editableBio === displayBio}
                   >
-                    {isSaving ? 'Saving...' : 'Save'}
+                    {isSaving ? t('sidebar.saving') : t('sidebar.save')}
                   </Button>
                 </div>
               </div>

@@ -29,6 +29,8 @@ import {
 import { useRef, useState, useCallback } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 export default function Navbar() {
   // --- Get Auth State using useAuth hook ---
@@ -42,6 +44,8 @@ export default function Navbar() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   // const userId = '1235984'; // Use user.id instead
+
+  const { t } = useTranslation('common');
 
   // TODO: Implement Dark Mode toggle logic (e.g., using next-themes)
   const handleDarkModeToggle = () => {
@@ -111,33 +115,30 @@ export default function Navbar() {
         <div className='flex items-center gap-4'>
           {/* Logo */}
           <Link
-            href='/home'
+            href={`/${i18n.language}/home`}
             className='text-lg flex items-center gap-2 font-semibold text-text-strong-950'
           >
-            {/* Replace placeholder SVG with Next.js Image */}
             <Image
-              src='/images/logo.svg' // Path relative to the public directory
-              alt='Marketplace Logo' // Descriptive alt text
-              width={40} // Increased width
-              height={40} // Increased height
-              priority // Load the logo quickly as it's important
+              src='/images/logo.svg'
+              alt={t('navbar.logo.alt')}
+              width={40}
+              height={40}
+              priority
             />
-            {/* You can add text next to the logo if needed, e.g., <span>MyBrand</span> */}
           </Link>
-          {/* Navigation Links Container - Apply new styles */}
-          <div className='text-text-secondary-600 hidden items-center gap-5   text-label-md lg:flex'>
-
-            <Link href='/services/search?tab=Worker' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
-              Find Worker
+          {/* Navigation Links Container */}
+          <div className='text-text-secondary-600 hidden items-center gap-5 text-label-md lg:flex'>
+            <Link href={`/${i18n.language}/services/search?tab=Worker`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'>
+              {t('navbar.links.findWorker')}
             </Link>
-            <Link href='/services/search?tab=Service' className='hover:text-text-strong-950  py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg for better click area */}
-              Find Services
+            <Link href={`/${i18n.language}/services/search?tab=Service`} className='hover:text-text-strong-950 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'>
+              {t('navbar.links.findServices')}
             </Link>
-            <Link href='/services/search?tab=Project' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
-              Find Projects
+            <Link href={`/${i18n.language}/services/search?tab=Project`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'>
+              {t('navbar.links.findProjects')}
             </Link>
-            <Link href='/bonus' className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'> {/* Added padding/hover bg */}
-              Bonus
+            <Link href={`/${i18n.language}/bonus`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'>
+              {t('navbar.links.bonus')}
             </Link>
           </div>
         </div>
@@ -153,232 +154,167 @@ export default function Navbar() {
                   className='text-icon-secondary-400'
                 />
                 <Input.Input
-                  placeholder='Discover more'
+                  placeholder={t('navbar.search.placeholder')}
                   className='w-52 lg:w-64 font-normal'
                 />
               </Input.Wrapper>
             </Input.Root>
           </div>
 
-          {/* Language Selector moved down */}
-
-          {user ? ( // Use user !== null for checking login status
+          {user ? (
             <>
-              {/* Create Button - Updated with conditional link */}
               <Link
                 href={
                   userProfile?.user_type === 'seller'
-                    ? '/worker/services/create'
-                    : '/jobs/create'
+                    ? `/${i18n.language}/worker/services/create`
+                    : `/${i18n.language}/jobs/create`
                 }
                 passHref
               >
                 <FancyButton.Root size='medium' className='gap-2 font-medium text-[14px]'>
-                  Create
+                  {t('navbar.buttons.create')}
                   <FancyButton.Icon className='ml-[2px]' as={RiAddLine} />
                 </FancyButton.Root>
               </Link>
 
-              {/* Language Selector Dropdown - Moved here */}
-              {/* TODO: Replace with actual Dropdown implementation */}
-
-              {/* Use imported SVG variable */}
               <Image
-                src="/images/icons/United_States.svg" // Updated path for public directory
-                alt="Select Language"
+                src="/images/icons/United_States.svg"
+                alt={t('navbar.language.alt')}
                 width={24}
                 height={24}
               />
 
-
-              {/* Notifications Button */}
               <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 relative rounded-md p-2'>
-                {/* TODO: Add notification indicator logic */}
                 <span className='absolute right-1.5 top-1.5 block h-2 w-2 rounded-full bg-error-base ring-2 ring-bg-white-0'></span>
                 <RiNotification3Line className='size-5' />
               </button>
 
-              {/* --- Account Dropdown --- */}
               <Dropdown.Root open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <Dropdown.Trigger asChild>
                   <button onClick={() => setDropdownOpen((prev) => !prev)} className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center rounded-10 border border-stroke-soft-200 p-1 pr-2 h-10 bg-white'>
                     {user.user_metadata?.avatar_url ? <Avatar.Root size='32'>
-                      {/* Use user avatar or fallback */}
                       <Avatar.Image
-                        src={ // Use ternary to handle empty string
-                          user.user_metadata.avatar_url ? user.user_metadata.avatar_url : 'https://via.placeholder.com/40'
-                        }
-                        alt={
-                          user.user_metadata?.full_name ||
-                          user.email ||
-                          'User Avatar'
-                        } // Use name or email for alt text
+                        src={user.user_metadata.avatar_url ? user.user_metadata.avatar_url : 'https://via.placeholder.com/40'}
+                        alt={user.user_metadata?.full_name || user.email || t('navbar.account.avatarAlt')}
                       />
                     </Avatar.Root> :
                       <Avatar.Root size='32' color='yellow'>{user.user_metadata?.full_name?.charAt(0).toUpperCase()}</Avatar.Root>}
-                    <span className='hidden md:inline text-sm pl-2 pr-0.5 font-medium'>Account</span>
-                    <RiArrowDropDownFill className='text-icon-sub-500 hidden size-8 md:inline' />                  </button>
+                    <span className='hidden md:inline text-sm pl-2 pr-0.5 font-medium'>{t('navbar.account.title')}</span>
+                    <RiArrowDropDownFill className='text-icon-sub-500 hidden size-8 md:inline' />
+                  </button>
                 </Dropdown.Trigger>
-                <div
-                  ref={dropdownRef}
-                  onMouseLeave={handleMouseLeave}
-                >
+                <div ref={dropdownRef} onMouseLeave={handleMouseLeave}>
                   <Dropdown.Content align='end' className='w-72'>
-                    {/* User Info Section - Wrapped with Link */}
-                    <Link href={`/users/${user.id}`} passHref>
-                      <div className='mb-1 flex cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-bg-neutral-subtle-100'> {/* Added cursor-pointer, hover effect, and rounded corners */}
+                    <Link href={`/${i18n.language}/users/${user.id}`} passHref>
+                      <div className='mb-1 flex cursor-pointer items-center gap-3 rounded-md p-2 hover:bg-bg-neutral-subtle-100'>
                         <Avatar.Root size='40'>
                           <Avatar.Image
-                            src={ // Use ternary to handle empty string
-                              user.user_metadata?.avatar_url ? user.user_metadata.avatar_url : 'https://via.placeholder.com/40'
-                            }
-                            alt={
-                              user.user_metadata?.full_name ||
-                              user.email ||
-                              'User Avatar'
-                            } // Use name or email for alt text
+                            src={user.user_metadata?.avatar_url ? user.user_metadata.avatar_url : 'https://via.placeholder.com/40'}
+                            alt={user.user_metadata?.full_name || user.email || t('navbar.account.avatarAlt')}
                           />
                         </Avatar.Root>
                         <div className='flex-1'>
                           <div className='text-label-sm text-text-strong-950'>
-                            {user.user_metadata?.full_name || user.email || 'User'}{' '}
-                            {/* Display user name or email */}
+                            {user.user_metadata?.full_name || user.email || t('navbar.account.defaultName')}
                           </div>
                           <div className='mt-0.5 flex items-center gap-1'>
                             <span className='text-paragraph-xs text-text-sub-600'>
-                              ID: {user.id} {/* Use actual user ID */}
+                              {t('navbar.account.id')}: {user.id}
                             </span>
                             <button
-                              onClick={() => copy(user.id)} // Copy actual user ID
-                              title='Copy ID'
+                              onClick={() => copy(user.id)}
+                              title={t('navbar.account.copyId')}
                               className='text-icon-secondary-400 hover:text-icon-primary-500'
                             >
                               <RiFileCopyLine className='size-3.5' />
                             </button>
                             {hasCopied && (
-                              <Badge.Root
-                                variant='light'
-                                color='green'
-                                size='small'
-                              >
-                                Copied
+                              <Badge.Root variant='light' color='green' size='small'>
+                                {t('navbar.account.copied')}
                               </Badge.Root>
                             )}
                           </div>
                         </div>
-                        {/* <Badge.Root variant='light' color='green' size='medium'>PRO</Badge.Root> /* Optional PRO badge if needed */}
                       </div>
                     </Link>
 
                     <Divider.Root className='mx-2 my-1' />
 
-                    {/* Dark Mode Toggle */}
-                    <Dropdown.Item
-                      className='cursor-default hover:bg-transparent focus:bg-transparent data-[highlighted]:bg-transparent' // Prevent hover/focus style
-                      onSelect={(e) => e.preventDefault()} // Prevent closing on select
-                    >
+                    <Dropdown.Item className='cursor-default hover:bg-transparent focus:bg-transparent data-[highlighted]:bg-transparent' onSelect={(e) => e.preventDefault()}>
                       <Dropdown.ItemIcon as={RiMoonLine} />
-                      Dark Mode
+                      {t('navbar.account.darkMode')}
                       <span className='flex-1' />
-                      <Switch.Root
-                        checked={isDarkMode}
-                        onCheckedChange={handleDarkModeToggle}
-                      />
+                      <Switch.Root checked={isDarkMode} onCheckedChange={handleDarkModeToggle} />
                     </Dropdown.Item>
 
-                    {/* Account Settings */}
-                    <Link href='/settings' passHref>
-                      {' '}
-                      {/* Link to settings page */}
+                    <Link href={`/${i18n.language}/settings`} passHref>
                       <Dropdown.Item>
                         <Dropdown.ItemIcon as={RiSettings3Line} />
-                        Account Settings
+                        {t('navbar.account.settings')}
                       </Dropdown.Item>
                     </Link>
 
-                    {/* Orders */}
-                    <Link href='/settings?tab=orders' passHref>
-                      {' '}
-                      {/* Link to orders page */}
+                    <Link href={`/${i18n.language}/settings?tab=orders`} passHref>
                       <Dropdown.Item>
                         <Dropdown.ItemIcon as={RiFileList2Line} />
-                        Orders
+                        {t('navbar.account.orders')}
                       </Dropdown.Item>
                     </Link>
 
                     <Divider.Root className='mx-2 my-1' />
 
-                    {/* Support Section */}
-                    <Dropdown.Label>SUPPORT</Dropdown.Label>
-                    {/* TODO: Add links to help/chat pages */}
+                    <Dropdown.Label>{t('navbar.support.title')}</Dropdown.Label>
                     <Dropdown.Item>
                       <Dropdown.ItemIcon as={RiQuestionLine} />
-                      Help Center
+                      {t('navbar.support.helpCenter')}
                     </Dropdown.Item>
                     <Dropdown.Item>
                       <Dropdown.ItemIcon as={RiChat1Line} />
-                      Live chat
+                      {t('navbar.support.liveChat')}
                     </Dropdown.Item>
 
                     <Divider.Root className='mx-2 my-1' />
 
-                    {/* Balance Section - TODO: Fetch actual balance */}
                     <div className='flex items-center justify-between p-2'>
                       <div>
                         <div className='text-text-secondary-600 text-label-sm'>
-                          Balance
+                          {t('navbar.account.balance')}
                         </div>
                         <div className='text-label-md font-medium text-text-strong-950'>
-                          12,000.05 {/* Example balance */}
+                          12,000.05
                         </div>
                       </div>
                       <Button.Root variant='primary' mode='stroke' size='small'>
-                        Top up
+                        {t('navbar.account.topUp')}
                       </Button.Root>
                     </div>
 
                     <Divider.Root className='mx-2 my-1' />
 
-                    {/* Logout */}
-                    <Dropdown.Item
-                      className='text-error-base'
-                      onSelect={handleLogout}
-                    >
-                      {' '}
-                      {/* Call handleLogout on select */}
+                    <Dropdown.Item className='text-error-base' onSelect={handleLogout}>
                       <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
-                      Logout
+                      {t('navbar.account.logout')}
                     </Dropdown.Item>
                   </Dropdown.Content>
                 </div>
-
               </Dropdown.Root>
-              {/* --- End Account Dropdown --- */}
             </>
           ) : (
-            // --- Logged Out State ---
             <>
-              <Link href='/auth/login' passHref>
-                {' '}
-                {/* Link to login page */}
+              <Link href={`/${i18n.language}/auth/login`} passHref>
                 <Button.Root variant='neutral' mode='stroke' size='medium'>
-                  Log In
+                  {t('navbar.auth.login')}
                 </Button.Root>
               </Link>
-              <Link href='/auth/signup' passHref>
-                {' '}
-                {/* Link to sign up page */}
+              <Link href={`/${i18n.language}/auth/signup`} passHref>
                 <Button.Root variant='neutral' mode='filled' size='medium'>
-                  Free Start {/* Or Sign Up */}
+                  {t('navbar.auth.freeStart')}
                 </Button.Root>
               </Link>
             </>
-            // --- End Logged Out State ---
           )}
 
-          {/* Mobile Menu Button - Placeholder */}
           <div className='lg:hidden'>
-            {/* TODO: Add mobile menu toggle button & functionality */}
             <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 rounded-md p-2'>
               <svg
                 xmlns='http://www.w3.org/2000/svg'

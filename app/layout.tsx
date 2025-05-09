@@ -10,6 +10,7 @@ import Navbar from '@/components/navbar';
 import { AuthProvider } from '@/utils/supabase/AuthContext';
 import { AudioProvider } from '@/contexts/AudioContext';
 import GlobalAudioPlayer from '@/components/layout/global-audio-player';
+import I18nInit from '@/components/I18nInit';
 
 const inter = FontSans({
   subsets: ['latin'],
@@ -39,6 +40,7 @@ export default function RootLayout({
       className={cn(inter.variable, geistMono.variable, 'antialiased')}
     >
       <body className='bg-bg-white-0 text-text-strong-950'>
+        <I18nInit />
         <AuthProvider>
           <ThemeProvider attribute='class' defaultTheme='light'>
             <TooltipProvider>

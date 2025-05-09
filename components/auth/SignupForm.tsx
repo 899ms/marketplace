@@ -1,6 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 import { authOperations, SignUpSchema } from '@/utils/supabase';
 import { z } from 'zod';
 import * as Input from '@/components/ui/input';
@@ -10,7 +13,7 @@ import * as Radio from '@/components/ui/radio';
 import * as Label from '@/components/ui/label';
 import { RiErrorWarningLine, RiCheckboxCircleLine } from '@remixicon/react';
 
-// Custom Alert component using the AlertUI components
+// Alert component
 const Alert = ({
   variant,
   title,
@@ -21,26 +24,18 @@ const Alert = ({
   title: string;
   description: string;
   className?: string;
-}) => {
-  return (
-    <AlertUI.Root
-      className={className}
-      status={variant}
-      variant='lighter'
-      size='small'
-    >
-      <AlertUI.Icon
-        as={variant === 'error' ? RiErrorWarningLine : RiCheckboxCircleLine}
-      />
-      <div className='flex flex-col space-y-1'>
-        <h5 className='font-medium'>{title}</h5>
-        <p className='text-paragraph-xs'>{description}</p>
-      </div>
-    </AlertUI.Root>
-  );
-};
+}) => (
+  <AlertUI.Root status={variant} variant='lighter' size='small' className={className}>
+    <AlertUI.Icon as={variant === 'error' ? RiErrorWarningLine : RiCheckboxCircleLine} />
+    <div className='flex flex-col space-y-1'>
+      <h5 className='font-medium'>{title}</h5>
+      <p className='text-paragraph-xs'>{description}</p>
+    </div>
+  </AlertUI.Root>
+);
 
 export default function SignupForm() {
+  const { t } = useTranslation('common');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
@@ -55,7 +50,6 @@ export default function SignupForm() {
     setLoading(true);
 
     try {
-      // Validate the form data with Zod, including userType
       SignUpSchema.parse({
         email,
         password,
@@ -63,7 +57,6 @@ export default function SignupForm() {
         user_type: userType || undefined,
       });
 
-      // Attempt to sign up
       const { error: signUpError } = await authOperations.signUp({
         email,
         password,
@@ -81,7 +74,7 @@ export default function SignupForm() {
       if (err instanceof z.ZodError) {
         setError(err.errors[0].message);
       } else {
-        setError('An unexpected error occurred');
+        setError(t('auth.signup.unexpectedError'));
         console.error(err);
       }
     } finally {
@@ -98,11 +91,10 @@ export default function SignupForm() {
             className='mx-auto mb-4 size-16 text-success-base'
           />
           <h2 className='text-2xl font-bold tracking-tight text-text-strong-950'>
-            Sign Up Successful!
+            {t('auth.signup.successTitle')}
           </h2>
           <p className='mt-4 text-paragraph-sm text-text-sub-600'>
-            Weve sent you an email to confirm your account. Please check your
-            inbox.
+            {t('auth.signup.successDesc')}
           </p>
           <div className='mt-6'>
             <Button.Root
@@ -112,7 +104,9 @@ export default function SignupForm() {
               className='w-full'
               asChild
             >
-              <a href='/auth/login'>Go to Login</a>
+              <Link href={`/${i18n.language}/auth/login`}>
+                {t('auth.signup.goToLogin')}
+              </Link>
             </Button.Root>
           </div>
         </div>
@@ -124,124 +118,118 @@ export default function SignupForm() {
     <div className='w-full max-w-md space-y-6'>
       <div className='text-center'>
         <h2 className='text-2xl font-bold tracking-tight text-text-strong-950'>
-          Create an Account
+          {t('auth.signup.title')}
         </h2>
         <p className='mt-2 text-paragraph-sm text-text-sub-600'>
-          Enter your details to create your account
+          {t('auth.signup.description')}
         </p>
       </div>
 
       {error && (
         <Alert
           variant='error'
-          title='Sign up failed'
+          title={t('auth.signup.signupFailed')}
           description={error}
           className='mb-4'
         />
       )}
 
       <form onSubmit={handleSubmit} className='space-y-4'>
+        {/* User type radio */}
         <div className='space-y-2'>
           <Label.Root className='text-label-sm text-text-strong-950'>
-            I am a:
+            {t('auth.signup.userTypeLabel')}
           </Label.Root>
           <Radio.Group
             className='flex gap-4'
             value={userType}
-            onValueChange={(value: string) =>
-              setUserType(value as 'buyer' | 'seller')
-            }
+            onValueChange={(v) => setUserType(v as 'buyer' | 'seller')}
             required
             disabled={loading}
           >
             <div className='flex items-center space-x-2'>
               <Radio.Item value='buyer' id='r1' />
-              <Label.Root htmlFor='r1'>Buyer (Looking to hire)</Label.Root>
+              <Label.Root htmlFor='r1'>{t('auth.signup.buyer')}</Label.Root>
             </div>
             <div className='flex items-center space-x-2'>
               <Radio.Item value='seller' id='r2' />
-              <Label.Root htmlFor='r2'>Seller (Looking for work)</Label.Root>
+              <Label.Root htmlFor='r2'>{t('auth.signup.seller')}</Label.Root>
             </div>
           </Radio.Group>
         </div>
 
-        <div>
-          <Input.Root size='medium'>
-            <Input.Wrapper>
-              <Input.Input
-                id='fullName'
-                type='text'
-                placeholder='Full Name'
-                value={fullName}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setFullName(e.target.value)
-                }
-                disabled={loading}
-                required
-              />
-            </Input.Wrapper>
-          </Input.Root>
-        </div>
+        {/* Full name */}
+        <Input.Root size='medium'>
+          <Input.Wrapper>
+            <Input.Input
+              id='fullName'
+              type='text'
+              placeholder={t('auth.signup.fullNamePlaceholder')}
+              value={fullName}
+              onChange={(e) => setFullName(e.target.value)}
+              disabled={loading}
+              required
+            />
+          </Input.Wrapper>
+        </Input.Root>
 
-        <div>
-          <Input.Root size='medium'>
-            <Input.Wrapper>
-              <Input.Input
-                id='email'
-                type='email'
-                placeholder='Email address'
-                value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
-                }
-                disabled={loading}
-                required
-              />
-            </Input.Wrapper>
-          </Input.Root>
-        </div>
+        {/* Email */}
+        <Input.Root size='medium'>
+          <Input.Wrapper>
+            <Input.Input
+              id='email'
+              type='email'
+              placeholder={t('auth.signup.emailPlaceholder')}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
+              required
+            />
+          </Input.Wrapper>
+        </Input.Root>
 
+        {/* Password */}
         <div>
           <Input.Root size='medium'>
             <Input.Wrapper>
               <Input.Input
                 id='password'
                 type='password'
-                placeholder='Password'
+                placeholder={t('auth.signup.passwordPlaceholder')}
                 value={password}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setPassword(e.target.value)
-                }
+                onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
                 required
               />
             </Input.Wrapper>
           </Input.Root>
           <p className='text-xs mt-2 text-text-soft-400'>
-            Password must be at least 8 characters
+            {t('auth.signup.passwordHelper')}
           </p>
         </div>
 
-        <div className='pt-2'>
-          <Button.Root
-            variant='primary'
-            mode='filled'
-            size='medium'
-            disabled={loading}
-            className='w-full'
-            type='submit'
-          >
-            {loading ? 'Creating account...' : 'Sign Up'}
-          </Button.Root>
-        </div>
+        {/* Submit */}
+        <Button.Root
+          variant='primary'
+          mode='filled'
+          size='medium'
+          disabled={loading}
+          className='w-full'
+          type='submit'
+        >
+          {loading ? t('auth.signup.creating') : t('auth.signup.signUp')}
+        </Button.Root>
       </form>
 
       <div className='text-center text-paragraph-sm'>
         <p className='text-text-sub-600'>
-          Already have an account?{' '}
-          <a href='/auth/login' className='text-primary-base hover:underline'>
-            Log in
-          </a>
+          {t('auth.signup.alreadyHaveAccount')}{' '}
+          <Link
+            href={`/${i18n.language}/auth/login`}
+            className='text-primary-base hover:underline'
+          >
+            {t('auth.signup.logIn')}
+          </Link>
         </p>
       </div>
     </div>

@@ -1,0 +1,133 @@
+{
+  "lang": "en",
+  "auth": {
+    "common": {
+      "error": "Error"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "description": "Enter your email and we'll send you a link to reset your password",
+      "emailPlaceholder": "Email address",
+      "sending": "Sending...",
+      "sendResetLink": "Send Reset Link",
+      "checkedEmailTitle": "Check Your Email",
+      "checkedEmailDesc": "We've sent a password reset link to {{email}}. Please check your inbox and follow the instructions.",
+      "backToLogin": "Back to Login",
+      "remember": "Remember your password?"
+    },
+    "login": {
+      "welcomeBack": "Welcome Back",
+      "enterCredentials": "Enter your credentials to access your account",
+      "loginFailed": "Login failed",
+      "emailPlaceholder": "Email address",
+      "passwordPlaceholder": "Password",
+      "forgotPassword": "Forgot password?",
+      "loggingIn": "Logging in...",
+      "login": "Login",
+      "dontHaveAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "errors": {
+        "profileFetchFailed": "Failed to load your profile. Please try again.",
+        "invalidRole": "Account role is missing or invalid. Please contact support.",
+        "profileFetchException": "Error loading your profile. Please try again.",
+        "default": "An error occurred. Please try again.",
+        "profileLoadFail": "Login successful, but failed to load user data.",
+        "missingUser": "Login seemed successful, but user data is missing.",
+        "unexpected": "An unexpected error occurred during login."
+      }
+    },
+    "signup": {
+      "title": "Create an Account",
+      "description": "Enter your details to create your account",
+      "signupFailed": "Sign up failed",
+      "userTypeLabel": "I am a:",
+      "buyer": "Buyer (Looking to hire)",
+      "seller": "Seller (Looking for work)",
+      "fullNamePlaceholder": "Full Name",
+      "emailPlaceholder": "Email address",
+      "passwordPlaceholder": "Password",
+      "passwordHelper": "Password must be at least 8 characters",
+      "creating": "Creating account...",
+      "signUp": "Sign Up",
+      "successTitle": "Sign Up Successful!",
+      "successDesc": "We've sent you an email to confirm your account. Please check your inbox.",
+      "goToLogin": "Go to Login",
+      "alreadyHaveAccount": "Already have an account?",
+      "logIn": "Log in",
+      "unexpectedError": "An unexpected error occurred"
+    }
+  },
+  "navbar": {
+    "logo": {
+      "alt": "Marketplace Logo"
+    },
+    "links": {
+      "findWorker": "Find Worker",
+      "findServices": "Find Services",
+      "findProjects": "Find Projects",
+      "bonus": "Bonus"
+    },
+    "search": {
+      "placeholder": "Discover more"
+    },
+    "buttons": {
+      "create": "Create"
+    },
+    "language": {
+      "alt": "Select Language"
+    },
+    "account": {
+      "title": "Account",
+      "avatarAlt": "User Avatar",
+      "defaultName": "User",
+      "id": "ID",
+      "copyId": "Copy ID",
+      "copied": "Copied",
+      "darkMode": "Dark Mode",
+      "settings": "Account Settings",
+      "orders": "Orders",
+      "balance": "Balance",
+      "topUp": "Top up",
+      "logout": "Logout"
+    },
+    "support": {
+      "title": "SUPPORT",
+      "helpCenter": "Help Center",
+      "liveChat": "Live chat"
+    },
+    "auth": {
+      "login": "Log In",
+      "freeStart": "Free Start"
+    }
+  },
+  "sidebar": {
+    "about": "About",
+    "editBio": "Edit bio",
+    "bioPlaceholder": "Tell us about yourself...",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "navigation": {
+      "home": "Home",
+      "order": "Order",
+      "chat": "Chat",
+      "bonus": "Bonus",
+      "helpCenter": "Help Center"
+    },
+    "comingSoon": {
+      "title": "Coming Soon",
+      "description": "This feature is under development and will be available shortly."
+    }
+  },
+  "audioPlayer": {
+    "toggleVisibility": "Toggle player visibility",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "play": "Play",
+    "pause": "Pause",
+    "previous": "Previous track",
+    "next": "Next track",
+    "volume": "Volume",
+    "playlist": "Playlist"
+  }
+}
