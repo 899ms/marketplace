@@ -13,6 +13,7 @@ import {
 } from '@remixicon/react';
 import Link from 'next/link';
 import { User } from '@/utils/supabase/types'; // Import User type
+import { useTranslation } from 'react-i18next';
 
 // Define types for the data needed by the sidebar - REMOVE THESE
 // interface WorkerSkill {
@@ -41,6 +42,8 @@ interface ProfileSidebarProps {
 }
 
 export function ProfileSidebar({ user }: ProfileSidebarProps) { // Destructure user
+  const { t } = useTranslation('common');
+
   // Helper to get social icon (simplified)
   // const getSocialIcon = (platform: string) => { // Keep for now, but won't be used immediately
   //   switch (platform) {
@@ -109,8 +112,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) { // Destructure u
         <div className='mt-1 flex items-center gap-1'>
           <RiStarFill className='size-4 text-yellow-400' />
           <span className='text-sm text-text-secondary-600'>
-            {/* Placeholder for rating/reviews */}
-            {placeholderRating.toFixed(1)} ({placeholderReviewCount} reviews)
+            {placeholderRating.toFixed(1)} ({t('worker.profile.reviews', { count: placeholderReviewCount })})
           </span>
         </div>
 
@@ -118,18 +120,18 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) { // Destructure u
         {placeholderIsGoogleVerified && (
           <div className='text-sm text-text-secondary-600 mt-1 flex items-center gap-1'>
             <RiGoogleFill className='size-4 text-red-500' />
-            <span>Google Verified</span>
+            <span>{t('worker.profile.google')}</span>
           </div>
         )}
 
         {/* Action Buttons */}
         <div className='mt-4 flex w-full gap-2'>
           <Button.Root variant='primary' mode='filled' className='flex-1'>
-            Hire Me
+            {t('worker.profile.actions.hire')}
             {/* <Button.Icon as={RiExternalLinkLine} /> */}
           </Button.Root>
           <Button.Root variant='neutral' mode='stroke' className='flex-1'>
-            Contact Me
+            {t('worker.profile.actions.contact')}
             {/* <Button.Icon as={RiExternalLinkLine} /> */}
           </Button.Root>
         </div>
@@ -142,7 +144,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) { // Destructure u
                 {getSocialIcon(link)}
               </Link>
             ))} */}
-            <span className="text-xs text-text-secondary-400">Social links unavailable</span>
+            <span className="text-xs text-text-secondary-400">{t('worker.profile.socialLinksUnavailable')}</span>
           </div>
         )}
       </div>
@@ -150,7 +152,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) { // Destructure u
       {/* Skills Section - Restore original structure with mock data */}
       <div className='border-b border-stroke-soft-200 p-4'>
         <h2 className='mb-3 text-label-lg font-medium text-text-strong-950'>
-          Skills
+          {t('worker.profile.skills')}
         </h2>
         <div className='space-y-2'>
           {mockSkills.map((skill, idx) => (
@@ -164,7 +166,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) { // Destructure u
               )}
               {skill.contactForPricing && (
                 <p className='text-xs text-text-primary-600'>
-                  Contact for pricing
+                  {t('worker.profile.contactForPricing')}
                 </p>
               )}
             </div>
@@ -175,7 +177,7 @@ export function ProfileSidebar({ user }: ProfileSidebarProps) { // Destructure u
       {/* Awards Section - Restore original structure with mock data */}
       <div className='p-4'>
         <h2 className='mb-3 text-label-lg font-medium text-text-strong-950'>
-          Awards
+          {t('worker.profile.awards')}
         </h2>
         <div className='flex flex-wrap gap-1.5'>
           {mockAwards.map((award, idx) => (

@@ -128,7 +128,14 @@
     "previous": "Previous track",
     "next": "Next track",
     "volume": "Volume",
-    "playlist": "Playlist"
+    "playlist": "Playlist",
+    "bookmark": "Bookmark",
+    "duration": {
+      "unknown": "--:--"
+    },
+    "bpm": {
+      "unknown": "-- BPM"
+    }
   },
   "home": {
     "banner": {
@@ -176,6 +183,22 @@
             "review": "Review"
           }
         }
+      }
+    },
+    "profile": {
+      "about": {
+        "edit": "Edit about section"
+      },
+      "reviews": "{{count}} reviews",
+      "google": "Google Verified",
+      "skills": "Skills",
+      "awards": "Awards",
+      "noBio": "This user hasn't added a bio yet.",
+      "contactForPricing": "Contact for pricing",
+      "socialLinksUnavailable": "Social links unavailable",
+      "actions": {
+        "hire": "Hire Me",
+        "contact": "Contact Me"
       }
     }
   },
@@ -244,6 +267,11 @@
         },
         "title": "You will get {{title}}"
       }
+    },
+    "card": {
+      "untitled": "Untitled Service",
+      "seller": "Seller",
+      "defaultRating": "{{rating}} ({{count}})"
     }
   },
   "filter": {
@@ -977,8 +1005,22 @@
             "loadFailed": "Failed to load profile.",
             "servicesFailed": "Failed to load services."
           }
+        },
+        "actions": {
+          "follow": "Follow",
+          "touch": "Touch",
+          "hire": "Hire user",
+          "message": "Send message",
+          "cannotHireSelf": "Cannot hire yourself",
+          "cannotMessageSelf": "Cannot message yourself"
         }
       }
+    }
+  },
+  "widgets": {
+    "schedule": {
+      "title": "Calendar",
+      "seeAll": "See All"
     }
   }
 }

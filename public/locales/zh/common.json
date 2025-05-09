@@ -128,7 +128,14 @@
     "previous": "上一首",
     "next": "下一首",
     "volume": "音量",
-    "playlist": "播放列表"
+    "playlist": "播放列表",
+    "bookmark": "书签",
+    "duration": {
+      "unknown": "--:--"
+    },
+    "bpm": {
+      "unknown": "-- BPM"
+    }
   },
   "home": {
     "banner": {
@@ -176,6 +183,22 @@
             "review": "审核"
           }
         }
+      }
+    },
+    "profile": {
+      "about": {
+        "edit": "编辑个人简介"
+      },
+      "reviews": "{{count}} 条评价",
+      "google": "谷歌认证",
+      "skills": "技能",
+      "awards": "奖项",
+      "noBio": "该用户尚未添加个人简介。",
+      "contactForPricing": "联系询价",
+      "socialLinksUnavailable": "暂无社交链接",
+      "actions": {
+        "hire": "雇佣我",
+        "contact": "联系我"
       }
     }
   },
@@ -244,6 +267,11 @@
         },
         "title": "您将获得{{title}}"
       }
+    },
+    "card": {
+      "untitled": "未命名服务",
+      "seller": "卖家",
+      "defaultRating": "{{rating}} ({{count}})"
     }
   },
   "filter": {
@@ -977,8 +1005,22 @@
             "loadFailed": "加载资料失败。",
             "servicesFailed": "加载服务失败。"
           }
+        },
+        "actions": {
+          "follow": "关注",
+          "touch": "联系",
+          "hire": "雇佣用户",
+          "message": "发送消息",
+          "cannotHireSelf": "不能雇佣自己",
+          "cannotMessageSelf": "不能给自己发送消息"
         }
       }
+    }
+  },
+  "widgets": {
+    "schedule": {
+      "title": "日历",
+      "seeAll": "查看全部"
     }
   }
 }

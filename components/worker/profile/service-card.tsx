@@ -7,6 +7,8 @@ import * as Avatar from '@/components/ui/avatar'; // Keep Avatar if needed for f
 import { RiStarFill } from '@remixicon/react';
 // Removed import for local ./types
 import { Service } from '@/utils/supabase/types'; // Import the standard Service type
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 // Updated props to use the standard Service type
 interface ServiceCardProps {
@@ -19,8 +21,10 @@ interface ServiceCardProps {
 
 // Renamed component function for clarity, export remains ServiceCard
 export function ServiceCard({ service, rating, reviewCount, sellerAvatarUrl, sellerName }: ServiceCardProps) {
+  const { t } = useTranslation('common');
+
   // Provide fallbacks for potentially missing data
-  const displayTitle = service.title || 'Untitled Service';
+  const displayTitle = service.title || t('service.card.untitled');
   const displayPrice = typeof service.price === 'number' ? service.price : 0;
   const displayCurrency = service.currency || 'USD'; // Default currency
   // Get the first image URL, or use a placeholder
@@ -28,7 +32,7 @@ export function ServiceCard({ service, rating, reviewCount, sellerAvatarUrl, sel
   const fallbackImageUrl = 'https://placekitten.com/300/160'; // Placeholder kitten
 
   // Fallbacks for seller info
-  const displaySellerName = sellerName || 'Seller';
+  const displaySellerName = sellerName || t('service.card.seller');
   const sellerInitial = displaySellerName.charAt(0).toUpperCase();
   const fallbackAvatarUrl = 'https://placekitten.com/32/32'; // Default avatar if URL missing
 
@@ -47,7 +51,7 @@ export function ServiceCard({ service, rating, reviewCount, sellerAvatarUrl, sel
 
   return (
     // Wrap the entire card content with a Link
-    <Link href={`/services/${service.id}`} className="block group">
+    <Link href={`/${i18n.language}/services/${service.id}`} className="block group">
       <div className='shadow-sm group-hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all'>
         {/* Image Section - Use Next/Image or img tag */}
         <div className={`relative h-40 w-full bg-gray-200`}> {/* Fallback bg */}
@@ -75,9 +79,9 @@ export function ServiceCard({ service, rating, reviewCount, sellerAvatarUrl, sel
               <RiStarFill className='size-3.5 text-yellow-400' />
               <span className='text-gray-600'>
                 {hasRatingData ? (
-                  <>{rating?.toFixed(1)} ({reviewCount})</>
+                  t('service.card.defaultRating', { rating: rating?.toFixed(1), count: reviewCount || 0 })
                 ) : (
-                  '4.8 (100+)' // Default placeholder if no rating/review props
+                  t('service.card.defaultRating', { rating: '4.8', count: 100 })
                 )}
               </span>
             </div>

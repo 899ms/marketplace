@@ -3,6 +3,7 @@ import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
 import { RiStarFill, RiHeartLine } from '@remixicon/react';
 import { ReviewItemData } from './types';
+import Translate from '@/components/Translate';
 
 interface ReviewItemProps {
   review: ReviewItemData;
@@ -35,7 +36,7 @@ export function ReviewItem({ review }: ReviewItemProps) {
         {/* right */}
         <div className="flex flex-col items-center my-auto">
           <span className="text-label-lg font-medium text-text-strong-950">
-            ${review.price.toFixed(2)}
+            <Translate id="reviewListItem.amount" values={{ amount: review.price.toFixed(2) }} />
           </span>
         </div>
       </div>

@@ -5,6 +5,7 @@ import { useAudioPlayer } from '@/contexts/AudioContext';
 import * as Badge from '@/components/ui/badge';
 import { RiPlayCircleFill, RiPauseCircleFill, RiBookmarkLine } from '@remixicon/react';
 import { Bookmark } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface WorkItemProps {
   url: string;
@@ -18,6 +19,7 @@ interface WorkItemProps {
 }
 
 export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, duration, bpm, genres }: WorkItemProps) {
+  const { t } = useTranslation('common');
   const {
     loadTrack,
     currentTrack,
@@ -30,7 +32,7 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
 
   const handlePlayClick = () => {
     if (isActiveTrack) {
-      togglePlayPause(); // Just toggle state
+      togglePlayPause();
     } else {
       loadTrack(
         { url, title, remarks },
@@ -46,6 +48,7 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
         <button
           onClick={handlePlayClick}
           className="bg-bg-subtle-100 hover:bg-bg-subtle-200 flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-colors"
+          aria-label={isActiveTrack && isPlaying ? t('audioPlayer.pause') : t('audioPlayer.play')}
         >
           {isActiveTrack && isPlaying ? (
             <RiPauseCircleFill className="size-8 text-[#525866]" />
@@ -76,10 +79,13 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
       {/* 3. Duration/BPM + Bookmark */}
       <div className="flex items-center w-[125px] justify-between ">
         <div className="text-left text-[#525866] text-[12px]">
-          <p className="">{duration ?? '--:--'}</p>
-          <p className="">{bpm ?? '-- BPM'}</p>
+          <p className="">{duration ?? t('audioPlayer.duration.unknown')}</p>
+          <p className="">{bpm ?? t('audioPlayer.bpm.unknown')}</p>
         </div>
-        <button className="text-[#525866] hover:text-icon-primary-500 shrink-0">
+        <button
+          className="text-[#525866] hover:text-icon-primary-500 shrink-0"
+          aria-label={t('audioPlayer.bookmark')}
+        >
           <Bookmark className="w-[16px] h-[14px] text-[#525866]" />
         </button>
       </div>
