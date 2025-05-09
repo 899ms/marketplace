@@ -61,14 +61,14 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
             {/* Service Description Section */}
             <div className=''>
               <p className='text-sm text-text-secondary-600 whitespace-pre-wrap'>
-                {service.description || t('services.info.noDescription')}
+                {service.description || t('service.info.noDescription')}
               </p>
             </div>
             {/* Services Included Section */}
             {service.includes && service.includes.length > 0 && (
               <div className='space-y-2'>
                 <h3 className='font-semibold text-text-strong-950'>
-                  {t('services.info.whatsIncluded')}
+                  {t('service.info.whatsIncluded')}
                 </h3>
                 <ul className='space-y-1'>
                   {service.includes.map((item, idx) => (
@@ -107,7 +107,7 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
               ))
             ) : (
               <p className="px-4 py-3 text-sm text-text-secondary-600">
-                {t('services.info.noOptions')}
+                {t('service.info.noOptions')}
               </p>
             )}
           </div>
@@ -128,7 +128,7 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
               </div>
             ) : (
               <p className='text-sm text-text-secondary-600'>
-                {t('services.info.noPortfolio')}
+                {t('service.info.noPortfolio')}
               </p>
             )}
           </div>
@@ -143,7 +143,7 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
                   id: String(i),
                   user: { name: 'Cleve Music', avatar: 'https://via.placeholder.com/40', rating: 4.9 },
                   date: 'Jan 8, 2023',
-                  text: t('services.info.reviewPlaceholder'),
+                  text: t('service.info.reviewPlaceholder'),
                   amount: 1000.00, // Example amount
                 }}
               />
@@ -169,16 +169,16 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
         <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
           <TabMenuHorizontal.List className="border-none">
             <TabMenuHorizontal.Trigger value='Details' className="text-[24px] font-medium">
-              {t('services.info.tabs.details')}
+              {t('service.info.tabs.details')}
             </TabMenuHorizontal.Trigger>
             <TabMenuHorizontal.Trigger value='Options' className="text-[24px] font-medium">
-              {t('services.info.tabs.options')}
+              {t('service.info.tabs.options')}
             </TabMenuHorizontal.Trigger>
             <TabMenuHorizontal.Trigger value='Portfolio' className="text-[24px] font-medium">
-              {t('services.info.tabs.portfolio')}
+              {t('service.info.tabs.portfolio')}
             </TabMenuHorizontal.Trigger>
             <TabMenuHorizontal.Trigger value='Review' className="text-[24px] font-medium">
-              {t('services.info.tabs.review')}
+              {t('service.info.tabs.review')}
             </TabMenuHorizontal.Trigger>
           </TabMenuHorizontal.List>
         </TabMenuHorizontal.Root>

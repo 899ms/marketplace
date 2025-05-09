@@ -48,7 +48,7 @@ export default async function ServiceDetailPage({
 
           <Breadcrumb.Item asChild className='text-[#525866] mr-2'>
             <Link href={`/${lang}/services/search?tab=Service`}>
-              <Translate id="services.detail.page.breadcrumb.services" />
+              <Translate id="service.detail.page.breadcrumb.services" />
             </Link>
           </Breadcrumb.Item>
 
@@ -59,7 +59,7 @@ export default async function ServiceDetailPage({
       </div>
 
       <h1 className='text-[32px] mb-4 text-[#0E121B] font-medium leading-[40px] tracking-[-0.5%]'>
-        <Translate id="services.detail.page.title" values={{ title: service.title }} />
+        <Translate id="service.detail.page.title" values={{ title: service.title }} />
       </h1>
 
       <div className='flex gap-[42px] md:grid-cols-12'>

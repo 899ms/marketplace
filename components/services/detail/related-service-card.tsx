@@ -49,14 +49,14 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
             <img src={imageUrl} alt={service.title} className="w-full h-full object-cover" />
           ) : (
             <div className="size-full flex items-center justify-center">
-              {t('services.related.noImage')}
+              {t('service.related.noImage')}
             </div>
           )}
           {/* Seller Avatar Placeholder */}
           <div className='absolute right-2 top-2'>
             <Avatar.Root size='24' color='blue'>
               <span className='text-label-xs font-medium'>
-                {service.seller_name?.charAt(0) || t('services.related.sellerInitial')}
+                {service.seller_name?.charAt(0) || t('service.related.sellerInitial')}
               </span>
             </Avatar.Root>
           </div>
@@ -70,7 +70,7 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
             <div className='text-[12px] text-[#525866] flex items-center gap-0.5'>
               <RiStarFill className='size-4 text-yellow-400' />
               <span>
-                {t('services.related.rating', { rating: 4.5, count: 50 })}
+                {t('service.related.rating', { rating: 4.5, count: 50 })}
               </span>
             </div>
             <span className='font-medium text-[#0E121B]'>
