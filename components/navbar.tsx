@@ -294,10 +294,12 @@ export default function Navbar() {
                     <Dropdown.Item
                       onClick={() => {
                         const newLang = i18n.language === 'en' ? 'zh' : 'en';
-                        const currentPath = window.location.pathname;
-                        const newPath = currentPath.replace(/^\/(en|zh)/, `/${newLang}`);
-                        // Force a full page refresh by using window.location.replace
-                        window.location.replace(newPath);
+                        const homePath = `/${newLang}/home`;
+                        // First change the language
+                        i18n.changeLanguage(newLang);
+                        // Then navigate and force reload
+                        // window.location.href = homePath;
+                        // window.location.reload();
                       }}
                     >
                       <Dropdown.ItemIcon as={RiGlobalLine} />
