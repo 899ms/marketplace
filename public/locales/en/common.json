@@ -873,7 +873,8 @@
     },
     "details": {
       "title": "Project Details",
-      "requirements": "Requirements"
+      "requirements": "Requirements",
+      "skills": "Skills"
     },
     "info": {
       "budget": "Budget",
@@ -934,6 +935,9 @@
           "createError": "Failed to find or create chat conversation."
         }
       }
+    },
+    "attachments": {
+      "title": "Attachments"
     }
   },
   "filters": {

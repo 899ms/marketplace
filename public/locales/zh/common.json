@@ -873,7 +873,8 @@
     },
     "details": {
       "title": "项目详情",
-      "requirements": "要求"
+      "requirements": "要求",
+      "skills": "技能"
     },
     "info": {
       "budget": "预算",
@@ -934,6 +935,9 @@
           "createError": "无法找到或创建聊天对话。"
         }
       }
+    },
+    "attachments": {
+      "title": "附件"
     }
   },
   "filters": {
