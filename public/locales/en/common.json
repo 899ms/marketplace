@@ -874,7 +874,8 @@
     "details": {
       "title": "Project Details",
       "requirements": "Requirements",
-      "skills": "Skills"
+      "skills": "Skills",
+      "link": "Link"
     },
     "info": {
       "budget": "Budget",

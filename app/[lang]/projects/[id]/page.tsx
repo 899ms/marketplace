@@ -192,36 +192,39 @@ const SellerActionButtons = ({
 };
 
 // NOTE: ProjectLinkCard requires a link - Job schema doesn't have one.
-const ProjectLinkCard = ({ link }: { link: string }) => (
-  <div className="shadow-sm rounded-[20px] bg-bg-white-0 py-4 border border-neutral-300 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] p-4">
-    <label
-      htmlFor="project-link"
-      className="mb-2 block text-label-md font-medium text-text-strong-950"
-    >
-      Link
-    </label>
-    <Input.Root>
-      <Input.Wrapper className="flex items-center bg-white border border-gray-300 rounded-md px-2 py-1">
-        {/* link icon */}
-        <RiLinksLine className="size-5 text-gray-400 mr-2" />
-        {/* read-only input */}
-        <Input.Input
-          id="project-link"
-          readOnly
-          value={link}
-          className="bg-transparent text-gray-400 flex-1 focus:outline-none"
-        />
-        <button
-          onClick={() => navigator.clipboard.writeText(link)}
-          className="text-icon-secondary-400 hover:text-icon-primary-500 p-1"
-          aria-label="Copy link"
-        >
-          <RiFileCopyLine className="size-5" />
-        </button>
-      </Input.Wrapper>
-    </Input.Root>
-  </div>
-);
+const ProjectLinkCard = ({ link }: { link: string }) => {
+  const { t } = useTranslation('common');
+  return (
+    <div className="shadow-sm rounded-[20px] bg-bg-white-0 py-4 border border-neutral-300 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] p-4">
+      <label
+        htmlFor="project-link"
+        className="mb-2 block text-label-md font-medium text-text-strong-950"
+      >
+        {t('projects.details.link')}
+      </label>
+      <Input.Root>
+        <Input.Wrapper className="flex items-center bg-white border border-gray-300 rounded-md px-2 py-1">
+          {/* link icon */}
+          <RiLinksLine className="size-5 text-gray-400 mr-2" />
+          {/* read-only input */}
+          <Input.Input
+            id="project-link"
+            readOnly
+            value={link}
+            className="bg-transparent text-gray-400 flex-1 focus:outline-none"
+          />
+          <button
+            onClick={() => navigator.clipboard.writeText(link)}
+            className="text-icon-secondary-400 hover:text-icon-primary-500 p-1"
+            aria-label="Copy link"
+          >
+            <RiFileCopyLine className="size-5" />
+          </button>
+        </Input.Wrapper>
+      </Input.Root>
+    </div>
+  );
+};
 
 // --- Main Page Component ---
 

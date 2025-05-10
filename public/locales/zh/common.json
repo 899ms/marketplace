@@ -874,7 +874,8 @@
     "details": {
       "title": "项目详情",
       "requirements": "要求",
-      "skills": "技能"
+      "skills": "技能",
+      "link": "链接"
     },
     "info": {
       "budget": "预算",
