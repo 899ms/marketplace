@@ -207,7 +207,8 @@
           "uploadingFile": "Uploading {{fileName}}...",
           "chooseFile": "Choose a file or drag & drop it here",
           "fileTypes": "Audio formats (MP3, WAV, etc.), up to 50 MB.",
-          "browseFiles": "Browse Files"
+          "browseFiles": "Browse Files",
+          "completed": "Completed"
         },
         "step3": {
           "title": "You will get {{title}}",
