@@ -103,12 +103,12 @@ const MeetingsWidget = () => {
   ];
 
   return (
-    <div className='flex flex-col gap-4'>
-      <div className='flex flex-row justify-between items-center'>
+    <div className='flex flex-col gap-4 py-4'>
+      <div className='flex flex-row justify-between items-center px-4'>
         <p className='text-[16px] text-[#0E121B] font-medium'>{t('worker.sidebar.meetings.title')}</p>
         <Link href={`/${i18n.language}/worker/meetings`} className='text-[14px] text-[#525866]'>{t('worker.sidebar.calendar.seeAll')}</Link>
       </div>
-      <TabMenuHorizontal.Root defaultValue={activeTab}>
+      <TabMenuHorizontal.Root defaultValue={activeTab} className='px-4 py-1'>
         <TabMenuHorizontal.List>
           {tabs.map(tab => (
             <TabMenuHorizontal.Trigger key={tab.id} value={tab.id}>
@@ -118,7 +118,7 @@ const MeetingsWidget = () => {
         </TabMenuHorizontal.List>
         {tabs.map(tab => (
           <TabMenuHorizontal.Content key={tab.id} value={tab.id}>
-            <div className='flex flex-col gap-4'>
+            <div className='flex flex-col gap-4 mt-4'>
               {meetings.map((meeting, index) => (
                 <MeetingCard
                   key={index}
