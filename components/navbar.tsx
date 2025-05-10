@@ -31,6 +31,7 @@ import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming 
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
   // --- Get Auth State using useAuth hook ---
@@ -46,6 +47,7 @@ export default function Navbar() {
   // const userId = '1235984'; // Use user.id instead
 
   const { t } = useTranslation('common');
+  const router = useRouter();
 
   // TODO: Implement Dark Mode toggle logic (e.g., using next-themes)
   const handleDarkModeToggle = () => {
@@ -294,12 +296,12 @@ export default function Navbar() {
                     <Dropdown.Item
                       onClick={() => {
                         const newLang = i18n.language === 'en' ? 'zh' : 'en';
-                        const homePath = `/${newLang}/home`;
-                        // First change the language
+                        const currentPath = window.location.pathname;
+                        const newPath = currentPath.replace(/^\/(en|zh)/, `/${newLang}`);
+                        // Update i18n language
                         i18n.changeLanguage(newLang);
-                        // Then navigate and force reload
-                        // window.location.href = homePath;
-                        // window.location.reload();
+                        // Update URL using Next.js router
+                        router.push(newPath);
                       }}
                     >
                       <Dropdown.ItemIcon as={RiGlobalLine} />
