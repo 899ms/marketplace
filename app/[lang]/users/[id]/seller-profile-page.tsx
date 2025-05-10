@@ -224,7 +224,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
       case 'about':
         return (
           <>
-            <AboutSection about={sellerProfile.bio ?? 'This seller hasn\'t added a bio yet.'} />
+            <AboutSection about={sellerProfile.bio ?? t('users.profile.seller.page.about.noBio')} />
 
             {/* 1) Work - Use workerData */}
             <div className="mt-8 flex items-center justify-between">

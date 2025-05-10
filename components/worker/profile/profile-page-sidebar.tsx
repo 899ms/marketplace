@@ -331,7 +331,7 @@ export function ProfilePageSidebar({
           {/* About Content */}
           <div className='flex items-center justify-between'> {/* Removed mb-2 */}
             <h3 className='text-text-strong-950 text-[14px] font-semibold'>
-              {t('worker.profile.about')}
+              {t('worker.profile.about.title')}
             </h3>
             {/* TODO: Add Edit button logic if needed for own profile */}
             <button className='text-icon-secondary-400 hover:text-icon-primary-500'>

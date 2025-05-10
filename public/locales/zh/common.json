@@ -229,7 +229,8 @@
     },
     "profile": {
       "about": {
-        "edit": "编辑个人简介"
+        "edit": "编辑个人简介",
+        "title": "个人简介"
       },
       "reviews": "{{count}} 条评价",
       "google": "谷歌认证",
@@ -241,6 +242,7 @@
       "title": "工作者档案",
       "openInNewTab": "在新标签页中打开",
       "musicProducer": "音乐制作人",
+      "recentReviews": "最近评价",
       "actions": {
         "hire": "雇佣",
         "contact": "联系我",
@@ -1165,6 +1167,9 @@
           "error": {
             "loadFailed": "加载资料失败。",
             "servicesFailed": "加载服务失败。"
+          },
+          "about": {
+            "noBio": "该卖家暂未添加个人简介。"
           }
         },
         "actions": {
@@ -1175,6 +1180,15 @@
           "cannotHireSelf": "不能雇佣自己",
           "cannotMessageSelf": "不能给自己发送消息"
         }
+      },
+      "actions": {
+        "hire": "雇佣",
+        "contact": "联系",
+        "touch": "联系",
+        "cannotHireSelf": "不能雇佣自己",
+        "cannotMessageSelf": "不能给自己发送消息",
+        "message": "发送消息",
+        "follow": "关注"
       }
     }
   },

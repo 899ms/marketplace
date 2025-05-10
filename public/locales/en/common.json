@@ -229,7 +229,8 @@
     },
     "profile": {
       "about": {
-        "edit": "Edit about section"
+        "edit": "Edit about section",
+        "title": "About"
       },
       "reviews": "{{count}} reviews",
       "google": "Google Verified",
@@ -241,6 +242,7 @@
       "title": "Worker Profile",
       "openInNewTab": "Open in new tab",
       "musicProducer": "Music Producer",
+      "recentReviews": "Recent Reviews",
       "actions": {
         "hire": "Hire",
         "contact": "Contact Me",
@@ -1165,6 +1167,9 @@
           "error": {
             "loadFailed": "Failed to load profile.",
             "servicesFailed": "Failed to load services."
+          },
+          "about": {
+            "noBio": "This seller hasn't added a bio yet."
           }
         },
         "actions": {
@@ -1175,6 +1180,15 @@
           "cannotHireSelf": "Cannot hire yourself",
           "cannotMessageSelf": "Cannot message yourself"
         }
+      },
+      "actions": {
+        "hire": "Hire",
+        "contact": "Contact Me",
+        "touch": "Touch",
+        "cannotHireSelf": "Cannot hire yourself",
+        "cannotMessageSelf": "Cannot message yourself",
+        "message": "Send message",
+        "follow": "Follow"
       }
     }
   },
