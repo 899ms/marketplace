@@ -9,6 +9,8 @@ import ServiceCard from '../cards/ServiceCard';
 import WorkerCard from '../cards/WorkerCard';
 import { serviceOperations, userOperations } from '@/utils/supabase/database';
 import { Service, User } from '@/utils/supabase/types';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 // Shuffle array function
 function shuffleArray<T>(array: T[]): T[] {
@@ -22,6 +24,7 @@ function shuffleArray<T>(array: T[]): T[] {
 
 // Main Content Component
 const MainContent = () => {
+  const { t } = useTranslation('common');
   const tabItems = ['All', 'Offers', 'Completed', 'Cancelled'];
   const [activeTab, setActiveTab] = useState(tabItems[0]);
   const [recentServices, setRecentServices] = useState<Service[]>([]);
@@ -108,7 +111,7 @@ const MainContent = () => {
       <div className="max-w-[1052px] flex flex-col gap-7">
         {/* Hot Services Section */}
         <section className="flex flex-col max-w-[1052px] max-h-[332px]">
-          <SectionHeader title='Hot Services' href='/services/search?tab=Service' />
+          <SectionHeader title={t('home.sections.hotServices')} href={`/${i18n.language}/services/search?tab=Service`} />
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
             {isLoading ? (
               // Loading state
@@ -120,14 +123,14 @@ const MainContent = () => {
             ) : recentServices.length > 0 ? (
               // Map through fetched services
               recentServices.map((service) => (
-                <Link key={service.id} href={`/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
+                <Link key={service.id} href={`/${i18n.language}/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
                   <ServiceCard service={service} />
                 </Link>
               ))
             ) : (
               // No services found
               <div className="col-span-3 text-center py-8 text-gray-500">
-                No services found
+                {t('home.sections.noServices')}
               </div>
             )}
           </div>
@@ -135,7 +138,7 @@ const MainContent = () => {
 
         {/* Hot Workers Section */}
         <section>
-          <SectionHeader title='Hot Workers' href='/services/search?tab=Worker' />
+          <SectionHeader title={t('home.sections.hotWorkers')} href={`/${i18n.language}/services/search?tab=Worker`} />
           <div className='grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3'>
             {isLoadingWorkers ? (
               // Loading state
@@ -147,7 +150,7 @@ const MainContent = () => {
             ) : recentWorkers.length > 0 ? (
               // Map through fetched workers
               recentWorkers.map((worker) => (
-                <Link key={worker.id} href={`/users/${worker.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
+                <Link key={worker.id} href={`/${i18n.language}/users/${worker.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
                   <WorkerCard worker={worker} />
                 </Link>
               ))
@@ -162,7 +165,7 @@ const MainContent = () => {
 
         {/* Category Ranking Section */}
         <section className="flex flex-col max-w-[1052px] max-h-[332px] gap-4">
-          <SectionHeader title='Category Ranking' href='/services/search?tab=Service' />
+          <SectionHeader title={t('home.sections.categoryRanking')} href={`/${i18n.language}/services/search?tab=Service`} />
           <div className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'>
             {isLoading ? (
               // Loading state
@@ -174,7 +177,7 @@ const MainContent = () => {
             ) : categoryServices.length > 0 ? (
               // Map through shuffled services
               categoryServices.map((service) => (
-                <Link key={`category-${service.id}`} href={`/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
+                <Link key={`category-${service.id}`} href={`/${i18n.language}/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
                   <ServiceCard service={service} />
                 </Link>
               ))
@@ -183,11 +186,11 @@ const MainContent = () => {
               Array(3).fill(0).map((_, index) => {
                 const placeholderService: Service = {
                   id: `placeholder-${index}`,
-                  title: 'Category Placeholder Service',
-                  description: 'Placeholder description',
+                  title: t('home.placeholders.service.title'),
+                  description: t('home.placeholders.service.description'),
                   price: 99,
                   seller_id: 'placeholder-seller',
-                  seller_name: 'Music Professional',
+                  seller_name: t('home.placeholders.service.seller'),
                   audio_url: null,
                   lead_time: 7,
                   currency: 'USD',

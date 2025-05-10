@@ -5,7 +5,7 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import {
   RiCalendarLine,
 } from '@remixicon/react';
-
+import { useTranslation } from 'react-i18next';
 
 import * as Button from '@/components/ui/button';
 
@@ -24,6 +24,7 @@ export default function WidgetSchedule({
 }: React.HTMLAttributes<HTMLDivElement> & {
   emptyState?: boolean;
 }) {
+  const { t } = useTranslation('common');
   const [selectedDay, setSelectedDay] = React.useState<Date>(new Date());
 
   // React.useEffect(() => {
@@ -34,9 +35,9 @@ export default function WidgetSchedule({
     <WidgetBox.Root {...rest} className="ring-0">
       <WidgetBox.Header>
         <WidgetBox.HeaderIcon as={RiCalendarLine} />
-        Calendar
+        {t('widgets.schedule.title')}
         <Button.Root variant='neutral' mode='stroke' size='xsmall'>
-          See All
+          {t('widgets.schedule.seeAll')}
         </Button.Root>
       </WidgetBox.Header>
 

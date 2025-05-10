@@ -7,13 +7,15 @@ import { useAuth } from '@/utils/supabase/AuthContext';
 import { serviceOperations } from '@/utils/supabase/database';
 import type { Service } from '@/utils/supabase/types';
 import ServiceCard from '@/components/settings/ServiceCard';
+import { useTranslation } from 'react-i18next';
 
 /* ------------------------------------------------------------------ */
-/** Full seller‑only page that lists the user’s services. The parent
+/** Full seller‑only page that lists the user's services. The parent
  *  (`page.tsx`) mounts this component *only* when the current account
- *  is a seller and “My services” view is active.
+ *  is a seller and "My services" view is active.
  */
 export default function MyServicesView() {
+  const { t } = useTranslation('common');
   const { user, userProfile, loading: authLoading, profileLoading } = useAuth();
 
   const [services, setServices] = React.useState<Service[]>([]);
@@ -56,7 +58,7 @@ export default function MyServicesView() {
       {/* ---------- header row ---------- */}
       <div className="mb-6 flex items-center justify-between border-b border-[#E1E4EA] pb-4 h-[10%]">
         <h1 className="text-[24px] font-medium text-[#222530]">
-          My Services
+          {t('settings.myServices.title')}
         </h1>
 
         <Dropdown.Root>
@@ -66,20 +68,20 @@ export default function MyServicesView() {
             </button>
           </Dropdown.Trigger>
           <Dropdown.Content align="end">
-            <Dropdown.Item>Create New Service</Dropdown.Item>
-            <Dropdown.Item>Manage Settings</Dropdown.Item>
+            <Dropdown.Item>{t('settings.myServices.createNew')}</Dropdown.Item>
+            <Dropdown.Item>{t('settings.myServices.manageSettings')}</Dropdown.Item>
           </Dropdown.Content>
         </Dropdown.Root>
       </div>
 
       {/* ---------- list / states ---------- */}
       {dataLoading ? (
-        <div className="text-center">Loading services…</div>
+        <div className="text-center">{t('settings.myServices.loading')}</div>
       ) : error ? (
         <div className="text-center text-red-600">{error}</div>
       ) : services.length === 0 ? (
         <div className="text-center text-gray-500">
-          You haven’t created any services yet.
+          {t('settings.myServices.noServices')}
         </div>
       ) : (
         <div className="space-y-4 h-[90%] overflow-y-auto  custom-scrollbar pr-4">

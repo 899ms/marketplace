@@ -4,6 +4,7 @@ import * as React from 'react';
 import * as Slider from '@/components/ui/slider';
 import * as Tooltip from '@/components/ui/tooltip';
 import { cn } from '@/utils/cn';
+import Translate from '@/components/Translate';
 
 interface PriceRangeSliderProps {
   value: [number, number];

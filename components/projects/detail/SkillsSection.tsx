@@ -2,12 +2,15 @@
 
 import React from 'react';
 import * as Badge from '@/components/ui/badge';
+import { useTranslation } from 'react-i18next';
 
 interface SkillsSectionProps {
   skills: string[];
 }
 
 const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
+  const { t } = useTranslation('common');
+
   if (!skills || skills.length === 0) return null;
 
   return (
@@ -23,7 +26,7 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
           text-[16px]
         '
       >
-        Skills
+        {t('projects.details.skills')}
       </h2>
       <div className='flex flex-wrap gap-2'>
         {skills.map((skill, idx) => (

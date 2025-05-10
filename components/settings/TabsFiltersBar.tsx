@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import * as DatePicker from '@/components/ui/datepicker';
 import * as Dropdown from '@/components/ui/dropdown';
 import * as Button from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 import {
   RiCalendarLine,
   RiFilter3Line,
@@ -44,6 +45,8 @@ export default function TabsFiltersBar({
   isBuyer,
   onSellerFilter,
 }: Props) {
+  const { t } = useTranslation('common');
+
   return (
     <Tabs.Root value={activeTab} onValueChange={setActiveTab}>
       <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
@@ -63,9 +66,7 @@ export default function TabsFiltersBar({
                         ? 'rounded-lg px-4 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'
                         : 'rounded-lg px-8 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'}
               >
-                {key === 'inProgress'
-                  ? 'In progress'
-                  : key.charAt(0).toUpperCase() + key.slice(1)}
+                {t(`tabsFiltersBar.tabs.${key}`)}
               </Tabs.Trigger>
             ),
           )}
@@ -77,7 +78,7 @@ export default function TabsFiltersBar({
           <div className="relative lg:w-[300px]">
             <RiSearch2Line className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 size-4 text-[#99A0AE]" />
             <Input
-              placeholder="Search…"
+              placeholder={t('tabsFiltersBar.search.placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="h-9 w-full rounded-lg border border-[#E1E4EA] pl-8 pr-3 text-[12px] placeholder:text-[#99A0AE] focus:outline-none focus:ring-1 focus:ring-ring"
@@ -89,8 +90,8 @@ export default function TabsFiltersBar({
             <Dropdown.Root>
               <Dropdown.Trigger asChild>
                 <button className="inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-2 text-[14px] text-gray-500 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
-                  <Image src={calendarIcon} alt="Calendar" width={20} height={20} />
-                  {selectedDate ? selectedDate.toLocaleDateString() : 'Select Date'}
+                  <Image src={calendarIcon} alt={t('tabsFiltersBar.calendar.alt')} width={20} height={20} />
+                  {selectedDate ? selectedDate.toLocaleDateString() : t('tabsFiltersBar.calendar.selectDate')}
                 </button>
               </Dropdown.Trigger>
               <Dropdown.Content align="start" className="w-auto p-0">
@@ -106,7 +107,7 @@ export default function TabsFiltersBar({
             /* Seller – Filter button */
             <Button.Root variant='neutral' mode='stroke' size='small' className='text-gray-500 text-[14px] font-medium'>
               <Button.Icon as={RiFilter3Line} className="w-5 h-5 text-gray-600" />
-              Filter
+              {t('tabsFiltersBar.filter')}
             </Button.Root>
           )}
 
@@ -115,19 +116,19 @@ export default function TabsFiltersBar({
             <Dropdown.Trigger asChild>
               <Button.Root variant='neutral' mode='stroke' size='small' className='text-gray-500 text-[14px] font-normal'>
                 <Button.Icon as={RiSortAsc} className="w-4 h-5 text-gray-600" />
-                Sort by
+                {t('tabsFiltersBar.sort.label')}
                 <Button.Icon as={RiArrowDownSLine} className='w-4 h-5 text-[#99A0AE]' />
               </Button.Root>
             </Dropdown.Trigger>
             <Dropdown.Content align="end">
               <Dropdown.Item onSelect={() => setSortOption('date_asc')}>
-                Date Ascending
+                {t('tabsFiltersBar.sort.dateAsc')}
               </Dropdown.Item>
               <Dropdown.Item onSelect={() => setSortOption('date_desc')}>
-                Date Descending
+                {t('tabsFiltersBar.sort.dateDesc')}
               </Dropdown.Item>
               <Dropdown.Item onSelect={() => setSortOption('name_asc')}>
-                Name Ascending
+                {t('tabsFiltersBar.sort.nameAsc')}
               </Dropdown.Item>
             </Dropdown.Content>
           </Dropdown.Root>

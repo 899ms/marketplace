@@ -6,7 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import {
   CreateServiceFormSchema,
   CreateServiceFormData,
-} from '@/app/worker/services/create/schema';
+} from '@/app/[lang]/worker/services/create/schema';
 import { useAuth } from '@/utils/supabase/AuthContext';
 import supabase from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';

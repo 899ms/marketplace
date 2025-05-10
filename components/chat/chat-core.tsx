@@ -1,4 +1,7 @@
+'use client';
+
 import React, { useState, useEffect, useRef, useCallback, Fragment } from 'react';
+import { useTranslation } from 'react-i18next';
 import supabase from '@/utils/supabase/client';
 import { chatOperations } from '@/utils/supabase/database';
 import { Chat, Message, User, MessageSchema, BaseFileData, MusicItem } from '@/utils/supabase/types';
@@ -42,22 +45,22 @@ function formatMessageTimestamp(timestamp: string | null | undefined): string {
   }
 }
 
-function formatDateSeparator(dateKey: string | null | undefined): string {
-  if (!dateKey) return 'Date Unknown';
+function formatDateSeparator(dateKey: string | null | undefined, t: (key: string) => string): string {
+  if (!dateKey) return t('chat.dateUnknown');
   try {
     const date = parseISO(dateKey);
 
     if (isToday(date)) {
-      return 'Today';
+      return t('chat.today');
     }
     if (isYesterday(date)) {
-      return 'Yesterday';
+      return t('chat.yesterday');
     }
     return format(date, 'MMM d, yyyy');
 
   } catch (error) {
     console.error('Error formatting date separator:', error);
-    return 'Date Error';
+    return t('chat.dateError');
   }
 }
 
@@ -108,6 +111,7 @@ function ChatMessageRenderer({
   timestamp,
   senderName,
 }: ChatMessageRendererProps) {
+  const { t } = useTranslation('common');
   const audioPlayer = useAudioPlayer();
   const alignmentContainerClass = isCurrentUser ? 'justify-end' : 'justify-start';
   const alignmentItemsClass = isCurrentUser ? 'items-end' : 'items-start';
@@ -319,7 +323,7 @@ function ChatMessageRenderer({
                   {message.data[0].name}
                 </div>
                 <div className='text-xs text-gray-500 dark:text-gray-400'>
-                  {formatBytes(message.data[0].size)} - Click to play
+                  {formatBytes(message.data[0].size)} - {t('chat.clickToPlay')}
                 </div>
               </div>
             </button>
@@ -334,7 +338,7 @@ function ChatMessageRenderer({
           <div className={`mt-2 flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
             <div className={`flex flex-col gap-2 w-2/5`}>
               <div className='flex flex-row gap-1 items-center'>
-                <p className='text-[12px] text-[#525866]'>Offer</p>
+                <p className='text-[12px] text-[#525866]'>{t('chat.offer')}</p>
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M6 12C2.6862 12 0 9.3138 0 6C0 2.6862 2.6862 0 6 0C9.3138 0 12 2.6862 12 6C12 9.3138 9.3138 12 6 12ZM6 10.8C7.27304 10.8 8.49394 10.2943 9.39411 9.39411C10.2943 8.49394 10.8 7.27304 10.8 6C10.8 4.72696 10.2943 3.50606 9.39411 2.60589C8.49394 1.70571 7.27304 1.2 6 1.2C4.72696 1.2 3.50606 1.70571 2.60589 2.60589C1.70571 3.50606 1.2 4.72696 1.2 6C1.2 7.27304 1.70571 8.49394 2.60589 9.39411C3.50606 10.2943 4.72696 10.8 6 10.8ZM5.4 3H6.6V4.2H5.4V3ZM5.4 5.4H6.6V9H5.4V5.4Z" fill="#525866" />
                 </svg>
@@ -348,7 +352,7 @@ function ChatMessageRenderer({
                 </div>
                 <div className='flex flex-col p-2 gap-1 border-b border-[#E1E4EA]'>
                   <p className='text-[12px] text-[#0E121B] border-b border-[#E1E4EA] pb-2 mb-1'>{message.data?.description}</p>
-                  <p className='text-[#0E121B] text-[12px] font-medium'>Your offer includes</p>
+                  <p className='text-[#0E121B] text-[12px] font-medium'>{t('chat.yourOfferIncludes')}</p>
                   <div className='flex flex-row gap-2 items-center'>
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M6 12C2.6862 12 0 9.3138 0 6C0 2.6862 2.6862 0 6 0C9.3138 0 12 2.6862 12 6C12 9.3138 9.3138 12 6 12ZM6 10.8C7.27304 10.8 8.49394 10.2943 9.39411 9.39411C10.2943 8.49394 10.8 7.27304 10.8 6C10.8 4.72696 10.2943 3.50606 9.39411 2.60589C8.49394 1.70571 7.27304 1.2 6 1.2C4.72696 1.2 3.50606 1.70571 2.60589 2.60589C1.70571 3.50606 1.2 4.72696 1.2 6C1.2 7.27304 1.70571 8.49394 2.60589 9.39411C3.50606 10.2943 4.72696 10.8 6 10.8ZM6.6 6H9V7.2H5.4V3H6.6V6Z" fill="#525866" />
@@ -358,8 +362,8 @@ function ChatMessageRenderer({
                   </div>
                 </div>
                 <div className='flex flex-row justify-between w-full p-2 gap-3'>
-                  <Button className='w-1/2' variant="neutral" mode="stroke" size="small">Decline</Button>
-                  <FancyButton.Root className='w-1/2' size="small">Accept</FancyButton.Root>
+                  <Button className='w-1/2' variant="neutral" mode="stroke" size="small">{t('chat.decline')}</Button>
+                  <FancyButton.Root className='w-1/2' size="small">{t('chat.accept')}</FancyButton.Root>
                 </div>
               </div>
             </div>
@@ -369,7 +373,11 @@ function ChatMessageRenderer({
           <div className={`flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
             <div className={`flex flex-col gap-2 w-2/5`}>
               <div className='flex flex-row gap-1 items-center'>
-                <p className='text-[12px] text-[#525866]'>{`${message.data.status && message.data.status === 'completed' ? 'Completed' : 'Activated'}`} the milestone</p>
+                <p className='text-[12px] text-[#525866]'>
+                  {message.data.status && message.data.status === 'completed'
+                    ? t('chat.milestone.completed')
+                    : t('chat.milestone.activated')}
+                </p>
               </div>
               <div className='flex flex-col gap-2 rounded-lg bg-[#F5F7FA] p-2'>
                 <p className='text-[14px] text-[#0E121B]'>Milestone: &quot;{message.data?.description}&quot;</p>
@@ -380,7 +388,7 @@ function ChatMessageRenderer({
                   className='!justify-start'
                 >
                   <Link href={`/orders/detail/${message.data.contractId}`}>
-                    View Contract
+                    {t('chat.milestone.viewContract')}
                   </Link>
                 </LinkButton>
               </div>
@@ -413,6 +421,7 @@ export default function ChatCore({
   isPopup = false,
   onClose,
 }: ChatCoreProps) {
+  const { t } = useTranslation('common');
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [newMessage, setNewMessage] = useState('');
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -609,13 +618,12 @@ export default function ChatCore({
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file && !isSending) {
-      const maxSize = 25 * 1024 * 1024; // Keep 5MB limit for now, adjust if needed
+      const maxSize = 25 * 1024 * 1024;
       if (file.size > maxSize) {
-        alert('File is too large. Maximum size is 5MB.');
+        alert(t('chat.fileTooLarge'));
         if (fileInputRef.current) fileInputRef.current.value = '';
         return;
       }
-      // Add MP3 check here if needed, although the input accept attribute should handle it mostly
       setSelectedFile(file);
     } else {
       setSelectedFile(null);
@@ -684,7 +692,7 @@ export default function ChatCore({
             <p className='font-medium text-[12px] text-[#525866] dark:text-gray-100'>
               {otherUserProfile?.full_name ?? otherUserProfile?.username ?? 'User'}
             </p>
-            <p className='text-[12px] text-[#525866] dark:text-green-400'>Online</p>
+            <p className='text-[12px] text-[#525866] dark:text-green-400'>{t('chat.online')}</p>
           </div>
         </div>
         <div className="flex items-center space-x-1">
@@ -694,7 +702,7 @@ export default function ChatCore({
               mode="ghost"
               size="medium"
               onClick={onClose}
-              aria-label="Close chat"
+              aria-label={t('chat.closeChat')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -721,7 +729,7 @@ export default function ChatCore({
               </div>
               <div className="relative flex justify-center">
                 <span className="bg-white dark:bg-gray-800 px-2 text-xs text-gray-500 dark:text-gray-400 text-[11px]">
-                  {formatDateSeparator(dateKey)}
+                  {formatDateSeparator(dateKey, t)}
                 </span>
               </div>
             </div>
@@ -729,8 +737,8 @@ export default function ChatCore({
               const isCurrentUser = message.sender_id === currentUserId;
               const senderProfile = isCurrentUser ? currentUserProfile : otherUserProfile;
               const senderName = isCurrentUser
-                ? 'Me'
-                : senderProfile?.full_name ?? senderProfile?.username ?? 'User';
+                ? t('chat.me')
+                : senderProfile?.full_name ?? senderProfile?.username ?? t('chat.user');
               return (
                 <ChatMessageRenderer
                   key={message.id}
@@ -752,7 +760,7 @@ export default function ChatCore({
           <div className='border-b border-[#E1E4EA] pb-2 w-full'>
             <textarea
               ref={textareaRef}
-              placeholder='Type your message...'
+              placeholder={t('chat.typeMessage')}
               className='w-full border-none outline-none resize-none min-h-[24px] max-h-[72px] text-[14px]'
               rows={1}
               value={newMessage}
@@ -829,7 +837,7 @@ export default function ChatCore({
                 type='submit'
                 disabled={(!newMessage.trim() && !selectedFile) || isSending}
               >
-                Send
+                {t('chat.send')}
                 {!isSending ? <FancyButton.Icon as={SendIcon} /> :
                   <FancyButton.Icon as={LoaderCircle} className='animate-spin' />}
               </FancyButton.Root>

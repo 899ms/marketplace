@@ -1,8 +1,10 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import type { SendOfferFormData } from './schema';
 import { useSendOfferForm } from '@/hooks/useSendOfferForm';
+import { jobOperations } from '@/utils/supabase/database';
 
 // Import UI components
 // Import Root as Alert based on ui/alert.tsx structure
@@ -20,11 +22,13 @@ import { AgreementSection } from './form-sections/agreement-section';
 import { FormActions } from './form-sections/form-actions';
 
 interface SendOfferFormProps {
-  offerId?: string; // Make offerId optional if it's not always needed or comes from route
+  sellerId?: string; // Make sellerId optional if it's not always needed or comes from route
   // Add other props like default values, user details etc. if necessary
 }
 
-export function SendOfferForm({ offerId }: SendOfferFormProps) {
+export function SendOfferForm({ sellerId }: SendOfferFormProps) {
+  const { t } = useTranslation('common');
+
   // Use the custom hook to manage form state and logic
   const {
     formMethods,
@@ -44,7 +48,7 @@ export function SendOfferForm({ offerId }: SendOfferFormProps) {
   if (!formMethods) {
     // Handle the case where the hook hasn't returned the methods yet
     // You might want a more sophisticated loading indicator
-    return <div>Loading form...</div>;
+    return <div>{t('offers.sendOfferForm.loading')}</div>;
   }
 
   // Get watch function to monitor paymentType changes
@@ -71,6 +75,42 @@ export function SendOfferForm({ offerId }: SendOfferFormProps) {
 
   const isLoadingData = isLoadingSellers || isLoadingJobs;
 
+
+  // 1) watch the selected job ID
+  const selectedJobId = watch('selectOrder');
+
+  // 2) fetch when it changes
+  useEffect(() => {
+    if (!selectedJobId) return;
+    console.log('→ selectedJobId changed:', selectedJobId);
+
+    jobOperations.getJobById(selectedJobId).then((job) => {
+      console.log('→ fetched job record:', job);
+
+      if (!job) return;
+      // before setValue, log what you're about to set:
+      console.log('→ populating form with:',
+        {
+          contractTitle: job.title,
+          description: job.description,
+          amount: job.budget,
+          currency: job.currency,
+          deadline: job.deadline,
+          attachments: job.files,
+        }
+      );
+
+      setValue('attachments', []);
+      setValue('contractTitle', job.title);
+      setValue('description', job.description || '');
+      setValue('amount', job.budget ?? 0);
+      setValue('currency', job.currency);
+      setValue('deadline', job.deadline ? new Date(job.deadline) : undefined);
+      setValue('attachments', job.files || []);
+    });
+  }, [selectedJobId, setValue]);
+
+
   return (
     // Pass formMethods down, sections can destructure what they need
     <form onSubmit={handleSubmit(onSubmit)} className='relative space-y-8'>
@@ -78,7 +118,7 @@ export function SendOfferForm({ offerId }: SendOfferFormProps) {
       {isLoadingData && (
         <div className='absolute inset-0 z-10 flex items-center justify-center bg-white/50'>
           {/* <Spinner size="large" /> */}
-          <p>Loading form data...</p> {/* Removed ml-2 as spinner is missing */}
+          <p>{t('offers.sendOfferForm.loadingData')}</p> {/* Removed ml-2 as spinner is missing */}
         </div>
       )}
 
@@ -86,7 +126,7 @@ export function SendOfferForm({ offerId }: SendOfferFormProps) {
       {error && (
         <Alert status='error' size='small' className='items-center'>
           <div>
-            <p className='font-medium'>Error</p>
+            <p className='font-medium'>{t('offers.sendOfferForm.error')}</p>
             <p className='text-sm'>{error}</p>
           </div>
         </Alert>
@@ -96,8 +136,8 @@ export function SendOfferForm({ offerId }: SendOfferFormProps) {
       {success && (
         <Alert status='success' size='small' className='items-center'>
           <div>
-            <p className='font-medium'>Success</p>
-            <p className='text-sm'>Offer sent successfully!</p>
+            <p className='font-medium'>{t('offers.sendOfferForm.success')}</p>
+            <p className='text-sm'>{t('offers.sendOfferForm.offerSent')}</p>
           </div>
         </Alert>
       )}
@@ -112,6 +152,7 @@ export function SendOfferForm({ offerId }: SendOfferFormProps) {
           sellers={sellers}
           jobs={jobs}
           isLoading={isLoadingData}
+          sellerId={sellerId ?? ''}
         />
 
         <ContractTermsSection form={formMethods} paymentType={paymentType} />

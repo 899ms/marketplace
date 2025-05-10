@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { UseFormReturn, Controller } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import {
   Group as RadioGroup,
   Item as RadioGroupItem,
@@ -23,6 +24,7 @@ export function ContractTermsSection({
   form,
   paymentType,
 }: ContractTermsSectionProps) {
+  const { t } = useTranslation('common');
   const {
     control,
     formState: { errors },
@@ -31,7 +33,7 @@ export function ContractTermsSection({
 
   return (
     <div className='space-y-6'>
-      <h2 className='text-[32px] text-[#0E121B] font-semibold'>Contract terms</h2>
+      <h2 className='text-[32px] text-[#0E121B] font-semibold'>{t('offers.contractTerms.title')}</h2>
 
       {/* Payment Type Selection */}
       <Controller
@@ -47,6 +49,11 @@ export function ContractTermsSection({
               } else {
                 setValue('amount', undefined, { shouldValidate: true });
                 setValue('deadline', undefined);
+                setValue(
+                  'milestones',
+                  [{ description: '', amount: 0, dueDate: undefined }],
+                  { shouldValidate: true }
+                );
               }
             }}
             defaultValue={field.value}
@@ -71,13 +78,13 @@ export function ContractTermsSection({
               </svg>
 
               <div className='flex flex-col gap-0.5 items-start space-y-1'>
-                <span className='text-[#0E121B] text-[20px] font-medium'>One-time payment</span>
+                <span className='text-[#0E121B] text-[20px] font-medium'>{t('offers.contractTerms.oneTime.title')}</span>
                 <span className='text-[12px] text-[#525866]'>
-                  Pay full amount with a single payment.
+                  {t('offers.contractTerms.oneTime.description')}
                 </span>
 
                 <span className='text-[12px] text-[#0E121B] underline font-medium'>
-                  Learn More
+                  {t('offers.contractTerms.learnMore')}
                 </span>
               </div>
             </Label>
@@ -100,12 +107,12 @@ export function ContractTermsSection({
               </svg>
 
               <div className='flex flex-col gap-0.5 items-start space-y-1'>
-                <span className='text-[#0E121B] text-[20px] font-medium'>Installment payment</span>
+                <span className='text-[#0E121B] text-[20px] font-medium'>{t('offers.contractTerms.installment.title')}</span>
                 <span className='text-[12px] text-[#525866]'>
-                  Pay full amount with multiple payments.
+                  {t('offers.contractTerms.installment.description')}
                 </span>
                 <span className='text-[12px] text-[#0E121B] underline font-medium'>
-                  Learn More
+                  {t('offers.contractTerms.learnMore')}
                 </span>
               </div>
             </Label>

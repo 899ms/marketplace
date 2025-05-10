@@ -1,7 +1,10 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { RiSearchLine } from '@remixicon/react';
 import { Input } from '@/components/ui/input';
 import * as SelectPrimitive from '@/components/ui/select';
+import { useTranslation } from 'react-i18next';
 
 interface ProjectSearchBarProps {
   onSearch: (term: string) => void;
@@ -16,6 +19,7 @@ export function ProjectSearchBar({
   searchTerm: externalSearchTerm,
   resetKey = 0
 }: ProjectSearchBarProps) {
+  const { t } = useTranslation('common');
   const [searchTerm, setSearchTerm] = useState('');
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
   const prevSearchTerm = useRef(searchTerm);
@@ -87,7 +91,7 @@ export function ProjectSearchBar({
           <RiSearchLine className='absolute left-3 top-1/2 size-5 -translate-y-1/2 text-[#525866]' />
           <Input
             type='search'
-            placeholder='Search projects...' // Updated placeholder
+            placeholder={t('projects.search.placeholder')}
             className='w-full max-w-[310px] rounded-[10px] border font-[400] border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE]' // Adjusted styles
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -97,13 +101,12 @@ export function ProjectSearchBar({
         {/* Deadline Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('deadline', value)}>
           <SelectPrimitive.Trigger className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]'>
-            <SelectPrimitive.Value placeholder='Deadline' /> {/* Updated placeholder */}
+            <SelectPrimitive.Value placeholder={t('projects.search.deadline')} />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
-            {/* TODO: Add actual deadline options */}
-            <SelectPrimitive.Item value='urgent'>Urgent</SelectPrimitive.Item>
-            <SelectPrimitive.Item value='week'>Within a week</SelectPrimitive.Item>
-            <SelectPrimitive.Item value='month'>Within a month</SelectPrimitive.Item>
+            <SelectPrimitive.Item value='urgent'>{t('projects.search.urgent')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value='week'>{t('projects.search.withinWeek')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value='month'>{t('projects.search.withinMonth')}</SelectPrimitive.Item>
           </SelectPrimitive.Content>
         </SelectPrimitive.Root>
 
@@ -111,26 +114,24 @@ export function ProjectSearchBar({
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('purpose', value)}>
           <SelectPrimitive.Trigger
             className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]'>
-            <SelectPrimitive.Value placeholder='Purpose' /> {/* Updated placeholder */}
+            <SelectPrimitive.Value placeholder={t('projects.search.purpose')} />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
-            {/* TODO: Add actual purpose options */}
-            <SelectPrimitive.Item value='mixing'>Mixing</SelectPrimitive.Item>
-            <SelectPrimitive.Item value='mastering'>Mastering</SelectPrimitive.Item>
-            <SelectPrimitive.Item value='songwriting'>Songwriting</SelectPrimitive.Item>
+            <SelectPrimitive.Item value='mixing'>{t('projects.search.mixing')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value='mastering'>{t('projects.search.mastering')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value='songwriting'>{t('projects.search.songwriting')}</SelectPrimitive.Item>
           </SelectPrimitive.Content>
         </SelectPrimitive.Root>
 
         {/* Posting Date Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('postingDate', value)}>
           <SelectPrimitive.Trigger className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]'>
-            <SelectPrimitive.Value placeholder='Posting Date' /> {/* Updated placeholder */}
+            <SelectPrimitive.Value placeholder={t('projects.search.postingDate')} />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
-            {/* TODO: Add actual posting date options */}
-            <SelectPrimitive.Item value='today'>Today</SelectPrimitive.Item>
-            <SelectPrimitive.Item value='last_week'>Last 7 days</SelectPrimitive.Item>
-            <SelectPrimitive.Item value='last_month'>Last 30 days</SelectPrimitive.Item>
+            <SelectPrimitive.Item value='today'>{t('projects.search.today')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value='last_week'>{t('projects.search.last7Days')}</SelectPrimitive.Item>
+            <SelectPrimitive.Item value='last_month'>{t('projects.search.last30Days')}</SelectPrimitive.Item>
           </SelectPrimitive.Content>
         </SelectPrimitive.Root>
       </div>

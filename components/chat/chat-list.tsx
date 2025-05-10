@@ -1,7 +1,11 @@
+'use client';
+
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { Chat, User } from '@/utils/supabase/types';
 import clsx from 'clsx';
 import * as Avatar from '@/components/ui/avatar';
+
 interface ChatListProps {
   chats: Chat[];
   chatProfiles: Record<string, User | null>;
@@ -13,30 +17,34 @@ interface ChatListProps {
 }
 
 // Helper function to format relative time
-const formatRelativeTime = (dateString?: string | null): string => {
+const formatRelativeTime = (t: (key: string, options?: any) => string, dateString?: string | null): string => {
   if (!dateString) return '';
   const date = new Date(dateString);
   const now = new Date();
   const diffTime = now.getTime() - date.getTime();
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
-  // Return based on seconds ago, minutes ago, hours ago, days ago, weeks ago, months ago, years ago
   if (diffTime < 60 * 1000) {
-    return 'Just now';
+    return t('chatList.justNow');
   } else if (diffTime < 60 * 60 * 1000) {
-    return `${Math.floor(diffTime / (60 * 1000))} ${Math.floor(diffTime / (60 * 1000)) > 1 ? 'minutes' : 'minute'} ago`;
+    const minutes = Math.floor(diffTime / (60 * 1000));
+    return t('chatList.minutesAgo', { count: minutes });
   } else if (diffTime < 24 * 60 * 60 * 1000) {
-    return `${Math.floor(diffTime / (60 * 60 * 1000))} ${Math.floor(diffTime / (60 * 60 * 1000)) > 1 ? 'hours' : 'hour'} ago`;
+    const hours = Math.floor(diffTime / (60 * 60 * 1000));
+    return t('chatList.hoursAgo', { count: hours });
   } else if (diffTime < 7 * 24 * 60 * 60 * 1000) {
-    return `${Math.floor(diffTime / (24 * 60 * 60 * 1000))} ${Math.floor(diffTime / (24 * 60 * 60 * 1000)) > 1 ? 'days' : 'day'} ago`;
+    const days = Math.floor(diffTime / (24 * 60 * 60 * 1000));
+    return t('chatList.daysAgo', { count: days });
   } else if (diffTime < 30 * 24 * 60 * 60 * 1000) {
-    return `${Math.floor(diffTime / (30 * 24 * 60 * 60 * 1000))} ${Math.floor(diffTime / (30 * 24 * 60 * 60 * 1000)) > 1 ? 'weeks' : 'week'} ago`;
+    const weeks = Math.floor(diffTime / (7 * 24 * 60 * 60 * 1000));
+    return t('chatList.weeksAgo', { count: weeks });
   } else if (diffTime < 365 * 24 * 60 * 60 * 1000) {
-    return `${Math.floor(diffTime / (30 * 24 * 60 * 60 * 1000))} ${Math.floor(diffTime / (30 * 24 * 60 * 60 * 1000)) > 1 ? 'months' : 'month'} ago`;
+    const months = Math.floor(diffTime / (30 * 24 * 60 * 60 * 1000));
+    return t('chatList.monthsAgo', { count: months });
   } else {
-    return `${Math.floor(diffTime / (365 * 24 * 60 * 60 * 1000))} ${Math.floor(diffTime / (365 * 24 * 60 * 60 * 1000)) > 1 ? 'years' : 'year'} ago`;
+    const years = Math.floor(diffTime / (365 * 24 * 60 * 60 * 1000));
+    return t('chatList.yearsAgo', { count: years });
   }
-
 };
 
 export default function ChatList({
@@ -46,6 +54,8 @@ export default function ChatList({
   onChatSelect,
   currentUserId,
 }: ChatListProps) {
+  const { t } = useTranslation('common');
+
   // Helper function to format date
   const formatDate = (dateString?: string | null) => {
     if (!dateString) return 'Unknown';
@@ -57,7 +67,7 @@ export default function ChatList({
   if (chats.length === 0) {
     return (
       <div className="p-4 text-center">
-        <p className="text-text-secondary-600">You don't have any chats yet.</p>
+        <p className="text-text-secondary-600">{t('chatList.noChats')}</p>
       </div>
     );
   }
@@ -73,10 +83,9 @@ export default function ChatList({
 
         // TODO: Replace chat.created_at with actual last message timestamp when available
         const lastActivityTime = chat.created_at;
-        const relativeTime = formatRelativeTime(lastActivityTime);
+        const relativeTime = formatRelativeTime(t, lastActivityTime);
 
         return (
-
           <div key={chat.id} className={`flex gap-3 p-2 items-center ${isSelected ? 'bg-[#F5F7FA]' : 'bg-white'} rounded-lg cursor-pointer`} onClick={() => onChatSelect(chat.id)}>
             <div>
               {otherUserProfile?.avatar_url && otherUserProfile?.avatar_url != "" ? (
@@ -99,7 +108,6 @@ export default function ChatList({
           </div>
         );
       })}
-
     </div>
   );
 } 

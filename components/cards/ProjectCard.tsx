@@ -8,6 +8,7 @@ import * as Button from '@/components/ui/button';
 import { RiStarFill, RiArrowRightSLine } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import { useNotification, notification as notify } from '@/hooks/use-notification';
+import Translate from '@/components/Translate';
 
 // --- Interfaces --- //
 interface ProjectInfoBadge {
@@ -145,7 +146,7 @@ export function ProjectCard({
         {/* Right Column (Budget & Apply) */}
         <div className='flex flex-col gap-2'>
           <div className='text-right'>
-            <p className='text-[14px] text-[#525866]'>Budget</p>
+            <p className='text-[14px] text-[#525866]'><Translate id="project.budget" /></p>
             <p className='text-[18px] font-medium text-text-strong-950 py-1'>
               ${budget.toLocaleString()}
             </p>
@@ -159,7 +160,7 @@ export function ProjectCard({
             )}
             onClick={handleApplyClick}
           >
-            Apply
+            <Translate id="project.apply" />
             <RiArrowRightSLine className='w-[1.25rem] h-[1.25rem]' />
           </Button.Root>
         </div>

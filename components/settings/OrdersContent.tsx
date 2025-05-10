@@ -21,11 +21,12 @@ import OrdersTable, {
   type SellerOrder,
 } from '@/components/settings/OrdersTable';
 import PaginationBar from '@/components/settings/PaginationBar';
+import { useTranslation } from 'react-i18next';
 
 /* ------------------------------------------------------------------ */
 /** Main right‑hand pane for "Orders" view (both buyers & sellers).   */
 export default function OrdersContent() {
-  /* ------------------ auth ------------------ */
+  const { t } = useTranslation('common');
   const { user, userProfile, loading: authLoading, profileLoading } = useAuth();
   const userType = userProfile?.user_type;      // 'buyer' | 'seller'
   const isBuyer = userType === 'buyer';
@@ -134,27 +135,27 @@ export default function OrdersContent() {
   /* ------------------ summary data ------------------ */
   const summaryData: SummaryData = {
     milestone: {
-      title: 'Milestone',
-      description: 'For only $4.99 per month!',
+      title: t('orders.milestone.title'),
+      description: t('orders.milestone.description'),
       learnMoreLink: '#',
       icon: <Icons.HeartLine />,
     },
     totalAmount: {
-      title: 'Total Amount',
+      title: t('orders.totalAmount.title'),
       value: isBuyer ? '$500.00' : '$50,110.00',
       actions: isBuyer ? (
         <div className="flex gap-2 text-sm items-center">
-          <LinkButton.Root className='text-[#335CFF] text-[12px] font-medium'>Top up</LinkButton.Root>
-          <LinkButton.Root className='text-[#335CFF] text-[12px] font-medium'>Withdraw</LinkButton.Root>
+          <LinkButton.Root className='text-[#335CFF] text-[12px] font-medium'>{t('orders.totalAmount.topUp')}</LinkButton.Root>
+          <LinkButton.Root className='text-[#335CFF] text-[12px] font-medium'>{t('orders.totalAmount.withdraw')}</LinkButton.Root>
         </div>
       ) : undefined,
     },
     settled: {
-      title: 'Settled',
+      title: t('orders.settled.title'),
       value: isBuyer ? '$5,100.00' : '$11,500.00',
     },
     inEscrow: {
-      title: 'In Escrow',
+      title: t('orders.inEscrow.title'),
       value: isBuyer ? '$110.00' : '$111.00',
     },
   };
@@ -186,14 +187,14 @@ export default function OrdersContent() {
   if (authLoading || profileLoading) {
     return (
       <main className="flex-1 p-6 flex items-center justify-center">
-        Loading user…
+        {t('orders.loading')}
       </main>
     );
   }
   if (!user || !userProfile) {
     return (
       <main className="flex-1 p-6 flex items-center justify-center">
-        Please log in to view your orders.
+        {t('orders.loginRequired')}
       </main>
     );
   }
@@ -227,7 +228,7 @@ export default function OrdersContent() {
       {/* orders table */}
       <div className='h-[70%] overflow-y-auto custom-scrollbar'>
         {dataLoading ? (
-          <div className="p-4 text-center">Loading orders…</div>
+          <div className="p-4 text-center">{t('orders.loadingOrders')}</div>
         ) : error ? (
           <div className="p-4 text-center text-red-600">{error}</div>
         ) : (

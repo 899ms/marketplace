@@ -3,11 +3,12 @@
 import React, { useState } from 'react';
 import Image from 'next/image'; // Need next/image for the carousel part
 import { UseFormReturn } from 'react-hook-form';
-import { CreateServiceFormData } from '@/app/worker/services/create/schema';
+import { CreateServiceFormData } from '@/app/[lang]/worker/services/create/schema';
 import * as Avatar from '@/components/ui/avatar';
 import * as Button from '@/components/ui/button';
 // Removed imports not used in the reference Step3Review (Badge, ServiceInfoLeft, etc.)
 import { useAuth } from '@/utils/supabase/AuthContext';
+import { useTranslation } from 'react-i18next';
 import {
   RiArrowLeftSLine,
   RiArrowRightSLine,
@@ -59,6 +60,7 @@ export function Step3Review({
   submitForm,
   isSubmitting,
 }: Step3ReviewProps) {
+  const { t } = useTranslation('common');
   // Get form data
   const formData = formMethods.getValues();
   const { user } = useAuth(); // Get user for provider info
@@ -137,7 +139,7 @@ export function Step3Review({
         {/* Left Content: Image, Details, Options */}
         <div className='space-y-6 md:col-span-8 mt-2'>
           <h1 className='text-[32px] font-medium text-text-strong-950'>
-            You will get {displayData.title}
+            {t('worker.services.create.step3.title', { title: displayData.title })}
           </h1>
           {/* Image Carousel */}
           <div className='space-y-3'>
@@ -193,7 +195,7 @@ export function Step3Review({
           {/* Details Section */}
           <div className='bg-bg-white-0 py-6 px-4'>
             <span className='text-[24px] font-semibold text-[#0E121B] border-b border-b-2 border-[#0E121B] pb-2'>
-              Details
+              {t('worker.services.create.step3.details')}
             </span>
             <p className='text-[16px] text-[#525866] mb-6 mt-6 whitespace-pre-wrap'>
               {displayData.details}
@@ -201,7 +203,7 @@ export function Step3Review({
             {displayData.includedItems.length > 0 && (
               <>
                 <span className='text-[24px] font-semibold text-[#0E121B] border-b border-b-2 border-[#0E121B] pb-2'>
-                  What's Included
+                  {t('worker.services.create.step3.whatsIncluded')}
                 </span>
                 <ul className='mb-3 mt-6 space-y-1.5'>
                   {displayData.includedItems.map((item, idx) => (
@@ -221,7 +223,7 @@ export function Step3Review({
             {displayData.options.length > 0 && (
               <div className='!mt-0 bg-bg-white-0'>
                 <span className='text-[24px] font-semibold text-[#0E121B] border-b border-b-2 border-[#0E121B] pb-2'>
-                  Options
+                  {t('worker.services.create.step3.options')}
                 </span>
                 <div className='shadow-sm rounded-xl bg-bg-white-0 mb-6 mt-6 border border-stroke-soft-200'>
 
@@ -306,7 +308,7 @@ export function Step3Review({
                       <path d="M3.02975 2.38251C4.39977 1.16704 6.16852 0.497123 8 0.500009C12.1423 0.500009 15.5 3.85776 15.5 8.00001C15.5024 9.53294 15.0329 11.0295 14.1553 12.2863L12.125 8.00001H14C14 6.80703 13.6444 5.64112 12.9786 4.65122C12.3128 3.66133 11.367 2.89239 10.262 2.44263C9.15706 1.99287 7.94312 1.88271 6.77525 2.12623C5.60739 2.36975 4.53863 2.95588 3.7055 3.80976L3.0305 2.38326L3.02975 2.38251ZM12.9703 13.6175C11.6002 14.833 9.83148 15.5029 8 15.5C3.85775 15.5 0.5 12.1423 0.5 8.00001C0.5 6.40626 0.99725 4.92876 1.84475 3.71376L3.875 8.00001H2C1.99998 9.19299 2.35559 10.3589 3.02141 11.3488C3.68723 12.3387 4.63303 13.1076 5.73798 13.5574C6.84294 14.0071 8.05688 14.1173 9.22475 13.8738C10.3926 13.6303 11.4614 13.0441 12.2945 12.1903L12.9695 13.6168L12.9703 13.6175ZM8.75 9.15126H11V10.6513H8.75V12.1513H7.25V10.6513H5V9.15126H7.25V8.40126H5V6.90126H6.9395L5.348 5.31051L6.41 4.25001L8 5.84076L9.59075 4.25001L10.652 5.31051L9.0605 6.90201H11V8.40201H8.75V9.15201V9.15126Z" fill="#525866" />
                     </svg>
 
-                    <p className='text-[#525866] text-[14px] leading-none'>Price</p>
+                    <p className='text-[#525866] text-[14px] leading-none'>{t('worker.services.create.step3.price')}</p>
                   </div>
 
                   <span className='text-[#0E121B] text-[24px]'>
@@ -321,7 +323,7 @@ export function Step3Review({
                     </svg>
 
 
-                    <p className='text-[#525866] text-[14px] leading-none'>Lead Time</p>
+                    <p className='text-[#525866] text-[14px] leading-none'>{t('worker.services.create.step3.leadTime')}</p>
                   </div>
 
                   <span className='text-[#0E121B] text-[14px]'>
@@ -340,7 +342,7 @@ export function Step3Review({
                 className='flex-1'
                 disabled={isSubmitting} // Use prop
               >
-                Edit
+                {t('worker.services.create.step3.edit')}
               </Button.Root>
               <FancyButton.Root
                 variant='neutral'
@@ -351,10 +353,10 @@ export function Step3Review({
                 {isSubmitting ? (
                   <>
                     <Button.Icon as={RiLoader4Line} className='animate-spin' />
-                    Posting...
+                    {t('worker.services.create.step3.posting')}
                   </>
                 ) : (
-                  'Post'
+                  t('worker.services.create.step3.post')
                 )}
               </FancyButton.Root>
             </div>

@@ -5,6 +5,7 @@ import * as Button from "@/components/ui/button";
 import * as Avatar from "@/components/ui/avatar";
 import * as FancyButton from "../../ui/fancy-button"; // Import FancyButton
 import { RiStarFill, RiGoogleFill, RiMoreLine, RiLoader4Line, RiSendPlaneLine, RiAddLine, RiMore2Fill } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
 
 type UserRole = 'buyer' | 'seller';
 
@@ -35,6 +36,8 @@ export function ProfileSection({
   onRehireClick,
   disabled = false,
 }: ProfileSectionProps) {
+  const { t } = useTranslation('common');
+
   return (
     <div
       className="
@@ -99,18 +102,18 @@ export function ProfileSection({
           {isMessagingLoading ? (
             <>
               <RiLoader4Line className="animate-spin mr-2" size={18} />
-              Opening...
+              {t('orders.profile.opening')}
             </>
           ) : (
             <>
-              Message
+              {t('orders.profile.message')}
             </>
           )}
         </Button.Root>
 
         {userRole === 'buyer' && (
           <FancyButton.Root disabled={disabled} variant='neutral' size='medium' className="px-6 min-w-[100px] h-[36px]" onClick={onRehireClick}>
-            Rehire
+            {t('orders.profile.rehire')}
           </FancyButton.Root>
         )}
 

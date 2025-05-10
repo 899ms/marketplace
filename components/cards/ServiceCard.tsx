@@ -1,6 +1,7 @@
 import React from 'react';
 import { RiStarFill } from '@remixicon/react';
 import { Service } from '@/utils/supabase/types';
+import Translate from '@/components/Translate';
 
 interface ServiceCardProps {
   service: Service;
@@ -96,7 +97,7 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
     console.error('Error rendering ServiceCard:', error, service);
     return (
       <div className='shadow-sm overflow-hidden rounded-xl border border-stroke-soft-200 bg-bg-white-0 p-4 text-center'>
-        <p className='text-red-500'>Error displaying service</p>
+        <p className='text-red-500'><Translate id="service.error" /></p>
       </div>
     );
   }

@@ -8,6 +8,7 @@ import {
   RiUploadCloud2Line,
   RiInformationLine,
 } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
 
 import * as Button from '@/components/ui/button';
 import * as CompactButton from '@/components/ui/compact-button';
@@ -59,6 +60,7 @@ export default function BlockFileUploadDialog({
   userId,
   onUploadComplete,
 }: BlockFileUploadDialogProps) {
+  const { t } = useTranslation('common');
   const [file, setFile] = useState<File | null>(null);
   const [title, setTitle] = useState('');
   const [remarks, setRemarks] = useState('');
@@ -83,10 +85,10 @@ export default function BlockFileUploadDialog({
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
       if (selectedFile.size > 50 * 1024 * 1024) {
-        setUploadError('File size exceeds 50MB limit.');
+        setUploadError(t('fileUpload.errors.fileSize'));
         setFile(null);
       } else if (!selectedFile.type.startsWith('audio/')) {
-        setUploadError('Invalid file type. Please upload an audio file.');
+        setUploadError(t('fileUpload.errors.fileType'));
         setFile(null);
       } else {
         setFile(selectedFile);
@@ -102,9 +104,10 @@ export default function BlockFileUploadDialog({
 
   const handleUpload = async () => {
     if (!file || !title || !userId) {
-      setUploadError(
-        `Missing required fields: ${!file ? 'File' : ''} ${!title ? 'Title' : ''}`,
-      );
+      const missingFields = [];
+      if (!file) missingFields.push('File');
+      if (!title) missingFields.push('Title');
+      setUploadError(t('fileUpload.errors.missingFields', { fields: missingFields.join(' ') }));
       return;
     }
 
@@ -129,29 +132,26 @@ export default function BlockFileUploadDialog({
 
       if (result.success) {
         toast({
-          title: 'Upload Successful',
-          description: `${file.name} has been added to your music library.`,
-          status: 'success',
+          title: t('fileUpload.success.title'),
+          description: t('fileUpload.success.description', { fileName: file.name }),
         });
         onUploadComplete?.(result.updatedMusicData || []);
         onOpenChange(false);
       } else {
         const errorMessage = typeof result.error === 'string' ? result.error : result.error?.message || 'Upload failed.';
-        setUploadError(`Upload failed: ${errorMessage}`);
+        setUploadError(t('fileUpload.errors.uploadFailed', { message: errorMessage }));
         toast({
-          title: 'Upload Failed',
+          title: t('fileUpload.errors.uploadFailed', { message: errorMessage }),
           description: errorMessage,
-          status: 'error',
         });
       }
     } catch (error: any) {
       clearInterval(interval);
       const errorMessage = error.message || 'An unexpected error occurred.';
-      setUploadError(`Upload failed: ${errorMessage}`);
+      setUploadError(t('fileUpload.errors.uploadFailed', { message: errorMessage }));
       toast({
-        title: 'Upload Failed',
+        title: t('fileUpload.errors.uploadFailed', { message: errorMessage }),
         description: errorMessage,
-        status: 'error',
       });
     } finally {
       setIsUploading(false);
@@ -185,8 +185,8 @@ export default function BlockFileUploadDialog({
       <Modal.Content className='max-w-[440px] shadow-custom-md max-h-[85vh] overflow-y-auto'>
         <Modal.Header
           icon={RiUploadCloud2Line}
-          title='Upload Music'
-          description='Select and upload your music files'
+          title={t('fileUpload.title')}
+          description={t('fileUpload.description')}
         />
         <Modal.Body className='space-y-6'>
           <div className='space-y-4'>
@@ -207,10 +207,10 @@ export default function BlockFileUploadDialog({
               <FileUpload.Icon as={RiUploadCloud2Line} />
               <div className='space-y-1.5'>
                 <div className='text-label-sm text-text-strong-950'>
-                  Choose a file or drag & drop it here
+                  {t('fileUpload.chooseFile')}
                 </div>
                 <div className='text-paragraph-xs text-text-sub-600'>
-                  Audio formats (MP3, WAV, etc.), up to 50 MB.
+                  {t('fileUpload.fileTypes')}
                 </div>
               </div>
             </FileUpload.Root>
@@ -236,7 +236,7 @@ export default function BlockFileUploadDialog({
                               </span>
                               <RiLoader2Fill className='size-4 shrink-0 animate-spin text-primary-base' />
                               <span className='text-paragraph-xs text-text-strong-950'>
-                                Uploading...
+                                {t('fileUpload.uploading')}
                               </span>
                             </div>
                           </div>
@@ -252,26 +252,26 @@ export default function BlockFileUploadDialog({
                       </div>
                     </div>
                   </div>
-                  <Divider.Root variant='line-text'>OR</Divider.Root>
+                  <Divider.Root variant='line-text'>{t('fileUpload.or')}</Divider.Root>
                   <div className='flex flex-col gap-1'>
                     <Label.Root className='flex items-center gap-1 text-label-sm text-text-strong-950'>
-                      Import from URL Link
+                      {t('fileUpload.importFromUrl')}
                       <IconInfoCustomFill className='size-4 text-text-disabled-300' />
                     </Label.Root>
                     <Input.Root>
                       <Input.Wrapper>
                         <Input.Icon as={RiLinksLine} />
-                        <Input.Input placeholder='Paste file URL' />
+                        <Input.Input placeholder={t('fileUpload.pasteUrl')} />
                       </Input.Wrapper>
                     </Input.Root>
                   </div>
                   <div className='flex flex-col gap-1'>
                     <Label.Root className='text-label-sm text-text-strong-950'>
-                      Subject (Optional)
+                      {t('fileUpload.subject')}
                     </Label.Root>
                     <Input.Root>
                       <Input.Wrapper>
-                        <Input.Input placeholder='Question' />
+                        <Input.Input placeholder={t('fileUpload.question')} />
                       </Input.Wrapper>
                     </Input.Root>
                   </div>
@@ -286,14 +286,14 @@ export default function BlockFileUploadDialog({
             mode='stroke'
             onClick={() => onOpenChange(false)}
           >
-            Cancel
+            {t('fileUpload.cancel')}
           </Button.Root>
           <Button.Root
             variant='neutral'
             mode='filled'
             onClick={() => onOpenChange(false)}
           >
-            Upload
+            {t('fileUpload.upload')}
           </Button.Root>
         </Modal.Footer>
       </Modal.Content>

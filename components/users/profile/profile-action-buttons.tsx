@@ -5,6 +5,7 @@ import * as Button from '@/components/ui/button';
 import * as FancyButton from '@/components/ui/fancy-button';
 import { RiHeart3Line, RiLoader4Line, RiArrowRightSLine, RiHeartLine } from '@remixicon/react';
 import { User } from '@/utils/supabase/types';
+import { useTranslation } from 'react-i18next';
 
 interface ProfileActionButtonsProps {
   targetUser: User; // The user whose profile is being viewed
@@ -21,6 +22,7 @@ export function ProfileActionButtons({
   onHire,
   onMessage,
 }: ProfileActionButtonsProps) {
+  const { t } = useTranslation('common');
   const isOwnProfile = currentUser?.id === targetUser.id;
 
   return (
@@ -31,12 +33,11 @@ export function ProfileActionButtons({
         mode="stroke"
         size="xsmall"
         className="w-[85px] h-[32px] rounded-[8px] border border-[#E1E4EA] bg-bg-white-0 shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)] flex items-center justify-center gap-[8px] px-2"
-        onClick={onHire} // Use the passed-in hire handler
+        onClick={onHire}
         disabled={!currentUser || isOwnProfile}
-        aria-label={isOwnProfile ? "Cannot hire yourself" : "Hire user"}
+        aria-label={isOwnProfile ? t('users.profile.actions.cannotHireSelf') : t('users.profile.actions.hire')}
       >
-        <span className="text-paragraph-[14px] text-[#525866]">Follow</span> {/* Changed text */}
-        {/* Consider changing the icon if RiHeart3Line isn't appropriate for "Hire" */}
+        <span className="text-paragraph-[14px] text-[#525866]">{t('users.profile.actions.follow')}</span>
         <Button.Icon as={RiHeart3Line} className="size-5 text-[#525866]" />
       </Button.Root>
 
@@ -45,15 +46,15 @@ export function ProfileActionButtons({
         variant="neutral"
         size="xsmall"
         className="w-[83px] h-[30px] rounded-[8px]"
-        onClick={onMessage} // Use the passed-in message handler
+        onClick={onMessage}
         disabled={!currentUser || isLoadingChat || isOwnProfile}
-        aria-label={isOwnProfile ? "Cannot message yourself" : "Send message"}
+        aria-label={isOwnProfile ? t('users.profile.actions.cannotMessageSelf') : t('users.profile.actions.message')}
       >
         {isLoadingChat ? (
           <RiLoader4Line className="animate-spin text-white" size={18} />
         ) : (
           <>
-            <span className="text-paragraph-[14px] text-[#FFFFFF]">Touch</span>
+            <span className="text-paragraph-[14px] text-[#FFFFFF]">{t('users.profile.actions.touch')}</span>
             <FancyButton.Icon as="span">
               <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-5 text-static-white">
                 <path d="M6.16689 5.26667L13.2419 2.90834C16.4169 1.85001 18.1419 3.58334 17.0919 6.75834L14.7336 13.8333C13.1502 18.5917 10.5502 18.5917 8.96689 13.8333L8.26689 11.7333L6.16689 11.0333C1.40856 9.45001 1.40856 6.85834 6.16689 5.26667Z" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

@@ -23,6 +23,8 @@ import {
   RiCalendarLine,
   RiLoader4Line // Added loader icon
 } from '@remixicon/react';
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 
 // Remove the old specific data interfaces
 /*
@@ -38,6 +40,7 @@ interface ServiceInfoRightProps {
 const dummyTools = ['Adobe Audition', 'Pro Tools', 'Logic Pro X', 'FL Studio'];
 
 export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
+  const { t } = useTranslation('common');
   const { user: currentUser } = useAuth(); // Get current user
   const [sellerProfile, setSellerProfile] = useState<User | null>(null); // State for seller profile
   const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null); // State for current user profile
@@ -94,7 +97,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
       return;
     }
     if (currentUser.id === sellerProfile.id) {
-      setChatError("You cannot start a chat with yourself.");
+      setChatError(t('service.info.cannotMessageSelf'));
       return;
     }
 
@@ -143,12 +146,12 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
                 <RiHeart3Line className="size-7 text-[#525866]" />
               </button>
 
-              <Link href={`/users/${service.seller_id}`} passHref legacyBehavior>
+              <Link href={`/${i18n.language}/users/${service.seller_id}`} passHref legacyBehavior>
                 <a className="inline-block">
                   <Avatar.Root size="80">
                     <Avatar.Image
                       src={service.seller_avatar_url || 'https://via.placeholder.com/56'}
-                      alt={service.seller_name || 'Seller'}
+                      alt={service.seller_name || t('services.info.unknownSeller')}
                     />
                     {/* online-status dot */}
                     <Avatar.Indicator position="bottom">
@@ -158,9 +161,9 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
                 </a>
               </Link>
 
-              <Link href={`/users/${service.seller_id}`} passHref>
+              <Link href={`/${i18n.language}/users/${service.seller_id}`} passHref>
                 <h2 className="text-[16px] mt-[6px] font-medium text-[#525866] hover:underline">
-                  {service.seller_name || 'Unknown Seller'}
+                  {service.seller_name || t('services.info.unknownSeller')}
                 </h2>
               </Link>
 
@@ -203,7 +206,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
                   <path d="M3.02975 2.38251C4.39977 1.16704 6.16852 0.497123 8 0.500009C12.1423 0.500009 15.5 3.85776 15.5 8.00001C15.5024 9.53294 15.0329 11.0295 14.1553 12.2863L12.125 8.00001H14C14 6.80703 13.6444 5.64112 12.9786 4.65122C12.3128 3.66133 11.367 2.89239 10.262 2.44263C9.15706 1.99287 7.94312 1.88271 6.77525 2.12623C5.60739 2.36975 4.53863 2.95588 3.7055 3.80976L3.0305 2.38326L3.02975 2.38251ZM12.9703 13.6175C11.6002 14.833 9.83148 15.5029 8 15.5C3.85775 15.5 0.5 12.1423 0.5 8.00001C0.5 6.40626 0.99725 4.92876 1.84475 3.71376L3.875 8.00001H2C1.99998 9.19299 2.35559 10.3589 3.02141 11.3488C3.68723 12.3387 4.63303 13.1076 5.73798 13.5574C6.84294 14.0071 8.05688 14.1173 9.22475 13.8738C10.3926 13.6303 11.4614 13.0441 12.2945 12.1903L12.9695 13.6168L12.9703 13.6175ZM8.75 9.15126H11V10.6513H8.75V12.1513H7.25V10.6513H5V9.15126H7.25V8.40126H5V6.90126H6.9395L5.348 5.31051L6.41 4.25001L8 5.84076L9.59075 4.25001L10.652 5.31051L9.0605 6.90201H11V8.40201H8.75V9.15201V9.15126Z" fill="#525866" />
                 </svg>
               </Button.Icon>
-              <span className='text-[14px]'>Price</span>
+              <span className='text-[14px]'>{t('service.info.price')}</span>
             </div>
             <span className='text-[24px] text-[#0E121B] text-text-strong-950'>
               {formatCurrency(service.price, service.currency || 'USD')}
@@ -217,7 +220,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
                   <path d="M0.5 16.5C0.5 14.9087 1.13214 13.3826 2.25736 12.2574C3.38258 11.1321 4.9087 10.5 6.5 10.5C8.0913 10.5 9.61742 11.1321 10.7426 12.2574C11.8679 13.3826 12.5 14.9087 12.5 16.5H11C11 15.3065 10.5259 14.1619 9.68198 13.318C8.83807 12.4741 7.69347 12 6.5 12C5.30653 12 4.16193 12.4741 3.31802 13.318C2.47411 14.1619 2 15.3065 2 16.5H0.5ZM6.5 9.75C4.01375 9.75 2 7.73625 2 5.25C2 2.76375 4.01375 0.75 6.5 0.75C8.98625 0.75 11 2.76375 11 5.25C11 7.73625 8.98625 9.75 6.5 9.75ZM6.5 8.25C8.1575 8.25 9.5 6.9075 9.5 5.25C9.5 3.5925 8.1575 2.25 6.5 2.25C4.8425 2.25 3.5 3.5925 3.5 5.25C3.5 6.9075 4.8425 8.25 6.5 8.25ZM12.713 11.0273C13.767 11.5019 14.6615 12.2709 15.2889 13.2418C15.9164 14.2126 16.2501 15.344 16.25 16.5H14.75C14.7502 15.633 14.4999 14.7844 14.0293 14.0562C13.5587 13.328 12.8878 12.7512 12.0972 12.3953L12.7123 11.0273H12.713ZM12.197 2.55975C12.9526 2.87122 13.5987 3.40015 14.0533 4.07942C14.5078 4.75869 14.7503 5.55768 14.75 6.375C14.7503 7.40425 14.3658 8.39642 13.6719 9.15662C12.978 9.91682 12.025 10.3901 11 10.4835V8.97375C11.5557 8.89416 12.0713 8.63851 12.471 8.24434C12.8707 7.85017 13.1335 7.33824 13.2209 6.7837C13.3082 6.22916 13.2155 5.66122 12.9563 5.16327C12.6971 4.66531 12.2851 4.26356 11.7808 4.017L12.197 2.55975Z" fill="#525866" />
                 </svg>
               </Button.Icon>
-              <span className='text-[14px]'>Sold</span>
+              <span className='text-[14px]'>{t('service.info.sold')}</span>
             </div>
             <span className='font-[16px] text-[#0E121B] text-text-strong-950'>
               5
@@ -232,7 +235,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
                 </svg>
 
               </Button.Icon>
-              <span className='text-[14px]'>Deadline</span>
+              <span className='text-[14px]'>{t('service.info.deadline')}</span>
             </div>
             <span className='text-[14px] text-[#0E121B] text-text-strong-950'>
               05.25.2025
@@ -250,17 +253,17 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             size='small'
             onClick={handleOpenChat}
             disabled={!currentUser || isLoadingChat || !sellerProfile} // Disable conditions
-            aria-label={currentUser?.id === service.seller_id ? "Cannot message yourself" : "Send message to seller"}
+            aria-label={currentUser?.id === service.seller_id ? t('service.info.cannotMessageSelf') : t('service.info.messageSeller')}
             className="border-[#E1E4EA]"
           >
             {isLoadingChat ? (
               <>
                 <RiLoader4Line className="animate-spin mr-2" size={16} />
-                Opening...
+                {t('service.info.opening')}
               </>
             ) : (
               <>
-                Message
+                {t('service.info.message')}
 
                 <Button.Icon className="flex-shrink-0">
                   <svg
@@ -298,7 +301,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             onClick={handleHireClick}
             className="border-[#E1E4EA]"
           >
-            Hire
+            {t('service.info.hire')}
             <Button.Icon as={RiArrowRightSLine} />
           </Button.Root>
         </div>
@@ -312,7 +315,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         {service.seller_bio && (
           <div className="mb-[24px]">
             <h3 className="mb-[10px] text-[14px] font-medium text-text-strong-950">
-              About
+              {t('service.info.about')}
             </h3>
             <p className="text-text-secondary-600 line-clamp-3 text-paragraph-xs text-[#525866]">
               {service.seller_bio}
@@ -349,7 +352,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         {service.tags && service.tags.length > 0 && (
           <div className='mb-[24px]'>
             <h3 className='mb-2 text-[14px] font-medium text-text-strong-950'>
-              Skills
+              {t('service.info.skills')}
             </h3>
             <div className='flex flex-wrap gap-1.5'>
               {service.tags.map((tag, index) => (
@@ -364,7 +367,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         {/* Tools Section (Dummy Data) - Use Tag component */}
         <div>
           <h3 className='mb-2 text-[14px] font-medium text-text-strong-950'>
-            Tools
+            {t('service.info.tools')}
           </h3>
           <div className='flex flex-wrap gap-1.5'>
             {dummyTools.map((tool, index) => (

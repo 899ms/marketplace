@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import * as Accordion from '@/components/ui/accordion';
 import { RiArrowDownSLine } from '@remixicon/react';
 
@@ -16,6 +17,8 @@ const CreateJobMainContent = ({
   activeStep,
   setActiveStep,
 }: CreateJobMainContentProps) => {
+  const { t } = useTranslation('common');
+
   // Local state for the accordion's open item value
   const [accordionValue, setAccordionValue] = useState<string | undefined>(
     `item-${activeStep}`,
@@ -37,10 +40,10 @@ const CreateJobMainContent = ({
       {' '}
       {/* Added flex-1 */}
       <h1 className='text-[32px] font-medium text-[#0A0D14]'>
-        Create job
+        {t('jobs.create.title')}
       </h1>
       <p className='text-[#525866] text-[18px] mb-8 font-medium'>
-        Define details, set the budget
+        {t('jobs.create.subtitle')}
       </p>
       <Accordion.Root
         type='single'
@@ -77,7 +80,7 @@ const CreateJobMainContent = ({
               <Accordion.Content className='pt-4 pb-0 mt-2 border-t border-[#E1E4EA] !shadow-xl'>
                 {/* Render content only if this item is the active one conceptually */}
                 {/* This prevents mounting/unmounting form state, but Accordion handles visibility */}
-                {step.content || <p>Content for {step.title} goes here...</p>}
+                {step.content || <p>{t('jobs.create.contentPlaceholder', { title: step.title })}</p>}
               </Accordion.Content>
             </Accordion.Item>
           );

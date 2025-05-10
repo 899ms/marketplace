@@ -8,6 +8,8 @@ import * as Table from '@/components/ui/table';
 import * as Tag from '@/components/ui/tag';
 import { RiMore2Fill, RiStarFill, RiUserLine } from '@remixicon/react';
 import renderStatusIcon from '@/components/settings/StatusBadge'; // icon helper
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 /* -------- lightweight interface (or import a shared one) -------- */
 interface PersonInfo {
   name: string;
@@ -31,7 +33,8 @@ interface Props {
 /* ---------------------------------------------------------------- */
 /** One table row for a SELLER in Orders view */
 export default function OrderRowSeller({ order }: Props) {
-  const detailLink = `/orders/detail/${order.id}`;
+  const { t } = useTranslation('common');
+  const detailLink = `/${i18n.language}/orders/detail/${order.id}`;
 
   return (
     <Table.Row className='border-b border-[#E1E4EA]'>
@@ -52,7 +55,7 @@ export default function OrderRowSeller({ order }: Props) {
           )}
 
           <span className="text-[14px] font-medium text-[#525866]">
-            {order.from ? order.from.name : 'Unknown Buyer'}
+            {order.from ? order.from.name : t('orders.unknownBuyer')}
           </span>
         </div>
       </Table.Cell>
@@ -111,12 +114,12 @@ export default function OrderRowSeller({ order }: Props) {
           </Dropdown.Trigger>
           <Dropdown.Content align="end">
             <Dropdown.Item asChild>
-              <Link href={detailLink}>View Details</Link>
+              <Link href={detailLink}>{t('orders.viewDetails')}</Link>
             </Dropdown.Item>
-            <Dropdown.Item>Message Buyer</Dropdown.Item>
+            <Dropdown.Item>{t('orders.messageBuyer')}</Dropdown.Item>
             <Dropdown.Separator />
             <Dropdown.Item className="text-text-danger-500">
-              Cancel Order
+              {t('orders.cancelOrder')}
             </Dropdown.Item>
           </Dropdown.Content>
         </Dropdown.Root>

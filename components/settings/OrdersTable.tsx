@@ -5,10 +5,11 @@ import Link from 'next/link';
 import * as Table from '@/components/ui/table';
 import OrderRowBuyer from '@/components/settings/OrderRowBuyer';
 import OrderRowSeller from '@/components/settings/OrderRowSeller';
+import { useTranslation } from 'react-i18next';
 
 /* ------------------------------------------------------------------ */
 /** Minimal local interfaces so this file can compile on its own.
- *  They duplicate what you already have in OrdersContent – feel free
+ *  They duplicate what you already have in OrdersContent – feel free
  *  to centralise in a shared file later.
  */
 interface PersonInfo {
@@ -47,9 +48,11 @@ interface Props {
  *  Row components encapsulate the heavy per‑row JSX.
  */
 export default function OrdersTable({ rows, isBuyer }: Props) {
+  const { t } = useTranslation('common');
+
   if (rows.length === 0) {
     return (
-      <div className="p-4 text-center text-gray-500">No orders found.</div>
+      <div className="p-4 text-center text-gray-500">{t('ordersTable.noOrders')}</div>
     );
   }
 
@@ -61,38 +64,38 @@ export default function OrdersTable({ rows, isBuyer }: Props) {
           {isBuyer ? (
             <>
               <Table.Head className="bg-[#F5F7FA] px-3 w-80 py-2 text-left text-[14px] text-[#525866] font-normal">
-                Details
+                {t('ordersTable.details')}
               </Table.Head>
               <Table.Head className="bg-[#F5F7FA] px-3 w-80 py-2 text-left text-[14px] text-[#525866] font-normal">
-                Final deadline
+                {t('ordersTable.finalDeadline')}
               </Table.Head>
               {/* new Proposals column */}
               <Table.Head className="bg-[#F5F7FA] px-3 w-32 py-2 text-left text-[14px] text-[#525866] font-normal">
-                Proposals
+                {t('ordersTable.proposals')}
               </Table.Head>
               <Table.Head className="bg-[#F5F7FA] px-3 w-80 py-2 text-left text-[14px] text-[#525866] font-normal">
-                Worker
+                {t('ordersTable.worker')}
               </Table.Head>
               <Table.Head className="bg-[#F5F7FA] px-3 w-32 py-2 text-left text-[14px] text-[#525866] font-normal">
-                Status
+                {t('ordersTable.status')}
               </Table.Head>
             </>
           ) : (
             <>
               <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
-                From
+                {t('ordersTable.from')}
               </Table.Head>
               <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
-                Details
+                {t('ordersTable.details')}
               </Table.Head>
               <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
-                Final deadline
+                {t('ordersTable.finalDeadline')}
               </Table.Head>
               <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
-                Rating
+                {t('ordersTable.rating')}
               </Table.Head>
               <Table.Head className="bg-[#F5F7FA] px-4 py-3 text-left text-[14px] tracking-wider text-[#525866] font-normal">
-                Status
+                {t('ordersTable.status')}
               </Table.Head>
             </>
           )}
@@ -110,7 +113,6 @@ export default function OrdersTable({ rows, isBuyer }: Props) {
             <OrderRowSeller key={row.id} order={row as SellerOrder} />
           ),
         )}
-
       </Table.Body>
     </Table.Root>
   );

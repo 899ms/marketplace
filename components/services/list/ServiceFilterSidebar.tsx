@@ -8,18 +8,20 @@ import { cn } from '@/utils/cn';
 import { WorkerSearchBar } from './WorkerSearchBar';
 import { PriceRangeSlider } from '../../filters/PriceRangeSlider';
 import Image from 'next/image';
+import { useTranslation } from 'react-i18next';
 
 // Helper component for the input-like container
 interface TagInputContainerProps {
   children: React.ReactNode;
 }
 const TagInputContainer: React.FC<TagInputContainerProps> = ({ children }) => {
+  const { t } = useTranslation('common');
   return (
     <div className='mb-2 flex min-h-[36px] flex-wrap items-center gap-1.5 rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-1.5'>
       {children}
       {/* Render children, and ensure min-height even if empty */}
       {React.Children.count(children) === 0 && (
-        <span className='text-xs text-gray-400'>Select...</span> // Changed from text-sm to text-xs
+        <span className='text-xs text-gray-400'>{t('filters.select')}</span>
       )}
     </div>
   );
@@ -55,6 +57,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
   onClearAllFilters,
   resetKey,
 }) => {
+  const { t } = useTranslation('common');
   const [selectedSkills, setSelectedSkills] = useState(['Retrowave']);
   const [selectedTools, setSelectedTools] = useState(['Retrowave']);
   const [selectedFeaturedTags, setSelectedFeaturedTags] = useState([
@@ -163,10 +166,10 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       {(activeTab === 'Service' || activeTab === 'Project') && (
         <div className='mx-[16px]' >
           <div className='mb-2 flex items-center justify-between'>
-            <h3 className='text-[14px] font-medium text-text-strong-950'>Skills</h3>
+            <h3 className='text-[14px] font-medium text-text-strong-950'>{t('filters.skills')}</h3>
             {selectedSkills.length > 0 && (
               <button onClick={clearSkills} className='text-[12px] font-medium text-[#525866] underline hover:text-text-primary-600'>
-                Clear
+                {t('filters.clear')}
               </button>
             )}
           </div>
@@ -218,12 +221,12 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
         <div className='mx-[16px]' >
           <div className='mb-2 flex items-center justify-between'>
             <div className='flex items-center gap-1'>
-              <h3 className='text-[14px] font-medium text-text-strong-950'>Tools</h3>
+              <h3 className='text-[14px] font-medium text-text-strong-950'>{t('filters.tools')}</h3>
               <RiInformationFill className="w-4 text-[#CACFD8] h-4" />
             </div>
             {selectedTools.length > 0 && (
               <button onClick={clearTools} className='text-[12px] text-[#525866] underline hover:text-text-primary-600'>
-                Clear
+                {t('filters.clear')}
               </button>
             )}
           </div>
@@ -264,7 +267,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       {activeTab === 'Service' && (
         <div className='mx-[16px]' >
           <div className='mb-2 flex items-center gap-1'>
-            <h3 className='text-[14px] font-medium text-text-strong-950'>Featured Tags</h3>
+            <h3 className='text-[14px] font-medium text-text-strong-950'>{t('filters.featuredTags')}</h3>
             <button className='text-icon-secondary-400'><RiInformationFill className='size-4 text-[#CACFD8]' /></button>
           </div>
           <div className="flex flex-wrap gap-1.5">
@@ -287,7 +290,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                 >
                   <button onClick={() => handleFeaturedTagToggle(tag)} className="flex items-center">
                     <Tag.Icon>
-                      <Image src="/images/Monday.com.svg" alt="Icon" width={16} height={16} />
+                      <Image src="/images/Monday.com.svg" alt={t('filters.tagIcon')} width={16} height={16} />
                     </Tag.Icon>
                     <span>{tag}</span>
                     {isSelected && (
@@ -311,8 +314,8 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
           {/* Text */}
           <div className='mt-0.5'>
-            <p className="text-base font-normal text-[14px] text-[#1F2937]">Available</p>
-            <p className="text-[12px] font-normal text-[#6B7280]">Recent Online</p>
+            <p className="text-base font-normal text-[14px] text-[#1F2937]">{t('filters.available')}</p>
+            <p className="text-[12px] font-normal text-[#6B7280]">{t('filters.recentOnline')}</p>
           </div>
         </div>
 
@@ -322,8 +325,8 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
           {/* Text */}
           <div className='mt-0.5'>
-            <p className="text-base font-normal text-[14px] text-[#1F2937]">Professional Services</p>
-            <p className="text-[12px] font-normal text-[#6B7280]">Vetted skills and expertise</p>
+            <p className="text-base font-normal text-[14px] text-[#1F2937]">{t('filters.professionalServices')}</p>
+            <p className="text-[12px] font-normal text-[#6B7280]">{t('filters.vettedSkills')}</p>
           </div>
         </div>
       </div>
@@ -353,7 +356,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       {(activeTab === 'Service' || activeTab === 'Project') && (
         <div className='mx-[16px]' >
           <h3 className='mb-3 text-[14px] font-medium text-text-strong-950'>
-            {activeTab === 'Service' ? 'Price' : 'Budget'}
+            {activeTab === 'Service' ? t('filters.price') : t('filters.budget')}
           </h3>
           <PriceRangeSlider
             value={priceRange}
@@ -375,7 +378,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
             'hover:bg-bg-white-100 focus:outline-none focus:ring-2 focus:ring-text-primary-600'
           )}
         >
-          Clear Filters
+          {t('filters.clearAll')}
         </button>
       </div>
     </aside>

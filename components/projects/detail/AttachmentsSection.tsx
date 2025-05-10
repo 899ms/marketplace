@@ -4,6 +4,7 @@ import React from 'react';
 import { RiPauseCircleFill, RiPlayCircleFill, RiDownload2Line } from '@remixicon/react';
 import { BaseFileData, User, MusicItem } from '@/utils/supabase/types';
 import { useAudioPlayer } from '@/contexts/AudioContext';
+import { useTranslation } from 'react-i18next';
 
 // Updated props to use BaseFileData and accept client info
 interface AttachmentsSectionProps {
@@ -24,10 +25,10 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
   attachments,
   client,
 }) => {
+  const { t } = useTranslation('common');
   const { loadTrack, togglePlayPause, currentTrack, isPlaying } = useAudioPlayer();
 
   if (!attachments || attachments.length === 0) return null;
-
 
   const handlePlayAudio = (attachment: BaseFileData) => {
     if (!client) {
@@ -41,7 +42,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
     };
 
     const sellerInfo = {
-      name: client.full_name ?? 'Unknown User',
+      name: client.full_name ?? t('projects.attachments.unknownUser'),
       avatarUrl: client.avatar_url ?? null,
     };
 
@@ -55,7 +56,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
   return (
     <div className='pt-[20px]'>
       <h2 className="text-base font-semibold leading-6 tracking-[-0.015em] text-[#161922] mb-4">
-        Attachments
+        {t('projects.attachments.title')}
       </h2>
 
       <ul className="space-y-3">
@@ -71,7 +72,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
                 <button
                   onClick={() => handlePlayAudio(attachment)}
                   className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer text-left w-full md:w-auto bg-[#FDFDFD] gap-16"
-                  title={`Play ${attachment.name}`}
+                  title={t('projects.attachments.playAudio', { name: attachment.name })}
                 >
                   <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>
                     {attachment.name}
@@ -89,7 +90,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
                   rel="noopener noreferrer"
                   download={attachment.name}
                   className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150"
-                  title={`Download ${attachment.name}`}
+                  title={t('projects.attachments.downloadFile', { name: attachment.name })}
                 >
                   <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>
                     {attachment.name}
@@ -97,7 +98,6 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
                   <RiDownload2Line className="size-6 text-gray-500 flex-shrink-0" />
                 </a>
               )}
-
             </li>
           );
         })}

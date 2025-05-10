@@ -8,6 +8,8 @@ import * as Table from '@/components/ui/table';
 import * as Tag from '@/components/ui/tag';
 import { RiMore2Fill } from '@remixicon/react';
 import renderStatusIcon from '@/components/settings/StatusBadge'; // icon helper
+import { useTranslation } from 'react-i18next';
+import i18n from '@/i18n';
 /* ---------- interface (now includes proposals) ---------- */
 interface PersonInfo {
   name: string;
@@ -30,10 +32,11 @@ interface Props {
 
 /* ---------- one table row for a BUYER ---------- */
 export default function OrderRowBuyer({ engagement }: Props) {
+  const { t } = useTranslation('common');
   const isJob = engagement.type === 'job';
   const detailLink = isJob
-    ? `/projects/${engagement.id}`
-    : `/orders/detail/${engagement.id}`;
+    ? `/${i18n.language}/projects/${engagement.id}`
+    : `/${i18n.language}/orders/detail/${engagement.id}`;
 
   return (
     <Table.Row className='border-b border-[#E1E4EA]'>
@@ -86,7 +89,7 @@ export default function OrderRowBuyer({ engagement }: Props) {
           </div>
 
         ) : (
-          <span className="text-[14px] font-normal text-[#525866]">Job Posting</span>
+          <span className="text-[14px] font-normal text-[#525866]">{t('orders.jobPosting')}</span>
         )}
       </Table.Cell>
 
@@ -115,14 +118,14 @@ export default function OrderRowBuyer({ engagement }: Props) {
           </Dropdown.Trigger>
           <Dropdown.Content align="end">
             <Dropdown.Item asChild>
-              <Link href={detailLink}>View Details</Link>
+              <Link href={detailLink}>{t('orders.viewDetails')}</Link>
             </Dropdown.Item>
             <Dropdown.Item disabled={!engagement.worker}>
-              Message Worker
+              {t('orders.messageWorker')}
             </Dropdown.Item>
             <Dropdown.Separator />
             <Dropdown.Item className="text-text-danger-500">
-              Cancel Order
+              {t('orders.cancelOrder')}
             </Dropdown.Item>
           </Dropdown.Content>
         </Dropdown.Root>

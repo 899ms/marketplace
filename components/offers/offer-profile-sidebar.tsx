@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import * as Avatar from '@/components/ui/avatar';
 // import * as Button from '@/components/ui/button'; // Buttons removed
 import * as Badge from '@/components/ui/badge';
@@ -39,6 +40,8 @@ interface OfferProfileSidebarProps {
 }
 
 export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
+  const { t } = useTranslation('common');
+
   // Helper to get social icon remains the same
   const getSocialIcon = (platform: string) => {
     switch (platform) {
@@ -87,25 +90,27 @@ export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
               <path d="M8.00046 10.7715C9.53084 10.7715 10.7714 9.53091 10.7714 8.00047C10.7714 6.47002 9.53084 5.22949 8.00046 5.22949C6.47009 5.22949 5.22949 6.47009 5.22949 8.00047C5.22949 9.53084 6.47009 10.7715 8.00046 10.7715Z" fill="#1A73E8" />
               <path d="M8.00044 4.50022H14.0619C13.4477 3.436 12.5641 2.5522 11.4999 1.93774C10.4358 1.32333 9.22868 0.999907 7.99993 1C6.77116 1.00007 5.56407 1.32366 4.50007 1.93826C3.43603 2.55283 2.55256 3.43671 1.93848 4.50103L4.96924 9.75048L4.97005 9.75092C4.66254 9.21889 4.50055 8.61527 4.50036 8.00077C4.50016 7.38627 4.66178 6.78255 4.96894 6.25033C5.27606 5.71811 5.71804 5.27613 6.25018 4.96894C6.78233 4.66175 7.38606 4.5 8.00059 4.50015L8.00044 4.50022Z" fill="#E33B2E" />
             </svg>
-            Google</div>
-          <div className='flex flex-row items-center gap-1 text-[#525866]  text-[12px]'><svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8.14258 6.72729V9.4382H11.9868C11.818 10.31 11.3114 11.0482 10.5517 11.5446L12.8699 13.3073C14.2205 12.0855 14.9998 10.291 14.9998 8.15918C14.9998 7.66283 14.9543 7.18551 14.8699 6.72737L8.14258 6.72729Z" fill="#4285F4" />
-            <path d="M4.13966 9.33234L3.61681 9.72456L1.76611 11.1373C2.94145 13.4218 5.35039 15 8.14261 15C10.0712 15 11.688 14.3763 12.8699 13.3073L10.5517 11.5445C9.91532 11.9645 9.10362 12.2191 8.14261 12.2191C6.28545 12.2191 4.70756 10.9909 4.14258 9.33638L4.13966 9.33234Z" fill="#34A853" />
-            <path d="M1.76619 4.86285C1.27919 5.80463 1 6.86737 1 8.00007C1 9.13278 1.27919 10.1955 1.76619 11.1373C1.76619 11.1436 4.14288 9.33003 4.14288 9.33003C4.00002 8.91003 3.91558 8.46461 3.91558 8C3.91558 7.5354 4.00002 7.08997 4.14288 6.66997L1.76619 4.86285Z" fill="#FBBC05" />
-            <path d="M8.14275 3.78726C9.19473 3.78726 10.1298 4.14361 10.8766 4.83089L12.922 2.82638C11.6817 1.69368 10.0714 1 8.14275 1C5.35054 1 2.94145 2.57181 1.76611 4.86272L4.14273 6.66999C4.70764 5.01543 6.2856 3.78726 8.14275 3.78726Z" fill="#EA4335" />
-          </svg>Google</div>
-
+            {t('offers.profileSidebar.google')}
+          </div>
+          <div className='flex flex-row items-center gap-1 text-[#525866]  text-[12px]'>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8.14258 6.72729V9.4382H11.9868C11.818 10.31 11.3114 11.0482 10.5517 11.5446L12.8699 13.3073C14.2205 12.0855 14.9998 10.291 14.9998 8.15918C14.9998 7.66283 14.9543 7.18551 14.8699 6.72737L8.14258 6.72729Z" fill="#4285F4" />
+              <path d="M4.13966 9.33234L3.61681 9.72456L1.76611 11.1373C2.94145 13.4218 5.35039 15 8.14261 15C10.0712 15 11.688 14.3763 12.8699 13.3073L10.5517 11.5445C9.91532 11.9645 9.10362 12.2191 8.14261 12.2191C6.28545 12.2191 4.70756 10.9909 4.14258 9.33638L4.13966 9.33234Z" fill="#34A853" />
+              <path d="M1.76619 4.86285C1.27919 5.80463 1 6.86737 1 8.00007C1 9.13278 1.27919 10.1955 1.76619 11.1373C1.76619 11.1436 4.14288 9.33003 4.14288 9.33003C4.00002 8.91003 3.91558 8.46461 3.91558 8C3.91558 7.5354 4.00002 7.08997 4.14288 6.66997L1.76619 4.86285Z" fill="#FBBC05" />
+              <path d="M8.14275 3.78726C9.19473 3.78726 10.1298 4.14361 10.8766 4.83089L12.922 2.82638C11.6817 1.69368 10.0714 1 8.14275 1C5.35054 1 2.94145 2.57181 1.76611 4.86272L4.14273 6.66999C4.70764 5.01543 6.2856 3.78726 8.14275 3.78726Z" fill="#EA4335" />
+            </svg>
+            {t('offers.profileSidebar.google')}
+          </div>
         </div>
-
       </div>
       <div className='px-4 m-0'>
         <Divider.Root className='' />
       </div>
 
-      {/* About Section - Added */}
+      {/* About Section */}
       <div className='py-4 px-5'>
         <h2 className='mb-2 text-[14px] font-medium text-[#0E121B]'>
-          About
+          {t('offers.profileSidebar.about')}
         </h2>
         <p className='text-[12px] text-[#525866]'>{worker.about}</p>
       </div>
@@ -117,7 +122,7 @@ export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
       {/* Skills Section */}
       <div className='py-4 px-5'>
         <h2 className='mb-3 text-[14px] font-medium text-text-strong-950'>
-          Skills
+          {t('offers.profileSidebar.skills')}
         </h2>
         <div className='flex flex-wrap gap-1.5'>
           {worker.skills.map((skill, idx) => (
@@ -139,14 +144,14 @@ export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
       {/* Tools/Products Section - Example based on screenshot */}
       <div className='pb-5 px-5'>
         <h2 className='mb-3 text-[14px] font-medium text-text-strong-950 mt-0'>
-          Tools / Products
+          {t('offers.profileSidebar.toolsAndProducts')}
         </h2>
         <div className='flex flex-wrap gap-1.5'>
           {/* Assuming skills data might represent tools/products too, or fetch separately */}
           {/* Example using first skill as a placeholder */}
           {worker.skills.length > 0 && (
             <Tag.Root variant='stroke'>
-              Products (1) {/* Placeholder count */}
+              {t('offers.profileSidebar.products', { count: 1 })}
             </Tag.Root>
           )}
           {/* Add more badges based on actual tool/product data */}

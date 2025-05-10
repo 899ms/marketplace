@@ -1,10 +1,11 @@
 'use client';
 
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { UseFormReturn } from 'react-hook-form';
 import * as Button from '@/components/ui/button';
 import * as Tag from '@/components/ui/tag';
-import { CreateJobFormData } from '@/app/jobs/create/schema';
+import { CreateJobFormData } from '@/app/[lang]/jobs/create/schema';
 import { RiLoader4Line } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import * as FancyButton from '@/components/ui/fancy-button';
@@ -27,6 +28,7 @@ const Step4Preview: React.FC<Step4Props> = ({
   error,
   success,
 }) => {
+  const { t } = useTranslation('common');
   const { getValues, handleSubmit } = formMethods;
 
   const formData = getValues();
@@ -36,17 +38,17 @@ const Step4Preview: React.FC<Step4Props> = ({
 
   const getUsageDescription = (option?: string) => {
     if (option === 'private')
-      return 'For purposes such as hobbies and interests.';
+      return t('jobs.create.usage.private.description');
     if (option === 'business')
-      return 'For purposes such as signing contracts and issuing.';
-    return 'Not specified';
+      return t('jobs.create.usage.business.description');
+    return t('jobs.create.usage.notSpecified');
   };
 
   const getPrivacyDescription = (option?: string) => {
-    if (option === 'public') return 'Any worker can apply for the job.';
+    if (option === 'public') return t('jobs.create.privacy.public.description');
     if (option === 'private')
-      return 'Only those who have been invited can take part in the work.';
-    return 'Not specified';
+      return t('jobs.create.privacy.private.description');
+    return t('jobs.create.privacy.notSpecified');
   };
 
   const formatCurrency = (value?: number) => {
@@ -62,22 +64,22 @@ const Step4Preview: React.FC<Step4Props> = ({
 
       <div className='flex flex-col'>
         <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] py-2 px-4'>
-          Step 1 Basic
+          {t('jobs.create.step1.title')}
         </div>
         <div className='p-4'>
           <p className='text-[14px] text-[#525866] font-medium'>
-            {formData.description || 'Description Text Here...'}
+            {formData.description || t('jobs.create.step1.descriptionPlaceholder')}
           </p>
         </div>
 
       </div>
       <div className='flex flex-col'>
         <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] py-2 px-4'>
-          Step 2 Skills
+          {t('jobs.create.step2.title')}
         </div>
         <div className='p-2 flex flex-col gap-3 p-4'>
           <div className='flex flex-row justify-between items-start'>
-            <p className='text-[#525866] text-[14px]'>Experience Levels</p>
+            <p className='text-[#525866] text-[14px]'>{t('jobs.create.step2.experienceLevels')}</p>
             <div className='flex flex-wrap gap-2 max-w-[200px] justify-end'>
               {formData.skill_levels.map((skillLevel) => (
                 <Tag.Root key={skillLevel} variant='stroke'>
@@ -87,7 +89,7 @@ const Step4Preview: React.FC<Step4Props> = ({
             </div>
           </div>
           <div className='flex flex-row justify-between items-start'>
-            <p className='text-[#525866] text-[14px]'>Candidate Sources</p>
+            <p className='text-[#525866] text-[14px]'>{t('jobs.create.step2.candidateSources')}</p>
             <div className='flex flex-wrap gap-2 max-w-[200px] justify-end'>
               {formData.candidate_sources.map((candidateSource) => (
                 <Tag.Root key={candidateSource} variant='stroke'>
@@ -97,7 +99,7 @@ const Step4Preview: React.FC<Step4Props> = ({
             </div>
           </div>
           <div className='flex flex-row justify-between items-start'>
-            <p className='text-[#525866] text-[14px]'>Files</p>
+            <p className='text-[#525866] text-[14px]'>{t('jobs.create.step2.files')}</p>
             <div className='flex flex-col gap-1'>
               {formData.files.map((file) => (
                 <p key={file.url} className='text-[#525866] text-[14px]'>{file.name}</p>
@@ -109,7 +111,7 @@ const Step4Preview: React.FC<Step4Props> = ({
       </div>
       <div className='flex flex-col'>
         <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] py-2 px-4'>
-          Step 3 Usage
+          {t('jobs.create.step3.title')}
         </div>
         <div className='p-2 flex flex-col gap-3 p-4'>
           <div className='flex flex-col gap-1'>
@@ -124,23 +126,23 @@ const Step4Preview: React.FC<Step4Props> = ({
       </div>
       <div className='flex flex-col'>
         <div className='w-full bg-[#F5F7FA] text-[#99A0AE] text-[12px] py-2 px-4'>
-          Step 4 ORDER AMOUNT & DATE
+          {t('jobs.create.step4.title')}
         </div>
         <div className='p-2 flex flex-col gap-2 p-4'>
           <div className='flex flex-row justify-between items-center'>
-            <p className='text-[#525866] font-normal text-[14px]'>Deadline</p>
+            <p className='text-[#525866] font-normal text-[14px]'>{t('jobs.create.step4.deadline')}</p>
             <p className='text-[#0E121B] text-[14px]'>{formData.deadline || '-'}</p>
           </div>
           <div className='flex flex-row justify-between items-center'>
-            <p className='text-[#525866] font-normal text-[14px]'>Order Amount</p>
+            <p className='text-[#525866] font-normal text-[14px]'>{t('jobs.create.step4.orderAmount')}</p>
             <p className='text-[#0E121B] text-[14px]'>{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{formData.budget || '-'}</p>
           </div>
           <div className='flex flex-row justify-between items-center'>
-            <p className='text-[#525866] font-normal text-[14px]'>Discount <span className='font-normal text-[#99A0AE] text-[12px]'>{discountCode}</span></p>
+            <p className='text-[#525866] font-normal text-[14px]'>{t('jobs.create.step4.discount')} <span className='font-normal text-[#99A0AE] text-[12px]'>{discountCode}</span></p>
             <p className='text-[#0E121B] text-[14px]'>-{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{discountAmount || '-'}</p>
           </div>
           <div className='flex flex-row justify-between items-end mt-2'>
-            <p className='text-[#525866] text-[14px]'>Amount Paid</p>
+            <p className='text-[#525866] text-[14px]'>{t('jobs.create.step4.amountPaid')}</p>
             <p className='text-[#0E121B] text-[24px]'>{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{formData.budget - discountAmount || '-'}</p>
           </div>
 
@@ -151,14 +153,14 @@ const Step4Preview: React.FC<Step4Props> = ({
       {/* Display Error Message */}
       {error && (
         <div className='text-sm rounded-md border border-red-200 bg-red-50 p-3 text-red-700'>
-          <p>Error: {error}</p>
+          <p>{t('jobs.create.error')}: {error}</p>
         </div>
       )}
 
       {/* Display Success Message */}
       {success && (
         <div className='text-sm rounded-md border border-green-200 bg-green-50 p-3 text-green-700'>
-          <p>Success! Your job posting has been created.</p>
+          <p>{t('jobs.create.success')}</p>
         </div>
       )}
 
@@ -174,7 +176,7 @@ const Step4Preview: React.FC<Step4Props> = ({
           type='button'
           disabled={isSubmitting}
         >
-          Draft
+          {t('jobs.create.draft')}
         </Button.Root>
         <FancyButton.Root
           variant='neutral'
@@ -186,7 +188,7 @@ const Step4Preview: React.FC<Step4Props> = ({
           {isSubmitting ? (
             <RiLoader4Line className='mr-2 size-4 animate-spin' />
           ) : null}
-          {isSubmitting ? 'Posting...' : 'Post'}
+          {isSubmitting ? t('jobs.create.posting') : t('jobs.create.post')}
         </FancyButton.Root>
       </div>
     </div>

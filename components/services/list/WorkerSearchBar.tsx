@@ -1,6 +1,9 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { RiSearchLine } from '@remixicon/react';
 import { Input } from '@/components/ui/input';
+import { useTranslation } from 'react-i18next';
 
 interface WorkerSearchBarProps {
   onSearch?: (term: string) => void;
@@ -13,6 +16,7 @@ export function WorkerSearchBar({
   searchTerm: externalSearchTerm,
   resetKey = 0
 }: WorkerSearchBarProps) {
+  const { t } = useTranslation('common');
   const [searchTerm, setSearchTerm] = useState('');
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
   const prevSearchTerm = useRef(searchTerm);
@@ -80,7 +84,7 @@ export function WorkerSearchBar({
         />
         <Input
           type="search"
-          placeholder="Search workers..."
+          placeholder={t('workers.search.placeholder')}
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className={`
