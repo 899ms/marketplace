@@ -321,7 +321,7 @@
         "title": "会议",
         "with": "与 {{name}} 的会议",
         "deadline": "截止日期 {{date}}",
-        "budget": "¥{{amount}}",
+        "budget": "${{amount}}",
         "status": {
           "submitted": "已提交",
           "pending": "待处理",
@@ -1045,7 +1045,7 @@
   "reviewListItem": {
     "contractTitle": "合同标题文本...",
     "description": "与Ralph合作进行网站用户体验审计是一次改变游戏规则的经历。Ralph不仅发现了痛点，还提供了创新的解决方案，使我能够自信地做出关键业务决策...",
-    "amount": "¥{{amount}}"
+    "amount": "${{amount}}"
   },
   "serviceCard": {
     "status": {
