@@ -220,8 +220,8 @@ export function OrderDetailsClient({
   // --- Prepare data for child components --- 
 
   const contractDetailItems = [
-    { label: "Contract ID", value: `#${contract.id.substring(0, 6)}` },
-    { label: "Start Date", value: contract.created_at ? new Date(contract.created_at).toLocaleDateString() : 'N/A' },
+    { label: t('orders.details.contractId'), value: `#${contract.id.substring(0, 6)}` },
+    { label: t('orders.details.startDate'), value: contract.created_at ? new Date(contract.created_at).toLocaleDateString() : 'N/A' },
   ];
 
   const workFileItems = contract.attachments?.map(file => ({

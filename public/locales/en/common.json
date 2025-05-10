@@ -176,20 +176,20 @@
     "services": {
       "create": {
         "page": {
-          "title": "Create Service",
+          "title": "Post Service",
           "steps": {
-            "terms": "Price and Details",
+            "terms": "Basic Settings",
             "submit": "Submit",
             "review": "Review"
           }
         },
         "step1": {
-          "subject": "Service title",
-          "subjectPlaceholder": "Enter service title...",
-          "detail": "Details",
+          "subject": "state",
+          "subjectPlaceholder": "Enter the contract  title...",
+          "detail": "Detail",
           "detailPlaceholder": "Details",
           "tags": {
-            "label": "Add tags",
+            "label": "Add Tags",
             "placeholder": "Add tags"
           },
           "cancel": "Close",
@@ -203,7 +203,11 @@
           "additionalServicePlaceholder": "e.g., Extra Revision",
           "addAdditionalService": "Add Additional Service",
           "previous": "Previous",
-          "next": "Next"
+          "next": "Next",
+          "uploadingFile": "Uploading {{fileName}}...",
+          "chooseFile": "Choose a file or drag & drop it here",
+          "fileTypes": "Audio formats (MP3, WAV, etc.), up to 50 MB.",
+          "browseFiles": "Browse Files"
         },
         "step3": {
           "title": "You will get {{title}}",
@@ -217,8 +221,8 @@
           "post": "Post"
         },
         "stepper": {
-          "step1": "Basic Info",
-          "step2": "Pricing",
+          "step1": "Worker Terms",
+          "step2": "Submit",
           "step3": "Review"
         }
       }

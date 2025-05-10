@@ -176,16 +176,16 @@
     "services": {
       "create": {
         "page": {
-          "title": "创建服务",
+          "title": "发布服务",
           "steps": {
-            "terms": "价格和详情",
+            "terms": "基本设置",
             "submit": "提交",
             "review": "审核"
           }
         },
         "step1": {
-          "subject": "服务标题",
-          "subjectPlaceholder": "输入服务标题...",
+          "subject": "合同标题",
+          "subjectPlaceholder": "输入合同标题…",
           "detail": "详情",
           "detailPlaceholder": "详情",
           "tags": {
@@ -203,7 +203,11 @@
           "additionalServicePlaceholder": "例如：额外修改",
           "addAdditionalService": "添加附加服务",
           "previous": "上一步",
-          "next": "下一步"
+          "next": "下一步",
+          "chooseFile": "选择文件或拖放到此处",
+          "fileTypes": "音频格式（MP3、WAV等），最大50MB。",
+          "browseFiles": "浏览文件",
+          "uploadingFile": "正在上传 {{fileName}}..."
         },
         "step3": {
           "title": "您将获得 {{title}}",
@@ -217,9 +221,9 @@
           "post": "发布"
         },
         "stepper": {
-          "step1": "基本信息",
-          "step2": "定价",
-          "step3": "预览"
+          "step1": "工作条款",
+          "step2": "提交",
+          "step3": "审核"
         }
       }
     },
