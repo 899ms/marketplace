@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
   });
 
   // ────────────────────────────────────────────────────────────
-  // 0.  Detect locale segment & redirect to default ('en') when missing
+  // 0.  Detect locale segment & redirect to default ('zh') when missing
   // ────────────────────────────────────────────────────────────
   const { pathname: rawPathname } = request.nextUrl;
   const pathParts = stripLeadingSlash(rawPathname).split('/');
@@ -35,7 +35,7 @@ export async function middleware(request: NextRequest) {
 
   if (needsLocaleRedirect) {
     const url = request.nextUrl.clone();
-    url.pathname = `/en${rawPathname}`;
+    url.pathname = `/zh${rawPathname}`;
     return NextResponse.redirect(url);
   }
 
@@ -86,16 +86,27 @@ export async function middleware(request: NextRequest) {
     (path) => pathname === path || (path !== '/' && pathname.startsWith(path)),
   );
 
+  // Handle root path with language prefix
+  if (pathname === '/' && localeInPath) {
+    const url = request.nextUrl.clone();
+    if (user) {
+      url.pathname = `/${localeInPath}/home`;
+    } else {
+      url.pathname = `/${localeInPath}/auth/login`;
+    }
+    return NextResponse.redirect(url);
+  }
+
   if (isProtectedRoute && !user) {
     const url = request.nextUrl.clone();
-    url.pathname = '/auth/login';
+    url.pathname = `/${localeInPath ?? 'zh'}/auth/login`;
     if (pathname !== '/') url.searchParams.set('redirectedFrom', pathname);
     return NextResponse.redirect(url);
   }
 
   if (user && authPages.includes(pathname)) {
     const url = request.nextUrl.clone();
-    url.pathname = `/${localeInPath ?? 'en'}/home`; // keep locale in redirect
+    url.pathname = `/${localeInPath ?? 'zh'}/home`; // keep locale in redirect
     return NextResponse.redirect(url);
   }
 

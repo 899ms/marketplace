@@ -15,8 +15,8 @@ i18n
       en: { common: commonEN },
       zh: { common: commonZH },
     },
-    lng: 'en',
-    fallbackLng: 'en',
+    lng: 'zh',
+    fallbackLng: 'zh',
     ns: ['common'],         // we only have one namespace
     defaultNS: 'common',    // make it the default
     interpolation: { escapeValue: false },

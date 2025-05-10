@@ -12,7 +12,7 @@ import * as Badge from './ui/badge'; // Import Badge
 import * as Divider from './ui/divider'; // Import Divider
 import {
   RiSearchLine,
-  RiGlobalLine,
+  RiFlagLine,
   RiAddLine,
   RiNotification3Line,
   RiArrowDownSLine,
@@ -304,7 +304,7 @@ export default function Navbar() {
                         router.push(newPath);
                       }}
                     >
-                      <Dropdown.ItemIcon as={RiGlobalLine} />
+                      <Dropdown.ItemIcon as={RiFlagLine} />
                       {i18n.language === 'en' ? '切换到中文' : 'Switch to English'}
                     </Dropdown.Item>
 

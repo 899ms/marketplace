@@ -35,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang='en'
+      lang='zh'
       suppressHydrationWarning
       className={cn(inter.variable, geistMono.variable, 'antialiased')}
     >
