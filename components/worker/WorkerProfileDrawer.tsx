@@ -31,6 +31,7 @@ import { User, Service, Chat, Message, MusicItem } from '@/utils/supabase/types'
 import MusicUploadDialog from '@/components/blocks/music-upload-dialog';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
+import { useRouter } from 'next/navigation';
 
 interface WorkerProfileDrawerProps {
   isOpen: boolean;
@@ -39,57 +40,6 @@ interface WorkerProfileDrawerProps {
   services: Service[] | null;
   isLoading: boolean;
 }
-
-const placeholderWorkerData = {
-  name: 'Cleve Music',
-  avatar: 'https://via.placeholder.com/64',
-  rating: 4.9,
-  reviewCount: 125,
-  specialty: 'Next.js & TypeScript Specialist',
-  about: '...',
-  reviews: [
-    {
-      id: '1',
-      reviewer: 'Cleve Music',
-      reviewerAvatar: 'https://via.placeholder.com/32',
-      rating: 4.9,
-      date: 'Jan 8 2023',
-      contractTitle: 'Contract title text here…',
-      content:
-        'Great communication, quick turnaround and high-quality delivery. Would definitely work again!',
-      price: 1000,
-    },
-    {
-      id: '2',
-      reviewer: 'Another Client',
-      reviewerAvatar: 'https://via.placeholder.com/32',
-      rating: 4.5,
-      date: 'Feb 15 2023',
-      contractTitle: 'Different contract…',
-      content: 'Good work, delivered on time.',
-      price: 500,
-    },
-  ],
-};
-
-const dummyMusicData = [
-  {
-    url: 'https://example.com/audio1.mp3',
-    title: 'Dreamscape',
-    remarks: 'A dreamy electronic beat',
-  },
-  {
-    url: 'https://example.com/audio2.mp3',
-    title: 'Pulse Rush',
-    remarks: 'Energetic synth vibes',
-  },
-  {
-    url: 'https://example.com/audio3.mp3',
-    title: 'Midnight Groove',
-    remarks: 'Lo-fi ambient track for focus',
-  },
-];
-
 
 const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   isOpen,
@@ -103,6 +53,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   const { notification: toast } = useNotification();
   const [activeTab, setActiveTab] = useState<'about' | 'work' | 'services' | 'reviews'>('about');
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const router = useRouter();
 
   const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null);
   const [activeChat, setActiveChat] = useState<Chat | null>(null);
@@ -114,9 +65,59 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
   const [isClamped, setIsClamped] = useState(false);
   const textRef = useRef<HTMLParagraphElement>(null);
 
-  const displayName = worker?.full_name || worker?.username || (isLoading ? 'Loading...' : 'Worker');
+  const placeholderWorkerData = {
+    name: 'Cleve Music',
+    avatar: 'https://via.placeholder.com/64',
+    rating: 4.9,
+    reviewCount: 125,
+    specialty: t('worker.profile.placeholders.specialty'),
+    about: t('worker.profile.placeholders.aboutEllipsis'),
+    reviews: [
+      {
+        id: '1',
+        reviewer: 'Cleve Music',
+        reviewerAvatar: 'https://via.placeholder.com/32',
+        rating: 4.9,
+        date: 'Jan 8 2023',
+        contractTitle: t('worker.profile.placeholders.review1.contractTitle'),
+        content:
+          t('worker.profile.placeholders.review1.content'),
+        price: 1000,
+      },
+      {
+        id: '2',
+        reviewer: t('worker.profile.placeholders.reviewerName'),
+        reviewerAvatar: 'https://via.placeholder.com/32',
+        rating: 4.5,
+        date: 'Feb 15 2023',
+        contractTitle: t('worker.profile.placeholders.review2.contractTitle'),
+        content: t('worker.profile.placeholders.review2.content'),
+        price: 500,
+      },
+    ],
+  };
+
+  const dummyMusicData = [
+    {
+      url: 'https://example.com/audio1.mp3',
+      title: t('worker.profile.dummyMusic.dreamscape.title'),
+      remarks: t('worker.profile.dummyMusic.dreamscape.remarks'),
+    },
+    {
+      url: 'https://example.com/audio2.mp3',
+      title: t('worker.profile.dummyMusic.pulseRush.title'),
+      remarks: t('worker.profile.dummyMusic.pulseRush.remarks'),
+    },
+    {
+      url: 'https://example.com/audio3.mp3',
+      title: t('worker.profile.dummyMusic.midnightGroove.title'),
+      remarks: t('worker.profile.dummyMusic.midnightGroove.remarks'),
+    },
+  ];
+
+  const displayName = worker?.full_name || worker?.username || (isLoading ? t('worker.profile.loadingWorker') : t('worker.profile.fallbackName'));
   const displayAvatar = worker?.avatar_url ?? undefined;
-  const displayBio = worker?.bio || (isLoading ? 'Loading bio...' : 'No bio provided.');
+  const displayBio = worker?.bio || (isLoading ? t('worker.profile.loadingBio') : t('worker.profile.noBio'));
 
   useEffect(() => {
     const el = textRef.current;
@@ -138,17 +139,17 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
 
   const handleHireClick = () => {
     toast({
-      description: `Hire Initiated: Proceeding to hire ${displayName}.`,
+      description: t('worker.profile.hireInitiatedToast', { name: displayName }),
     });
   };
 
   const handleOpenChat = async () => {
     if (!currentUserProfile || !worker) {
-      setChatError('Could not load user profiles. Please log in.');
+      setChatError(t('worker.profile.errors.chatUserProfilesError'));
       return;
     }
     if (currentUserProfile.id === worker.id) {
-      setChatError("You cannot start a chat with yourself.");
+      setChatError(t('worker.profile.actions.cannotMessageSelf'));
       return;
     }
 
@@ -164,12 +165,13 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
         setIsLoadingMessages(true);
         const messages = await chatOperations.getChatMessages(chat.id);
         setActiveChatMessages(messages);
+        router.push(`/${i18n.language}/chat?id=${chat.id}`);
       } else {
-        setChatError('Failed to find or create chat conversation.');
+        setChatError(t('projects.detail.page.chat.createError'));
       }
     } catch (error: any) {
       console.error('Error opening chat:', error);
-      setChatError(error.message || 'An unexpected error occurred.');
+      setChatError(error.message || t('auth.signup.unexpectedError'));
     } finally {
       setIsLoadingChat(false);
       setIsLoadingMessages(false);
@@ -260,7 +262,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       </Link>
                       <div className="flex items-center gap-0.5 text-[14px] text-gray-600">
                         <RiStarFill className="size-4 text-yellow-400" />
-                        <span>4.8 (100+)</span>
+                        <span>{t('worker.profile.ratingText')}</span>
                       </div>
                     </div>
                     <div className="mt-1 ml-[-1px] flex items-center gap-1 text-[12px] text-text-secondary-600">
@@ -471,6 +473,9 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       {placeholderWorkerData.reviews.map((r) => (
                         <ReviewItem key={r.id} review={r} />
                       ))}
+                      {placeholderWorkerData.reviews.length === 0 && (
+                        <p className="py-4 text-center text-[14px] text-[#525866]">{t('worker.profile.page.reviews.noReviews')}</p>
+                      )}
                     </div>
                   </>
                 )}

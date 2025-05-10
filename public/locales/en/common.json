@@ -231,7 +231,7 @@
       "google": "Google Verified",
       "skills": "Skills",
       "awards": "Awards",
-      "noBio": "This user hasn't added a bio yet.",
+      "noBio": "No bio provided.",
       "contactForPricing": "Contact for pricing",
       "socialLinksUnavailable": "Social links unavailable",
       "title": "Worker Profile",
@@ -242,29 +242,64 @@
         "contact": "Contact Me",
         "touch": "Touch",
         "cannotHireSelf": "Cannot hire yourself",
-        "cannotMessageSelf": "Cannot message yourself",
+        "cannotMessageSelf": "You cannot message yourself",
         "message": "Message {{name}}"
       },
       "error": {
-        "loadFailed": "Could not load worker profile."
+        "loadFailed": "Failed to load worker profile, please try again."
       },
       "page": {
         "tabs": {
           "about": "About",
           "work": "Work",
-          "services": "Service",
-          "reviews": "Review"
+          "services": "Services",
+          "reviews": "Reviews"
         },
         "work": {
-          "noWork": "No work items uploaded yet."
+          "noWork": "No work items to display yet."
         },
         "services": {
-          "noServices": "No services found for this worker."
+          "noServices": "No services offered yet."
         },
         "reviews": {
-          "noReviews": "No reviews available yet."
+          "noReviews": "No reviews yet."
         }
-      }
+      },
+      "loadingWorker": "Loading...",
+      "loadingBio": "Loading bio...",
+      "fallbackName": "Worker",
+      "hireInitiatedToast": "Hire Initiated: Proceeding to hire {{name}}.",
+      "errors": {
+        "chatUserProfilesError": "Could not load user profiles. Please log in."
+      },
+      "placeholders": {
+        "specialty": "Next.js & TypeScript Specialist",
+        "reviewerName": "Another Client",
+        "aboutEllipsis": "...",
+        "review1": {
+          "contractTitle": "Contract title text here…",
+          "content": "Great communication, quick turnaround and high-quality delivery. Would definitely work again!"
+        },
+        "review2": {
+          "contractTitle": "Different contract…",
+          "content": "Good work, delivered on time."
+        }
+      },
+      "dummyMusic": {
+        "dreamscape": {
+          "title": "Dreamscape",
+          "remarks": "A dreamy electronic beat"
+        },
+        "pulseRush": {
+          "title": "Pulse Rush",
+          "remarks": "Energetic synth vibes"
+        },
+        "midnightGroove": {
+          "title": "Midnight Groove",
+          "remarks": "Lo-fi ambient track for focus"
+        }
+      },
+      "ratingText": "4.8 (100+)"
     },
     "mainContent": {
       "more": "More",

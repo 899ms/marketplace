@@ -20,6 +20,9 @@ i18n
     ns: ['common'],         // we only have one namespace
     defaultNS: 'common',    // make it the default
     interpolation: { escapeValue: false },
+    react: {
+      useSuspense: false,
+    },
   });
 
 export default i18n;

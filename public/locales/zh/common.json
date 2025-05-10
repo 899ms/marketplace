@@ -242,11 +242,11 @@
         "contact": "联系我",
         "touch": "联系",
         "cannotHireSelf": "不能雇佣自己",
-        "cannotMessageSelf": "不能给自己发消息",
-        "message": "联系{{name}}"
+        "cannotMessageSelf": "不能与自己聊天",
+        "message": "发送消息给 {{name}}"
       },
       "error": {
-        "loadFailed": "无法加载工作者档案。"
+        "loadFailed": "加载工作者资料失败，请重试。"
       },
       "page": {
         "tabs": {
@@ -256,15 +256,50 @@
           "reviews": "评价"
         },
         "work": {
-          "noWork": "暂无上传的作品。"
+          "noWork": "暂无作品展示。"
         },
         "services": {
-          "noServices": "该工作者暂无服务。"
+          "noServices": "暂未提供服务。"
         },
         "reviews": {
           "noReviews": "暂无评价。"
         }
-      }
+      },
+      "loadingWorker": "加载中...",
+      "loadingBio": "加载简介中...",
+      "fallbackName": "工作者",
+      "hireInitiatedToast": "已发起雇佣：正在处理雇佣 {{name}}。",
+      "errors": {
+        "chatUserProfilesError": "无法加载用户个人资料。请登录。"
+      },
+      "placeholders": {
+        "specialty": "Next.js 和 TypeScript 专家",
+        "reviewerName": "另一位客户",
+        "aboutEllipsis": "...",
+        "review1": {
+          "contractTitle": "合同标题在此处...",
+          "content": "沟通良好，周转迅速，交付质量高。绝对会再次合作！"
+        },
+        "review2": {
+          "contractTitle": "不同的合同...",
+          "content": "工作出色，按时交付。"
+        }
+      },
+      "dummyMusic": {
+        "dreamscape": {
+          "title": "梦境",
+          "remarks": "梦幻般的电子节拍"
+        },
+        "pulseRush": {
+          "title": "脉冲冲击",
+          "remarks": "充满活力的合成器氛围"
+        },
+        "midnightGroove": {
+          "title": "午夜律动",
+          "remarks": "适合专注的低保真氛围音轨"
+        }
+      },
+      "ratingText": "4.8 (100+)"
     },
     "mainContent": {
       "more": "更多",
