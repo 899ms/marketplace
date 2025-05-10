@@ -372,18 +372,6 @@
       "rating": "{{rating}} ({{count}}+ reviews)"
     },
     "info": {
-      "noDescription": "No description provided.",
-      "whatsIncluded": "What's Included",
-      "noOptions": "No additional options available for this service.",
-      "noPortfolio": "No other services found for this seller.",
-      "reviewPlaceholder": "This is a placeholder review text. The service was great!",
-      "tabs": {
-        "details": "Details",
-        "options": "Options",
-        "portfolio": "Portfolio",
-        "review": "Review"
-      },
-      "unknownSeller": "Unknown Seller",
       "price": "Price",
       "sold": "Sold",
       "deadline": "Deadline",
@@ -394,7 +382,19 @@
       "messageSeller": "Send message to seller",
       "about": "About",
       "skills": "Skills",
-      "tools": "Tools"
+      "tools": "Tools",
+      "unknownSeller": "Unknown Seller",
+      "noDescription": "No description provided.",
+      "whatsIncluded": "What's Included",
+      "noOptions": "No additional options available for this service.",
+      "noPortfolio": "No other services found for this seller.",
+      "reviewPlaceholder": "This is a placeholder review text. The service was great!",
+      "tabs": {
+        "details": "Details",
+        "options": "Options",
+        "portfolio": "Portfolio",
+        "review": "Review"
+      }
     },
     "search": {
       "placeholder": "Search services...",

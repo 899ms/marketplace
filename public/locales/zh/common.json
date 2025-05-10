@@ -372,18 +372,6 @@
       "rating": "{{rating}} ({{count}}+ 评价)"
     },
     "info": {
-      "noDescription": "暂无描述。",
-      "whatsIncluded": "包含内容",
-      "noOptions": "此服务暂无额外选项。",
-      "noPortfolio": "未找到该卖家的其他服务。",
-      "reviewPlaceholder": "这是一个示例评价。服务很棒！",
-      "tabs": {
-        "details": "详情",
-        "options": "选项",
-        "portfolio": "作品集",
-        "review": "评价"
-      },
-      "unknownSeller": "未知卖家",
       "price": "价格",
       "sold": "已售",
       "deadline": "截止日期",
@@ -391,7 +379,22 @@
       "hire": "雇佣",
       "opening": "正在打开...",
       "cannotMessageSelf": "不能给自己发送消息",
-      "messageSeller": "给卖家发送消息"
+      "messageSeller": "发送消息给卖家",
+      "about": "关于",
+      "skills": "技能",
+      "tools": "工具",
+      "unknownSeller": "未知卖家",
+      "noDescription": "暂无描述。",
+      "whatsIncluded": "包含内容",
+      "noOptions": "该服务暂无附加选项。",
+      "noPortfolio": "该卖家暂无其他服务。",
+      "reviewPlaceholder": "这是一个评价占位文本。服务很棒！",
+      "tabs": {
+        "details": "详情",
+        "options": "选项",
+        "portfolio": "作品集",
+        "review": "评价"
+      }
     },
     "search": {
       "placeholder": "搜索服务...",
