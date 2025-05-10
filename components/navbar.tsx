@@ -291,6 +291,19 @@ export default function Navbar() {
 
                     <Divider.Root className='mx-2 my-1' />
 
+                    <Dropdown.Item
+                      onClick={() => {
+                        const newLang = i18n.language === 'en' ? 'zh' : 'en';
+                        const currentPath = window.location.pathname;
+                        const newPath = currentPath.replace(/^\/(en|zh)/, `/${newLang}`);
+                        // Force a full page refresh by using window.location.replace
+                        window.location.replace(newPath);
+                      }}
+                    >
+                      <Dropdown.ItemIcon as={RiGlobalLine} />
+                      {i18n.language === 'en' ? '切换到中文' : 'Switch to English'}
+                    </Dropdown.Item>
+
                     <Dropdown.Item className='text-error-base' onSelect={handleLogout}>
                       <Dropdown.ItemIcon as={RiLogoutBoxRLine} />
                       {t('navbar.account.logout')}

@@ -207,7 +207,8 @@
           "chooseFile": "选择文件或拖放到此处",
           "fileTypes": "音频格式（MP3、WAV等），最大50MB。",
           "browseFiles": "浏览文件",
-          "uploadingFile": "正在上传 {{fileName}}..."
+          "uploadingFile": "正在上传 {{fileName}}...",
+          "completed": "已完成"
         },
         "step3": {
           "title": "您将获得 {{title}}",

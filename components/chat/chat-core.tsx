@@ -323,7 +323,7 @@ function ChatMessageRenderer({
                   {message.data[0].name}
                 </div>
                 <div className='text-xs text-gray-500 dark:text-gray-400'>
-                  {formatBytes(message.data[0].size)} - Click to play
+                  {formatBytes(message.data[0].size)} - {t('chat.clickToPlay')}
                 </div>
               </div>
             </button>
@@ -352,7 +352,7 @@ function ChatMessageRenderer({
                 </div>
                 <div className='flex flex-col p-2 gap-1 border-b border-[#E1E4EA]'>
                   <p className='text-[12px] text-[#0E121B] border-b border-[#E1E4EA] pb-2 mb-1'>{message.data?.description}</p>
-                  <p className='text-[#0E121B] text-[12px] font-medium'>Your offer includes</p>
+                  <p className='text-[#0E121B] text-[12px] font-medium'>{t('chat.yourOfferIncludes')}</p>
                   <div className='flex flex-row gap-2 items-center'>
                     <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                       <path d="M6 12C2.6862 12 0 9.3138 0 6C0 2.6862 2.6862 0 6 0C9.3138 0 12 2.6862 12 6C12 9.3138 9.3138 12 6 12ZM6 10.8C7.27304 10.8 8.49394 10.2943 9.39411 9.39411C10.2943 8.49394 10.8 7.27304 10.8 6C10.8 4.72696 10.2943 3.50606 9.39411 2.60589C8.49394 1.70571 7.27304 1.2 6 1.2C4.72696 1.2 3.50606 1.70571 2.60589 2.60589C1.70571 3.50606 1.2 4.72696 1.2 6C1.2 7.27304 1.70571 8.49394 2.60589 9.39411C3.50606 10.2943 4.72696 10.8 6 10.8ZM6.6 6H9V7.2H5.4V3H6.6V6Z" fill="#525866" />
@@ -736,8 +736,8 @@ export default function ChatCore({
               const isCurrentUser = message.sender_id === currentUserId;
               const senderProfile = isCurrentUser ? currentUserProfile : otherUserProfile;
               const senderName = isCurrentUser
-                ? 'Me'
-                : senderProfile?.full_name ?? senderProfile?.username ?? 'User';
+                ? t('chat.me')
+                : senderProfile?.full_name ?? senderProfile?.username ?? t('chat.user');
               return (
                 <ChatMessageRenderer
                   key={message.id}

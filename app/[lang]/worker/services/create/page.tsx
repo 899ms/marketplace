@@ -55,7 +55,6 @@ export default function CreateServicePage() {
 
   return (
     <div className='px-4 py-2 md:px-10'>
-      <h1 className="text-3xl font-bold mb-8">{t('worker.services.create.page.title')}</h1>
 
       {activeStep < 3 && (
         <Stepper
