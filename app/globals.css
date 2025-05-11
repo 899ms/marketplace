@@ -410,3 +410,22 @@
   background-clip: content-box;
   border: 5px solid transparent;
 }
+
+/* Fix for browser autofill background */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    /* This long transition effectively delays the browser's autofill background style */
+    transition: background-color 9999s ease-in-out 0s;
+    
+    /* This ensures the text color you set on your input is used, not the browser's autofill default */
+    -webkit-text-fill-color: inherit !important;
+}
+
+input:-webkit-autofill {
+    /* This uses a transparent inset shadow, allowing the input's own background
+       (whether transparent or a set color like bg-bg-white-0) to show through. */
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset !important;
+    /* Ensure this overrides browser default, important might be needed for some aggressive browser styles */
+}

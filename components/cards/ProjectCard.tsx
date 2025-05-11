@@ -32,6 +32,7 @@ interface ProjectCardProps {
   onApply?: () => void;
   className?: string;
   projectId?: string;
+  hasApplied?: boolean;
 }
 
 // --- Project Card Component --- //
@@ -45,18 +46,21 @@ export function ProjectCard({
   onApply,
   className,
   projectId,
+  hasApplied = false,
 }: ProjectCardProps) {
   // Log the client prop
   console.log('ProjectCard client prop:', client);
 
   const handleApplyClick = () => {
-    if (onApply) {
+    if (onApply && !hasApplied) {
       onApply();
     }
 
-    notify({
-      description: `Application Sent! Successfully applied to project: ${title}`,
-    });
+    if (!hasApplied) {
+      notify({
+        description: `Application Sent! Successfully applied to project: ${title}`,
+      });
+    }
 
     console.log('Apply button clicked for project ID:', projectId);
   };
@@ -155,13 +159,24 @@ export function ProjectCard({
             variant='neutral'
             mode='stroke'
             size='small'
+            disabled={hasApplied}
             className={cn(
               'text-[0.875rem] w-full md:w-auto !shadow-[0_1px_2px_0_rgba(82,88,102,0.06)] leading-none font-medium p-3 gap-1',
+              hasApplied && 'bg-gray-100 text-gray-400 cursor-not-allowed hover:bg-gray-100'
             )}
             onClick={handleApplyClick}
           >
-            <Translate id="project.apply" />
-            <RiArrowRightSLine className='w-[1.25rem] h-[1.25rem]' />
+            {hasApplied ? (
+              <>
+                <Translate id="project.apply" />
+                <RiArrowRightSLine className='w-[1.25rem] h-[1.25rem]' />
+              </>
+            ) : (
+              <>
+                <Translate id="project.apply" />
+                <RiArrowRightSLine className='w-[1.25rem] h-[1.25rem]' />
+              </>
+            )}
           </Button.Root>
         </div>
       </div>
