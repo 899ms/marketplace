@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { UseFormRegister, UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import * as Button from '@/components/ui/button';
@@ -14,6 +14,15 @@ import { CreateJobFormData } from '@/app/[lang]/jobs/create/schema';
 import FormFieldError from './FormFieldError'; // Assuming a general error component
 import * as FancyButton from '@/components/ui/fancy-button';
 import * as Divider from '@/components/ui/divider';
+import { Calendar } from '@/components/ui/datepicker';
+import {
+  Root as Popover,
+  Content as PopoverContent,
+  Trigger as PopoverTrigger,
+} from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { Controller } from 'react-hook-form';
+import { cn } from '@/utils/cn';
 
 interface Step1Props {
   formMethods: UseFormReturn<CreateJobFormData>;
@@ -51,6 +60,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
     register,
     setValue,
     setError,
+    control,
     formState: { errors },
     watch
   } = formMethods;
@@ -61,6 +71,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
   console.log(currency);
   const budget = watch('budget', 0);
   console.log(budget);
+  const [deadlineCalendarOpen, setDeadlineCalendarOpen] = useState(false);
 
   return (
     <form onSubmit={(e) => e.preventDefault()} className='flex flex-col gap-4 pb-0'>
@@ -171,52 +182,60 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
             </svg>
 
           </Label.Root>
-          <Input.Root>
-            <Input.Wrapper>
-              <Input.Icon>
-                <RiCalendarLine />
-              </Input.Icon>
-              <Input.Input
-                id='deadline'
-                placeholder={t('jobs.create.step1.deadlinePlaceholder')}
-                type='date'
-                min={new Date().toISOString().split('T')[0]}
-                {...register('deadline', {
-                  validate: (value) => {
-                    if (!value) return true; // Optional field
-                    const selectedDate = new Date(value);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
-                    if (selectedDate < today) {
-                      return t('jobs.create.step1.deadlinePastError');
-                    }
-                    return true;
-                  }
-                })}
-                onChange={(e) => {
-                  const value = e.target.value;
-                  if (value) {
-                    const selectedDate = new Date(value);
-                    const today = new Date();
-                    today.setHours(0, 0, 0, 0);
+          <Controller
+            name="deadline"
+            control={control}
+            render={({ field }) => (
+              <Popover
+                open={deadlineCalendarOpen}
+                onOpenChange={setDeadlineCalendarOpen}
+              >
+                <PopoverTrigger asChild>
+                  <Button.Root
+                    type='button'
+                    className={cn(
+                      'mt-1 w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50',
+                      !field.value && 'text-muted-foreground',
+                    )}
+                  >
+                    <RiCalendarLine className='mr-2 h-4 w-4 text-[#0E121B]' />
+                    {field.value ? (
+                      <p className='text-[14px] text-[#0E121B]'>
+                        {format(new Date(field.value), 'PPP')}
+                      </p>
+                    ) : (
+                      <span className='text-[14px] text-[#525866]'>{t('jobs.create.step1.deadlinePlaceholder')}</span>
+                    )}
+                  </Button.Root>
+                </PopoverTrigger>
+                <PopoverContent className='w-auto p-0'>
+                  <Calendar
+                    mode='single'
+                    selected={field.value ? new Date(field.value) : undefined}
+                    onSelect={(date) => {
+                      if (date) {
+                        const today = new Date();
+                        today.setHours(0, 0, 0, 0);
 
-                    if (selectedDate < today) {
-                      e.target.value = '';
-                      setValue('deadline', '', { shouldValidate: false }); // don't validate yet
-
-                      // Delay setting error to allow React Hook Form to register it properly
-                      setTimeout(() => {
-                        setError('deadline', {
-                          type: 'manual',
-                          message: t('jobs.create.step1.deadlineFutureError'),
-                        });
-                      }, 0);
-                    }
-                  }
-                }}
-              />
-            </Input.Wrapper>
-          </Input.Root>
+                        if (date < today) {
+                          setValue('deadline', '', { shouldValidate: false });
+                          setError('deadline', {
+                            type: 'manual',
+                            message: t('jobs.create.step1.deadlineFutureError'),
+                          });
+                          return;
+                        }
+                        field.onChange(date.toISOString());
+                      }
+                      setDeadlineCalendarOpen(false);
+                    }}
+                    disabled={{ before: new Date() }}
+                    initialFocus
+                  />
+                </PopoverContent>
+              </Popover>
+            )}
+          />
           <FormFieldError error={errors.deadline} />
         </div>
       </div>
