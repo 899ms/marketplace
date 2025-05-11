@@ -21,6 +21,8 @@ import { Paperclip, Send, Smile, MoreVertical, Clock, XCircle, FileImage, CheckC
 import Link from 'next/link';
 import * as FileFormatIcon from '@/components/ui/file-format-icon';
 import { useAudioPlayer } from '@/contexts/AudioContext';
+import { ContractDetails } from '../orders/detail/contract-details';
+import { useRouter } from 'next/navigation';
 
 // --- Moved formatBytes function to top level --- 
 function formatBytes(bytes: number, decimals = 2): string {
@@ -44,6 +46,7 @@ function formatMessageTimestamp(timestamp: string | null | undefined): string {
     return '';
   }
 }
+
 
 function formatDateSeparator(dateKey: string | null | undefined, t: (key: string) => string): string {
   if (!dateKey) return t('chat.dateUnknown');
@@ -102,6 +105,7 @@ interface ChatMessageRendererProps {
   senderProfile: User | null;
   timestamp: string;
   senderName: string;
+  isSeller: boolean;
 }
 
 function ChatMessageRenderer({
@@ -110,7 +114,9 @@ function ChatMessageRenderer({
   senderProfile,
   timestamp,
   senderName,
+  isSeller,
 }: ChatMessageRendererProps) {
+  const router = useRouter();
   const { t } = useTranslation('common');
   const audioPlayer = useAudioPlayer();
   const alignmentContainerClass = isCurrentUser ? 'justify-end' : 'justify-start';
@@ -140,7 +146,7 @@ function ChatMessageRenderer({
       <div className={cardClass}>
         <div className="flex justify-between items-start mb-2">
           <h4 className={`font-semibold text-base mr-2 ${cardTextColor}`} title={offerData.title}>
-            {offerData.title || "Custom Offer"}
+            {offerData.title || "Custom Offer"}kkk
           </h4>
           <span className="font-bold text-base text-blue-600 dark:text-blue-400 flex-shrink-0">
             {offerData.currency || '$'}{offerData.price?.toFixed(2) ?? '0.00'}
@@ -362,9 +368,47 @@ function ChatMessageRenderer({
                   </div>
                 </div>
                 <div className='flex flex-row justify-between w-full p-2 gap-3'>
-                  <Button className='w-1/2' variant="neutral" mode="stroke" size="small">{t('chat.decline')}</Button>
-                  <FancyButton.Root className='w-1/2' size="small">{t('chat.accept')}</FancyButton.Root>
+                  {!isSeller ? (
+                    <>
+                      {/* Seller sees Cancel / Edit */}
+                      <Button
+                        className='w-1/2'
+                        variant='neutral'
+                        mode='stroke'
+                        size='small'
+                      >
+                        {t('chat.cancel')}
+                      </Button>
+                      <FancyButton.Root className='w-1/2' size='small'>
+                        {t('chat.edit')}
+                      </FancyButton.Root>
+                    </>
+                  ) : (
+                    <>
+                      {/* Buyer sees Decline / Accept */}
+                      <Button
+                        className='w-1/2'
+                        variant='neutral'
+                        mode='stroke'
+                        size='small'
+                      >
+                        {t('chat.decline')}
+                      </Button>
+                      <FancyButton.Root
+                        className="w-1/2"
+                        size="small"
+                        onClick={() => {
+                          if (message?.data?.contractId) {
+                            router.push(`/orders/detail/${message?.data?.contractId}`);
+                          }
+                        }}
+                      >
+                        {t('chat.accept')}
+                      </FancyButton.Root>
+                    </>
+                  )}
                 </div>
+
               </div>
             </div>
           </div>
@@ -429,6 +473,7 @@ export default function ChatCore({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'auto', block: 'end' });
@@ -746,6 +791,7 @@ export default function ChatCore({
                   senderProfile={senderProfile}
                   timestamp={formatMessageTimestamp(message.created_at)}
                   senderName={senderName}
+                  isSeller={currentUserProfile?.user_type === 'seller'}
                 />
               );
             })}

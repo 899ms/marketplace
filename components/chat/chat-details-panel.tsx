@@ -122,21 +122,24 @@ export default function ChatDetailsPanel({ chat, otherUserProfile, currentUserPr
     <div className="flex h-full flex-col">
       <div className="flex justify-end items-center gap-2 border-y border-gray-200 p-3 flex-shrink-0">
         {/* ── Send Contract button (now first / left) ── */}
-        <button
-          onClick={() => {
-            const sellerId = otherUserProfile?.id;
-            if (sellerId) {
-              router.push(`/${i18n.language}/sendoffer?seller_id=${sellerId}`);
-            }
-          }}
-          className="
-            inline-flex items-center px-3 py-1.5 text-xs font-small
-            text-primary-600 border border-primary-600 rounded-md
-            text-[12px]
-          "
-        >
-          {t('chatDetails.sendContract')}
-        </button>
+        {/* ── Send Contract button (visible only for buyers) ── */}
+        {currentUserProfile?.user_type === 'buyer' && (
+          <button
+            onClick={() => {
+              const sellerId = otherUserProfile?.id;
+              if (sellerId) {
+                router.push(`/${i18n.language}/sendoffer?seller_id=${sellerId}`);
+              }
+            }}
+            className="
+              inline-flex items-center px-3 py-1.5 text-xs font-small
+              text-primary-600 border border-primary-600 rounded-md
+              text-[12px]
+            "
+          >
+            {t('chatDetails.sendContract')}
+          </button>
+        )}
 
         {/* ── Hamburger icon ── */}
         <button type="button" className="h-10 flex items-center cursor-pointer">

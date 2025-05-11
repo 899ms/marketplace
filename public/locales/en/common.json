@@ -516,6 +516,8 @@
     "viewOfferDetails": "View Offer Details",
     "decline": "Decline",
     "accept": "Accept",
+    "cancel":"Cancel",
+    "edit":"Edit",
     "milestone": {
       "completed": "Completed the milestone",
       "activated": "Activated the milestone",

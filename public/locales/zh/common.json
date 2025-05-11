@@ -519,6 +519,8 @@
     "viewOfferDetails": "查看报价详情",
     "decline": "拒绝",
     "accept": "接受",
+    "cancel": "取消",
+    "edit": "编辑",
     "milestone": {
       "completed": "已完成里程碑",
       "activated": "已激活里程碑",
