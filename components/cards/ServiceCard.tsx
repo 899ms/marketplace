@@ -53,7 +53,15 @@ const ServiceCard = ({ service }: ServiceCardProps) => {
     });
 
     return (
-      <div className='shadow-sm overflow-hidden rounded-xl border border-stroke-soft-200 bg-bg-white-0'>
+      <div
+        className="
+          overflow-hidden rounded-xl border border-stroke-soft-200 bg-bg-white-0
+          /* smooth transition for nicer feel */
+          transition-shadow duration-200
+          /* ↓ on hover apply a custom downward‑offset shadow */
+          hover:shadow-[0_6px_14px_-4px_rgba(0,0,0,0.15)]
+        "
+      >
         <div className='h-40 w-full bg-gradient-to-br from-blue-400 to-purple-500'>
           {images && Array.isArray(images) && images.length > 0 && images[0]?.url && (
             <img
