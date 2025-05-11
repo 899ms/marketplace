@@ -1,12 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import * as LinkButton from '@/components/ui/link-button';
 import * as Tag from '@/components/ui/tag';
 import * as Button from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
+import { useAuth } from '@/utils/supabase/AuthContext';
+import { contractOperations } from '@/utils/supabase/database';
+import { Job, User, Contract as ContractType } from '@/utils/supabase/types';
 
 import Banner from './banner';
 import {
@@ -15,8 +18,7 @@ import {
   RiTimeLine,
 } from '@remixicon/react';
 import * as Divider from '@/components/ui/divider';
-import { Job, User } from '@/utils/supabase/types';
-
+import Translate from '@/components/Translate';
 
 // --- Section Header ---
 interface SectionHeaderProps {
@@ -44,18 +46,18 @@ export function SectionHeader({ title, href = '#' }: SectionHeaderProps) {
   );
 }
 
-// --- Project Card ---
+// --- Project Card (modified) ---
 interface ProjectCardProps {
   job: Job;
+  hasApplied: boolean;
+  onApply: () => void;
 }
 
-export function ProjectCard({ job }: ProjectCardProps) {
-  const { t } = useTranslation('common');
-
-  const title = job.title ?? t('worker.mainContent.untitledProject');
+export function ProjectCard({ job, hasApplied, onApply }: ProjectCardProps) {
+  const title = job.title ?? i18n.t('worker.mainContent.untitledProject');
   const budget = job.budget ?? 0;
-  const budgetDisplay = `$${budget}`;
-  const description = job.description ?? t('worker.mainContent.noDescription');
+  const budgetDisplay = `$${budget.toLocaleString()}`;
+  const description = job.description ?? i18n.t('worker.mainContent.noDescription');
   const tags = Array.isArray(job.skill_levels) ? job.skill_levels : [];
 
   return (
@@ -74,8 +76,8 @@ export function ProjectCard({ job }: ProjectCardProps) {
               ))}
             </div>
           </div>
-          <div className='flex flex-col gap-2'>
-            <p className='text-[14px] text-[#525866]'>{t('worker.mainContent.budget')}</p>
+          <div className='flex flex-col gap-2 text-right'>
+            <p className='text-[14px] text-[#525866]'><Translate id="project.budget" /></p>
             <p className='text-[18px] font-medium text-[#0E121B]'>
               {budgetDisplay}
             </p>
@@ -83,11 +85,25 @@ export function ProjectCard({ job }: ProjectCardProps) {
         </div>
         <div className='flex justify-between items-center'>
           <p className='text-[14px] text-[#0E121B] line-clamp-1'>{description}</p>
-          <Button.Root mode='stroke' size='small' variant='neutral' asChild className='flex-shrink-0 shadow-sm'>
-            <Link href={`/${i18n.language}/projects/${job.id}`}>
-              {t('worker.mainContent.apply')}
-              <Button.Icon as={RiArrowRightSLine} className='text-[#525866]' />
-            </Link>
+          <Button.Root
+            mode='stroke'
+            size='small'
+            variant='neutral'
+            disabled={hasApplied}
+            onClick={onApply}
+            className='flex-shrink-0 shadow-sm text-[0.875rem] leading-none font-medium p-3 gap-1'
+          >
+            {hasApplied ? (
+              <>
+                <Translate id="project.apply" />
+                <RiArrowRightSLine className='w-[1.25rem] h-[1.25rem]' />
+              </>
+            ) : (
+              <>
+                <Translate id="project.apply" />
+                <RiArrowRightSLine className='w-[1.25rem] h-[1.25rem]' />
+              </>
+            )}
           </Button.Root>
         </div>
       </div>
@@ -102,9 +118,70 @@ interface WorkerMainContentProps {
   recentJobs: Job[];
 }
 
-// --- Worker Main Content ---
+// --- Worker Main Content (modified) ---
 export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContentProps) {
   const { t } = useTranslation('common');
+  const { user } = useAuth();
+  const [userContracts, setUserContracts] = useState<ContractType[]>([]);
+  const [applicationSubmitted, setApplicationSubmitted] = useState(0);
+
+  useEffect(() => {
+    if (!user) {
+      setUserContracts([]);
+      return;
+    }
+    contractOperations.getUserContracts(user.id)
+      .then(setUserContracts)
+      .catch(error => {
+        console.error('[WorkerMainContent] Error fetching user contracts:', error);
+        setUserContracts([]);
+      });
+  }, [user, applicationSubmitted]);
+
+  const handleApplyToProject = async (job: Job) => {
+    if (!user) {
+      console.error('[WorkerMainContent] User not logged in. Cannot apply.');
+      return;
+    }
+    if (!job.id || !job.title || !job.buyer_id) {
+      console.error('[WorkerMainContent] Job details missing (id, title, or buyer_id). Cannot apply.');
+      return;
+    }
+
+    const alreadyApplied = userContracts.some(
+      (contract) => contract.job_id === job.id && contract.seller_id === user.id
+    );
+    if (alreadyApplied) {
+      console.log(`[WorkerMainContent] User ${user.id} already applied to project ${job.id}.`);
+      return;
+    }
+
+    try {
+      const newContractData: Omit<ContractType, 'id' | 'created_at'> = {
+        buyer_id: job.buyer_id,
+        seller_id: user.id,
+        job_id: job.id,
+        service_id: null,
+        title: `Application for: ${job.title}`,
+        contract_type: 'one-time',
+        status: 'pending',
+        amount: job.budget ?? 0,
+        description: `Application for project: ${job.title}`,
+        attachments: [],
+        currency: job.currency ?? 'USD',
+      };
+
+      const createdContract = await contractOperations.createContract(newContractData);
+
+      if (createdContract) {
+        setApplicationSubmitted(prev => prev + 1);
+      } else {
+        console.error('[WorkerMainContent] Failed to create contract for application.');
+      }
+    } catch (error) {
+      console.error('[WorkerMainContent] Error during application process:', error);
+    }
+  };
 
   return (
     <main className='flex-1 max-w-[676px]'>
@@ -113,7 +190,19 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
         <SectionHeader title={t('worker.mainContent.projects')} href='#' />
         <div className='flex flex-col gap-2'>
           {recentJobs && recentJobs.length > 0 ? (
-            recentJobs.map((job) => <ProjectCard key={job.id} job={job} />)
+            recentJobs.map((job) => {
+              const hasApplied = user ? userContracts.some(
+                (contract) => contract.job_id === job.id && contract.seller_id === user.id
+              ) : false;
+              return (
+                <ProjectCard
+                  key={job.id}
+                  job={job}
+                  hasApplied={hasApplied}
+                  onApply={() => handleApplyToProject(job)}
+                />
+              );
+            })
           ) : (
             <p className='px-2 py-4 text-text-secondary-500'>
               {t('worker.mainContent.noProjects')}
@@ -121,7 +210,6 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
           )}
         </div>
       </section>
-      {/* Add other main content sections here */}
     </main>
   );
 }

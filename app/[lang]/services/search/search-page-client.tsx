@@ -13,8 +13,9 @@ import ServiceFilterSidebar from '@/components/services/list/ServiceFilterSideba
 import { ServiceSearchBar } from '@/components/services/list/ServiceSearchBar';
 import { ProjectSearchBar } from '@/components/services/list/ProjectSearchBar';
 import WorkerProfileDrawer from '@/components/worker/WorkerProfileDrawer';
-import { serviceOperations, userOperations, jobOperations } from '@/utils/supabase/database';
-import { Service, User, Job } from '@/utils/supabase/types';
+import { serviceOperations, userOperations, jobOperations, contractOperations } from '@/utils/supabase/database';
+import { Service, User, Job, Contract } from '@/utils/supabase/types';
+import { useAuth } from '@/utils/supabase/AuthContext';
 
 // Define the possible tab values
 type ActiveTabValue = 'Service' | 'Worker' | 'Project';
@@ -100,9 +101,18 @@ export default function SearchPageClient() {
   const [projectIsLoading, setProjectIsLoading] = useState(true);
   const [projectPage, setProjectPage] = useState(1);
   const [projectFilters, setProjectFilters] = useState(defaultProjectFilters);
+  const [applicationSubmitted, setApplicationSubmitted] = useState(0);
 
   const [resetKey, setResetKey] = useState(0);
   const itemsPerPage = 9;
+
+  const { user } = useAuth();
+  const [userContracts, setUserContracts] = useState<Contract[]>([]);
+  const [contractsLoading, setContractsLoading] = useState(false);
+
+  useEffect(() => {
+    console.log('[SearchPageClient] User from useAuth:', user);
+  }, [user]);
 
   // Update activeTab when URL search param changes
   useEffect(() => {
@@ -256,6 +266,29 @@ export default function SearchPageClient() {
 
     loadProjects();
   }, [activeTab, projectPage, projectFilters]);
+
+  // Fetch user contracts when user or activeTab changes, or when an application is submitted
+  useEffect(() => {
+    if (activeTab !== 'Project' || !user) {
+      if (activeTab === 'Project' && !user) {
+        console.log('[SearchPageClient] User not available for fetching contracts.');
+      }
+      setUserContracts([]); // Clear contracts if no user or not on project tab
+      return;
+    }
+    console.log('[SearchPageClient] Fetching user contracts for user ID:', user.id, 'Trigger:', applicationSubmitted);
+    setContractsLoading(true);
+    contractOperations.getUserContracts(user.id)
+      .then((contracts) => {
+        console.log('[SearchPageClient] Fetched user contracts:', contracts);
+        setUserContracts(contracts);
+      })
+      .catch(error => {
+        console.error('[SearchPageClient] Error fetching user contracts:', error);
+        setUserContracts([]); // Clear contracts on error
+      })
+      .finally(() => setContractsLoading(false));
+  }, [user, activeTab, applicationSubmitted]);
 
   // Handle service search term changes
   const handleServiceSearch = (term: string) => {
@@ -418,6 +451,76 @@ export default function SearchPageClient() {
     const currentParams = new URLSearchParams(Array.from(searchParams.entries()));
     currentParams.set('tab', newTab);
     router.push(`/${lang}/services/search?${currentParams.toString()}`);
+  };
+
+  const handleApplyToProject = async (projectId: string, projectTitle: string) => {
+    if (!user) {
+      console.error('[SearchPageClient] User not logged in. Cannot apply.');
+      // Optionally, trigger a notification to log in
+      return;
+    }
+
+    console.log(`[SearchPageClient] Attempting to apply to project ID: ${projectId} by user ID: ${user.id}`);
+
+    // Check if already applied (client-side check before DB call)
+    const alreadyApplied = userContracts.some(
+      (contract) => contract.job_id === projectId && contract.seller_id === user.id
+    );
+
+    if (alreadyApplied) {
+      console.log(`[SearchPageClient] User ${user.id} already applied to project ${projectId}.`);
+      // Notify user they've already applied (though button should be disabled)
+      // This is a safeguard.
+      return;
+    }
+
+    try {
+      const newContractData: Omit<Contract, 'id' | 'created_at'> = {
+        buyer_id: 'placeholder-buyer-id', // This needs to be the actual buyer_id of the job/project
+        seller_id: user.id,
+        job_id: projectId,
+        service_id: null,
+        title: `Application for: ${projectTitle}`,
+        contract_type: 'one-time', // Or determine based on project
+        status: 'pending', // Initial status for an application
+        amount: 0, // Or project.budget, or to be negotiated
+        description: `User ${user.id} applied to project ${projectTitle}`,
+        attachments: [],
+        currency: 'USD', // Or from project
+      };
+
+      // We need the project's buyer_id. Let's find the project first.
+      const projectToApply = projects.find(p => p.id === projectId);
+      if (!projectToApply || !projectToApply.buyer_id) {
+        console.error('[SearchPageClient] Could not find project or project.buyer_id to apply.');
+        // Notify error
+        return;
+      }
+      newContractData.buyer_id = projectToApply.buyer_id;
+      if (projectToApply.budget) {
+        newContractData.amount = projectToApply.budget;
+      }
+      if (projectToApply.currency) {
+        newContractData.currency = projectToApply.currency;
+      }
+
+
+      console.log('[SearchPageClient] Creating contract with data:', newContractData);
+      const createdContract = await contractOperations.createContract(newContractData);
+
+      if (createdContract) {
+        console.log('[SearchPageClient] Successfully applied (contract created):', createdContract);
+        // Trigger a re-fetch of contracts to update the UI
+        setApplicationSubmitted(prev => prev + 1);
+        // Optionally, show success notification (ProjectCard also shows one)
+      } else {
+        console.error('[SearchPageClient] Failed to create contract for application.');
+        // Notify user of failure
+      }
+    } catch (error) {
+      console.error('[SearchPageClient] Error during application process:', error);
+      // Notify user of error
+    }
   };
 
   return (
@@ -627,7 +730,7 @@ export default function SearchPageClient() {
           {/* Project Tab */}
           {activeTab === 'Project' && (
             <>
-              {projectIsLoading ? (
+              {projectIsLoading || contractsLoading ? (
                 <div className='flex flex-col space-y-4'>
                   {[...Array(5)].map((_, i) => (
                     <div
@@ -662,44 +765,62 @@ export default function SearchPageClient() {
               ) : projects.length > 0 ? (
                 <>
                   <div className='flex flex-col space-y-4'>
-                    {projects.map((project) => (
-                      <Link
-                        key={project.id}
-                        href={`/${lang}/projects/${project.id}`}
-                        passHref
-                        legacyBehavior
-                      >
-                        <a className='block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg'>
-                          <ProjectCard
-                            title={project.title}
-                            infoBadges={[
-                              { label: project.status || 'Open' },
-                              {
-                                label: project.usage_option || 'Private',
-                              },
-                              {
-                                label: project.privacy_option || 'Public',
-                              },
-                            ]}
-                            skillTags={project.skill_levels || []}
-                            description={
-                              project.description ||
-                              'No description available.'
-                            }
-                            client={{
-                              avatarUrl:
-                                'https://placekitten.com/24/24?image=' +
-                                project.id.substring(0, 2),
-                              name: 'Placeholder Client Name',
-                              rating: 4.5,
-                              reviewCount: 10,
-                            }}
-                            budget={project.budget || 0}
-                            projectId={project.id}
-                          />
-                        </a>
-                      </Link>
-                    ))}
+                    {projects.map((project) => {
+                      console.log(`[SearchPageClient] Checking project ID: ${project.id}, User ID: ${user?.id}`);
+                      console.log('[SearchPageClient] Current userContracts:', userContracts);
+                      const foundContract = userContracts.find(
+                        (contract) => {
+                          const conditionsMet = contract.seller_id === user?.id && contract.job_id === project.id;
+                          if (contract.job_id === project.id) {
+                            console.log(`[SearchPageClient] Contract ${contract.id} (job_id: ${contract.job_id}) vs Project ${project.id}. Seller_id match: ${contract.seller_id === user?.id}`);
+                          }
+                          return conditionsMet;
+                        }
+                      );
+                      console.log('[SearchPageClient] Found contract for project ' + project.id + ':', foundContract);
+                      const hasApplied = !!foundContract;
+                      console.log('[SearchPageClient] hasApplied for project ' + project.id + ':', hasApplied);
+                      return (
+                        <Link
+                          key={project.id}
+                          href={`/${lang}/projects/${project.id}`}
+                          passHref
+                          legacyBehavior
+                        >
+                          <a className='block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg'>
+                            <ProjectCard
+                              title={project.title}
+                              infoBadges={[
+                                { label: project.status || 'Open' },
+                                {
+                                  label: project.usage_option || 'Private',
+                                },
+                                {
+                                  label: project.privacy_option || 'Public',
+                                },
+                              ]}
+                              skillTags={project.skill_levels || []}
+                              description={
+                                project.description ||
+                                'No description available.'
+                              }
+                              client={{
+                                avatarUrl:
+                                  'https://placekitten.com/24/24?image=' +
+                                  project.id.substring(0, 2),
+                                name: 'Placeholder Client Name',
+                                rating: 4.5,
+                                reviewCount: 10,
+                              }}
+                              budget={project.budget || 0}
+                              projectId={project.id}
+                              hasApplied={hasApplied}
+                              onApply={() => handleApplyToProject(project.id, project.title)}
+                            />
+                          </a>
+                        </Link>
+                      );
+                    })}
                   </div>
 
                   {totalProjectPages > 1 && (
@@ -747,4 +868,4 @@ export default function SearchPageClient() {
       />
     </>
   );
-} 
+}
