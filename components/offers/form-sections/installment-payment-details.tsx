@@ -194,7 +194,10 @@ export function InstallmentPaymentDetails({
                 name={`milestones.${index}.dueDate`}
                 control={control}
                 render={({ field }) => (
-                  <Popover open={deadlineCalendarOpen} onOpenChange={setDeadlineCalendarOpen}>
+                  <Popover
+                    open={milestoneCalendarOpen === index}
+                    onOpenChange={(isOpen) => setMilestoneCalendarOpen(isOpen ? index : null)}
+                  >
                     <PopoverTrigger asChild>
                       <Button
                         type='button'
@@ -231,7 +234,7 @@ export function InstallmentPaymentDetails({
                           }
 
                           field.onChange(date);
-                          setDeadlineCalendarOpen(false);
+                          setMilestoneCalendarOpen(null);
                         }}
                         disabled={{ before: new Date() }}
                         initialFocus

@@ -308,10 +308,15 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
 
       {/* Available and professional services toggles */}
       <div className="space-y-3 pl-4">
-        {/* Item 1 */}
+        {/* Item 1 - Available */}
         <div className="flex items-start gap-2">
           {/* Icon */}
-          <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
+          <Switch.Root
+            className='mt-1'
+            id='available-toggle'
+            checked={isAvailable}
+            onCheckedChange={(checked) => handleToggleChange('available', checked)}
+          />
           {/* Text */}
           <div className='mt-0.5'>
             <p className="text-base font-normal text-[14px] text-[#1F2937]">{t('filters.available')}</p>
@@ -319,10 +324,15 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           </div>
         </div>
 
-        {/* Item 2 */}
+        {/* Item 2 - Professional */}
         <div className="flex items-start gap-2">
           {/* Icon */}
-          <Switch.Root className='mt-1' id='available-toggle' checked={isAvailable} onCheckedChange={(checked) => handleToggleChange('available', checked)} />
+          <Switch.Root
+            className='mt-1'
+            id='professional-toggle'
+            checked={isProfessional}
+            onCheckedChange={(checked) => handleToggleChange('professional', checked)}
+          />
           {/* Text */}
           <div className='mt-0.5'>
             <p className="text-base font-normal text-[14px] text-[#1F2937]">{t('filters.professionalServices')}</p>
