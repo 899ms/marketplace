@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { Chat, User } from '@/utils/supabase/types';
 import clsx from 'clsx';
 import * as Avatar from '@/components/ui/avatar';
+import { RiFileListLine } from '@remixicon/react';
 
 interface ChatListProps {
   chats: Chat[];
@@ -12,8 +13,6 @@ interface ChatListProps {
   selectedChatId: string | null;
   onChatSelect: (chatId: string) => void;
   currentUserId: string;
-  // TODO: Add last_message_at prop once data fetching is updated
-  // last_message_at?: string | null; 
 }
 
 // Helper function to format relative time
@@ -56,14 +55,6 @@ export default function ChatList({
 }: ChatListProps) {
   const { t } = useTranslation('common');
 
-  // Helper function to format date
-  const formatDate = (dateString?: string | null) => {
-    if (!dateString) return 'Unknown';
-    const date = new Date(dateString);
-    // Simple date format for list view
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-  };
-
   if (chats.length === 0) {
     return (
       <div className="p-4 text-center">
@@ -76,29 +67,36 @@ export default function ChatList({
     <div className="flex flex-col px-4 gap-2 custom-scrollbar h-full">
       {chats.map((chat) => {
         const otherUserProfile = chatProfiles[chat.id];
-        // Use full_name, fallback to username, then 'Unknown User'
         const displayName = otherUserProfile?.full_name || otherUserProfile?.username || 'Unknown User';
         const displayInitial = displayName[0]?.toUpperCase() || '?';
         const isSelected = selectedChatId === chat.id;
-
-        // TODO: Replace chat.created_at with actual last message timestamp when available
         const lastActivityTime = chat.created_at;
         const relativeTime = formatRelativeTime(t, lastActivityTime);
+        const isContractChat = chat.contract_id !== null;
 
         return (
           <div key={chat.id} className={`flex gap-3 p-2 items-center ${isSelected ? 'bg-[#F5F7FA]' : 'bg-white'} rounded-lg cursor-pointer`} onClick={() => onChatSelect(chat.id)}>
-            <div>
+            <div className="relative">
               {otherUserProfile?.avatar_url && otherUserProfile?.avatar_url != "" ? (
                 <Avatar.Root size='40'>
                   <Avatar.Image src={otherUserProfile?.avatar_url} alt={displayName} />
                   <Avatar.Indicator position='bottom'>
                     <Avatar.Status status='online' />
+
                   </Avatar.Indicator>
                 </Avatar.Root>
               ) : (
                 <Avatar.Root size='40' color='yellow'>
                   {displayInitial}
+                  <Avatar.Indicator position='bottom'>
+                    <Avatar.Status status='online' />
+                  </Avatar.Indicator>
                 </Avatar.Root>
+              )}
+              {isContractChat && (
+                <div className="absolute -bottom-1 -right-1 bg-white rounded-full p-1">
+                  <RiFileListLine className="w-3 h-3 text-[#0E121B]" />
+                </div>
               )}
             </div>
             <div className='flex flex-col gap-1'>
