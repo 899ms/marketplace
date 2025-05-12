@@ -23,6 +23,7 @@ import * as FileFormatIcon from '@/components/ui/file-format-icon';
 import { useAudioPlayer } from '@/contexts/AudioContext';
 import { ContractDetails } from '../orders/detail/contract-details';
 import { useRouter } from 'next/navigation';
+import i18n from '@/i18n';
 
 // --- Moved formatBytes function to top level --- 
 function formatBytes(bytes: number, decimals = 2): string {
@@ -399,7 +400,8 @@ function ChatMessageRenderer({
                         size="small"
                         onClick={() => {
                           if (message?.data?.contractId) {
-                            router.push(`/orders/detail/${message?.data?.contractId}`);
+                            const currentLang = i18n.language;
+                            router.push(`/${currentLang}/orders/detail/${message?.data?.contractId}`);
                           }
                         }}
                       >
@@ -431,7 +433,7 @@ function ChatMessageRenderer({
                   size="medium"
                   className='!justify-start'
                 >
-                  <Link href={`/orders/detail/${message.data.contractId}`}>
+                  <Link href={`/${i18n.language}/orders/detail/${message.data.contractId}`}>
                     {t('chat.milestone.viewContract')}
                   </Link>
                 </LinkButton>

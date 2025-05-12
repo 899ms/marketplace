@@ -10,6 +10,7 @@ import {
 import { useAuth } from '@/utils/supabase/AuthContext';
 import supabase from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import i18n from '@/i18n';
 
 export interface UseCreateJobFormReturn {
   activeStep: number;
@@ -197,7 +198,8 @@ export function useCreateJobForm(): UseCreateJobFormReturn {
       // Set success and redirect after a short delay
       setSuccess(true);
       setTimeout(() => {
-        router.push('/settings?tab=orders');
+        const currentLang = i18n.language;
+        router.push(`/${currentLang}/settings?tab=orders`);
         router.refresh(); // Refresh the page data
       }, 1000);
     } catch (err) {

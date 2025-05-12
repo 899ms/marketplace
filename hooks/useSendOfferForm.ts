@@ -10,6 +10,7 @@ import { SendOfferSchema, SendOfferFormData } from '@/components/offers/schema';
 import { User, Job, BaseFileData } from '@/utils/supabase/types';
 import { chatOperations } from '@/utils/supabase/database';
 import { format, parseISO, isValid } from 'date-fns';
+import i18n from '@/i18n';
 
 export interface UseSendOfferFormReturn {
   formMethods: UseFormReturn<SendOfferFormData>;
@@ -325,7 +326,8 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
   useEffect(() => {
     if (success) {
       console.log('Redirecting to /chats...');
-      router.push('/chats');
+      const currentLang = i18n.language;
+      router.push(`/${currentLang}/chats`);
     }
   }, [success, router]); // Depend on success and router
 
