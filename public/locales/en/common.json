@@ -363,7 +363,8 @@
   },
   "project": {
     "budget": "Budget",
-    "apply": "Apply"
+    "apply": "Apply",
+    "applied": "Applied"
   },
   "service": {
     "error": "Error displaying service",
@@ -869,10 +870,16 @@
   },
   "projects": {
     "applicants": {
-      "list": "List",
+      "list": "Applicants",
       "replacedBy": "Replaced by {{name}}",
       "hired": "Hired",
-      "view": "view"
+      "view": "view",
+      "noApplicants": "No applicants yet.",
+      "status": {
+        "pending": "",
+        "hired": "Hired",
+        "rejected": ""
+      }
     },
     "clientProfile": {
       "google": "Google"

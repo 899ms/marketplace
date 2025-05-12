@@ -184,10 +184,12 @@ export default function Navbar() {
                   const newLang = i18n.language === 'en' ? 'zh' : 'en';
                   const currentPath = window.location.pathname;
                   const newPath = currentPath.replace(/^\/(en|zh)/, `/${newLang}`);
+                  // Get current query parameters
+                  const searchParams = window.location.search;
                   // Update i18n language
                   i18n.changeLanguage(newLang);
-                  // Update URL using Next.js router
-                  router.push(newPath);
+                  // Update URL using Next.js router, preserving query parameters
+                  router.push(`${newPath}${searchParams}`);
                 }}
                 className="hover:bg-bg-neutral-subtle-100 rounded-md p-1 transition-colors"
               >
@@ -311,10 +313,12 @@ export default function Navbar() {
                         const newLang = i18n.language === 'en' ? 'zh' : 'en';
                         const currentPath = window.location.pathname;
                         const newPath = currentPath.replace(/^\/(en|zh)/, `/${newLang}`);
+                        // Get current query parameters
+                        const searchParams = window.location.search;
                         // Update i18n language
                         i18n.changeLanguage(newLang);
-                        // Update URL using Next.js router
-                        router.push(newPath);
+                        // Update URL using Next.js router, preserving query parameters
+                        router.push(`${newPath}${searchParams}`);
                       }}
                     >
                       <Dropdown.ItemIcon as={RiFlagLine} />

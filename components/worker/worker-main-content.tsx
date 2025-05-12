@@ -8,8 +8,8 @@ import * as Button from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 import { useAuth } from '@/utils/supabase/AuthContext';
-import { contractOperations } from '@/utils/supabase/database';
-import { Job, User, Contract as ContractType } from '@/utils/supabase/types';
+import { jobApplicationOperations } from '@/utils/supabase/job-application-operations';
+import { Job, User, JobApplication } from '@/utils/supabase/types';
 
 import Banner from './banner';
 import {
@@ -95,7 +95,7 @@ export function ProjectCard({ job, hasApplied, onApply }: ProjectCardProps) {
           >
             {hasApplied ? (
               <>
-                <Translate id="project.apply" />
+                <Translate id="project.applied" />
                 <RiArrowRightSLine className='w-[1.25rem] h-[1.25rem]' />
               </>
             ) : (
@@ -122,19 +122,19 @@ interface WorkerMainContentProps {
 export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContentProps) {
   const { t } = useTranslation('common');
   const { user } = useAuth();
-  const [userContracts, setUserContracts] = useState<ContractType[]>([]);
+  const [userApplications, setUserApplications] = useState<JobApplication[]>([]);
   const [applicationSubmitted, setApplicationSubmitted] = useState(0);
 
   useEffect(() => {
     if (!user) {
-      setUserContracts([]);
+      setUserApplications([]);
       return;
     }
-    contractOperations.getUserContracts(user.id)
-      .then(setUserContracts)
+    jobApplicationOperations.getUserJobApplications(user.id)
+      .then(setUserApplications)
       .catch(error => {
-        console.error('[WorkerMainContent] Error fetching user contracts:', error);
-        setUserContracts([]);
+        console.error('[WorkerMainContent] Error fetching user applications:', error);
+        setUserApplications([]);
       });
   }, [user, applicationSubmitted]);
 
@@ -143,13 +143,13 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
       console.error('[WorkerMainContent] User not logged in. Cannot apply.');
       return;
     }
-    if (!job.id || !job.title || !job.buyer_id) {
-      console.error('[WorkerMainContent] Job details missing (id, title, or buyer_id). Cannot apply.');
+    if (!job.id) {
+      console.error('[WorkerMainContent] Job ID missing. Cannot apply.');
       return;
     }
 
-    const alreadyApplied = userContracts.some(
-      (contract) => contract.job_id === job.id && contract.seller_id === user.id
+    const alreadyApplied = userApplications.some(
+      (application) => application.job_id === job.id && application.seller_id === user.id
     );
     if (alreadyApplied) {
       console.log(`[WorkerMainContent] User ${user.id} already applied to project ${job.id}.`);
@@ -157,26 +157,12 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
     }
 
     try {
-      const newContractData: Omit<ContractType, 'id' | 'created_at'> = {
-        buyer_id: job.buyer_id,
-        seller_id: user.id,
-        job_id: job.id,
-        service_id: null,
-        title: `Application for: ${job.title}`,
-        contract_type: 'one-time',
-        status: 'pending',
-        amount: job.budget ?? 0,
-        description: `Application for project: ${job.title}`,
-        attachments: [],
-        currency: job.currency ?? 'USD',
-      };
+      const createdApplication = await jobApplicationOperations.createJobApplication(job.id, user.id);
 
-      const createdContract = await contractOperations.createContract(newContractData);
-
-      if (createdContract) {
+      if (createdApplication) {
         setApplicationSubmitted(prev => prev + 1);
       } else {
-        console.error('[WorkerMainContent] Failed to create contract for application.');
+        console.error('[WorkerMainContent] Failed to create job application.');
       }
     } catch (error) {
       console.error('[WorkerMainContent] Error during application process:', error);
@@ -191,8 +177,8 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
         <div className='flex flex-col gap-2'>
           {recentJobs && recentJobs.length > 0 ? (
             recentJobs.map((job) => {
-              const hasApplied = user ? userContracts.some(
-                (contract) => contract.job_id === job.id && contract.seller_id === user.id
+              const hasApplied = user ? userApplications.some(
+                (application) => application.job_id === job.id && application.seller_id === user.id
               ) : false;
               return (
                 <ProjectCard

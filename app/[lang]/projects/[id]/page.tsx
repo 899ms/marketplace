@@ -16,7 +16,7 @@ import {
   userOperations,
   chatOperations,
 } from '@/utils/supabase/database';
-import type { Job, User, BaseFileData, Chat, Message } from '@/utils/supabase/types'; // Import types
+import type { Job, User, BaseFileData, Chat, Message, JobApplication } from '@/utils/supabase/types'; // Import types
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 
 // Import Notification hook
@@ -32,6 +32,7 @@ import SkillsSection from '@/components/projects/detail/SkillsSection';
 import AttachmentsSection from '@/components/projects/detail/AttachmentsSection';
 import FaqSection from '@/components/projects/detail/FaqSection';
 import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
+import { jobApplicationOperations } from '@/utils/supabase/job-application-operations';
 
 // --- Mock Data (Keep for sections not yet implemented with real data) ---
 const mockFaqs = [
@@ -238,20 +239,26 @@ export default function ProjectDetailPage() {
   // State for fetched data
   const [projectDataState, setProjectDataState] = useState<Job | null>(null);
   const [clientDataState, setClientDataState] = useState<User | null>(null);
-  const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null); // Added state for current user profile
-  const [pageViewRole, setPageViewRole] = useState<
-    'owner' | 'seller_visitor' | 'buyer_visitor' | 'anonymous'
-  >('anonymous'); // More specific role state
+  const [applicantDataState, setApplicantDataState] = useState<User | null>(null);
+  const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null);
+  const [pageViewRole, setPageViewRole] = useState<'owner' | 'seller_visitor' | 'buyer_visitor' | 'anonymous'>('anonymous');
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [jobApplications, setJobApplications] = useState<Array<JobApplication & { seller: User }>>([]);
+  const [isLoadingApplications, setIsLoadingApplications] = useState(true);
 
-  // --- Chat State --- 
+  // Chat State
   const [activeChat, setActiveChat] = useState<Chat | null>(null);
   const [activeChatMessages, setActiveChatMessages] = useState<Message[]>([]);
   const [isLoadingChat, setIsLoadingChat] = useState(false);
   const [isLoadingMessages, setIsLoadingMessages] = useState(false);
   const [chatError, setChatError] = useState<string | null>(null);
-  // --- End Chat State ---
+
+  // Derived boolean for cleaner conditional rendering
+  const isOwner = pageViewRole === 'owner';
+  const isSellerVisitor = pageViewRole === 'seller_visitor';
+  const isBuyerVisitor = pageViewRole === 'buyer_visitor';
+  const isAnonymous = pageViewRole === 'anonymous';
 
   useEffect(() => {
     i18n.changeLanguage(lang);
@@ -265,8 +272,8 @@ export default function ProjectDetailPage() {
       setError(null);
       setProjectDataState(null);
       setClientDataState(null);
-      setCurrentUserProfile(null); // Reset current user profile
-      setPageViewRole('anonymous'); // Reset role
+      setCurrentUserProfile(null);
+      setPageViewRole('anonymous');
 
       let fetchedJobData: Job | null = null;
 
@@ -277,12 +284,11 @@ export default function ProjectDetailPage() {
           throw new Error('Project not found.');
         }
         setProjectDataState(jobData);
-        fetchedJobData = jobData; // Store for role determination
+        fetchedJobData = jobData;
 
         // 2. Fetch Client (Buyer) data
         const clientData = await userOperations.getUserById(jobData.buyer_id);
         setClientDataState(clientData);
-        // Don't throw error if client not found, just proceed
 
         // 3. Fetch Current User Profile (if logged in)
         let fetchedCurrentUserProfile: User | null = null;
@@ -295,22 +301,15 @@ export default function ProjectDetailPage() {
         if (authContext.user && fetchedJobData) {
           if (authContext.user.id === fetchedJobData.buyer_id) {
             setPageViewRole('owner');
-            console.log("Setting pageViewRole: owner");
           } else if (fetchedCurrentUserProfile?.user_type === 'seller') {
             setPageViewRole('seller_visitor');
-            console.log("Setting pageViewRole: seller_visitor");
           } else if (fetchedCurrentUserProfile?.user_type === 'buyer') {
             setPageViewRole('buyer_visitor');
-            console.log("Setting pageViewRole: buyer_visitor");
           } else {
-            // Logged in, but not owner and not seller/buyer type (shouldn't happen?)
             setPageViewRole('anonymous');
-            console.log("Setting pageViewRole: anonymous (logged in, unexpected type)");
           }
         } else {
-          // Not logged in
           setPageViewRole('anonymous');
-          console.log("Setting pageViewRole: anonymous (not logged in)");
         }
 
         // Reset chat state on new fetch
@@ -330,11 +329,24 @@ export default function ProjectDetailPage() {
 
   }, [projectId, authContext.user?.id, authContext.loading]);
 
-  // Derived boolean for cleaner conditional rendering (kept for simplicity where applicable)
-  const isOwner = pageViewRole === 'owner';
-  const isSellerVisitor = pageViewRole === 'seller_visitor';
-  const isBuyerVisitor = pageViewRole === 'buyer_visitor';
-  const isAnonymous = pageViewRole === 'anonymous';
+  // Add new useEffect for fetching job applications
+  useEffect(() => {
+    if (!projectId || !isOwner) return;
+
+    const fetchJobApplications = async () => {
+      setIsLoadingApplications(true);
+      try {
+        const applications = await jobApplicationOperations.getJobApplicationsWithSellers(projectId);
+        setJobApplications(applications);
+      } catch (error) {
+        console.error('Error fetching job applications:', error);
+      } finally {
+        setIsLoadingApplications(false);
+      }
+    };
+
+    fetchJobApplications();
+  }, [projectId, isOwner]);
 
   // Handler for the Apply button click
   const handleApplyClick = () => {
@@ -345,12 +357,19 @@ export default function ProjectDetailPage() {
   };
 
   // --- Chat Handlers ---
-  const handleOpenChat = async () => {
-    if (!currentUserProfile || !clientDataState) {
+  const handleOpenChat = async (applicantData: User) => {
+
+    console.log('HERE is the current user profile', currentUserProfile);
+    console.log('HERE is the applicant data state', applicantData);
+
+    if (!currentUserProfile || !applicantData) {
       setChatError(t('projects.detail.page.chat.profileError'));
       return;
     }
-    if (pageViewRole !== 'seller_visitor') {
+    setApplicantDataState(applicantData);
+
+    console.log('HERE is the page view role', pageViewRole);
+    if (pageViewRole !== 'owner') {
       console.warn('Attempted to open chat with incorrect role:', pageViewRole);
       return;
     }
@@ -361,7 +380,8 @@ export default function ProjectDetailPage() {
     setActiveChatMessages([]);
 
     try {
-      const chat = await chatOperations.findOrCreateChat(clientDataState.id, currentUserProfile.id);
+      const chat = await chatOperations.findOrCreateChat(applicantData.id, currentUserProfile.id);
+      console.log('HERE is the chat', chat);
       if (chat) {
         setActiveChat(chat);
         setIsLoadingMessages(true);
@@ -510,7 +530,11 @@ export default function ProjectDetailPage() {
               {!isAnonymous && (
                 /* Applicant List Card Wrapper */
                 <div className="shadow-sm rounded-[20px] border border-white bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
-                  <ApplicantsList applicants={mockApplicants} userRole={isOwner ? 'buyer' : 'seller'} />
+                  <ApplicantsList
+                    applications={jobApplications}
+                    userRole={isOwner ? 'buyer' : 'seller'}
+                    onMessageClick={isOwner ? handleOpenChat : undefined}
+                  />
                 </div>
               )}
               {/* Link Card might still be relevant for Anonymous? */}
@@ -536,12 +560,12 @@ export default function ProjectDetailPage() {
                   deadline={projectDeadline}
                   proposals={projectProposals}
                 />
-                <SellerActionButtons
+                {/* <SellerActionButtons
                   onApply={handleApplyClick}
                   onMessageClick={handleOpenChat}
                   isLoadingChat={isLoadingChat}
                   disabled={!currentUserProfile || !clientDataState}
-                />
+                /> */}
               </div>
               {chatError && (
                 <p className="text-xs text-red-600 -mt-4 mb-2 text-center">
@@ -549,7 +573,10 @@ export default function ProjectDetailPage() {
                 </p>
               )}
               <div className="shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
-                <ApplicantsList applicants={mockApplicants} userRole={'seller'} />
+                <ApplicantsList
+                  applications={jobApplications}
+                  userRole="seller"
+                />
               </div>
               <ProjectLinkCard link={projectLink} />
             </>
@@ -557,13 +584,13 @@ export default function ProjectDetailPage() {
         </div>
       </div>
       {/* Conditionally render Chat Popup */}
-      {activeChat && currentUserProfile && clientDataState && (
+      {activeChat && currentUserProfile && applicantDataState && (
         <ChatPopupWrapper
           key={activeChat.id}
           chat={activeChat}
           initialMessages={activeChatMessages}
           currentUserProfile={currentUserProfile} // Seller is current user here
-          otherUserProfile={clientDataState} // Buyer is other user here
+          otherUserProfile={applicantDataState} // Buyer is other user here
           currentUserId={currentUserProfile.id}
           isLoadingMessages={isLoadingMessages}
           onClose={handleCloseChat}

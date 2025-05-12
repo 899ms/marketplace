@@ -363,7 +363,8 @@
   },
   "project": {
     "budget": "预算",
-    "apply": "申请"
+    "apply": "申请",
+    "applied": "已申请"
   },
   "service": {
     "error": "显示服务时出错",
@@ -872,10 +873,16 @@
   },
   "projects": {
     "applicants": {
-      "list": "列表",
+      "list": "申请者",
       "replacedBy": "已被{{name}}替代",
       "hired": "已雇佣",
-      "view": "查看"
+      "view": "查看",
+      "noApplicants": "暂无申请者",
+      "status": {
+        "pending": "",
+        "hired": "已雇佣",
+        "rejected": ""
+      }
     },
     "clientProfile": {
       "google": "谷歌"

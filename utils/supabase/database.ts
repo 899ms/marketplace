@@ -1297,13 +1297,14 @@ export const chatOperations = {
     }
 
     try {
-      // 1. Check if a chat already exists between these two users
+      // 1. Check if a chat already exists between these two users with contract_id as null
       console.log(
-        `findOrCreateChat: Checking for existing chat between ${buyerId} and ${sellerId}`,
+        `findOrCreateChat: Checking for existing chat between ${buyerId} and ${sellerId} with contract_id as null`,
       );
       const { data: existingChats, error: findError } = await supabase
         .from('chats')
         .select('*')
+        .is('contract_id', null) // Only look for chats with contract_id as null
         .or(
           `and(buyer_id.eq.${buyerId},seller_id.eq.${sellerId}),and(buyer_id.eq.${sellerId},seller_id.eq.${buyerId})`,
         )
