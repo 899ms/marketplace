@@ -10,6 +10,7 @@ import { RiLoader4Line } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import * as FancyButton from '@/components/ui/fancy-button';
 import * as Divider from '@/components/ui/divider';
+import { format } from 'date-fns';
 
 interface Step4Props {
   formMethods: UseFormReturn<CreateJobFormData>;
@@ -35,6 +36,15 @@ const Step4Preview: React.FC<Step4Props> = ({
 
   const discountCode = 'codeabcde';
   const discountAmount = 20;
+
+  const formatDeadline = (deadline?: string) => {
+    if (!deadline) return '-';
+    try {
+      return format(new Date(deadline), 'MMMM d, yyyy');
+    } catch (e) {
+      return '-';
+    }
+  };
 
   const getUsageDescription = (option?: string) => {
     if (option === 'private')
@@ -131,7 +141,7 @@ const Step4Preview: React.FC<Step4Props> = ({
         <div className='p-2 flex flex-col gap-2 p-4'>
           <div className='flex flex-row justify-between items-center'>
             <p className='text-[#525866] font-normal text-[14px]'>{t('jobs.create.step4.deadline')}</p>
-            <p className='text-[#0E121B] text-[14px]'>{formData.deadline || '-'}</p>
+            <p className='text-[#0E121B] text-[14px]'>{formatDeadline(formData.deadline)}</p>
           </div>
           <div className='flex flex-row justify-between items-center'>
             <p className='text-[#525866] font-normal text-[14px]'>{t('jobs.create.step4.orderAmount')}</p>

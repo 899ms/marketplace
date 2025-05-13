@@ -173,7 +173,7 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
     <main className='flex-1 max-w-[676px]'>
       <Banner />
       <section className='flex flex-col max-w-[676px] max-h-[632px]'>
-        <SectionHeader title={t('worker.mainContent.projects')} href='#' />
+        <SectionHeader title={t('worker.mainContent.projects')} href={`/${i18n.language}/services/search?tab=Project`} />
         <div className='flex flex-col gap-2'>
           {recentJobs && recentJobs.length > 0 ? (
             recentJobs.map((job) => {

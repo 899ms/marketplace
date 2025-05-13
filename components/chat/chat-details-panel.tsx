@@ -9,7 +9,7 @@ import { contractOperations, contractMilestoneOperations } from '@/utils/supabas
 import * as Avatar from '@/components/ui/avatar';
 import * as Accordion from '@/components/ui/accordion';
 import { RiArrowDownSLine, RiArrowUpSLine, RiLoader4Line } from '@remixicon/react';
-
+import * as Button from '@/components/ui/button';
 interface ChatDetailsPanelProps {
   chat: Chat | null;
   otherUserProfile: User | null;
@@ -123,22 +123,38 @@ export default function ChatDetailsPanel({ chat, otherUserProfile, currentUserPr
       <div className="flex justify-end items-center gap-2 border-y border-gray-200 p-3 flex-shrink-0">
         {/* ── Send Contract button (now first / left) ── */}
         {/* ── Send Contract button (visible only for buyers) ── */}
-        {currentUserProfile?.user_type === 'buyer' && (
-          <button
+        {currentUserProfile?.user_type === 'buyer' && chat?.contract_id === null && (
+          <Button.Root
             onClick={() => {
               const sellerId = otherUserProfile?.id;
               if (sellerId) {
                 router.push(`/${i18n.language}/sendoffer?seller_id=${sellerId}`);
               }
             }}
-            className="
-              inline-flex items-center px-3 py-1.5 text-xs font-small
-              text-primary-600 border border-primary-600 rounded-md
-              text-[12px]
-            "
+            size='xsmall'
+            variant='neutral'
+            mode='stroke'
+            className='rounded-[8px] mr-[16px]'
           >
             {t('chatDetails.sendContract')}
-          </button>
+          </Button.Root>
+        )}
+
+        {chat?.contract_id && (
+          <Button.Root
+            onClick={() => {
+              const sellerId = otherUserProfile?.id;
+              if (sellerId) {
+                router.push(`/${i18n.language}/orders/detail/${chat?.contract_id}`);
+              }
+            }}
+            size='xsmall'
+            variant='neutral'
+            mode='stroke'
+            className='rounded-[8px] mr-[16px]'
+          >
+            {t('chatDetails.viewContract')}
+          </Button.Root>
         )}
 
         {/* ── Hamburger icon ── */}

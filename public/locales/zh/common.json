@@ -184,8 +184,8 @@
           }
         },
         "step1": {
-          "subject": "合同标题",
-          "subjectPlaceholder": "输入合同标题…",
+          "subject": "服务标题",
+          "subjectPlaceholder": "输入服务标题...",
           "detail": "详情",
           "detailPlaceholder": "详情",
           "tags": {
@@ -522,12 +522,17 @@
     "accept": "接受",
     "cancel": "取消",
     "edit": "编辑",
+    "declined": "拒绝",
+    "accepted": "接受",
+    "cancelled": "取消",
     "milestone": {
       "completed": "已完成里程碑",
       "activated": "已激活里程碑",
       "viewContract": "查看合同"
     },
-    "yourOfferIncludes": "您的报价包括"
+    "yourOfferIncludes": "您的报价包括",
+    "hireRequest": "雇佣请求",
+    "view": "查看"
   },
   "chatDetails": {
     "selectChat": "选择一个聊天以查看详情。",
@@ -548,7 +553,8 @@
     "milestones": "里程碑",
     "noMilestones": "未找到此合同的里程碑。",
     "status": "状态",
-    "sendContract": "发送合同"
+    "sendContract": "发送合同",
+    "viewContract": "查看合同"
   },
   "chatList": {
     "noChats": "您还没有任何聊天。",

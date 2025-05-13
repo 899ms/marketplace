@@ -96,11 +96,16 @@ export function OrderDetailsClient({
     console.log(`Attempting to find/create chat between Buyer ${contract.buyer_id} and Seller ${contract.seller_id}`);
 
     try {
-      const chat = await chatOperations.findOrCreateChat(contract.buyer_id, contract.seller_id);
+
+      console.log(`Attempting to find/create chat between Buyer ${contract.buyer_id} and Seller ${contract.seller_id} for contract ${contract.id}`);
+      const chat = await chatOperations.getContractChat(contract.buyer_id, contract.seller_id, contract.id);
+
+      console.log('Chat found/created:', chat);
       if (chat) {
         console.log('Chat found/created:', chat.id);
         setActiveChat(chat);
-        setActiveChatMessages([]);
+        const messages = await chatOperations.getChatMessages(chat.id);
+        setActiveChatMessages(messages);
       } else {
         throw new Error('Could not find or create a chat.');
       }

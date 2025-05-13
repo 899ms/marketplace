@@ -1,9 +1,9 @@
 'use client';
 
-import React, { useState, useEffect, useRef, useCallback, Fragment } from 'react';
+import React, { useState, useEffect, useRef, useCallback, Fragment, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import supabase from '@/utils/supabase/client';
-import { chatOperations } from '@/utils/supabase/database';
+import { chatOperations, jobOperations } from '@/utils/supabase/database';
 import { Chat, Message, User, MessageSchema, BaseFileData, MusicItem } from '@/utils/supabase/types';
 import {
   ImageMessageData,
@@ -107,6 +107,7 @@ interface ChatMessageRendererProps {
   timestamp: string;
   senderName: string;
   isSeller: boolean;
+  setMessages: Dispatch<SetStateAction<Message[]>>;
 }
 
 function ChatMessageRenderer({
@@ -116,6 +117,7 @@ function ChatMessageRenderer({
   timestamp,
   senderName,
   isSeller,
+  setMessages,
 }: ChatMessageRendererProps) {
   const router = useRouter();
   const { t } = useTranslation('common');
@@ -133,106 +135,106 @@ function ChatMessageRenderer({
   const plainTextColor = 'text-gray-800 dark:text-gray-100';
   const messageContentMaxWidth = 'max-w-[85%]';
 
-  const renderOfferMessage = (isCurrentUser: boolean) => {
-    const offerData = message.data as OfferMessageData | null;
-    if (!offerData) return <p className='italic text-xs text-gray-500'>[Offer data missing]</p>;
+  // const renderOfferMessage = (isCurrentUser: boolean) => {
+  //   const offerData = message.data as OfferMessageData | null;
+  //   if (!offerData) return <p className='italic text-xs text-gray-500'>[Offer data missing]</p>;
 
-    const truncatedDescription = offerData.description
-      ? (offerData.description.length > 80 ? offerData.description.substring(0, 80) + '...' : offerData.description)
-      : 'No description provided.';
+  //   const truncatedDescription = offerData.description
+  //     ? (offerData.description.length > 80 ? offerData.description.substring(0, 80) + '...' : offerData.description)
+  //     : 'No description provided.';
 
-    const isRecipient = !isCurrentUser;
+  //   const isRecipient = !isCurrentUser;
 
-    return (
-      <div className={cardClass}>
-        <div className="flex justify-between items-start mb-2">
-          <h4 className={`font-semibold text-base mr-2 ${cardTextColor}`} title={offerData.title}>
-            {offerData.title || "Custom Offer"}kkk
-          </h4>
-          <span className="font-bold text-base text-blue-600 dark:text-blue-400 flex-shrink-0">
-            {offerData.currency || '$'}{offerData.price?.toFixed(2) ?? '0.00'}
-          </span>
-        </div>
+  //   return (
+  //     <div className={cardClass}>
+  //       <div className="flex justify-between items-start mb-2">
+  //         <h4 className={`font-semibold text-base mr-2 ${cardTextColor}`} title={offerData.title}>
+  //           {offerData.title || "Custom Offer"}kkk
+  //         </h4>
+  //         <span className="font-bold text-base text-blue-600 dark:text-blue-400 flex-shrink-0">
+  //           {offerData.currency || '$'}{offerData.price?.toFixed(2) ?? '0.00'}
+  //         </span>
+  //       </div>
 
-        <p className={`text-sm mb-3 ${cardSubTextColor}`}>
-          {truncatedDescription}
-        </p>
+  //       <p className={`text-sm mb-3 ${cardSubTextColor}`}>
+  //         {truncatedDescription}
+  //       </p>
 
-        <div className={`flex items-center text-sm mb-4 ${cardSubTextColor}`}>
-          <Clock size={16} className="mr-2 flex-shrink-0" />
-          <span>Delivery: {offerData.deliveryTime || 'Not specified'}</span>
-        </div>
+  //       <div className={`flex items-center text-sm mb-4 ${cardSubTextColor}`}>
+  //         <Clock size={16} className="mr-2 flex-shrink-0" />
+  //         <span>Delivery: {offerData.deliveryTime || 'Not specified'}</span>
+  //       </div>
 
-        <div className="flex flex-col space-y-2">
-          <LinkButton
-            asChild
-            variant="primary"
-            size="small"
-            className="w-full justify-center"
-          >
-            <Link href={`/offers/${offerData.contractId}`}>
-              View Offer Details
-            </Link>
-          </LinkButton>
+  //       <div className="flex flex-col space-y-2">
+  //         <LinkButton
+  //           asChild
+  //           variant="primary"
+  //           size="small"
+  //           className="w-full justify-center"
+  //         >
+  //           <Link href={`/offers/${offerData.contractId}`}>
+  //             View Offer Details
+  //           </Link>
+  //         </LinkButton>
 
-          {isRecipient && (
-            <div className="flex justify-end space-x-2 pt-2 border-t dark:border-gray-600">
-              <Button variant="neutral" mode="stroke" size="small">Decline</Button>
-              <Button variant="primary" mode="filled" size="small">Accept</Button>
-            </div>
-          )}
-        </div>
+  //         {isRecipient && (
+  //           <div className="flex justify-end space-x-2 pt-2 border-t dark:border-gray-600">
+  //             <Button variant="neutral" mode="stroke" size="small">Decline</Button>
+  //             <Button variant="primary" mode="filled" size="small">Accept</Button>
+  //           </div>
+  //         )}
+  //       </div>
 
-        {message.content && (
-          <p className={`text-sm mt-3 pt-3 border-t dark:border-gray-600 whitespace-pre-wrap ${cardTextColor}`}>
-            {message.content}
-          </p>
-        )}
-      </div>
-    );
-  };
+  //       {message.content && (
+  //         <p className={`text-sm mt-3 pt-3 border-t dark:border-gray-600 whitespace-pre-wrap ${cardTextColor}`}>
+  //           {message.content}
+  //         </p>
+  //       )}
+  //     </div>
+  //   );
+  // };
 
-  const renderMilestoneEventMessage = () => {
-    const eventData = message.data as MilestoneEventData | null;
-    if (!eventData) return <p className='italic text-xs text-gray-500'>[Milestone data missing]</p>;
+  // const renderMilestoneEventMessage = () => {
+  //   const eventData = message.data as MilestoneEventData | null;
+  //   if (!eventData) return <p className='italic text-xs text-gray-500'>[Milestone data missing]</p>;
 
-    const truncatedDescription = eventData.description
-      ? (eventData.description.length > 50 ? eventData.description.substring(0, 50) + '...' : eventData.description)
-      : 'Milestone details';
+  //   const truncatedDescription = eventData.description
+  //     ? (eventData.description.length > 50 ? eventData.description.substring(0, 50) + '...' : eventData.description)
+  //     : 'Milestone details';
 
-    const isCompleted = eventData.status === 'completed';
-    const Icon = isCompleted ? CheckCircle : Clock;
-    const iconColor = isCompleted ? 'text-green-500' : 'text-blue-500';
+  //   const isCompleted = eventData.status === 'completed';
+  //   const Icon = isCompleted ? CheckCircle : Clock;
+  //   const iconColor = isCompleted ? 'text-green-500' : 'text-blue-500';
 
-    return (
-      <div className={cardClass}>
-        <div className="flex items-start mb-2">
-          <Icon size={18} className={`mr-2 mt-0.5 flex-shrink-0 ${iconColor}`} />
-          <div>
-            <h4 className={`font-medium text-base ${cardTextColor}`} title={eventData.description}>
-              Milestone: &quot;{truncatedDescription}&quot;
-            </h4>
-            {eventData.amount != null && (
-              <p className={`text-sm mt-1 ${cardSubTextColor}`}>
-                Amount: {eventData.currency || '$'}{eventData.amount.toFixed(2)}
-              </p>
-            )}
-          </div>
-        </div>
+  //   return (
+  //     <div className={cardClass}>
+  //       <div className="flex items-start mb-2">
+  //         <Icon size={18} className={`mr-2 mt-0.5 flex-shrink-0 ${iconColor}`} />
+  //         <div>
+  //           <h4 className={`font-medium text-base ${cardTextColor}`} title={eventData.description}>
+  //             Milestone: &quot;{truncatedDescription}&quot;
+  //           </h4>
+  //           {eventData.amount != null && (
+  //             <p className={`text-sm mt-1 ${cardSubTextColor}`}>
+  //               Amount: {eventData.currency || '$'}{eventData.amount.toFixed(2)}
+  //             </p>
+  //           )}
+  //         </div>
+  //       </div>
 
-        <LinkButton
-          asChild
-          variant="primary"
-          size="small"
-          className="w-full justify-center mt-2"
-        >
-          <Link href={`/orders/detail/${eventData.contractId}`}>
-            View Contract
-          </Link>
-        </LinkButton>
-      </div>
-    );
-  };
+  //       <LinkButton
+  //         asChild
+  //         variant="primary"
+  //         size="small"
+  //         className="w-full justify-center mt-2"
+  //       >
+  //         <Link href={`/orders/detail/${eventData.contractId}`}>
+  //           View Contract
+  //         </Link>
+  //       </LinkButton>
+  //     </div>
+  //   );
+  // };
 
   const renderSystemEventMessage = () => {
     const eventData = message.data as SystemEventData | null;
@@ -295,6 +297,202 @@ function ChatMessageRenderer({
   //       break;
   //   }
   // }
+
+  const updateOfferStatus = async (status: string) => {
+    console.log('updateOfferStatus', status);
+
+    if (status == 'cancelled' && isSeller) {
+      console.log('Cannot cancel offer as a seller');
+      return;
+    }
+
+    if (status == 'accepted' && !isSeller) {
+      console.log('Cannot accept offer as a buyer');
+      return;
+    }
+
+    if (status == 'declined' && !isSeller) {
+      console.log('Cannot decline offer as a buyer');
+      return;
+    }
+
+
+
+    if (status == 'accepted' && message.data?.contractDetails) {
+      // --- Create Contract ---
+      // Exclude deadline and milestones fields from contractDetails
+      const { deadline, milestones, ...contractData } = message.data.contractDetails;
+
+      const { data: newContract, error: contractError } = await supabase
+        .from('contracts')
+        .insert(contractData)
+        .select('id, buyer_id, seller_id') // Select necessary fields
+        .single();
+
+      if (contractError || !newContract) {
+        console.error('Contract creation failed:', contractError);
+        throw contractError || new Error('Failed to create contract record');
+      }
+      console.log('Contract created successfully:', newContract);
+
+      // Create a new chat for the contract
+      const newChat = await chatOperations.createChat({ buyer_id: contractData.buyer_id, seller_id: contractData.seller_id, contract_id: newContract.id });
+
+
+
+      // --- Create Milestones (Always create at least one) ---
+      let milestoneInsertError: any = null;
+      if (contractData.contract_type === 'one-time') {
+        console.log('Creating single milestone for one-time payment.');
+        // Create a single milestone for one-time payment
+        const singleMilestoneData = {
+          contract_id: newContract.id,
+          description: contractData.title, // Use contract title or description
+          amount: contractData.amount,
+          due_date: deadline,
+          status: 'pending',
+          sequence: 1,
+        };
+        const { error } = await supabase
+          .from('contract_milestones')
+          .insert(singleMilestoneData);
+
+        if (newChat) {
+          // Add a milestone_activated message to the new chat
+          const milestoneActivatedMessage = await chatOperations.sendMessage({
+            chat_id: newChat.id,
+            message_type: 'milestone_activated',
+            content: 'Milestone activated',
+            sender_id: contractData.buyer_id,
+            data: {
+              contractId: newContract.id,
+              status: 'in_progress',
+              description: contractData.title,
+              amount: contractData.amount,
+              sequence: 1,
+
+
+            }
+          });
+
+        }
+
+        milestoneInsertError = error;
+      } else if (milestones?.length) {
+        console.log(
+          `Creating ${milestones.length} milestones for installment payment.`,
+        );
+        // Create milestones from form for installment payment
+        const milestoneData = milestones.map((m: any, index: number) => ({
+          contract_id: newContract.id,
+          description: m.description,
+          amount: m.amount,
+          due_date: m.dueDate?.toISOString() || null,
+          status: 'pending',
+          sequence: index + 1,
+        }));
+        const { error } = await supabase
+          .from('contract_milestones')
+          .insert(milestoneData);
+        milestoneInsertError = error;
+
+        if (newChat) {
+          // Add a milestone_activated message to the new chat
+          const milestoneActivatedMessage = await chatOperations.sendMessage({
+            chat_id: newChat.id,
+            message_type: 'milestone_activated',
+            content: 'Milestone activated',
+            sender_id: contractData.buyer_id,
+            data: {
+              contractId: newContract.id,
+              status: 'in_progress',
+              description: milestones[0].description,
+              amount: milestones[0].amount,
+              sequence: 1,
+            }
+          });
+        }
+
+
+      } else {
+        // This case should ideally not happen if validation is correct
+        console.warn('No milestones provided for installment payment type.');
+      }
+
+      if (milestoneInsertError) {
+        console.error('Failed to insert milestones:', milestoneInsertError);
+        throw milestoneInsertError;
+      }
+
+      // Change the status of job to in_progress
+      const updatedJob = await jobOperations.updateJob(contractData.job_id, {
+        status: 'in_progress',
+      });
+
+      const updatedMessage = await chatOperations.updateMessageData(message.id, {
+        ...message.data,
+        status: status,
+        contractId: newContract.id,
+      });
+
+
+
+      const currentLang = i18n.language;
+      router.push(`/${currentLang}/orders/detail/${newContract.id}`);
+    }
+
+    else {
+      const updatedMessage = await chatOperations.updateMessageData(message.id, {
+        ...message.data,
+        status: status,
+      });
+
+
+      setMessages((prevMessages) => {
+        return prevMessages.map((m) => {
+          if (m.id === message.id) {
+            return { ...m, data: { ...m.data, status: status } } as Message;
+          }
+          return m;
+        });
+      });
+    }
+  }
+
+  const updateHireStatus = async (status: string) => {
+
+    console.log('updateHireStatus', status);
+
+    if (status == 'cancelled' && isSeller) {
+      console.log('Cannot cancel hiring request as a seller');
+      return;
+    }
+
+    if (status == 'accepted' && !isSeller) {
+      console.log('Cannot accept hiring request as a buyer');
+      return;
+    }
+
+    if (status == 'declined' && !isSeller) {
+      console.log('Cannot decline hiring request as a buyer');
+      return;
+    }
+
+    const updatedMessage = await chatOperations.updateMessageData(message.id, {
+      ...message.data,
+      status: status,
+    });
+
+
+    setMessages((prevMessages) => {
+      return prevMessages.map((m) => {
+        if (m.id === message.id) {
+          return { ...m, data: { ...m.data, status: status } } as Message;
+        }
+        return m;
+      });
+    });
+  }
 
   return (
     <div className={`flex gap-2 w-full ${alignmentContainerClass} ${!isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`}>
@@ -373,39 +571,39 @@ function ChatMessageRenderer({
                     <>
                       {/* Seller sees Cancel / Edit */}
                       <Button
-                        className='w-1/2'
                         variant='neutral'
                         mode='stroke'
                         size='small'
+                        className={`w-1/2 ${message?.data?.status !== 'pending' ? 'invisible' : ''}`}
+                        onClick={() => updateOfferStatus('cancelled')}
+                        disabled={message?.data?.status === 'accepted' || message?.data?.status === 'declined' || message?.data?.status === 'cancelled'}
                       >
                         {t('chat.cancel')}
                       </Button>
-                      <FancyButton.Root className='w-1/2' size='small'>
-                        {t('chat.edit')}
+                      <FancyButton.Root className='w-1/2' size='small' disabled={message?.data?.status !== 'pending'}>
+                        {message?.data?.status === 'pending' ? t('chat.edit') : message?.data?.status === 'accepted' ? t('chat.accepted') : message?.data?.status === 'declined' ? t('chat.declined') : message?.data?.status === 'cancelled' ? t('chat.cancelled') : ''}
                       </FancyButton.Root>
                     </>
                   ) : (
                     <>
                       {/* Buyer sees Decline / Accept */}
                       <Button
-                        className='w-1/2'
                         variant='neutral'
                         mode='stroke'
                         size='small'
+                        className={`w-1/2 ${message?.data?.status !== 'pending' ? 'invisible' : ''}`}
+                        onClick={() => updateOfferStatus('declined')}
+                        disabled={message?.data?.status === 'accepted' || message?.data?.status === 'declined' || message?.data?.status === 'cancelled'}
                       >
                         {t('chat.decline')}
                       </Button>
                       <FancyButton.Root
                         className="w-1/2"
                         size="small"
-                        onClick={() => {
-                          if (message?.data?.contractId) {
-                            const currentLang = i18n.language;
-                            router.push(`/${currentLang}/orders/detail/${message?.data?.contractId}`);
-                          }
-                        }}
+                        disabled={message?.data?.status === 'accepted' || message?.data?.status === 'declined' || message?.data?.status === 'cancelled'}
+                        onClick={() => updateOfferStatus('accepted')}
                       >
-                        {t('chat.accept')}
+                        {message?.data?.status === 'accepted' ? t('chat.accepted') : message?.data?.status === 'declined' ? t('chat.declined') : message?.data?.status === 'cancelled' ? t('chat.cancelled') : t('chat.accept')}
                       </FancyButton.Root>
                     </>
                   )}
@@ -415,7 +613,85 @@ function ChatMessageRenderer({
             </div>
           </div>
         )}
-        {message.message_type === 'milestone_completed' && (
+
+        {/* Show Service Name, Description and Price with Accept and Decline Button on Seller Side and Cancel on Buyer Side */}
+        {message.message_type === 'hire_request' && (
+          <div className={`mt-2 flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
+            <div className={`flex flex-col gap-2 w-2/5`}>
+              <div className='flex flex-row gap-1 items-center'>
+                <p className='text-[12px] text-[#525866]'>{t('chat.hireRequest')}</p>
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M6 12C2.6862 12 0 9.3138 0 6C0 2.6862 2.6862 0 6 0C9.3138 0 12 2.6862 12 6C12 9.3138 9.3138 12 6 12ZM6 10.8C7.27304 10.8 8.49394 10.2943 9.39411 9.39411C10.2943 8.49394 10.8 7.27304 10.8 6C10.8 4.72696 10.2943 3.50606 9.39411 2.60589C8.49394 1.70571 7.27304 1.2 6 1.2C4.72696 1.2 3.50606 1.70571 2.60589 2.60589C1.70571 3.50606 1.2 4.72696 1.2 6C1.2 7.27304 1.70571 8.49394 2.60589 9.39411C3.50606 10.2943 4.72696 10.8 6 10.8ZM5.4 3H6.6V4.2H5.4V3ZM5.4 5.4H6.6V9H5.4V5.4Z" fill="#525866" />
+                </svg>
+
+
+              </div>
+              <div className='flex flex-col rounded-lg border border-[#E1E4EA]'>
+                <div className='flex flex-row justify-between bg-[#F5F7FA] rounded-t-lg p-2'>
+                  <p className='text-[14px] text-[#0E121B] font-medium'>{message.data?.title}</p>
+                  <p className='text-[16px] text-[#0E121B] font-medium'>${message.data?.price}</p>
+                </div>
+                <div className='flex flex-col p-2 gap-1 border-b border-[#E1E4EA]'>
+                  <p className='text-[12px] text-[#0E121B] border-b border-[#E1E4EA] pb-2 mb-1'>{message.data?.description}</p>
+                  <p className='text-[#0E121B] text-[12px] font-medium'>{t('chat.hireRequest')}</p>
+
+                </div>
+                <div className='flex flex-row justify-between w-full p-2 gap-3'>
+                  {!isSeller ? (
+                    <>
+                      {/* Seller sees Cancel / Edit */}
+
+
+                      <Button
+                        variant='neutral'
+                        mode='stroke'
+                        size='small'
+                        className={`w-1/2 ${message?.data?.status !== 'pending' ? 'invisible' : ''}`}
+                        onClick={() => updateHireStatus('cancelled')}
+                        disabled={message?.data?.status === 'accepted' || message?.data?.status === 'declined' || message?.data?.status === 'cancelled'}
+                      >
+                        {message?.data?.status === 'accepted' ? t('chat.accepted') : message?.data?.status === 'declined' ? t('chat.declined') : message?.data?.status === 'cancelled' ? t('chat.cancelled') : t('chat.cancel')}
+                      </Button>
+
+                      <FancyButton.Root className='w-1/2' size='small' onClick={() => {
+                        const currentLang = i18n.language;
+                        router.push(`/${currentLang}/services/${message?.data?.service_id}`);
+                      }}>
+                        {t('chat.view')}
+                      </FancyButton.Root>
+
+                    </>
+                  ) : (
+                    <>
+                      {/* Buyer sees Decline / Accept */}
+                      <Button
+                        variant='neutral'
+                        mode='stroke'
+                        size='small'
+                        className={`w-1/2 ${message?.data?.status !== 'pending' ? 'invisible' : ''}`}
+                        onClick={() => updateHireStatus('declined')}
+                        disabled={message?.data?.status === 'accepted' || message?.data?.status === 'declined' || message?.data?.status === 'cancelled'}
+                      >
+                        {t('chat.decline')}
+                      </Button>
+                      <FancyButton.Root
+                        className="w-1/2"
+                        size="small"
+                        disabled={message?.data?.status === 'accepted' || message?.data?.status === 'declined' || message?.data?.status === 'cancelled'}
+                        onClick={() => updateHireStatus('accepted')}
+                      >
+                        {message?.data?.status === 'accepted' ? t('chat.accepted') : message?.data?.status === 'declined' ? t('chat.declined') : message?.data?.status === 'cancelled' ? t('chat.cancelled') : t('chat.accept')}
+                      </FancyButton.Root>
+                    </>
+                  )}
+                </div>
+
+              </div>
+            </div>
+          </div>
+        )}
+
+        {(message.message_type === 'milestone_completed' || message.message_type === 'milestone_activated') && (
           <div className={`flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
             <div className={`flex flex-col gap-2 w-2/5`}>
               <div className='flex flex-row gap-1 items-center'>
@@ -426,7 +702,7 @@ function ChatMessageRenderer({
                 </p>
               </div>
               <div className='flex flex-col gap-2 rounded-lg bg-[#F5F7FA] p-2'>
-                <p className='text-[14px] text-[#0E121B]'>Milestone: &quot;{message.data?.description}&quot;</p>
+                <p className='text-[14px] text-[#0E121B]'>Milestone {message.data?.sequence}: &quot;{message.data?.description}&quot;</p>
                 <p className='text-[14px] text-[#0E121B]'>Amount: ${message.data?.amount}</p>
                 <LinkButton
                   variant="primary"
@@ -789,6 +1065,7 @@ export default function ChatCore({
                 <ChatMessageRenderer
                   key={message.id}
                   message={message}
+                  setMessages={setMessages}
                   isCurrentUser={isCurrentUser}
                   senderProfile={senderProfile}
                   timestamp={formatMessageTimestamp(message.created_at)}

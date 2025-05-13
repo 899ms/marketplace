@@ -165,7 +165,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
         setIsLoadingMessages(true);
         const messages = await chatOperations.getChatMessages(chat.id);
         setActiveChatMessages(messages);
-        router.push(`/${i18n.language}/chat?id=${chat.id}`);
+        // router.push(`/${i18n.language}/chat?id=${chat.id}`);
       } else {
         setChatError(t('projects.detail.page.chat.createError'));
       }

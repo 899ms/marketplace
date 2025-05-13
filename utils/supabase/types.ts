@@ -136,6 +136,7 @@ export const MessageSchema = z.object({
       'milestone_completed',
       'audio', // Added audio type
       'file', // Added file type
+      'hire_request',
     ])
     .nullable()
     .default('text'),

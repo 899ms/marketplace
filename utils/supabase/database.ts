@@ -25,6 +25,9 @@ import { PostgrestError } from '@supabase/supabase-js'; // Import PostgrestError
 /**
  * User-related database operations
  */
+
+export type ChatWithLatestMessage = Chat & { latest_message: Message };
+
 export const userOperations = {
   // Get user by ID
   async getUserById(id: string): Promise<User | null> {
@@ -739,6 +742,7 @@ export const jobOperations = {
       const { data, error } = await supabase
         .from('jobs')
         .select('*')
+        .eq('status', 'open')
         .order('created_at', { ascending: false })
         .limit(limit);
 
@@ -1234,18 +1238,40 @@ export const chatOperations = {
     }
   },
 
-  // Get chats for a user (as buyer or seller)
-  async getUserChats(userId: string): Promise<Chat[]> {
-    const { data, error } = await supabase
+  // Get chats for a user (as buyer or seller) along with latest message for each (if any)
+  async getUserChats(userId: string): Promise<ChatWithLatestMessage[]> {
+    let { data, error } = await supabase
       .from('chats')
       .select('*')
       .or(`buyer_id.eq.${userId},seller_id.eq.${userId}`) // Get chats where user is buyer OR seller
       .order('created_at', { ascending: false });
 
+    console.log("Chats data", data);
+
+    if (data && data.length > 0) {
+      for (let chat of data) {
+        const { data: latestMessage } = await supabase
+          .from('messages')
+          .select('*')
+          .eq('chat_id', chat.id)
+          .order('created_at', { ascending: false })
+          .limit(1);
+
+        if (latestMessage && latestMessage.length > 0) {
+          chat.latest_message = latestMessage[0];
+        }
+      }
+    }
+    else {
+      console.log("No chats found");
+    }
+
+    console.log("Chats data with latest message", data);
+
     if (error || !data) return [];
 
     try {
-      return data.map((chat) => ChatSchema.parse(chat));
+      return data;
     } catch (err) {
       console.error('Invalid chat data:', err);
       return [];
@@ -1368,6 +1394,24 @@ export const chatOperations = {
     }
   },
 
+  async getContractChat(buyer_id: string, seller_id: string, contract_id: string): Promise<Chat | null> {
+    const { data, error } = await supabase
+      .from('chats')
+      .select('*')
+      .eq('buyer_id', buyer_id)
+      .eq('seller_id', seller_id)
+      .eq('contract_id', contract_id)
+      .single();
+
+    if (error || !data) return null;
+
+    try {
+      return ChatSchema.parse(data);
+    } catch (err) {
+      console.error('Invalid chat data:', err);
+      return null;
+    }
+  },
   // Get messages for a chat
   async getChatMessages(chatId: string): Promise<Message[]> {
     const { data, error } = await supabase
@@ -1427,6 +1471,25 @@ export const chatOperations = {
     }
 
     return true;
+  },
+
+  // Update a message
+  async updateMessageData(messageId: string, messageData: Partial<Message>): Promise<Message | null> {
+    const { data, error } = await supabase
+      .from('messages')
+      .update({
+        data: messageData,
+      })
+      .eq('id', messageId)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Error updating message:', error);
+      return null;
+    }
+
+    return data;
   },
 };
 
@@ -1616,4 +1679,6 @@ export const contractMilestoneOperations = {
       return null;
     }
   },
+
+
 };

@@ -2,13 +2,15 @@
 
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Chat, User } from '@/utils/supabase/types';
+import { Chat, User, Message } from '@/utils/supabase/types';
 import clsx from 'clsx';
 import * as Avatar from '@/components/ui/avatar';
 import { RiFileListLine } from '@remixicon/react';
 
+export type ChatWithLatestMessage = Chat & { latest_message: Message };
+
 interface ChatListProps {
-  chats: Chat[];
+  chats: ChatWithLatestMessage[];
   chatProfiles: Record<string, User | null>;
   selectedChatId: string | null;
   onChatSelect: (chatId: string) => void;
@@ -70,7 +72,7 @@ export default function ChatList({
         const displayName = otherUserProfile?.full_name || otherUserProfile?.username || 'Unknown User';
         const displayInitial = displayName[0]?.toUpperCase() || '?';
         const isSelected = selectedChatId === chat.id;
-        const lastActivityTime = chat.created_at;
+        const lastActivityTime = chat.latest_message?.created_at || chat.created_at;
         const relativeTime = formatRelativeTime(t, lastActivityTime);
         const isContractChat = chat.contract_id !== null;
 

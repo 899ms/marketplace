@@ -184,8 +184,8 @@
           }
         },
         "step1": {
-          "subject": "state",
-          "subjectPlaceholder": "Enter the contract  title...",
+          "subject": "Service Title",
+          "subjectPlaceholder": "Enter the service title...",
           "detail": "Detail",
           "detailPlaceholder": "Details",
           "tags": {
@@ -519,12 +519,17 @@
     "accept": "Accept",
     "cancel":"Cancel",
     "edit":"Edit",
+    "declined":"Declined",
+    "accepted":"Accepted",
+    "cancelled":"Cancelled",
     "milestone": {
       "completed": "Completed the milestone",
       "activated": "Activated the milestone",
       "viewContract": "View Contract"
     },
-    "yourOfferIncludes": "Your offer includes"
+    "yourOfferIncludes": "Your offer includes",
+    "hireRequest": "Hire Request",
+    "view": "View"
   },
   "chatDetails": {
     "selectChat": "Select a chat to view details.",
@@ -545,7 +550,8 @@
     "milestones": "Milestones",
     "noMilestones": "No milestones found for this contract.",
     "status": "Status",
-    "sendContract": "Send Contract"
+    "sendContract": "Send Contract",
+    "viewContract": "View Contract"
   },
   "chatList": {
     "noChats": "You don't have any chats yet.",
