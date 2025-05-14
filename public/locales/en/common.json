@@ -578,6 +578,7 @@
       "title": "Create job",
       "subtitle": "Define details, set the budget",
       "contentPlaceholder": "Content for {{title}} goes here...",
+      "requiredFields": "Required fields",
       "stepper": {
         "sequence": "Transfer Sequence",
         "trouble": "Having trouble with transfer?",

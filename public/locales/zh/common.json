@@ -581,6 +581,7 @@
       "title": "创建工作",
       "subtitle": "定义详情，设置预算",
       "contentPlaceholder": "{{title}}的内容将在这里显示...",
+      "requiredFields": "必填字段",
       "stepper": {
         "sequence": "转移顺序",
         "trouble": "遇到转移问题？",
