@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { useNotification } from '@/hooks/use-notification';
 import { useTranslation } from 'react-i18next';
@@ -62,6 +62,11 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
       description: t('worker.sidebar.comingSoon.description'),
     });
   };
+
+  useEffect(() => {
+
+    console.log('Language Test', t('worker.salary'));
+  }, []);
 
   return (
     <aside className='hidden w-[300px] shrink-0 lg:block'>

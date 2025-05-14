@@ -24,6 +24,7 @@ import { useAudioPlayer } from '@/contexts/AudioContext';
 import { ContractDetails } from '../orders/detail/contract-details';
 import { useRouter } from 'next/navigation';
 import i18n from '@/i18n';
+import { RiLoader4Line } from '@remixicon/react';
 
 // --- Moved formatBytes function to top level --- 
 function formatBytes(bytes: number, decimals = 2): string {
@@ -134,6 +135,7 @@ function ChatMessageRenderer({
   const cardSubTextColor = 'text-gray-600 dark:text-gray-400';
   const plainTextColor = 'text-gray-800 dark:text-gray-100';
   const messageContentMaxWidth = 'max-w-[85%]';
+  const [isAccepting, setIsAccepting] = useState(false);
 
   // const renderOfferMessage = (isCurrentUser: boolean) => {
   //   const offerData = message.data as OfferMessageData | null;
@@ -299,6 +301,11 @@ function ChatMessageRenderer({
   // }
 
   const updateOfferStatus = async (status: string) => {
+
+    if (isAccepting) {
+      return;
+    }
+
     console.log('updateOfferStatus', status);
 
     if (status == 'cancelled' && isSeller) {
@@ -321,6 +328,7 @@ function ChatMessageRenderer({
     if (status == 'accepted' && message.data?.contractDetails) {
       // --- Create Contract ---
       // Exclude deadline and milestones fields from contractDetails
+      setIsAccepting(true);
       const { deadline, milestones, ...contractData } = message.data.contractDetails;
 
       const { data: newContract, error: contractError } = await supabase
@@ -383,11 +391,12 @@ function ChatMessageRenderer({
           `Creating ${milestones.length} milestones for installment payment.`,
         );
         // Create milestones from form for installment payment
+        console.log('milestones', milestones);
         const milestoneData = milestones.map((m: any, index: number) => ({
           contract_id: newContract.id,
           description: m.description,
           amount: m.amount,
-          due_date: m.dueDate?.toISOString() || null,
+          due_date: m.dueDate || null,
           status: 'pending',
           sequence: index + 1,
         }));
@@ -436,9 +445,11 @@ function ChatMessageRenderer({
       });
 
 
-
       const currentLang = i18n.language;
       router.push(`/${currentLang}/orders/detail/${newContract.id}`);
+
+      setIsAccepting(false);
+
     }
 
     else {
@@ -603,7 +614,9 @@ function ChatMessageRenderer({
                         disabled={message?.data?.status === 'accepted' || message?.data?.status === 'declined' || message?.data?.status === 'cancelled'}
                         onClick={() => updateOfferStatus('accepted')}
                       >
-                        {message?.data?.status === 'accepted' ? t('chat.accepted') : message?.data?.status === 'declined' ? t('chat.declined') : message?.data?.status === 'cancelled' ? t('chat.cancelled') : t('chat.accept')}
+                        {!isAccepting && (message?.data?.status === 'pending' ? t('chat.accept') : message?.data?.status === 'accepted' ? t('chat.accepted') : message?.data?.status === 'declined' ? t('chat.declined') : message?.data?.status === 'cancelled' ? t('chat.cancelled') : t('chat.accept'))}
+                        {isAccepting && message?.data?.status === 'pending' && <FancyButton.Icon as={RiLoader4Line} className='animate-spin' />}
+
                       </FancyButton.Root>
                     </>
                   )}

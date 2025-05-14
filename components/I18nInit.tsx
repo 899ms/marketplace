@@ -14,5 +14,9 @@ export default function I18nInit() {
     }
   }, [locale]);
 
+  useEffect(() => {
+    console.log('language changed to', i18n.language);
+  }, [i18n.language]);
+
   return null;
 }
