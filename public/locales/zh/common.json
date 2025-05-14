@@ -584,7 +584,11 @@
       "stepper": {
         "sequence": "转移顺序",
         "trouble": "遇到转移问题？",
-        "contact": "联系"
+        "contact": "联系",
+        "contactSuccess": {
+          "title": "支持请求已发送",
+          "description": "我们的支持团队将很快与您联系以协助您的请求。"
+        }
       },
       "step1": {
         "title": "第1步 基本信息",

@@ -581,7 +581,11 @@
       "stepper": {
         "sequence": "Transfer Sequence",
         "trouble": "Having trouble with transfer?",
-        "contact": "Contact"
+        "contact": "Contact",
+        "contactSuccess": {
+          "title": "Support Request Sent",
+          "description": "Our support team will contact you shortly to assist with your request."
+        }
       },
       "step1": {
         "title": "Step 1 Basic",

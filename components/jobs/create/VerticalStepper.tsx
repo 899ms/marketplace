@@ -4,7 +4,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import * as Button from '@/components/ui/button';
 import { cn } from '@/utils/cn';
-import { RiArrowRightSLine, RiCustomerService2Line, RiHeadphoneLine } from '@remixicon/react';
+import { RiArrowRightSLine, RiHeadphoneLine } from '@remixicon/react';
+import { notification } from '@/hooks/use-notification';
 
 // --- Vertical Stepper Component ---
 interface VerticalStepperProps {
@@ -19,6 +20,12 @@ const VerticalStepper = ({
   onStepClick,
 }: VerticalStepperProps) => {
   const { t } = useTranslation('common');
+
+  const handleContactClick = () => {
+    notification({
+      description: t('jobs.create.stepper.contactSuccess.description'),
+    });
+  };
 
   return (
     <aside className='pt-6 shadow-sm sticky top-20 hidden h-[calc(100vh-10rem)] w-64 shrink-0 flex-col justify-between rounded-xl bg-[#F5F7FA] p-4 lg:flex xl:w-72 max-w-[264px]'>
@@ -69,7 +76,12 @@ const VerticalStepper = ({
         <p className='text-[14px] text-[#525866] mb-4 text-center'>
           {t('jobs.create.stepper.trouble')}
         </p>
-        <Button.Root variant='neutral' mode='stroke' className='w-full font-medium'>
+        <Button.Root
+          variant='neutral'
+          mode='stroke'
+          className='w-full font-medium'
+          onClick={handleContactClick}
+        >
           <Button.Icon as={RiHeadphoneLine} />
           {t('jobs.create.stepper.contact')}
         </Button.Root>
