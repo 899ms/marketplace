@@ -9,6 +9,7 @@ import { Root as Button } from '@/components/ui/button';
 import { notification as toast } from '@/hooks/use-notification';
 import { userOperations } from '@/utils/supabase/database';
 import { User } from '@/utils/supabase/types';
+import { useAuth } from '@/utils/supabase/AuthContext';
 
 interface AboutSectionProps {
   userProfile: User;
@@ -18,6 +19,8 @@ interface AboutSectionProps {
 
 export function AboutSection({ userProfile, onSaved }: AboutSectionProps) {
   const { t } = useTranslation('common');
+
+  const { user } = useAuth();
 
   // Local state
   const [isEditing, setIsEditing] = useState(false);
@@ -74,7 +77,7 @@ export function AboutSection({ userProfile, onSaved }: AboutSectionProps) {
         <h3 className="text-[20px] font-semibold">
           {t('worker.profile.about.title')}
         </h3>
-        {!isEditing && (
+        {user?.id === userProfile.id && !isEditing && (
           <button
             onClick={handleEdit}
             className="text-icon-secondary-400 hover:text-icon-primary-500"

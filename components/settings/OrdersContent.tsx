@@ -3,6 +3,7 @@
 import React from 'react';
 import { useAuth } from '@/utils/supabase/AuthContext';
 import {
+  contractMilestoneOperations,
   contractOperations,
   jobOperations,
   userOperations,
@@ -43,6 +44,18 @@ export default function OrdersContent() {
 
   const [currentPage, setCurrentPage] = React.useState(1);
   const itemsPerPage = 10;
+
+  const [orderStats, setOrderStats] = React.useState<{ totalAmount: number, settled: number, inEscrow: number, refunded: number }>({ totalAmount: 0, settled: 0, inEscrow: 0, refunded: 0 });
+
+  const fetchOrderStats = async () => {
+    if (!user || !userType) return;
+    const stats = await contractMilestoneOperations.getUserOrderStats(user.id, userType);
+    setOrderStats(stats);
+  };
+
+  React.useEffect(() => {
+    fetchOrderStats();
+  }, [user, userType]);
 
   /* ------------------ fetch orders ------------------ */
   React.useEffect(() => {
@@ -142,7 +155,7 @@ export default function OrdersContent() {
     },
     totalAmount: {
       title: t('orders.totalAmount.title'),
-      value: isBuyer ? '$500.00' : '$50,110.00',
+      value: `$${orderStats.totalAmount.toFixed(2)}`,
       actions: isBuyer ? (
         <div className="flex gap-2 text-sm items-center">
           <LinkButton.Root className='text-[#335CFF] text-[12px] font-medium'>{t('orders.totalAmount.topUp')}</LinkButton.Root>
@@ -152,11 +165,11 @@ export default function OrdersContent() {
     },
     settled: {
       title: t('orders.settled.title'),
-      value: isBuyer ? '$5,100.00' : '$11,500.00',
+      value: `$${orderStats.settled.toFixed(2)}`,
     },
     inEscrow: {
       title: t('orders.inEscrow.title'),
-      value: isBuyer ? '$110.00' : '$111.00',
+      value: `$${orderStats.inEscrow.toFixed(2)}`,
     },
   };
 

@@ -1680,5 +1680,67 @@ export const contractMilestoneOperations = {
     }
   },
 
+  // Create a function that thats user_id, and role.
+  // If role is is buyer, use buyer_id to find all contracts and for each contract, get all the milestones. We need to find the total amount (sum of amount of all milestones), settled (sum of amount of all milestones that are approved or paid), inEscrow (sum of amount of all milestones that are pending or rejected), and refunded (for now this should be 0).
+  // If role is seller, use seller_id to find all contracts and for each contract, get all the milestones. We need to find the total amount (sum of amount of all milestones), settled (sum of amount of all milestones that are approved or paid), inEscrow (sum of amount of all milestones that are pending or rejected), and refunded (for now this should be 0).
+  // Return the data in a object.
+  async getUserOrderStats(userId: string, role: 'buyer' | 'seller'): Promise<{ totalAmount: number, settled: number, inEscrow: number, refunded: number }> {
+
+    // First find all the contracts for the user
+    let contracts: Contract[] = [];
+    if (role === 'buyer') {
+      const { data: contractsData, error: contractsError } = await supabase
+        .from('contracts')
+        .select('*')
+        .eq('buyer_id', userId);
+
+      if (contractsError) {
+        console.error('Error fetching contracts:', contractsError);
+        return { totalAmount: 0, settled: 0, inEscrow: 0, refunded: 0 };
+      }
+      contracts = contractsData;
+    } else if (role === 'seller') {
+      const { data: contractsData, error: contractsError } = await supabase
+        .from('contracts')
+        .select('*')
+        .eq('seller_id', userId);
+
+      if (contractsError) {
+        console.error('Error fetching contracts:', contractsError);
+        return { totalAmount: 0, settled: 0, inEscrow: 0, refunded: 0 };
+      }
+      contracts = contractsData;
+    }
+
+    // Now for each contract, get all the milestones
+    const milestones: ContractMilestone[] = [];
+    for (const contract of contracts) {
+      const { data: milestonesData, error: milestonesError } = await supabase
+        .from('contract_milestones')
+        .select('*')
+        .eq('contract_id', contract.id);
+
+      if (milestonesError) {
+        console.error('Error fetching milestones:', milestonesError);
+        return { totalAmount: 0, settled: 0, inEscrow: 0, refunded: 0 };
+      }
+      milestones.push(...milestonesData);
+    }
+
+    // Now we have all the milestones for all the contracts
+    // We need to find the total amount (sum of amount of all milestones), settled (sum of amount of all milestones that are approved or paid), inEscrow (sum of amount of all milestones that are pending or rejected), and refunded (for now this should be 0).
+    const totalAmount = milestones.reduce((acc, milestone) => acc + (milestone?.amount || 0), 0);
+    const settled = milestones.reduce((acc, milestone) => acc + (milestone?.status === 'approved' || milestone?.status === 'paid' ? milestone?.amount || 0 : 0), 0);
+    const inEscrow = milestones.reduce((acc, milestone) => acc + (milestone?.status === 'pending' || milestone?.status === 'rejected' ? milestone?.amount || 0 : 0), 0);
+    const refunded = 0;
+
+    return { totalAmount, settled, inEscrow, refunded };
+
+  },
+
+
+
+
+
 
 };

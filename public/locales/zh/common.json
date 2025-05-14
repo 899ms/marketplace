@@ -788,6 +788,7 @@
     "financialSummary": {
       "totalAmount": "总金额",
       "received": "已收到",
+      "paid": "已支付",
       "inEscrow": "托管中",
       "refunded": "已退款",
       "milestone": "里程碑",
