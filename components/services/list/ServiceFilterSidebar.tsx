@@ -366,7 +366,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       {(activeTab === 'Service' || activeTab === 'Project') && (
         <div className='mx-[16px]' >
           <h3 className='mb-10 text-[14px] font-medium text-text-strong-950'>
-            {activeTab === 'Service' ? t('filters.price') : t('filters.budget')}
+            {t('filters.price')}
           </h3>
           <PriceRangeSlider
             value={priceRange}
