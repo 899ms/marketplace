@@ -13,6 +13,7 @@ import {
   RiArrowDownSLine,
   RiAddCircleLine
 } from '@remixicon/react';
+import { chatOperations, contractOperations } from '@/utils/supabase/database';
 
 // Import UserRole type
 type UserRole = 'buyer' | 'seller';
@@ -75,6 +76,30 @@ export function MilestoneSection({
     const result = await addMilestone(contractId, nextSequence, formData);
 
     if (result.success && result.milestone) {
+
+      const contract = await contractOperations.getContractById(contractId);
+
+      if (contract) {
+        let chat = await chatOperations.getContractChat(contract.buyer_id, contract.seller_id, contractId);
+
+        if (chat) {
+
+          const milestoneActivatedMessage = await chatOperations.sendMessage({
+            chat_id: chat.id,
+            message_type: 'milestone_activated',
+            content: 'Milestone activated',
+            sender_id: contract.buyer_id,
+            data: {
+              contractId: contractId,
+              status: 'in_progress',
+              description: 'New Milestone',
+              amount: newMilestoneAmount,
+              sequence: nextSequence,
+            }
+          });
+        }
+      }
+
       setNewMilestoneTitle("");
       setNewMilestoneAmount("");
       setShowAddMilestone(false);
@@ -83,7 +108,7 @@ export function MilestoneSection({
     } else {
       console.error("Failed to add milestone:", result.error);
       const { notification } = await import('@/hooks/use-notification');
-      notification({ type: 'error', title: t('orders.milestoneSection.errors.addFailed'), description: result.error || t('orders.milestoneSection.errors.addFailed') });
+      notification({ type: 'foreground', title: t('orders.milestoneSection.errors.addFailed'), description: result.error || t('orders.milestoneSection.errors.addFailed') });
     }
     setIsSaving(false);
   };

@@ -3,6 +3,7 @@
 import { RiHandHeartLine, RiHeartPulseLine } from '@remixicon/react';
 import * as Button from "@/components/ui/button";
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/utils/supabase/AuthContext';
 
 interface FinancialSummaryProps {
   totalAmount: string;
@@ -19,6 +20,10 @@ export function FinancialSummary({
 }: FinancialSummaryProps) {
   const { t } = useTranslation('common');
 
+  const { userProfile } = useAuth();
+
+  const isSeller = userProfile?.user_type === 'seller';
+
   return (
     <div className="flex gap-[24px] my-[24px]">
       {/* Financial Details */}
@@ -28,7 +33,7 @@ export function FinancialSummary({
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{totalAmount}</span>
         </div>
         <div className="flex flex-col justify-center max-w-[120px]">
-          <span className="text-[12px] text-[#525866] font-medium ">{t('orders.financialSummary.received')}</span>
+          <span className="text-[12px] text-[#525866] font-medium ">{isSeller ? t('orders.financialSummary.received') : t('orders.financialSummary.paid')}</span>
           <span className="text-[18px] text-[#0E121B] mt-[8px]">{received}</span>
         </div>
         <div className="flex flex-col justify-center max-w-[120px]">

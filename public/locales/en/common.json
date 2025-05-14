@@ -785,6 +785,7 @@
     "financialSummary": {
       "totalAmount": "Total Amount",
       "received": "Received",
+      "paid": "Paid",
       "inEscrow": "In Escrow",
       "refunded": "Refunded",
       "milestone": "Milestone",
