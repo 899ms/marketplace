@@ -56,7 +56,7 @@ export default function MyServicesView() {
   return (
     <main className="flex-1 bg-bg-alt-white-100 h-full">
       {/* ---------- header row ---------- */}
-      <div className="mb-6 flex items-center justify-between border-b border-[#E1E4EA] pb-4 h-[10%]">
+      <div className="mb-6 flex items-center justify-between border-b border-[#E1E4EA] pb-[24px]">
         <h1 className="text-[24px] font-medium text-[#222530]">
           {t('settings.myServices.title')}
         </h1>
