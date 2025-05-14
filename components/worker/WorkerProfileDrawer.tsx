@@ -23,7 +23,6 @@ import {
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 import BlockFileUploadDialog from '@/components/blocks/block-file-upload-dialog';
-import { AboutSection } from '@/components/worker/profile/AboutSection';
 import { WorkItem } from '@/components/worker/profile/work-item';
 import { ServiceCard } from '@/components/worker/profile/service-card';
 import { ReviewItem } from '@/components/worker/profile/review-item';

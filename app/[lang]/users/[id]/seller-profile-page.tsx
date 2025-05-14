@@ -224,7 +224,10 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
       case 'about':
         return (
           <>
-            <AboutSection about={sellerProfile.bio ?? t('users.profile.seller.page.about.noBio')} />
+            <AboutSection
+              userProfile={sellerProfile}
+              onSaved={refetchSellerProfile}
+            />
 
             {/* 1) Work - Use workerData */}
             <div className="mt-8 flex items-center justify-between">

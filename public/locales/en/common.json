@@ -230,8 +230,12 @@
     },
     "profile": {
       "about": {
-        "edit": "Edit about section",
-        "title": "About"
+        "title": "About",
+        "edit": "Edit your bio",
+        "savedTitle": "Profile Updated",
+        "savedDescription": "Your bio has been saved.",
+        "errorTitle": "Update Failed",
+        "errorDescription": "Could not save your bio. Please try again."
       },
       "reviews": "{{count}} reviews",
       "google": "Google Verified",

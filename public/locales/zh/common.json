@@ -231,7 +231,11 @@
     "profile": {
       "about": {
         "edit": "编辑个人简介",
-        "title": "个人简介"
+        "title": "个人简介",
+        "savedTitle": "个人简介已更新",
+        "savedDescription": "您的个人简介已保存。",
+        "errorTitle": "更新失败",
+        "errorDescription": "无法保存您的个人简介。请重试。"
       },
       "reviews": "{{count}} 条评价",
       "google": "谷歌认证",
