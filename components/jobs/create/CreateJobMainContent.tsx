@@ -61,7 +61,7 @@ const CreateJobMainContent = ({
               key={stepNumber}
               className={`overflow-hidden rounded-3xl border !bg-white !border-[#E1E4EA] !px-0 data-[state=open]:shadow-[0px_2px_4px_#0E121B08,0px_6px_10px_#0E121B0F] data-[state=closed]:shadow-none !ring-0 !ring-offset-0`}
             >
-              <Accordion.Trigger className='!p-4 !mx-0 group/trigger flex w-full items-center justify-between text-left hover:bg-bg-weak-50'>
+              <Accordion.Trigger className='!p-4 !mx-0 group/trigger flex w-full items-center justify-between text-left hover:bg-bg-weak-50' onClick={() => setActiveStep(stepNumber)}>
                 {' '}
                 {/* Added group */}
                 <div className='flex items-center gap-3'>
