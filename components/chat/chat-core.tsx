@@ -577,6 +577,7 @@ function ChatMessageRenderer({
                     <p className='text-[#525866] text-[12px] leading-none'>{message.data?.deliveryTime}</p>
                   </div>
                 </div>
+
                 <div className='flex flex-row justify-between w-full p-2 gap-3'>
                   {!isSeller ? (
                     <>
