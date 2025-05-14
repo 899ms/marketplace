@@ -248,7 +248,7 @@ export function ProfilePageSidebar({
 
   return (
     <aside className='hidden w-[352px] max-w-[352px] shrink-0 lg:block'>
-      <div className='sticky top-20 flex flex-col gap-[16px] border border-stroke-soft-200 bg-bg-white-0 max-h-[930px] rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
+      <div className='sticky top-20 flex flex-col gap-[16px] border border-stroke-soft-200 bg-bg-white-0  rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
         {/* Wrapper Div from UserSidebar */}
         <div className="flex flex-col max-w-[352px] max-h-[328px] p-[16px] gap-[16px]">
           {/* Profile Section */}
@@ -382,7 +382,7 @@ export function ProfilePageSidebar({
         <Divider.Root />
 
         {/* Combined About and Social Links Section - Copied from UserSidebar styles */}
-        <div className="flex flex-col max-w-[352px] max-h-[218px] pb-4 px-4 gap-5">
+        <div className="flex flex-col max-w-[352px] pb-4 px-4 gap-5">
           {/* About Content */}
           <div className='flex items-center justify-between'>
             <h3 className='text-text-strong-950 text-[14px] font-semibold'>
