@@ -89,17 +89,14 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
     for (let i = 0; i < files.length; i++) {
       const file = files[i];
 
-      // Check if file is allowed format (image or audio)
-      const isValidFormat =
-        file.type.startsWith('image/') ||
-        file.type === 'audio/mpeg' ||
-        file.type === 'application/pdf';
+      // Check if file is an image
+      const isValidFormat = file.type.startsWith('image/');
 
       // Check if file is under 50MB
       const isValidSize = file.size <= 50 * 1024 * 1024; // 50MB in bytes
 
       if (!isValidFormat) {
-        setFileUploadError('Only image, MP3, and PDF files are allowed');
+        setFileUploadError('Only image files are allowed');
         return;
       }
 
@@ -254,7 +251,7 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
               <input
                 id='file-upload'
                 type='file'
-                accept='image/*,audio/mpeg,application/pdf'
+                accept='image/*'
                 onChange={handleFileUpload}
                 className='hidden'
                 disabled={!!uploadingFile}

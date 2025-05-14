@@ -234,6 +234,24 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
               <h3 className="text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 pb-1 border-b-2 border-text-strong-950">
                 {t('users.profile.seller.page.work.title')}
               </h3>
+              <button
+                className="
+                  flex items-center justify-center gap-[2px]
+                  w-[90px] h-[32px]
+                  rounded-lg
+                  shadow-[0_1px_2px_rgba(27,28,29,0.48),0_0_0_1px_#242628]
+                "
+                style={{
+                  background:
+                    'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%), #20232D'
+                }}
+                onClick={() => setIsUploadModalOpen(true)}
+              >
+                <RiArrowUpCircleLine className="size-5 text-white" />
+                <span className="text-[14px] font-medium leading-5 text-white">
+                  {t('users.profile.seller.page.work.upload')}
+                </span>
+              </button>
             </div>
             <div className="divide-y divide-stroke-soft-200">
               {sellerProfile.music_data && sellerProfile.music_data.length > 0 ? (
