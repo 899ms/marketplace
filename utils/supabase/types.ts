@@ -136,6 +136,7 @@ export const MessageSchema = z.object({
       'milestone_completed',
       'audio', // Added audio type
       'file', // Added file type
+      'hire_request',
     ])
     .nullable()
     .default('text'),
@@ -159,3 +160,13 @@ export const ContractMilestoneSchema = z.object({
   updated_at: z.string().optional(), // Changed from datetime() to string() to be more flexible
 });
 export type ContractMilestone = z.infer<typeof ContractMilestoneSchema>;
+
+export const JobApplicationSchema = z.object({
+  id: z.string(),
+  job_id: z.string(),
+  seller_id: z.string(),
+  status: z.enum(['pending', 'accepted', 'rejected']),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+export type JobApplication = z.infer<typeof JobApplicationSchema>;

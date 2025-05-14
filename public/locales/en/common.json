@@ -184,8 +184,8 @@
           }
         },
         "step1": {
-          "subject": "state",
-          "subjectPlaceholder": "Enter the contract  title...",
+          "subject": "Service Title",
+          "subjectPlaceholder": "Enter the service title...",
           "detail": "Detail",
           "detailPlaceholder": "Details",
           "tags": {
@@ -229,9 +229,15 @@
       }
     },
     "profile": {
+      "likeInitiatedToast": "Worker added to your favorites.",
+      "unlikeInitiatedToast": "Worker removed from your favorites.",
       "about": {
-        "edit": "Edit about section",
-        "title": "About"
+        "title": "About",
+        "edit": "Edit your bio",
+        "savedTitle": "Profile Updated",
+        "savedDescription": "Your bio has been saved.",
+        "errorTitle": "Update Failed",
+        "errorDescription": "Could not save your bio. Please try again."
       },
       "reviews": "{{count}} reviews",
       "google": "Google Verified",
@@ -363,7 +369,8 @@
   },
   "project": {
     "budget": "Budget",
-    "apply": "Apply"
+    "apply": "Apply",
+    "applied": "Applied"
   },
   "service": {
     "error": "Error displaying service",
@@ -518,12 +525,17 @@
     "accept": "Accept",
     "cancel":"Cancel",
     "edit":"Edit",
+    "declined":"Declined",
+    "accepted":"Accepted",
+    "cancelled":"Cancelled",
     "milestone": {
       "completed": "Completed the milestone",
       "activated": "Activated the milestone",
       "viewContract": "View Contract"
     },
-    "yourOfferIncludes": "Your offer includes"
+    "yourOfferIncludes": "Your offer includes",
+    "hireRequest": "Hire Request",
+    "view": "View"
   },
   "chatDetails": {
     "selectChat": "Select a chat to view details.",
@@ -544,7 +556,8 @@
     "milestones": "Milestones",
     "noMilestones": "No milestones found for this contract.",
     "status": "Status",
-    "sendContract": "Send Contract"
+    "sendContract": "Send Contract",
+    "viewContract": "View Contract"
   },
   "chatList": {
     "noChats": "You don't have any chats yet.",
@@ -567,10 +580,15 @@
       "title": "Create job",
       "subtitle": "Define details, set the budget",
       "contentPlaceholder": "Content for {{title}} goes here...",
+      "requiredFields": "Required fields",
       "stepper": {
         "sequence": "Transfer Sequence",
         "trouble": "Having trouble with transfer?",
-        "contact": "Contact"
+        "contact": "Contact",
+        "contactSuccess": {
+          "title": "Support Request Sent",
+          "description": "Our support team will contact you shortly to assist with your request."
+        }
       },
       "step1": {
         "title": "Step 1 Basic",
@@ -770,6 +788,7 @@
     "financialSummary": {
       "totalAmount": "Total Amount",
       "received": "Received",
+      "paid": "Paid",
       "inEscrow": "In Escrow",
       "refunded": "Refunded",
       "milestone": "Milestone",
@@ -869,10 +888,16 @@
   },
   "projects": {
     "applicants": {
-      "list": "List",
+      "list": "Applicants",
       "replacedBy": "Replaced by {{name}}",
       "hired": "Hired",
-      "view": "view"
+      "view": "view",
+      "noApplicants": "No applicants yet.",
+      "status": {
+        "pending": "",
+        "hired": "Hired",
+        "rejected": ""
+      }
     },
     "clientProfile": {
       "google": "Google"
@@ -961,7 +986,7 @@
     "professionalServices": "Professional Services",
     "vettedSkills": "Vetted skills and expertise",
     "price": "Price",
-    "budget": "Budget",
+    "budget": "Price",
     "clear": "Clear",
     "clearAll": "Clear Filters"
   },

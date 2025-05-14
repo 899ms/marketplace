@@ -89,6 +89,10 @@ export default function MusicUploadDialog({
     }
   }, [open]);
 
+  const handleClose = useCallback(() => {
+    onOpenChange(false);
+  }, [onOpenChange]);
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = event.target.files?.[0];
     if (selectedFile) {
@@ -106,7 +110,9 @@ export default function MusicUploadDialog({
     }
   };
 
-  const triggerFileInput = () => {
+  const triggerFileInput = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     fileInputRef.current?.click();
   };
 
@@ -201,7 +207,7 @@ export default function MusicUploadDialog({
   };
 
   return (
-    <Modal.Root open={open} onOpenChange={onOpenChange}>
+    <Modal.Root open={open} onOpenChange={handleClose}>
       <Modal.Content className='max-w-[440px] shadow-custom-md max-h-[85vh] overflow-y-auto'>
         <Modal.Header
           icon={RiUploadCloud2Line}
@@ -222,6 +228,7 @@ export default function MusicUploadDialog({
               onChange={handleFileChange}
               tabIndex={-1}
               className='hidden'
+              onClick={(e) => e.stopPropagation()}
             />
             <FileUpload.Icon as={RiUploadCloud2Line} />
             <div className='space-y-1.5'>

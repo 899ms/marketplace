@@ -96,11 +96,16 @@ export function OrderDetailsClient({
     console.log(`Attempting to find/create chat between Buyer ${contract.buyer_id} and Seller ${contract.seller_id}`);
 
     try {
-      const chat = await chatOperations.findOrCreateChat(contract.buyer_id, contract.seller_id);
+
+      console.log(`Attempting to find/create chat between Buyer ${contract.buyer_id} and Seller ${contract.seller_id} for contract ${contract.id}`);
+      const chat = await chatOperations.getContractChat(contract.buyer_id, contract.seller_id, contract.id);
+
+      console.log('Chat found/created:', chat);
       if (chat) {
         console.log('Chat found/created:', chat.id);
         setActiveChat(chat);
-        setActiveChatMessages([]);
+        const messages = await chatOperations.getChatMessages(chat.id);
+        setActiveChatMessages(messages);
       } else {
         throw new Error('Could not find or create a chat.');
       }
@@ -138,6 +143,28 @@ export function OrderDetailsClient({
     console.log(`Calling server action to confirm payment for milestone ${milestoneId}`);
 
     const result = await confirmMilestonePayment(milestoneId);
+
+    // Add a chat message for milestone_completed
+
+    let chat = await chatOperations.getContractChat(contract.buyer_id, contract.seller_id, contract.id);
+
+    if (chat) {
+
+      const milestone = mappedMilestones.find(m => m.id === milestoneId);
+      const milestoneActivatedMessage = await chatOperations.sendMessage({
+        chat_id: chat.id,
+        message_type: 'milestone_activated',
+        content: 'Milestone activated',
+        sender_id: contract.buyer_id,
+        data: {
+          contractId: contract.id,
+          status: 'completed',
+          description: milestone?.description || 'N/A',
+          amount: milestone?.amount || 'N/A',
+          sequence: milestone?.sequence || 1,
+        }
+      });
+    }
 
     if (result.success) {
       notification({
@@ -232,13 +259,13 @@ export function OrderDetailsClient({
   })) || [];
 
   const financialData = {
-    totalAmount: `$${contract.amount?.toFixed(2) ?? '0.00'}`,
-    received: "$0.00",
-    inEscrow: "$0.00",
-    refunded: "$0.00",
+    totalAmount: `$${initialMilestonesData.reduce((acc, m) => acc + (m.amount ?? 0), 0).toFixed(2)}`,
+    received: `$${initialMilestonesData.reduce((acc, m) => acc + (m.status === 'paid' || m.status === 'approved' ? (m.amount ?? 0) : 0), 0).toFixed(2)}`,
+    inEscrow: `$${initialMilestonesData.reduce((acc, m) => acc + (m.status === 'pending' || m.status === 'rejected' ? (m.amount ?? 0) : 0), 0).toFixed(2)}`,
+    refunded: '$0.00',
   };
 
-  const mappedMilestones = initialMilestonesData.map(m => {
+  let mappedMilestones = initialMilestonesData.map(m => {
     let displayStatus: 'completed' | 'pending' | 'in-progress';
     switch (m.status) {
       case 'approved':
@@ -261,9 +288,25 @@ export function OrderDetailsClient({
       id: m.id,
       title: m.description,
       amount: String(m.amount ?? 0),
+      description: m.description,
       status: displayStatus,
-      date: displayDate
+      date: displayDate,
+      sequence: m.sequence,
+      created_at: m.created_at
     };
+  });
+
+  // sort the milestones by sequence number and then created_at
+  mappedMilestones.sort((a, b) => {
+    if (a.sequence === b.sequence) {
+      if (a.created_at && b.created_at) {
+        return new Date(a.created_at).getTime() - new Date(b.created_at).getTime();
+      }
+      else {
+        return 0;
+      }
+    }
+    return a.sequence - b.sequence;
   });
 
   console.log('OrderDetailsClient mapped milestones for section:', mappedMilestones);

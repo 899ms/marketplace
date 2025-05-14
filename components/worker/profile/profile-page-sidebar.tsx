@@ -1,6 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Root as Textarea } from '@/components/ui/textarea';
+import { userOperations } from '@/utils/supabase/database';
 import Link from 'next/link';
 import { useNotification } from '@/hooks/use-notification';
 import { useTranslation } from 'react-i18next';
@@ -117,6 +119,59 @@ export function ProfilePageSidebar({
   const { notification: toast } = useNotification();
   const { t } = useTranslation('common');
 
+  // Add state for about section editing
+  const [isEditingBio, setIsEditingBio] = useState(false);
+  const [editableBio, setEditableBio] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
+  const [localBio, setLocalBio] = useState('');
+
+  // Update editableBio and localBio state when the userProfile changes
+  useEffect(() => {
+    if (userProfile?.bio) {
+      setLocalBio(userProfile.bio);
+      setEditableBio(userProfile.bio);
+    } else {
+      setLocalBio('');
+      setEditableBio('');
+    }
+  }, [userProfile]);
+
+  // Add handlers for about section editing
+  const handleEditBio = () => {
+    setEditableBio(localBio);
+    setIsEditingBio(true);
+  };
+
+  const handleCancelBio = () => {
+    setIsEditingBio(false);
+  };
+
+  const handleSaveBio = async () => {
+    if (!userProfile) return;
+    if (editableBio === localBio) {
+      setIsEditingBio(false);
+      return;
+    }
+    setIsSaving(true);
+    try {
+      await userOperations.updateUser(userProfile.id, { bio: editableBio });
+      toast({
+        title: t('worker.profile.about.savedTitle'),
+        description: t('worker.profile.about.savedDescription'),
+      });
+      setLocalBio(editableBio);
+      setIsEditingBio(false);
+    } catch (err) {
+      console.error(err);
+      toast({
+        title: t('worker.profile.about.errorTitle'),
+        description: t('worker.profile.about.errorDescription'),
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   // Use userProfile directly or map to a simpler structure if preferred
   const user = {
     name: userProfile.full_name ?? 'User',
@@ -193,7 +248,7 @@ export function ProfilePageSidebar({
 
   return (
     <aside className='hidden w-[352px] max-w-[352px] shrink-0 lg:block'>
-      <div className='sticky top-20 flex flex-col gap-[16px] border border-stroke-soft-200 bg-bg-white-0 max-h-[930px] rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
+      <div className='sticky top-20 flex flex-col gap-[16px] border border-stroke-soft-200 bg-bg-white-0  rounded-[20px] pb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)]'>
         {/* Wrapper Div from UserSidebar */}
         <div className="flex flex-col max-w-[352px] max-h-[328px] p-[16px] gap-[16px]">
           {/* Profile Section */}
@@ -327,20 +382,58 @@ export function ProfilePageSidebar({
         <Divider.Root />
 
         {/* Combined About and Social Links Section - Copied from UserSidebar styles */}
-        <div className="flex flex-col max-w-[352px] max-h-[218px] pb-4 px-4 gap-5">
+        <div className="flex flex-col max-w-[352px] pb-4 px-4 gap-5">
           {/* About Content */}
-          <div className='flex items-center justify-between'> {/* Removed mb-2 */}
+          <div className='flex items-center justify-between'>
             <h3 className='text-text-strong-950 text-[14px] font-semibold'>
               {t('worker.profile.about.title')}
             </h3>
-            {/* TODO: Add Edit button logic if needed for own profile */}
-            <button className='text-icon-secondary-400 hover:text-icon-primary-500'>
-              <RiPencilLine className='size-4 text-[#99A0AE]' />
-            </button>
+            {currentUser?.id === userProfile.id && !isEditingBio && (
+              <button
+                onClick={handleEditBio}
+                className='text-icon-secondary-400 hover:text-icon-primary-500'
+                aria-label={t('worker.profile.about.edit')}
+                disabled={isSaving}
+              >
+                <RiPencilLine className='size-4 text-[#99A0AE]' />
+              </button>
+            )}
           </div>
-          <p className='line-clamp-5 font-normal text-[12px] leading-4 tracking-normal text-[#525866]'>
-            {userProfile.bio || t('worker.profile.noBio')}
-          </p>
+          {isEditingBio ? (
+            <div className="space-y-2">
+              <Textarea
+                value={editableBio}
+                onChange={(e) => setEditableBio(e.target.value)}
+                placeholder={t('worker.profile.about.placeholder')}
+                rows={4}
+                className="text-sm"
+                disabled={isSaving}
+              />
+              <div className="flex justify-end space-x-2">
+                <Button.Root
+                  variant="neutral"
+                  mode="stroke"
+                  size="small"
+                  onClick={handleCancelBio}
+                  disabled={isSaving}
+                >
+                  {t('sidebar.cancel')}
+                </Button.Root>
+                <Button.Root
+                  variant="primary"
+                  size="small"
+                  onClick={handleSaveBio}
+                  disabled={isSaving || editableBio === localBio}
+                >
+                  {isSaving ? t('sidebar.saving') : t('sidebar.save')}
+                </Button.Root>
+              </div>
+            </div>
+          ) : (
+            <p className='line-clamp-5 font-normal text-[12px] leading-4 tracking-normal text-[#525866]'>
+              {localBio || t('worker.profile.noBio')}
+            </p>
+          )}
 
           {/* Social Links */}
           <div className='flex items-center gap-3'>

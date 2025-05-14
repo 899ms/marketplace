@@ -90,7 +90,7 @@ export function ProfileSection({
       </div>
 
       {/* Render Buttons */}
-      <div className="flex items-center gap-[16px]">
+      <div className="flex items-center gap-[16px] ml-6">
         <Button.Root
           variant="neutral"
           mode="stroke"

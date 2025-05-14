@@ -10,6 +10,7 @@ import {
 import { useAuth } from '@/utils/supabase/AuthContext';
 import supabase from '@/utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import i18n from '@/i18n';
 
 export interface UseCreateServiceFormReturn {
   activeStep: number;
@@ -181,7 +182,8 @@ export function useCreateServiceForm(): UseCreateServiceFormReturn {
       // Set success and redirect after a short delay
       setSuccess(true);
       setTimeout(() => {
-        router.push('/settings?tab=my-services');
+        const currentLang = i18n.language;
+        router.push(`/${currentLang}/settings?tab=my-services`);
         router.refresh(); // Refresh the page data
       }, 1000);
     } catch (err) {

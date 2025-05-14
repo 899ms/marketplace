@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import MusicUploadDialog from '@/components/blocks/music-upload-dialog';
 import { ProfilePageSidebar } from '@/components/worker/profile/profile-page-sidebar';
@@ -180,6 +180,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
 
   // --- Hire Handler ---
   const handleHire = () => {
+    console.log('Hire clicked');
     toast({
       title: "Hire Clicked (Placeholder)",
       description: `Proceed to hire ${sellerProfile?.full_name || sellerProfile?.username || 'this seller'}.`,
@@ -224,31 +225,36 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
       case 'about':
         return (
           <>
-            <AboutSection about={sellerProfile.bio ?? t('users.profile.seller.page.about.noBio')} />
+            <AboutSection
+              userProfile={sellerProfile}
+              onSaved={refetchSellerProfile}
+            />
 
             {/* 1) Work - Use workerData */}
             <div className="mt-8 flex items-center justify-between">
               <h3 className="text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 pb-1 border-b-2 border-text-strong-950">
                 {t('users.profile.seller.page.work.title')}
               </h3>
-              <button
-                className="
+              {currentUser?.id === sellerProfile.id && (
+                <button
+                  className="
                   flex items-center justify-center gap-[2px]
                   w-[90px] h-[32px]
                   rounded-lg
                   shadow-[0_1px_2px_rgba(27,28,29,0.48),0_0_0_1px_#242628]
                 "
-                style={{
-                  background:
-                    'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%), #20232D'
-                }}
-                onClick={() => setIsUploadModalOpen(true)}
-              >
-                <RiArrowUpCircleLine className="size-5 text-white" />
-                <span className="text-[14px] font-medium leading-5 text-white">
-                  {t('users.profile.seller.page.work.upload')}
-                </span>
-              </button>
+                  style={{
+                    background:
+                      'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%), #20232D'
+                  }}
+                  onClick={handleUploadModalOpen}
+                >
+                  <RiArrowUpCircleLine className="size-5 text-white" />
+                  <span className="text-[14px] font-medium leading-5 text-white">
+                    {t('users.profile.seller.page.work.upload')}
+                  </span>
+                </button>
+              )}
             </div>
             <div className="divide-y divide-stroke-soft-200">
               {sellerProfile.music_data && sellerProfile.music_data.length > 0 ? (
@@ -376,6 +382,14 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
     }
   };
 
+  const handleUploadModalOpen = useCallback(() => {
+    setIsUploadModalOpen(true);
+  }, []);
+
+  const handleUploadModalClose = useCallback(() => {
+    setIsUploadModalOpen(false);
+  }, []);
+
   const handleUploadComplete = () => {
     console.log('Upload complete, refetching seller profile...');
     refetchSellerProfile();
@@ -427,7 +441,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
 
       <MusicUploadDialog
         open={isUploadModalOpen}
-        onOpenChange={setIsUploadModalOpen}
+        onOpenChange={handleUploadModalClose}
         userId={targetSeller.id}
         onUploadComplete={handleUploadComplete}
       />

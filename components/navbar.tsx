@@ -26,12 +26,36 @@ import {
   RiArrowDownFill,
   RiArrowDropDownFill, // Added for Live Chat
 } from '@remixicon/react';
-import { useRef, useState, useCallback } from 'react';
+import { useRef, useState, useCallback, useEffect } from 'react';
 import { useCopyToClipboard } from '@/hooks/use-copy-to-clipboard'; // Assuming a copy hook exists
 import { useAuth } from '@/utils/supabase/AuthContext'; // Import useAuth
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 import { useRouter } from 'next/navigation';
+
+// This CSS ensures the navbar doesn't shift when the scrollbar appears/disappears
+// Add this at the top of the file
+const fixScrollbarStyles = `
+  /* Prevent content shift when scrollbar appears/disappears */
+  html {
+    scrollbar-gutter: stable;
+  }
+
+  /* Alternative approach that ensures body always has the same width */
+  body {
+    overflow-y: scroll;
+    width: 100vw;
+    box-sizing: border-box;
+    position: relative;
+  }
+
+  /* For older browsers */
+  @supports not (scrollbar-gutter: stable) {
+    body {
+      overflow-y: scroll;
+    }
+  }
+`;
 
 export default function Navbar() {
   // --- Get Auth State using useAuth hook ---
@@ -48,6 +72,20 @@ export default function Navbar() {
 
   const { t } = useTranslation('common');
   const router = useRouter();
+  const navRef = useRef<HTMLDivElement>(null);
+
+  // Add the scrollbar styles to head
+  useEffect(() => {
+    // Create a style element
+    const styleElement = document.createElement('style');
+    styleElement.innerHTML = fixScrollbarStyles;
+    document.head.appendChild(styleElement);
+
+    // Cleanup on unmount
+    return () => {
+      document.head.removeChild(styleElement);
+    };
+  }, []);
 
   // TODO: Implement Dark Mode toggle logic (e.g., using next-themes)
   const handleDarkModeToggle = () => {
@@ -61,8 +99,10 @@ export default function Navbar() {
     if (error) {
       console.error('Error logging out:', error);
       // TODO: Show notification to user
+    } else {
+      // Navigate to login page with current language prefix
+      router.push(`/${i18n.language}/auth/login`);
     }
-    // No need to redirect here, AuthProvider listener will update state
   };
 
 
@@ -111,7 +151,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className='fixed top-0 left-0 right-0 z-50 bg-white'>
+    <nav ref={navRef} className='fixed top-0 left-0 right-0 z-50 bg-white w-[100vw] box-border'>
       <div className='mx-auto flex h-20 w-full max-w-[1440px] items-center justify-between px-8 py-5 gap-4 border-b border-stroke-soft-200 shadow-sm'>
         {/* Left Section: Logo and Nav Links */}
         <div className='flex items-center gap-4'>
@@ -184,10 +224,12 @@ export default function Navbar() {
                   const newLang = i18n.language === 'en' ? 'zh' : 'en';
                   const currentPath = window.location.pathname;
                   const newPath = currentPath.replace(/^\/(en|zh)/, `/${newLang}`);
+                  // Get current query parameters
+                  const searchParams = window.location.search;
                   // Update i18n language
                   i18n.changeLanguage(newLang);
-                  // Update URL using Next.js router
-                  router.push(newPath);
+                  // Update URL using Next.js router, preserving query parameters
+                  router.push(`${newPath}${searchParams}`);
                 }}
                 className="hover:bg-bg-neutral-subtle-100 rounded-md p-1 transition-colors"
               >
@@ -311,10 +353,12 @@ export default function Navbar() {
                         const newLang = i18n.language === 'en' ? 'zh' : 'en';
                         const currentPath = window.location.pathname;
                         const newPath = currentPath.replace(/^\/(en|zh)/, `/${newLang}`);
+                        // Get current query parameters
+                        const searchParams = window.location.search;
                         // Update i18n language
                         i18n.changeLanguage(newLang);
-                        // Update URL using Next.js router
-                        router.push(newPath);
+                        // Update URL using Next.js router, preserving query parameters
+                        router.push(`${newPath}${searchParams}`);
                       }}
                     >
                       <Dropdown.ItemIcon as={RiFlagLine} />

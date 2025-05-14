@@ -39,7 +39,7 @@ export function ImageCarousel({
           alt={`${altPrefix} ${activeIndex + 1}`}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          style={{ objectFit: 'cover' }}
+          // style={{ objectFit: 'contain' }}
           priority={activeIndex === 0}
           className="bg-bg-subtle-100 max-h-[600px] h-full"
         />
@@ -84,7 +84,7 @@ export function ImageCarousel({
                 alt={`Thumbnail ${index + 1}`}
                 fill
                 sizes="191px"
-                style={{ objectFit: 'cover' }}
+                style={{ objectFit: 'contain' }}
                 className="bg-bg-subtle-100"
               />
               {activeIndex !== index && (

@@ -124,7 +124,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
   // --- End Notification Handler ---
 
   return (
-    <aside className='hidden w-[300px] max-h-[682px] shrink-0 lg:block'>
+    <aside className='hidden w-[300px] shrink-0 lg:block'>
       <div className='sticky top-20 flex flex-col border border-stroke-soft-200 bg-bg-white-0 pb-5 mb-6 shadow-[0_2px_4px_0_rgba(14,18,27,0.03),0_6px_10px_0_rgba(14,18,27,0.06)] rounded-[20px]'>
         {' '}
         {/* Profile Section */}
@@ -186,7 +186,7 @@ const Sidebar = ({ userProfile }: SidebarProps) => {
         </nav>
         <Divider.Root className="mt-[2rem] mb-[16px]" />
         {/* About Section */}
-        <div className='px-4 max-w-[300px] max-h-[202px]  flex flex-col'>
+        <div className='px-4 max-w-[300px]  flex flex-col'>
           <div className='mb-4 flex items-center justify-between'>
             <h3 className='text-[14px] text-[#525866]  font-medium'>{t('sidebar.about')}</h3>
             {!isEditingBio && (

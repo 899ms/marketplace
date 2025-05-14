@@ -21,7 +21,7 @@ const TagInputContainer: React.FC<TagInputContainerProps> = ({ children }) => {
       {children}
       {/* Render children, and ensure min-height even if empty */}
       {React.Children.count(children) === 0 && (
-        <span className='text-xs text-gray-400'>{t('filters.select')}</span>
+        <span className='text-[12px] text-gray-400 '>{t('filters.select')}</span>
       )}
     </div>
   );
@@ -232,7 +232,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           </div>
           <TagInputContainer>
             {selectedTools.map((tool) => (
-              <Tag.Root key={tool} className="!border font-medium !border-[#525866] text-[#525866]">
+              <Tag.Root key={tool} className="!border font-medium !border-[#525866] text-[#525866] ">
                 {tool}
                 <Tag.Icon as={RiCloseLine} onClick={() => removeTool(tool)} className='ml-1 cursor-pointer text-[#525866]' />
               </Tag.Root>
@@ -366,7 +366,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       {(activeTab === 'Service' || activeTab === 'Project') && (
         <div className='mx-[16px]' >
           <h3 className='mb-10 text-[14px] font-medium text-text-strong-950'>
-            {activeTab === 'Service' ? t('filters.price') : t('filters.budget')}
+            {t('filters.price')}
           </h3>
           <PriceRangeSlider
             value={priceRange}

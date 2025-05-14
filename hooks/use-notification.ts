@@ -4,7 +4,7 @@ import * as React from 'react';
 import type { NotificationProps } from '@/components/ui/notification';
 
 const NOTIFICATION_LIMIT = 1;
-const NOTIFICATION_REMOVE_DELAY = 1000000;
+const NOTIFICATION_REMOVE_DELAY = 3000;
 
 type NotificationPropsWithId = NotificationProps & {
   id: string;
@@ -28,21 +28,21 @@ type ActionType = typeof actionTypes;
 
 type Action =
   | {
-      type: ActionType['ADD_NOTIFICATION'];
-      notification: NotificationPropsWithId;
-    }
+    type: ActionType['ADD_NOTIFICATION'];
+    notification: NotificationPropsWithId;
+  }
   | {
-      type: ActionType['UPDATE_NOTIFICATION'];
-      notification: Partial<NotificationPropsWithId>;
-    }
+    type: ActionType['UPDATE_NOTIFICATION'];
+    notification: Partial<NotificationPropsWithId>;
+  }
   | {
-      type: ActionType['DISMISS_NOTIFICATION'];
-      notificationId?: NotificationPropsWithId['id'];
-    }
+    type: ActionType['DISMISS_NOTIFICATION'];
+    notificationId?: NotificationPropsWithId['id'];
+  }
   | {
-      type: ActionType['REMOVE_NOTIFICATION'];
-      notificationId?: NotificationPropsWithId['id'];
-    };
+    type: ActionType['REMOVE_NOTIFICATION'];
+    notificationId?: NotificationPropsWithId['id'];
+  };
 
 interface State {
   notifications: NotificationPropsWithId[];
@@ -103,9 +103,9 @@ export const reducer = (state: State, action: Action): State => {
         notifications: state.notifications.map((t) =>
           t.id === notificationId || notificationId === undefined
             ? {
-                ...t,
-                open: false,
-              }
+              ...t,
+              open: false,
+            }
             : t,
         ),
       };

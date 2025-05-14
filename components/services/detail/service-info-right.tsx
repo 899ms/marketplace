@@ -21,10 +21,13 @@ import {
   RiMoneyCnyCircleLine,
   RiGroupLine,
   RiCalendarLine,
-  RiLoader4Line // Added loader icon
+  RiLoader4Line, // Added loader icon
+  RiHeart3Fill
 } from '@remixicon/react';
 import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
+
+
 
 // Remove the old specific data interfaces
 /*
@@ -41,7 +44,9 @@ const dummyTools = ['Adobe Audition', 'Pro Tools', 'Logic Pro X', 'FL Studio'];
 
 export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
   const { t } = useTranslation('common');
-  const { user: currentUser } = useAuth(); // Get current user
+  const { user: currentUser, userProfile } = useAuth(); // Get current user
+  const isSeller = userProfile?.user_type === 'seller';
+
   const [sellerProfile, setSellerProfile] = useState<User | null>(null); // State for seller profile
   const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null); // State for current user profile
   const [activeChat, setActiveChat] = useState<Chat | null>(null); // State for active chat
@@ -49,7 +54,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
   const [isLoadingChat, setIsLoadingChat] = useState(false); // State for loading chat
   const [isLoadingMessages, setIsLoadingMessages] = useState(false); // Separate loading state for messages
   const [chatError, setChatError] = useState<string | null>(null); // State for chat errors
-
+  const [liked, setLiked] = useState(false);
   // Fetch profiles
   useEffect(() => {
     const fetchProfiles = async () => {
@@ -79,13 +84,52 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
   };
 
   // --- Hire Button Handler --- 
-  const handleHireClick = () => {
+  const handleHireClick = async () => {
     // TODO: Implement actual hiring logic later
+
+    if (!currentUser || !sellerProfile) {
+      console.error('Cannot hire: Missing current user or seller profile.');
+      return;
+    }
+    if (currentUser.id === sellerProfile.id) {
+      console.log("Cannot hire yourself");
+      return;
+    }
+
+    try {
+      const chat = await chatOperations.findOrCreateChat(currentUser.id, sellerProfile.id);
+      if (chat) {
+
+        await chatOperations.sendMessage({
+          chat_id: chat.id,
+          sender_id: currentUser.id,
+          content: '',
+          message_type: 'hire_request',
+          data: {
+            status: 'pending',
+            service_id: service.id,
+            title: service.title,
+            price: service.price,
+            description: service.description,
+          },
+        });
+
+      } else {
+        setChatError('Failed to find or create chat conversation.');
+      }
+    } catch (error: any) {
+      console.error('Error sending hire request ', error);
+      setChatError(error.message || 'An unexpected error occurred.');
+    } finally {
+
+    }
+
     toast({
       description: `Hire Request Sent! Successfully initiated hiring process for service: ${service.title}.`, // Combine title and description
     });
-    // Optionally, redirect after a short delay or after actual API call succeeds
-    // setTimeout(() => { window.location.href = `/orders/create?serviceId=${service.id}`; }, 2000);
+
+
+
   };
   // --- End Hire Button Handler ---
 
@@ -97,7 +141,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
       return;
     }
     if (currentUser.id === sellerProfile.id) {
-      setChatError(t('service.info.cannotMessageSelf'));
+      toast({ description: t('service.info.cannotMessageSelf') });
       return;
     }
 
@@ -132,6 +176,16 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
   };
   // --- End Message Button Handlers ---
 
+  const handleLike = () => {
+    setLiked(!liked);
+
+    if (liked) {
+      toast({ description: "Added to Favorites" })
+    } else {
+      toast({ description: "Removed from Favorites" })
+    }
+  };
+
   return (
     <div className='sticky top-20'>
       <div className='rounded-[20px] border border-[#E2E4E9] bg-bg-white-0 p-[20px] shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.1)]'>
@@ -142,8 +196,8 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             <div className="flex flex-col items-center">
 
               {/* heart icon top-right */}
-              <button className="absolute top-7 right-7 p-1 text-[#525866] hover:text-icon-primary-500">
-                <RiHeart3Line className="size-7 text-[#525866]" />
+              <button className="absolute top-7 right-7 p-1 text-[#525866] hover:text-icon-primary-500" onClick={handleLike}>
+                {liked ? <RiHeart3Line className="size-7 text-[#525866]" /> : <RiHeart3Fill className="size-7 text-red-500" />}
               </button>
 
               <Link href={`/${i18n.language}/users/${service.seller_id}`} passHref legacyBehavior>
@@ -294,16 +348,19 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             )}
           </Button.Root>
           {/* Hire Button */}
+
           <Button.Root
             variant='neutral'
             mode='stroke'
             size='small'
             onClick={handleHireClick}
             className="border-[#E1E4EA]"
+            disabled={isSeller || currentUser?.id === service.seller_id}
           >
             {t('service.info.hire')}
             <Button.Icon as={RiArrowRightSLine} />
           </Button.Root>
+
         </div>
 
         {/* Display Chat Error if exists */}

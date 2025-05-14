@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { useNotification } from '@/hooks/use-notification';
 import { useTranslation } from 'react-i18next';
@@ -39,7 +39,7 @@ interface WorkerSidebarProps {
 // --- Worker Dashboard Sidebar ---
 export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
   const { notification } = useNotification();
-  const { t } = useTranslation('common');
+  const { t, i18n: i18nInstance } = useTranslation('common');
 
   const user = {
     name: userProfile.full_name ?? 'User',

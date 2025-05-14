@@ -2,20 +2,18 @@
 
 import React from 'react';
 import * as Avatar from '@/components/ui/avatar';
-import { RiStarFill, RiMessage3Line } from '@remixicon/react';
+import { RiStarFill, RiMessage3Line, RiMessage2Line } from '@remixicon/react';
 import * as Button from '@/components/ui/button';
 import { useTranslation } from 'react-i18next';
+import { formatDistanceToNow } from 'date-fns';
 
 export interface Applicant {
   id: string;
   name: string;
   avatar: string;
-  rating: number;
-  reviews: number;
-  time: string;
-  hired?: boolean;
-  replacedBy?: string;
-  unreadMessages?: number;
+  status: 'pending' | 'accepted' | 'rejected';
+  created_at: string;
+  onMessageClick?: () => void;
 }
 
 interface ApplicantCardProps {
@@ -25,10 +23,26 @@ interface ApplicantCardProps {
 
 const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) => {
   const { t } = useTranslation('common');
-  const isSeller = userRole === 'seller';
-  const showReplaced = userRole === 'buyer' && applicant.hired && applicant.replacedBy;
-  const showMessage = userRole === 'buyer' && !applicant.hired;
-  const unread = applicant.unreadMessages ?? 0;
+  const timeAgo = formatDistanceToNow(new Date(applicant.created_at), { addSuffix: true });
+
+  const getStatusBadge = () => {
+    switch (applicant.status) {
+      case 'accepted':
+        return (
+          <span className="px-2 py-1 text-xs font-medium text-green-700 bg-green-100 rounded-full">
+            {t('projects.applicants.status.hired')}
+          </span>
+        );
+      case 'rejected':
+        return (
+          <span className="px-2 py-1 text-xs font-medium text-red-700 bg-red-100 rounded-full">
+            {t('projects.applicants.status.rejected')}
+          </span>
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="px-[16px] pb-[16px]">
@@ -44,60 +58,39 @@ const ApplicantCard: React.FC<ApplicantCardProps> = ({ applicant, userRole }) =>
 
           <div className="flex-1">
             {/* Name */}
-            <p className="text-[14px] font-medium text-text-strong-950 leading-6">
-              {applicant.name}
+            <div className="flex items-center gap-2">
+              <h4 className="font-medium text-text-strong-950 leading-6">
+                {applicant.name}
+              </h4>
+              {getStatusBadge()}
+            </div>
+
+            {/* Time pill */}
+            <p className="text-[12px] text-gray-600">
+              {timeAgo}
             </p>
-
-            {/* "Replaced by …" for hired buyers */}
-            {showReplaced && (
-              <p className="text-[12px] text-gray-600">
-                {t('projects.applicants.replacedBy', { name: applicant.replacedBy })}
-              </p>
-            )}
-
-            {/* Rating + time pill for non-hired buyers */}
-            {!showReplaced && (
-              <div className="flex items-center gap-1">
-                <RiStarFill className="size-5 text-yellow-400" />
-                <span className="text-[12px] text-gray-600">
-                  {applicant.rating}({applicant.reviews})
-                </span>
-                {showMessage && (
-                  <span className="text-[12px] text-gray-600 bg-[var(--state-faded-lighter,#F2F5F8)] rounded-full px-2 py-0.5">
-                    {applicant.time}
-                  </span>
-                )}
-              </div>
-            )}
           </div>
         </div>
 
         {/* Right-side action */}
-        {showReplaced ? (
-          <span className="text-[12px] rounded-full bg-green-100 px-2 py-[0.125rem] font-medium text-green-600">
-            {t('projects.applicants.hired')}
-          </span>
-        ) : isSeller ? (
-          <Button.Root variant="neutral" mode="stroke" size="small" className="h-auto text-[12px] py-[4px] px-[10px]">
-            {t('projects.applicants.view')}
-          </Button.Root>
-        ) : showMessage ? (
+        {userRole === 'buyer' && applicant.onMessageClick && (
           <Button.Root
             variant="neutral"
             mode="ghost"
             size="small"
-            className="p-0 relative"
+            onClick={applicant.onMessageClick}
+            className="flex items-center gap-1"
           >
             <RiMessage3Line className="size-8 text-icon-secondary-400 hover:text-icon-primary-500" />
-            {unread > 0 && (
+            {/* {unread > 0 && (
               <span className="absolute -top-1 -right-1 inline-flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] font-medium text-white">
                 {unread}
               </span>
-            )}
+            )} */}
           </Button.Root>
-        ) : null}
+        )}
       </div>
-      {applicant.hired && userRole === 'buyer' && (
+      {applicant.status === 'accepted' && userRole === 'buyer' && (
         /* 95% width separator */
         <div className="w-[95%] mx-auto mt-[16px] h-px bg-stroke-soft-200" />
       )}

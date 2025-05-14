@@ -11,8 +11,18 @@ import {
   RiTimeLine,
   RiAddLine,
   RiArrowDownSLine,
-  RiAddCircleLine
+  RiAddCircleLine,
+  RiCalendarLine
 } from '@remixicon/react';
+import { Calendar } from '@/components/ui/datepicker';
+import {
+  Root as Popover,
+  Content as PopoverContent,
+  Trigger as PopoverTrigger,
+} from '@/components/ui/popover';
+import { format } from 'date-fns';
+import { cn } from '@/utils/cn';
+import { chatOperations, contractOperations } from '@/utils/supabase/database';
 
 // Import UserRole type
 type UserRole = 'buyer' | 'seller';
@@ -50,7 +60,8 @@ export function MilestoneSection({
   const [showAddMilestone, setShowAddMilestone] = React.useState(false);
   const [newMilestoneTitle, setNewMilestoneTitle] = React.useState("");
   const [newMilestoneAmount, setNewMilestoneAmount] = React.useState("");
-  const [newMilestoneDueDate, setNewMilestoneDueDate] = React.useState("");
+  const [newMilestoneDueDate, setNewMilestoneDueDate] = React.useState<Date | undefined>(undefined);
+  const [calendarOpen, setCalendarOpen] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
 
   // Log state after initialization
@@ -71,19 +82,48 @@ export function MilestoneSection({
     const formData = new FormData(event.currentTarget);
     const nextSequence = (milestones.length > 0 ? Math.max(...milestones.map((m, i) => m.sequence ?? i)) : 0) + 1;
 
+    // If we have a date, format it as YYYY-MM-DD for the form data
+    if (newMilestoneDueDate) {
+      formData.set('dueDate', format(newMilestoneDueDate, 'yyyy-MM-dd'));
+    }
+
     const { addMilestone } = await import('@/app/actions/milestone-actions');
     const result = await addMilestone(contractId, nextSequence, formData);
 
     if (result.success && result.milestone) {
+
+      const contract = await contractOperations.getContractById(contractId);
+
+      if (contract) {
+        let chat = await chatOperations.getContractChat(contract.buyer_id, contract.seller_id, contractId);
+
+        if (chat) {
+
+          const milestoneActivatedMessage = await chatOperations.sendMessage({
+            chat_id: chat.id,
+            message_type: 'milestone_activated',
+            content: 'Milestone activated',
+            sender_id: contract.buyer_id,
+            data: {
+              contractId: contractId,
+              status: 'in_progress',
+              description: 'New Milestone',
+              amount: newMilestoneAmount,
+              sequence: nextSequence,
+            }
+          });
+        }
+      }
+
       setNewMilestoneTitle("");
       setNewMilestoneAmount("");
+      setNewMilestoneDueDate(undefined);
       setShowAddMilestone(false);
-      setNewMilestoneDueDate("");
       // TODO: Optimistically update or refetch milestones
     } else {
       console.error("Failed to add milestone:", result.error);
       const { notification } = await import('@/hooks/use-notification');
-      notification({ type: 'error', title: t('orders.milestoneSection.errors.addFailed'), description: result.error || t('orders.milestoneSection.errors.addFailed') });
+      notification({ type: 'foreground', title: t('orders.milestoneSection.errors.addFailed'), description: result.error || t('orders.milestoneSection.errors.addFailed') });
     }
     setIsSaving(false);
   };
@@ -154,51 +194,92 @@ export function MilestoneSection({
           {userRole === 'buyer' && (
             <>
               {showAddMilestone && (
-                <form onSubmit={handleAddFormSubmit} className="flex items-end gap-2 mt-4 ml-9">
-                  <div className="flex-1">
-                    <InputRoot size="small">
-                      <InputField
-                        name="description"
-                        placeholder={t('orders.milestoneSection.milestoneTitle')}
-                        value={newMilestoneTitle}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneTitle(e.target.value)}
-                        required
-                        className="p-2"
-                      />
-                    </InputRoot>
+                <form onSubmit={handleAddFormSubmit} className="flex flex-col mt-4 ml-9">
+                  <div className="flex items-end gap-2">
+                    <div className="w-56">
+                      <InputRoot size="small">
+                        <InputField
+                          name="description"
+                          placeholder="Milestone title"
+                          value={newMilestoneTitle}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneTitle(e.target.value)}
+                          required
+                          className="p-2"
+                        />
+                      </InputRoot>
+                    </div>
+                    <div className="w-24">
+                      <InputRoot size="small">
+                        <InputField
+                          name="amount"
+                          placeholder={t('orders.milestoneSection.amount')}
+                          type="number"
+                          value={newMilestoneAmount}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneAmount(e.target.value)}
+                          required
+                          step="0.01"
+                          className="p-2"
+                        />
+                      </InputRoot>
+                    </div>
+                    <div className="w-36">
+                      <Popover
+                        open={calendarOpen}
+                        onOpenChange={setCalendarOpen}
+                      >
+                        <PopoverTrigger asChild>
+                          <Button.Root
+                            type="button"
+                            className={cn(
+                              "justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50",
+                              !newMilestoneDueDate && "text-muted-foreground"
+                            )}
+                          >
+                            <RiCalendarLine className="mr-2 h-4 w-4 text-[#0E121B]" />
+                            {newMilestoneDueDate ? (
+                              <p className="text-[14px] text-[#0E121B]">
+                                {format(newMilestoneDueDate, 'PPP')}
+                              </p>
+                            ) : (
+                              <span className="text-[14px] text-[#525866]">
+                                Due Date (Optional)
+                              </span>
+                            )}
+                          </Button.Root>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0">
+                          <Calendar
+                            mode="single"
+                            selected={newMilestoneDueDate}
+                            onSelect={(date) => {
+                              if (date) {
+                                const today = new Date();
+                                today.setHours(0, 0, 0, 0);
+
+                                if (date < today) {
+                                  // Don't allow past dates
+                                  return;
+                                }
+                                setNewMilestoneDueDate(date);
+                              }
+                              setCalendarOpen(false);
+                            }}
+                            disabled={{ before: new Date() }}
+                            initialFocus
+                          />
+                        </PopoverContent>
+                      </Popover>
+                    </div>
                   </div>
-                  <div className="w-24">
-                    <InputRoot size="small">
-                      <InputField
-                        name="amount"
-                        placeholder={t('orders.milestoneSection.amount')}
-                        type="number"
-                        value={newMilestoneAmount}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneAmount(e.target.value)}
-                        required
-                        step="0.01"
-                        className="p-2"
-                      />
-                    </InputRoot>
+
+                  <div className="flex justify-end mr-4 mt-4 gap-2">
+                    <Button.Root type="submit" size="small" disabled={isSaving}>
+                      {isSaving ? t('orders.milestoneSection.saving') : t('orders.milestoneSection.save')}
+                    </Button.Root>
+                    <Button.Root variant="neutral" mode="ghost" size="small" type="button" onClick={() => setShowAddMilestone(false)} disabled={isSaving}>
+                      {t('orders.milestoneSection.cancel')}
+                    </Button.Root>
                   </div>
-                  <div className="w-36">
-                    <InputRoot size="small">
-                      <InputField
-                        name="dueDate"
-                        placeholder={t('orders.milestoneSection.dueDate')}
-                        type="date"
-                        value={newMilestoneDueDate}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNewMilestoneDueDate(e.target.value)}
-                        className="p-2"
-                      />
-                    </InputRoot>
-                  </div>
-                  <Button.Root type="submit" size="small" disabled={isSaving}>
-                    {isSaving ? t('orders.milestoneSection.saving') : t('orders.milestoneSection.save')}
-                  </Button.Root>
-                  <Button.Root variant="neutral" mode="ghost" size="small" type="button" onClick={() => setShowAddMilestone(false)} disabled={isSaving}>
-                    {t('orders.milestoneSection.cancel')}
-                  </Button.Root>
                 </form>
               )}
 

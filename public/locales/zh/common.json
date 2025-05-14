@@ -184,8 +184,8 @@
           }
         },
         "step1": {
-          "subject": "合同标题",
-          "subjectPlaceholder": "输入合同标题…",
+          "subject": "服务标题",
+          "subjectPlaceholder": "输入服务标题...",
           "detail": "详情",
           "detailPlaceholder": "详情",
           "tags": {
@@ -229,9 +229,15 @@
       }
     },
     "profile": {
+      "likeInitiatedToast": "工作者已添加到您的收藏夹。",
+      "unlikeInitiatedToast": "工作者已从您的收藏夹中移除。",
       "about": {
         "edit": "编辑个人简介",
-        "title": "个人简介"
+        "title": "个人简介",
+        "savedTitle": "个人简介已更新",
+        "savedDescription": "您的个人简介已保存。",
+        "errorTitle": "更新失败",
+        "errorDescription": "无法保存您的个人简介。请重试。"
       },
       "reviews": "{{count}} 条评价",
       "google": "谷歌认证",
@@ -363,7 +369,8 @@
   },
   "project": {
     "budget": "预算",
-    "apply": "申请"
+    "apply": "申请",
+    "applied": "已申请"
   },
   "service": {
     "error": "显示服务时出错",
@@ -521,12 +528,17 @@
     "accept": "接受",
     "cancel": "取消",
     "edit": "编辑",
+    "declined": "拒绝",
+    "accepted": "接受",
+    "cancelled": "取消",
     "milestone": {
       "completed": "已完成里程碑",
       "activated": "已激活里程碑",
       "viewContract": "查看合同"
     },
-    "yourOfferIncludes": "您的报价包括"
+    "yourOfferIncludes": "您的报价包括",
+    "hireRequest": "雇佣请求",
+    "view": "查看"
   },
   "chatDetails": {
     "selectChat": "选择一个聊天以查看详情。",
@@ -547,7 +559,8 @@
     "milestones": "里程碑",
     "noMilestones": "未找到此合同的里程碑。",
     "status": "状态",
-    "sendContract": "发送合同"
+    "sendContract": "发送合同",
+    "viewContract": "查看合同"
   },
   "chatList": {
     "noChats": "您还没有任何聊天。",
@@ -570,10 +583,15 @@
       "title": "创建工作",
       "subtitle": "定义详情，设置预算",
       "contentPlaceholder": "{{title}}的内容将在这里显示...",
+      "requiredFields": "必填字段",
       "stepper": {
         "sequence": "转移顺序",
         "trouble": "遇到转移问题？",
-        "contact": "联系"
+        "contact": "联系",
+        "contactSuccess": {
+          "title": "支持请求已发送",
+          "description": "我们的支持团队将很快与您联系以协助您的请求。"
+        }
       },
       "step1": {
         "title": "第1步 基本信息",
@@ -773,6 +791,7 @@
     "financialSummary": {
       "totalAmount": "总金额",
       "received": "已收到",
+      "paid": "已支付",
       "inEscrow": "托管中",
       "refunded": "已退款",
       "milestone": "里程碑",
@@ -872,10 +891,16 @@
   },
   "projects": {
     "applicants": {
-      "list": "列表",
+      "list": "申请者",
       "replacedBy": "已被{{name}}替代",
       "hired": "已雇佣",
-      "view": "查看"
+      "view": "查看",
+      "noApplicants": "暂无申请者",
+      "status": {
+        "pending": "",
+        "hired": "已雇佣",
+        "rejected": ""
+      }
     },
     "clientProfile": {
       "google": "谷歌"

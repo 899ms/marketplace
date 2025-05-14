@@ -10,6 +10,7 @@ import { SendOfferSchema, SendOfferFormData } from '@/components/offers/schema';
 import { User, Job, BaseFileData } from '@/utils/supabase/types';
 import { chatOperations } from '@/utils/supabase/database';
 import { format, parseISO, isValid } from 'date-fns';
+import i18n from '@/i18n';
 
 export interface UseSendOfferFormReturn {
   formMethods: UseFormReturn<SendOfferFormData>;
@@ -115,7 +116,8 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
         const { data, error: fetchError } = await supabase
           .from('jobs')
           .select('id, title')
-          .eq('buyer_id', user.id);
+          .eq('buyer_id', user.id)
+          .eq('status', 'open');
 
         if (fetchError) throw fetchError;
         setJobs(data || []);
@@ -158,90 +160,88 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
       }
 
       // --- Create Contract ---
-      const contractData = {
-        buyer_id: user.id,
-        seller_id: validatedData.sendTo,
-        job_id: validatedData.selectOrder || null,
-        service_id: null, // Assuming offers are always for jobs in this context
-        title: validatedData.contractTitle, // Add title
-        contract_type: validatedData.paymentType, // Add contract type
-        status: 'pending',
-        amount: totalAmount,
-        description: validatedData.description,
-        attachments: validatedData.attachments || null,
-        currency: validatedData.currency,
-      };
+      // const contractData = {
+      //   buyer_id: user.id,
+      //   seller_id: validatedData.sendTo,
+      //   job_id: validatedData.selectOrder || null,
+      //   service_id: null, // Assuming offers are always for jobs in this context
+      //   title: validatedData.contractTitle, // Add title
+      //   contract_type: validatedData.paymentType, // Add contract type
+      //   status: 'pending',
+      //   amount: totalAmount,
+      //   description: validatedData.description,
+      //   attachments: validatedData.attachments || null,
+      //   currency: validatedData.currency,
+      // };
 
-      const { data: newContract, error: contractError } = await supabase
-        .from('contracts')
-        .insert(contractData)
-        .select('id, buyer_id, seller_id') // Select necessary fields
-        .single();
+      // const { data: newContract, error: contractError } = await supabase
+      //   .from('contracts')
+      //   .insert(contractData)
+      //   .select('id, buyer_id, seller_id') // Select necessary fields
+      //   .single();
 
-      if (contractError || !newContract) {
-        console.error('Contract creation failed:', contractError);
-        throw contractError || new Error('Failed to create contract record');
-      }
-      console.log('Contract created successfully:', newContract);
+      // if (contractError || !newContract) {
+      //   console.error('Contract creation failed:', contractError);
+      //   throw contractError || new Error('Failed to create contract record');
+      // }
+      // console.log('Contract created successfully:', newContract);
 
-      // --- Create Milestones (Always create at least one) ---
-      let milestoneInsertError: any = null;
-      if (validatedData.paymentType === 'one-time') {
-        console.log('Creating single milestone for one-time payment.');
-        // Create a single milestone for one-time payment
-        const singleMilestoneData = {
-          contract_id: newContract.id,
-          description: validatedData.contractTitle, // Use contract title or description
-          amount: totalAmount,
-          due_date: validatedData.deadline?.toISOString() || null,
-          status: 'pending',
-          sequence: 1,
-        };
-        const { error } = await supabase
-          .from('contract_milestones')
-          .insert(singleMilestoneData);
-        milestoneInsertError = error;
-      } else if (validatedData.milestones?.length) {
-        console.log(
-          `Creating ${validatedData.milestones.length} milestones for installment payment.`,
-        );
-        // Create milestones from form for installment payment
-        const milestoneData = validatedData.milestones.map((m, index) => ({
-          contract_id: newContract.id,
-          description: m.description,
-          amount: m.amount,
-          due_date: m.dueDate?.toISOString() || null,
-          status: 'pending',
-          sequence: index + 1,
-        }));
-        const { error } = await supabase
-          .from('contract_milestones')
-          .insert(milestoneData);
-        milestoneInsertError = error;
-      } else {
-        // This case should ideally not happen if validation is correct
-        console.warn('No milestones provided for installment payment type.');
-      }
+      // // --- Create Milestones (Always create at least one) ---
+      // let milestoneInsertError: any = null;
+      // if (validatedData.paymentType === 'one-time') {
+      //   console.log('Creating single milestone for one-time payment.');
+      //   // Create a single milestone for one-time payment
+      //   const singleMilestoneData = {
+      //     contract_id: newContract.id,
+      //     description: validatedData.contractTitle, // Use contract title or description
+      //     amount: totalAmount,
+      //     due_date: validatedData.deadline?.toISOString() || null,
+      //     status: 'pending',
+      //     sequence: 1,
+      //   };
+      //   const { error } = await supabase
+      //     .from('contract_milestones')
+      //     .insert(singleMilestoneData);
+      //   milestoneInsertError = error;
+      // } else if (validatedData.milestones?.length) {
+      //   console.log(
+      //     `Creating ${validatedData.milestones.length} milestones for installment payment.`,
+      //   );
+      //   // Create milestones from form for installment payment
+      //   const milestoneData = validatedData.milestones.map((m, index) => ({
+      //     contract_id: newContract.id,
+      //     description: m.description,
+      //     amount: m.amount,
+      //     due_date: m.dueDate?.toISOString() || null,
+      //     status: 'pending',
+      //     sequence: index + 1,
+      //   }));
+      //   const { error } = await supabase
+      //     .from('contract_milestones')
+      //     .insert(milestoneData);
+      //   milestoneInsertError = error;
+      // } else {
+      //   // This case should ideally not happen if validation is correct
+      //   console.warn('No milestones provided for installment payment type.');
+      // }
 
-      if (milestoneInsertError) {
-        console.error('Failed to insert milestones:', milestoneInsertError);
-        // Decide how critical this is. Maybe proceed but add to error state?
-        const currentError = error ? `${error} ` : '';
-        setError(
-          `${currentError}Offer created, but failed to save milestones: ${milestoneInsertError.message}`,
-        );
-        // Do not throw here, let the offer message proceed if possible
-      }
+      // if (milestoneInsertError) {
+      //   console.error('Failed to insert milestones:', milestoneInsertError);
+      //   // Decide how critical this is. Maybe proceed but add to error state?
+      //   const currentError = error ? `${error} ` : '';
+      //   setError(
+      //     `${currentError}Offer created, but failed to save milestones: ${milestoneInsertError.message}`,
+      //   );
+      //   // Do not throw here, let the offer message proceed if possible
+      // }
 
       // --- Create Chat ---
       let newChat;
       try {
         console.log('Attempting to create/get chat...');
-        newChat = await chatOperations.createChat({
-          buyer_id: newContract.buyer_id,
-          seller_id: newContract.seller_id,
-          contract_id: newContract.id, // Link chat to the contract
-        });
+        newChat = await chatOperations.findOrCreateChat(
+          user.id, validatedData.sendTo,
+        );
         if (!newChat) {
           console.error('Failed to create/get chat. createChat returned null.');
           setError(
@@ -282,7 +282,22 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
             price: totalAmount,
             currency: validatedData.currency,
             deliveryTime: formattedDeliveryTime,
-            contractId: newContract.id,
+            status: 'pending',
+            contractDetails: {
+              buyer_id: user.id,
+              seller_id: validatedData.sendTo,
+              job_id: validatedData.selectOrder || null,
+              service_id: null, // Assuming offers are always for jobs in this context
+              title: validatedData.contractTitle, // Add title
+              contract_type: validatedData.paymentType, // Add contract type
+              status: 'pending',
+              amount: totalAmount,
+              description: validatedData.description,
+              attachments: validatedData.attachments || null,
+              currency: validatedData.currency,
+              deadline: validatedData.deadline?.toISOString() || null,
+              milestones: validatedData.milestones,
+            },
           };
 
           console.log('Sending offer message to chat:', offerMessageData);
@@ -325,7 +340,8 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
   useEffect(() => {
     if (success) {
       console.log('Redirecting to /chats...');
-      router.push('/chats');
+      const currentLang = i18n.language;
+      router.push(`/${currentLang}/chats`);
     }
   }, [success, router]); // Depend on success and router
 

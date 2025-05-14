@@ -10,6 +10,12 @@ import { RiLoader4Line } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import * as FancyButton from '@/components/ui/fancy-button';
 import * as Divider from '@/components/ui/divider';
+import { format } from 'date-fns';
+import {
+  Root as Tooltip,
+  Content as TooltipContent,
+  Trigger as TooltipTrigger,
+} from '@/components/ui/tooltip';
 
 interface Step4Props {
   formMethods: UseFormReturn<CreateJobFormData>;
@@ -29,12 +35,21 @@ const Step4Preview: React.FC<Step4Props> = ({
   success,
 }) => {
   const { t } = useTranslation('common');
-  const { getValues, handleSubmit } = formMethods;
+  const { getValues, handleSubmit, formState: { isValid, errors } } = formMethods;
 
   const formData = getValues();
 
   const discountCode = 'codeabcde';
   const discountAmount = 20;
+
+  const formatDeadline = (deadline?: string) => {
+    if (!deadline) return '-';
+    try {
+      return format(new Date(deadline), 'MMMM d, yyyy');
+    } catch (e) {
+      return '-';
+    }
+  };
 
   const getUsageDescription = (option?: string) => {
     if (option === 'private')
@@ -58,6 +73,21 @@ const Step4Preview: React.FC<Step4Props> = ({
 
   const finalAmount = (formData.budget || 0) - discountAmount;
   console.log(formData)
+
+  // Get missing required fields
+  const getMissingFields = () => {
+    const missingFields = [];
+    if (!formData.title) missingFields.push(t('jobs.create.step1.subject'));
+    if (!formData.description) missingFields.push(t('jobs.create.step1.detail'));
+    if (!formData.budget || formData.budget <= 0) missingFields.push(t('jobs.create.step1.amount'));
+    if (!formData.skill_levels?.length) missingFields.push(t('jobs.create.step2.skillLevels'));
+    if (!formData.candidate_sources?.length) missingFields.push(t('jobs.create.step2.candidateSources'));
+    return missingFields;
+  };
+
+  const missingFields = getMissingFields();
+  const isFormValid = isValid && missingFields.length === 0;
+
   return (
     <div className='flex flex-col'>
       {/* Step 1 Basic */}
@@ -131,7 +161,7 @@ const Step4Preview: React.FC<Step4Props> = ({
         <div className='p-2 flex flex-col gap-2 p-4'>
           <div className='flex flex-row justify-between items-center'>
             <p className='text-[#525866] font-normal text-[14px]'>{t('jobs.create.step4.deadline')}</p>
-            <p className='text-[#0E121B] text-[14px]'>{formData.deadline || '-'}</p>
+            <p className='text-[#0E121B] text-[14px]'>{formatDeadline(formData.deadline)}</p>
           </div>
           <div className='flex flex-row justify-between items-center'>
             <p className='text-[#525866] font-normal text-[14px]'>{t('jobs.create.step4.orderAmount')}</p>
@@ -178,18 +208,31 @@ const Step4Preview: React.FC<Step4Props> = ({
         >
           {t('jobs.create.draft')}
         </Button.Root>
-        <FancyButton.Root
-          variant='neutral'
-          onClick={handleSubmit(submitForm)}
-          className='flex flex-1 items-center !rouneded-[8px]justify-center'
-          type='submit'
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? (
-            <RiLoader4Line className='mr-2 size-4 animate-spin' />
-          ) : null}
-          {isSubmitting ? t('jobs.create.posting') : t('jobs.create.post')}
-        </FancyButton.Root>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <div className="flex-1">
+              <FancyButton.Root
+                variant='neutral'
+                onClick={handleSubmit(submitForm)}
+                className='flex w-full items-center !rouneded-[8px] justify-center'
+                type='submit'
+                disabled={isSubmitting || !isFormValid}
+              >
+                {isSubmitting ? (
+                  <RiLoader4Line className='mr-2 size-4 animate-spin' />
+                ) : null}
+                {isSubmitting ? t('jobs.create.posting') : t('jobs.create.post')}
+              </FancyButton.Root>
+            </div>
+          </TooltipTrigger>
+          {!isFormValid && (
+            <TooltipContent>
+              <p className="text-sm">
+                {t('jobs.create.requiredFields')}: {missingFields.join(', ')}
+              </p>
+            </TooltipContent>
+          )}
+        </Tooltip>
       </div>
     </div>
   );

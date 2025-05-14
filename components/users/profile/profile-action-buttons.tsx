@@ -28,7 +28,7 @@ export function ProfileActionButtons({
   return (
     <div className="flex items-center justify-center gap-[20px]">
       {/* Hire Button (Previously Follow) */}
-      <Button.Root
+      {!(!currentUser || isLoadingChat || isOwnProfile) && <Button.Root
         variant="neutral"
         mode="stroke"
         size="xsmall"
@@ -39,10 +39,10 @@ export function ProfileActionButtons({
       >
         <span className="text-paragraph-[14px] text-[#525866]">{t('users.profile.actions.follow')}</span>
         <Button.Icon as={RiHeart3Line} className="size-5 text-[#525866]" />
-      </Button.Root>
+      </Button.Root>}
 
       {/* Touch Button */}
-      <FancyButton.Root
+      {!(!currentUser || isLoadingChat || isOwnProfile) && <FancyButton.Root
         variant="neutral"
         size="xsmall"
         className="w-[83px] h-[30px] rounded-[8px]"
@@ -63,7 +63,7 @@ export function ProfileActionButtons({
             </FancyButton.Icon>
           </>
         )}
-      </FancyButton.Root>
+      </FancyButton.Root>}
     </div>
   );
 } 
