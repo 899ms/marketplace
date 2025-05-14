@@ -970,7 +970,7 @@ export default function ChatCore({
 
   const containerClass = 'flex flex-col bg-white dark:bg-gray-800 h-full overflow-hidden';
   const containerModeClass = isPopup
-    ? 'rounded-lg shadow-xl border dark:border-gray-700 overflow-hidden w-full min-w-[300px] max-w-[500px] h-[70vh] fixed bottom-4 right-4 z-50'
+    ? 'rounded-lg shadow-xl border dark:border-gray-700 overflow-hidden w-full min-w-[300px] max-w-[600px] !h-[70vh] fixed bottom-4 right-4 z-50'
     : 'h-screen';
 
   return (
