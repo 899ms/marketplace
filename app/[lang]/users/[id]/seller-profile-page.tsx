@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
 import MusicUploadDialog from '@/components/blocks/music-upload-dialog';
 import { ProfilePageSidebar } from '@/components/worker/profile/profile-page-sidebar';
@@ -245,7 +245,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
                   background:
                     'linear-gradient(180deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 100%), #20232D'
                 }}
-                onClick={() => setIsUploadModalOpen(true)}
+                onClick={handleUploadModalOpen}
               >
                 <RiArrowUpCircleLine className="size-5 text-white" />
                 <span className="text-[14px] font-medium leading-5 text-white">
@@ -379,6 +379,14 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
     }
   };
 
+  const handleUploadModalOpen = useCallback(() => {
+    setIsUploadModalOpen(true);
+  }, []);
+
+  const handleUploadModalClose = useCallback(() => {
+    setIsUploadModalOpen(false);
+  }, []);
+
   const handleUploadComplete = () => {
     console.log('Upload complete, refetching seller profile...');
     refetchSellerProfile();
@@ -430,7 +438,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
 
       <MusicUploadDialog
         open={isUploadModalOpen}
-        onOpenChange={setIsUploadModalOpen}
+        onOpenChange={handleUploadModalClose}
         userId={targetSeller.id}
         onUploadComplete={handleUploadComplete}
       />
