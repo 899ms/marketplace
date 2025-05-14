@@ -305,7 +305,16 @@ export function Step2Pricing({
             variant='neutral'
             onClick={nextStep}
             className='flex-1'
-            disabled={!!errors.price || !!errors.lead_time}
+            disabled={
+              !!errors.price ||
+              !!errors.lead_time ||
+              fields.some((_, index) =>
+                !getValues(`additionalServices.${index}.name`) ||
+                !getValues(`additionalServices.${index}.price`) ||
+                !!errors.additionalServices?.[index]?.name ||
+                !!errors.additionalServices?.[index]?.price
+              )
+            }
           >
             {t('worker.services.create.step2.next')}
           </FancyButton.Root>
