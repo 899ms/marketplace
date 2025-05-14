@@ -21,7 +21,7 @@ const TagInputContainer: React.FC<TagInputContainerProps> = ({ children }) => {
       {children}
       {/* Render children, and ensure min-height even if empty */}
       {React.Children.count(children) === 0 && (
-        <span className='text-xs text-gray-400'>{t('filters.select')}</span>
+        <span className='text-[12px] text-gray-400 '>{t('filters.select')}</span>
       )}
     </div>
   );
@@ -232,7 +232,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           </div>
           <TagInputContainer>
             {selectedTools.map((tool) => (
-              <Tag.Root key={tool} className="!border font-medium !border-[#525866] text-[#525866]">
+              <Tag.Root key={tool} className="!border font-medium !border-[#525866] text-[#525866] ">
                 {tool}
                 <Tag.Icon as={RiCloseLine} onClick={() => removeTool(tool)} className='ml-1 cursor-pointer text-[#525866]' />
               </Tag.Root>
