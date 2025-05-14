@@ -39,7 +39,7 @@ interface WorkerSidebarProps {
 // --- Worker Dashboard Sidebar ---
 export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
   const { notification } = useNotification();
-  const { t } = useTranslation('common');
+  const { t, i18n: i18nInstance } = useTranslation('common');
 
   const user = {
     name: userProfile.full_name ?? 'User',
@@ -62,11 +62,6 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
       description: t('worker.sidebar.comingSoon.description'),
     });
   };
-
-  useEffect(() => {
-
-    console.log('Language Test', t('worker.salary'));
-  }, []);
 
   return (
     <aside className='hidden w-[300px] shrink-0 lg:block'>

@@ -1,7 +1,7 @@
 'use client';
 
 // import React from 'react';
-import { useState } from 'react'; // Import useState
+import { useEffect, useState } from 'react'; // Import useState
 import { Service } from '@/utils/supabase/types'; // Import the main Service type
 import * as Avatar from '@/components/ui/avatar';
 import * as TabMenuHorizontal from '@/components/ui/tab-menu-horizontal';
@@ -10,6 +10,9 @@ import { ReviewItem } from './review-item'; // Import ReviewItem for dummy revie
 import { RiStarFill, RiCheckLine } from '@remixicon/react';
 import { RelatedServiceCard } from './related-service-card'; // Ensure this is imported
 import { useTranslation } from 'react-i18next';
+import { TFunction } from 'i18next';
+import i18n from '@/i18n';
+import { usePathname } from 'next/navigation';
 
 // Remove the old specific data interfaces
 /*
@@ -48,12 +51,14 @@ const dummyOptions = [
 */
 
 export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftProps) {
-  const { t } = useTranslation('common');
   // Add state for managing the active tab
+  const { t } = useTranslation('common');
   const [activeTab, setActiveTab] = useState('Details');
+
 
   // Function to render tab content
   const renderTabContent = () => {
+
     switch (activeTab) {
       case 'Details':
         return (

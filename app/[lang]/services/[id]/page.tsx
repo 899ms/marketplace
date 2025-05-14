@@ -67,6 +67,7 @@ export default async function ServiceDetailPage({
           <ServiceInfoLeft
             service={service}
             portfolioServices={portfolioServices}
+
           />
         </div>
 
