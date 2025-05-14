@@ -186,13 +186,13 @@ export function AttachmentsSection({
   const renderUploadStatusIcon = (status: UploadStatus) => {
     switch (status) {
       case 'uploading':
-        return <RiLoader4Line className="animate-spin" />;
+        return <RiLoader4Line className="animate-spin w-[10%]" />;
       case 'success':
-        return <RiCheckLine />;
+        return <RiCheckLine className="w-[10%]" />;
       case 'error':
-        return <RiErrorWarningLine />;
+        return <RiErrorWarningLine className="w-[10%]" />;
       default:
-        return <RiUploadCloud2Line />;
+        return <RiUploadCloud2Line className="w-[10%]" />;
     }
   };
 
@@ -207,14 +207,14 @@ export function AttachmentsSection({
             >
               <div className="flex gap-2 items-center">
                 {renderUploadStatusIcon(file.status)}
-                <div className="flex flex-col">
+                <div className="flex flex-col w-[80%]">
                   {/* ← file name as clickable link */}
                   {file.uploadedUrl ? (
                     <a
                       href={file.uploadedUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-indigo-600 hover:underline"
+                      className="text-indigo-600 hover:underline break-all"
                     >
                       {file.name}
                     </a>
@@ -225,12 +225,13 @@ export function AttachmentsSection({
                     {formatBytes(file.size)}
                   </span>
                 </div>
+                <RiDeleteBinLine
+                  className="cursor-pointer w-[10%] size-5"
+                  onClick={() => handleRemoveFile(file.localId)}
+                  aria-label={t('offers.attachments.removeFile')}
+                />
               </div>
-              <RiDeleteBinLine
-                className="cursor-pointer"
-                onClick={() => handleRemoveFile(file.localId)}
-                aria-label={t('offers.attachments.removeFile')}
-              />
+
             </div>
           ))
         ) : (
