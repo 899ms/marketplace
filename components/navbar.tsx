@@ -99,8 +99,10 @@ export default function Navbar() {
     if (error) {
       console.error('Error logging out:', error);
       // TODO: Show notification to user
+    } else {
+      // Navigate to login page with current language prefix
+      router.push(`/${i18n.language}/auth/login`);
     }
-    // No need to redirect here, AuthProvider listener will update state
   };
 
 
