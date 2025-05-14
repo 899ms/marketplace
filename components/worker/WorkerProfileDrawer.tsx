@@ -19,6 +19,7 @@ import {
   RiHeart3Line,
   RiArrowRightCircleLine,
   RiLoader4Line,
+  RiHeart3Fill,
 } from '@remixicon/react';
 import * as DialogPrimitive from "@radix-ui/react-dialog";
 
@@ -114,6 +115,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
     },
   ];
 
+  const [likeStatus, setLikeStatus] = useState(false);
   const displayName = worker?.full_name || worker?.username || (isLoading ? t('worker.profile.loadingWorker') : t('worker.profile.fallbackName'));
   const displayAvatar = worker?.avatar_url ?? undefined;
   const displayBio = worker?.bio || (isLoading ? t('worker.profile.loadingBio') : t('worker.profile.noBio'));
@@ -181,6 +183,20 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
     setActiveChat(null);
     setActiveChatMessages([]);
     setChatError(null);
+  };
+
+  const handleLikeStatus = () => {
+    setLikeStatus(!likeStatus);
+
+    if (!likeStatus) {
+      toast({
+        description: t('worker.profile.likeInitiatedToast', { name: displayName }),
+      });
+    } else {
+      toast({
+        description: t('worker.profile.unlikeInitiatedToast', { name: displayName }),
+      });
+    }
   };
 
   useEffect(() => {
@@ -341,8 +357,8 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     )}
                   </FancyButton.Root>
 
-                  <button className="rounded-full text-[#525866] transition-colors hover:bg-bg-weak-50 hover:text-red-500">
-                    <RiHeart3Line className="size-[28px] hover:fill-red" />
+                  <button className="rounded-full text-[#525866] transition-colors hover:bg-bg-weak-50 hover:text-red-500" onClick={handleLikeStatus}>
+                    {!likeStatus ? <RiHeart3Line className="size-[28px]" /> : <RiHeart3Fill className="size-[28px] text-red-500" />}
                   </button>
                 </div>
               </div>

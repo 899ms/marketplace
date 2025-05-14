@@ -552,7 +552,7 @@ function ChatMessageRenderer({
         )}
         {message.message_type === 'offer' && (
           <div className={`mt-2 flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
-            <div className={`flex flex-col gap-2 w-2/5`}>
+            <div className={`flex flex-col gap-2 w-1/2`}>
               <div className='flex flex-row gap-1 items-center'>
                 <p className='text-[12px] text-[#525866]'>{t('chat.offer')}</p>
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -630,7 +630,7 @@ function ChatMessageRenderer({
         {/* Show Service Name, Description and Price with Accept and Decline Button on Seller Side and Cancel on Buyer Side */}
         {message.message_type === 'hire_request' && (
           <div className={`mt-2 flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
-            <div className={`flex flex-col gap-2 w-2/5`}>
+            <div className={`flex flex-col gap-2 w-1/2`}>
               <div className='flex flex-row gap-1 items-center'>
                 <p className='text-[12px] text-[#525866]'>{t('chat.hireRequest')}</p>
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -706,7 +706,7 @@ function ChatMessageRenderer({
 
         {(message.message_type === 'milestone_completed' || message.message_type === 'milestone_activated') && (
           <div className={`flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
-            <div className={`flex flex-col gap-2 w-2/5`}>
+            <div className={`flex flex-col gap-2 w-1/2`}>
               <div className='flex flex-row gap-1 items-center'>
                 <p className='text-[12px] text-[#525866]'>
                   {message.data.status && message.data.status === 'completed'

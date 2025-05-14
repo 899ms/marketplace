@@ -229,6 +229,8 @@
       }
     },
     "profile": {
+      "likeInitiatedToast": "工作者已添加到您的收藏夹。",
+      "unlikeInitiatedToast": "工作者已从您的收藏夹中移除。",
       "about": {
         "edit": "编辑个人简介",
         "title": "个人简介",
