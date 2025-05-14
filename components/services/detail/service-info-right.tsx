@@ -44,7 +44,9 @@ const dummyTools = ['Adobe Audition', 'Pro Tools', 'Logic Pro X', 'FL Studio'];
 
 export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
   const { t } = useTranslation('common');
-  const { user: currentUser } = useAuth(); // Get current user
+  const { user: currentUser, userProfile } = useAuth(); // Get current user
+  const isSeller = userProfile?.user_type === 'seller';
+
   const [sellerProfile, setSellerProfile] = useState<User | null>(null); // State for seller profile
   const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null); // State for current user profile
   const [activeChat, setActiveChat] = useState<Chat | null>(null); // State for active chat
@@ -346,16 +348,19 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             )}
           </Button.Root>
           {/* Hire Button */}
+
           <Button.Root
             variant='neutral'
             mode='stroke'
             size='small'
             onClick={handleHireClick}
             className="border-[#E1E4EA]"
+            disabled={isSeller || currentUser?.id === service.seller_id}
           >
             {t('service.info.hire')}
             <Button.Icon as={RiArrowRightSLine} />
           </Button.Root>
+
         </div>
 
         {/* Display Chat Error if exists */}
