@@ -205,7 +205,7 @@ export function AttachmentsSection({
               key={file.localId}
               className="flex items-center justify-between rounded-md border p-2"
             >
-              <div className="flex gap-2 items-center">
+              <div className="flex gap-2 items-center w-full">
                 {renderUploadStatusIcon(file.status)}
                 <div className="flex flex-col w-[80%]">
                   {/* ← file name as clickable link */}
