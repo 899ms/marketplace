@@ -137,7 +137,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
       return;
     }
     if (currentUser.id === sellerProfile.id) {
-      setChatError(t('service.info.cannotMessageSelf'));
+      toast({ description: t('service.info.cannotMessageSelf') });
       return;
     }
 
