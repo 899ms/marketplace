@@ -533,6 +533,11 @@
     "declined": "拒绝",
     "accepted": "接受",
     "cancelled": "取消",
+    "failedToCreateContract": "创建合同失败。",
+    "failedToVerifyBuyerBalance": "验证买家余额失败。",
+    "contractCreated": "合同创建成功。",
+    "insufficientBalance": "买家余额不足，无法支付合同。请联系买家。",
+    "jobAlreadyHasContract": "此工作已有一个正在进行中的合同。",
     "milestone": {
       "completed": "已完成里程碑",
       "activated": "已激活里程碑",
@@ -775,7 +780,8 @@
       "loadingData": "正在加载表单数据...",
       "error": "错误",
       "success": "成功",
-      "offerSent": "报价发送成功！"
+      "offerSent": "报价发送成功！",
+      "insufficientBalance": "余额不足，无法发送报价"
     },
     "send": {
       "page": {
@@ -813,7 +819,12 @@
       "cancel": "取消",
       "addNewMilestone": "添加新里程碑",
       "errors": {
-        "addFailed": "添加里程碑失败"
+        "addFailed": "添加里程碑失败",
+        "insufficientBalanceMessage": "买家余额不足，无法支付合同。请联系买家。",
+        "failedToLoadContract": "无法加载合同。请稍后重试。",
+        "balanceCheckFailed": "无法检查买家余额。请稍后重试。",
+        "contractNotFound": "未找到合同。请稍后重试。",
+        "insufficientBalance": "买家余额不足，无法支付合同。请联系买家。"
       }
     },
     "details": {

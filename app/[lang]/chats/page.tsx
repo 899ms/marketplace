@@ -12,6 +12,8 @@ import ChatList from '@/components/chat/chat-list';
 import ChatFullscreen from '@/components/chat/chat-fullscreen'; // Import the fullscreen component
 import ChatDetailsPanel from '@/components/chat/chat-details-panel'; // Import the new details panel
 
+export type ChatWithLatestMessage = Chat & { latest_message: Message };
+
 // Placeholder components (replace with actual implementations later)
 const FullScreenChatWindow = ({ chat, messages, currentUserProfile, otherUserProfile, currentUserId, isLoadingMessages }: any) => (
   <div className="flex h-full flex-col border-x border-stroke-soft-200 bg-bg-white-0">
@@ -48,8 +50,10 @@ export default function ChatsPage() {
     i18n.changeLanguage(lang);
   }, [lang]);
 
+
+
   // const router = useRouter(); // Removed
-  const [chats, setChats] = useState<Chat[]>([]);
+  const [chats, setChats] = useState<ChatWithLatestMessage[]>([]);
   const [chatProfiles, setChatProfiles] = useState<Record<string, User | null>>({});
   const [currentUserProfile, setCurrentUserProfile] = useState<User | null>(null);
   const [selectedChatId, setSelectedChatId] = useState<string | null>(null);

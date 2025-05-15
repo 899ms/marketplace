@@ -23,6 +23,8 @@ import {
 import { format } from 'date-fns';
 import { cn } from '@/utils/cn';
 import { chatOperations, contractOperations } from '@/utils/supabase/database';
+import { useNotification } from '@/hooks/use-notification';
+import { supabase } from '@/utils/supabase';
 
 // Import UserRole type
 type UserRole = 'buyer' | 'seller';
@@ -63,6 +65,7 @@ export function MilestoneSection({
   const [newMilestoneDueDate, setNewMilestoneDueDate] = React.useState<Date | undefined>(undefined);
   const [calendarOpen, setCalendarOpen] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
+  const { notification: toast } = useNotification();
 
   // Log state after initialization
   React.useEffect(() => {
@@ -85,6 +88,49 @@ export function MilestoneSection({
     // If we have a date, format it as YYYY-MM-DD for the form data
     if (newMilestoneDueDate) {
       formData.set('dueDate', format(newMilestoneDueDate, 'yyyy-MM-dd'));
+    }
+
+    // Get contract data first
+    const contract = await contractOperations.getContractById(contractId);
+    if (!contract) {
+      const { notification } = await import('@/hooks/use-notification');
+      notification({
+        type: 'foreground',
+        description: t('orders.milestoneSection.errors.failedToLoadContract'),
+        notificationType: 'error',
+      });
+      setIsSaving(false);
+      return;
+    }
+
+    // Check buyer's balance before creating milestone
+    const { data: buyerData, error: buyerError } = await supabase
+      .from('users')
+      .select('balance')
+      .eq('id', contract.buyer_id)
+      .single();
+
+    if (buyerError || !buyerData) {
+      const { notification } = await import('@/hooks/use-notification');
+      notification({
+        type: 'foreground',
+        description: t('orders.milestoneSection.errors.failedToVerifyBalance'),
+        notificationType: 'error',
+      });
+      setIsSaving(false);
+      return;
+    }
+
+    const milestoneAmount = Number(formData.get('amount'));
+    if (buyerData.balance < milestoneAmount) {
+      const { notification } = await import('@/hooks/use-notification');
+      notification({
+        type: 'foreground',
+        description: t('orders.milestoneSection.errors.insufficientBalanceMessage'),
+        notificationType: 'error',
+      });
+      setIsSaving(false);
+      return;
     }
 
     const { addMilestone } = await import('@/app/actions/milestone-actions');

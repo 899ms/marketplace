@@ -531,6 +531,11 @@
     "declined":"Declined",
     "accepted":"Accepted",
     "cancelled":"Cancelled",
+    "failedToCreateContract": "Failed to create contract.",
+    "failedToVerifyBuyerBalance": "Failed to verify buyer balance.",
+    "contractCreated": "Contract created successfully.",
+    "insufficientBalance": "Buyer has insufficent balance to fund the contract. Please contact the buyer..",
+    "jobAlreadyHasContract": "This job already has an ongoing contract.",
     "milestone": {
       "completed": "Completed the milestone",
       "activated": "Activated the milestone",
@@ -772,7 +777,8 @@
       "loadingData": "Loading form data...",
       "error": "Error",
       "success": "Success",
-      "offerSent": "Offer sent successfully!"
+      "offerSent": "Offer sent successfully!",
+      "insufficientBalance": "Insufficient balance to send offer"
     },
     "send": {
       "page": {
@@ -810,7 +816,12 @@
       "cancel": "Cancel",
       "addNewMilestone": "Add a new milestone",
       "errors": {
-        "addFailed": "Failed to add milestone"
+        "addFailed": "Failed to add milestone",
+        "insufficientBalanceMessage": "Buyer has insufficent balance to fund the contract. Please contact the buyer.",
+        "failedToLoadContract": "Failed to load contract. Please try again later.",
+        "balanceCheckFailed": "Failed to check buyer balance. Please try again later.",
+        "contractNotFound": "Contract not found. Please try again later.",
+        "insufficientBalance": "Buyer has insufficent balance to fund the contract. Please contact the buyer."
       }
     },
     "details": {

@@ -18,7 +18,7 @@ export const UserSchema = z.object({
   avatar_url: z.string().url().nullable(), // TEXT, nullable
   bio: z.string().nullable(), // TEXT, nullable
   user_type: z.enum(['buyer', 'seller']), // TEXT NOT NULL CHECK (Assuming these are the only types)
-  balance: z.number().optional().nullable(), // NUMERIC default 1000, nullable based on schema info
+  balance: z.number().default(0), // NUMERIC NOT NULL DEFAULT 0, 10000 for buyers, 0 for sellers
   language: z.enum(['en', 'zh']).optional().nullable(), // TEXT default 'zh' CHECK, nullable based on schema info
   music_data: z.array(MusicItemSchema).optional().nullable(), // JSONB, array of music items, only for sellers
 });

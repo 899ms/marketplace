@@ -343,7 +343,10 @@ export default function Navbar() {
                           {t('navbar.account.balance')}
                         </div>
                         <div className='text-label-md font-medium text-text-strong-950'>
-                          12,000.05
+                          {userProfile?.balance?.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                          }) ?? '0.00'}
                         </div>
                       </div>
                       <Button.Root variant='primary' mode='stroke' size='small'>

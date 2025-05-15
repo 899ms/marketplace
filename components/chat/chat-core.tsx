@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback, Fragment, Dispatch, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 import supabase from '@/utils/supabase/client';
-import { chatOperations, jobOperations } from '@/utils/supabase/database';
+import { chatOperations, contractOperations, jobOperations } from '@/utils/supabase/database';
 import { Chat, Message, User, MessageSchema, BaseFileData, MusicItem } from '@/utils/supabase/types';
 import {
   ImageMessageData,
@@ -26,6 +26,7 @@ import { useRouter } from 'next/navigation';
 import i18n from '@/i18n';
 import { RiLoader4Line } from '@remixicon/react';
 import { useNotification } from '@/hooks/use-notification';
+
 
 // --- Moved formatBytes function to top level --- 
 function formatBytes(bytes: number, decimals = 2): string {
@@ -137,6 +138,7 @@ function ChatMessageRenderer({
   const plainTextColor = 'text-gray-800 dark:text-gray-100';
   const messageContentMaxWidth = 'max-w-[85%]';
   const [isAccepting, setIsAccepting] = useState(false);
+  const { notification: toast } = useNotification();
 
   // const renderOfferMessage = (isCurrentUser: boolean) => {
   //   const offerData = message.data as OfferMessageData | null;
@@ -302,7 +304,6 @@ function ChatMessageRenderer({
   // }
 
   const updateOfferStatus = async (status: string) => {
-
     if (isAccepting) {
       return;
     }
@@ -324,141 +325,239 @@ function ChatMessageRenderer({
       return;
     }
 
-
-
     if (status == 'accepted' && message.data?.contractDetails) {
-      // --- Create Contract ---
-      // Exclude deadline and milestones fields from contractDetails
       setIsAccepting(true);
       const { deadline, milestones, ...contractData } = message.data.contractDetails;
 
-      const { data: newContract, error: contractError } = await supabase
-        .from('contracts')
-        .insert(contractData)
-        .select('id, buyer_id, seller_id') // Select necessary fields
-        .single();
+      try {
+        // Check if any contract already exists for this job
+        const { data: existingContracts, error: existingContractsError } = await supabase
+          .from('contracts')
+          .select('id')
+          .eq('job_id', contractData.job_id)
+          .not('status', 'eq', 'cancelled');
 
-      if (contractError || !newContract) {
-        console.error('Contract creation failed:', contractError);
-        throw contractError || new Error('Failed to create contract record');
-      }
-      console.log('Contract created successfully:', newContract);
-
-      // Create a new chat for the contract
-      const newChat = await chatOperations.createChat({ buyer_id: contractData.buyer_id, seller_id: contractData.seller_id, contract_id: newContract.id });
-
-
-
-      // --- Create Milestones (Always create at least one) ---
-      let milestoneInsertError: any = null;
-      if (contractData.contract_type === 'one-time') {
-        console.log('Creating single milestone for one-time payment.');
-        // Create a single milestone for one-time payment
-        const singleMilestoneData = {
-          contract_id: newContract.id,
-          description: contractData.title, // Use contract title or description
-          amount: contractData.amount,
-          due_date: deadline,
-          status: 'pending',
-          sequence: 1,
-        };
-        const { error } = await supabase
-          .from('contract_milestones')
-          .insert(singleMilestoneData);
-
-        if (newChat) {
-          // Add a milestone_activated message to the new chat
-          const milestoneActivatedMessage = await chatOperations.sendMessage({
-            chat_id: newChat.id,
-            message_type: 'milestone_activated',
-            content: 'Milestone activated',
-            sender_id: contractData.buyer_id,
-            data: {
-              contractId: newContract.id,
-              status: 'in_progress',
-              description: contractData.title,
-              amount: contractData.amount,
-              sequence: 1,
-
-
-            }
+        if (existingContractsError) {
+          toast({
+            description: t('chat.failedToCheckExistingContracts'),
+            notificationType: 'error',
           });
-
+          setIsAccepting(false);
+          return;
         }
 
-        milestoneInsertError = error;
-      } else if (milestones?.length) {
-        console.log(
-          `Creating ${milestones.length} milestones for installment payment.`,
-        );
-        // Create milestones from form for installment payment
-        console.log('milestones', milestones);
-        const milestoneData = milestones.map((m: any, index: number) => ({
-          contract_id: newContract.id,
-          description: m.description,
-          amount: m.amount,
-          due_date: m.dueDate || null,
-          status: 'pending',
-          sequence: index + 1,
-        }));
-        const { error } = await supabase
-          .from('contract_milestones')
-          .insert(milestoneData);
-        milestoneInsertError = error;
-
-        if (newChat) {
-          // Add a milestone_activated message to the new chat
-          const milestoneActivatedMessage = await chatOperations.sendMessage({
-            chat_id: newChat.id,
-            message_type: 'milestone_activated',
-            content: 'Milestone activated',
-            sender_id: contractData.buyer_id,
-            data: {
-              contractId: newContract.id,
-              status: 'in_progress',
-              description: milestones[0].description,
-              amount: milestones[0].amount,
-              sequence: 1,
-            }
+        if (existingContracts && existingContracts.length > 0) {
+          toast({
+            description: t('chat.jobAlreadyHasContract'),
+            notificationType: 'error',
           });
+          setIsAccepting(false);
+          return;
         }
 
+        // Check buyer's balance first
+        const { data: buyerData, error: buyerError } = await supabase
+          .from('users')
+          .select('balance')
+          .eq('id', contractData.buyer_id)
+          .single();
 
-      } else {
-        // This case should ideally not happen if validation is correct
-        console.warn('No milestones provided for installment payment type.');
+        if (buyerError || !buyerData) {
+          toast({
+            description: t('chat.failedToVerifyBuyerBalance'),
+            notificationType: 'error',
+          });
+          setIsAccepting(false);
+          return;
+        }
+
+        const buyerBalance = buyerData.balance || 0;
+        let requiredAmount = 0;
+
+        // Calculate required amount based on contract type
+        if (contractData.contract_type === 'one-time') {
+          requiredAmount = contractData.amount;
+        } else if (milestones?.length) {
+          requiredAmount = milestones.reduce((sum: number, m: any) => sum + (m.amount || 0), 0);
+        }
+
+        // Check if buyer has sufficient balance
+        if (buyerBalance < requiredAmount) {
+          toast({
+            description: t('chat.insufficientBalance'),
+            notificationType: 'error',
+          });
+          setIsAccepting(false);
+          return;
+        }
+
+        // Create Contract
+        const { data: newContract, error: contractError } = await supabase
+          .from('contracts')
+          .insert(contractData)
+          .select('id, buyer_id, seller_id')
+          .single();
+
+        if (contractError || !newContract) {
+          console.error('Contract creation failed:', contractError);
+          throw contractError || new Error('Failed to create contract record');
+        }
+        console.log('Contract created successfully:', newContract);
+
+        // Create a new chat for the contract
+        const newChat = await chatOperations.createChat({
+          buyer_id: contractData.buyer_id,
+          seller_id: contractData.seller_id,
+          contract_id: newContract.id
+        });
+
+        // Handle milestones and balance deduction
+        let milestoneInsertError: any = null;
+        if (contractData.contract_type === 'one-time') {
+          console.log('Creating single milestone for one-time payment.');
+          // Deduct full amount for one-time payment
+          const { error: balanceError } = await supabase
+            .from('users')
+            .update({ balance: buyerBalance - contractData.amount })
+            .eq('id', contractData.buyer_id);
+
+          if (balanceError) {
+            throw new Error('Failed to update buyer balance');
+          }
+
+          // Create a single milestone for one-time payment
+          const singleMilestoneData = {
+            contract_id: newContract.id,
+            description: contractData.title,
+            amount: contractData.amount,
+            due_date: deadline,
+            status: 'pending',
+            sequence: 1,
+          };
+          const { error } = await supabase
+            .from('contract_milestones')
+            .insert(singleMilestoneData);
+
+          if (newChat) {
+            await chatOperations.sendMessage({
+              chat_id: newChat.id,
+              message_type: 'milestone_activated',
+              content: 'Milestone activated',
+              sender_id: contractData.buyer_id,
+              data: {
+                contractId: newContract.id,
+                status: 'in_progress',
+                description: contractData.title,
+                amount: contractData.amount,
+                sequence: 1,
+              }
+            });
+          }
+
+          milestoneInsertError = error;
+        } else if (milestones?.length) {
+          console.log(`Creating ${milestones.length} milestones for installment payment.`);
+
+          // Deduct amount for all milestones
+          const { error: balanceError } = await supabase
+            .from('users')
+            .update({ balance: buyerBalance - requiredAmount })
+            .eq('id', contractData.buyer_id);
+
+          if (balanceError) {
+            throw new Error('Failed to update buyer balance');
+          }
+
+          // Create milestones from form for installment payment
+          const milestoneData = milestones.map((m: any, index: number) => ({
+            contract_id: newContract.id,
+            description: m.description,
+            amount: m.amount,
+            due_date: m.dueDate || null,
+            status: 'pending',
+            sequence: index + 1,
+          }));
+          const { error } = await supabase
+            .from('contract_milestones')
+            .insert(milestoneData);
+          milestoneInsertError = error;
+
+          if (newChat) {
+            await chatOperations.sendMessage({
+              chat_id: newChat.id,
+              message_type: 'milestone_activated',
+              content: 'Milestone activated',
+              sender_id: contractData.buyer_id,
+              data: {
+                contractId: newContract.id,
+                status: 'in_progress',
+                description: milestones[0].description,
+                amount: milestones[0].amount,
+                sequence: 1,
+              }
+            });
+          }
+        }
+
+        if (milestoneInsertError) {
+          // Rollback balance update if milestone creation fails
+          if (contractData.contract_type === 'one-time') {
+            await supabase
+              .from('users')
+              .update({ balance: buyerBalance })
+              .eq('id', contractData.buyer_id);
+          } else if (milestones?.length) {
+            await supabase
+              .from('users')
+              .update({ balance: buyerBalance })
+              .eq('id', contractData.buyer_id);
+          }
+          throw milestoneInsertError;
+        }
+
+        // Update job status
+        const updatedJob = await jobOperations.updateJob(contractData.job_id, {
+          status: 'in_progress',
+        });
+
+        // Update message status
+        const updatedMessage = await chatOperations.updateMessageData(message.id, {
+          ...message.data,
+          status: status,
+          contractId: newContract.id,
+        });
+
+        setMessages((prevMessages) => {
+          return prevMessages.map((m) => {
+            if (m.id === message.id) {
+              return { ...m, data: { ...m.data, status: status } } as Message;
+            }
+            return m;
+          });
+        });
+
+        toast({
+          description: t('chat.contractCreated'),
+          notificationType: 'success',
+        });
+
+        const currentLang = i18n.language;
+        router.push(`/${currentLang}/orders/detail/${newContract.id}`);
+
+      } catch (error) {
+        console.error('Error in contract creation:', error);
+        toast({
+          description: t('chat.failedToCreateContract'),
+          notificationType: 'error',
+        });
+      } finally {
+        setIsAccepting(false);
       }
-
-      if (milestoneInsertError) {
-        console.error('Failed to insert milestones:', milestoneInsertError);
-        throw milestoneInsertError;
-      }
-
-      // Change the status of job to in_progress
-      const updatedJob = await jobOperations.updateJob(contractData.job_id, {
-        status: 'in_progress',
-      });
-
+    } else {
       const updatedMessage = await chatOperations.updateMessageData(message.id, {
         ...message.data,
         status: status,
-        contractId: newContract.id,
       });
-
-
-      const currentLang = i18n.language;
-      router.push(`/${currentLang}/orders/detail/${newContract.id}`);
-
-      setIsAccepting(false);
-
-    }
-
-    else {
-      const updatedMessage = await chatOperations.updateMessageData(message.id, {
-        ...message.data,
-        status: status,
-      });
-
 
       setMessages((prevMessages) => {
         return prevMessages.map((m) => {

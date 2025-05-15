@@ -1162,23 +1162,75 @@ export const contractOperations = {
   // Create a new contract
   async createContract(
     contract: Omit<Contract, 'id' | 'created_at'>,
-  ): Promise<Contract | null> {
-    const { data, error } = await supabase
-      .from('contracts')
-      .insert(contract)
-      .select()
-      .single();
-
-    if (error || !data) {
-      console.error('Error creating contract:', error);
-      return null;
-    }
-
+  ): Promise<{ contract: Contract | null; error: string | null }> {
     try {
-      return ContractSchema.parse(data);
+      // First, get the buyer's current balance
+      const { data: buyerData, error: buyerError } = await supabase
+        .from('users')
+        .select('balance')
+        .eq('id', contract.buyer_id)
+        .single();
+
+      if (buyerError || !buyerData) {
+        return { contract: null, error: 'Failed to fetch buyer balance' };
+      }
+
+      const buyerBalance = buyerData.balance || 0;
+
+      // Check if buyer has enough balance
+      if (buyerBalance < contract.amount) {
+        return {
+          contract: null,
+          error: `Insufficient balance. Required: ${contract.amount}, Available: ${buyerBalance}`
+        };
+      }
+
+      // If it's a one-time payment, deduct the amount immediately
+      if (contract.contract_type === 'one-time') {
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({ balance: buyerBalance - contract.amount })
+          .eq('id', contract.buyer_id);
+
+        if (updateError) {
+          return { contract: null, error: 'Failed to update buyer balance' };
+        }
+      }
+
+      // Create the contract
+      const { data, error } = await supabase
+        .from('contracts')
+        .insert(contract)
+        .select()
+        .single();
+
+      if (error || !data) {
+        // If contract creation fails, refund the amount for one-time payments
+        if (contract.contract_type === 'one-time') {
+          await supabase
+            .from('users')
+            .update({ balance: buyerBalance })
+            .eq('id', contract.buyer_id);
+        }
+        return { contract: null, error: 'Error creating contract' };
+      }
+
+      try {
+        const validatedContract = ContractSchema.parse(data);
+        return { contract: validatedContract, error: null };
+      } catch (err) {
+        // If validation fails, refund the amount for one-time payments
+        if (contract.contract_type === 'one-time') {
+          await supabase
+            .from('users')
+            .update({ balance: buyerBalance })
+            .eq('id', contract.buyer_id);
+        }
+        return { contract: null, error: 'Invalid contract data after creation' };
+      }
     } catch (err) {
-      console.error('Invalid contract data after creation:', err);
-      return null;
+      console.error('Error in createContract:', err);
+      return { contract: null, error: 'An unexpected error occurred' };
     }
   },
 
@@ -1186,24 +1238,99 @@ export const contractOperations = {
   async updateContract(
     contractId: string,
     contractData: Partial<Omit<Contract, 'id' | 'created_at'>>,
-  ): Promise<Contract | null> {
-    const { data, error } = await supabase
-      .from('contracts')
-      .update(contractData)
-      .eq('id', contractId)
-      .select()
-      .single();
-
-    if (error || !data) {
-      console.error('Error updating contract:', error);
-      return null;
-    }
-
+  ): Promise<{ contract: Contract | null; error: string | null }> {
     try {
-      return ContractSchema.parse(data);
+      // If amount is being updated, check buyer's balance
+      if (contractData.amount) {
+        // Get the current contract to check if it's a one-time payment
+        const { data: currentContract, error: contractError } = await supabase
+          .from('contracts')
+          .select('contract_type, buyer_id, amount')
+          .eq('id', contractId)
+          .single();
+
+        if (contractError || !currentContract) {
+          return { contract: null, error: 'Failed to fetch current contract' };
+        }
+
+        // Get buyer's current balance
+        const { data: buyerData, error: buyerError } = await supabase
+          .from('users')
+          .select('balance')
+          .eq('id', currentContract.buyer_id)
+          .single();
+
+        if (buyerError || !buyerData) {
+          return { contract: null, error: 'Failed to fetch buyer balance' };
+        }
+
+        const buyerBalance = buyerData.balance || 0;
+
+        // For one-time payments, check if buyer has enough balance for the new amount
+        if (currentContract.contract_type === 'one-time') {
+          if (buyerBalance < contractData.amount) {
+            return {
+              contract: null,
+              error: `Insufficient balance. Required: ${contractData.amount}, Available: ${buyerBalance}`
+            };
+          }
+
+          // Update buyer's balance
+          const { error: updateError } = await supabase
+            .from('users')
+            .update({ balance: buyerBalance - contractData.amount })
+            .eq('id', currentContract.buyer_id);
+
+          if (updateError) {
+            return { contract: null, error: 'Failed to update buyer balance' };
+          }
+        }
+      }
+
+      // Update the contract
+      const { data, error } = await supabase
+        .from('contracts')
+        .update(contractData)
+        .eq('id', contractId)
+        .select()
+        .single();
+
+      if (error || !data) {
+        // If contract update fails and amount was changed, refund the buyer
+        if (contractData.amount) {
+          const { data: currentContract } = await supabase
+            .from('contracts')
+            .select('buyer_id')
+            .eq('id', contractId)
+            .single();
+
+          if (currentContract) {
+            const { data: buyerData } = await supabase
+              .from('users')
+              .select('balance')
+              .eq('id', currentContract.buyer_id)
+              .single();
+
+            if (buyerData) {
+              await supabase
+                .from('users')
+                .update({ balance: buyerData.balance + contractData.amount })
+                .eq('id', currentContract.buyer_id);
+            }
+          }
+        }
+        return { contract: null, error: 'Error updating contract' };
+      }
+
+      try {
+        const validatedContract = ContractSchema.parse(data);
+        return { contract: validatedContract, error: null };
+      } catch (err) {
+        return { contract: null, error: 'Invalid contract data after update' };
+      }
     } catch (err) {
-      console.error('Invalid contract data after update:', err);
-      return null;
+      console.error('Error in updateContract:', err);
+      return { contract: null, error: 'An unexpected error occurred' };
     }
   },
 
@@ -1211,7 +1338,7 @@ export const contractOperations = {
   async updateContractStatus(
     contractId: string,
     status: Contract['status'],
-  ): Promise<Contract | null> {
+  ): Promise<{ contract: Contract | null; error: string | null }> {
     return this.updateContract(contractId, { status });
   },
 };
@@ -1583,73 +1710,176 @@ export const contractMilestoneOperations = {
     }
   },
 
-  // Add other milestone operations here (create, update, delete) if needed later
   // Update milestone status
   async updateMilestoneStatus(
     milestoneId: string,
     status: ContractMilestone['status'],
-  ): Promise<ContractMilestone | null> {
+  ): Promise<{ milestone: ContractMilestone | null; error: string | null }> {
     console.log(`Updating milestone ${milestoneId} to status: ${status}`);
     if (!milestoneId || !status) {
-      console.error(
-        'updateMilestoneStatus: milestoneId and status are required.',
-      );
-      return null;
+      return { milestone: null, error: 'milestoneId and status are required.' };
     }
 
     try {
+      // First get the milestone to check amount and contract_id
+      const { data: milestoneData, error: milestoneError } = await supabase
+        .from('contract_milestones')
+        .select('amount, contract_id')
+        .eq('id', milestoneId)
+        .single();
+
+      if (milestoneError || !milestoneData) {
+        return { milestone: null, error: 'Failed to fetch milestone information' };
+      }
+
+      // If status is being changed to approved or paid, transfer amount to seller
+      if ((status === 'approved' || status === 'paid') && milestoneData.amount) {
+        // Get the contract to find seller_id
+        const { data: contractData, error: contractError } = await supabase
+          .from('contracts')
+          .select('seller_id')
+          .eq('id', milestoneData.contract_id)
+          .single();
+
+        if (contractError || !contractData) {
+          return { milestone: null, error: 'Failed to fetch contract information' };
+        }
+
+        // Get seller's current balance
+        const { data: sellerData, error: sellerError } = await supabase
+          .from('users')
+          .select('balance')
+          .eq('id', contractData.seller_id)
+          .single();
+
+        if (sellerError || !sellerData) {
+          return { milestone: null, error: 'Failed to fetch seller balance' };
+        }
+
+        const sellerBalance = sellerData.balance || 0;
+
+        // Update seller's balance
+        const { error: updateError } = await supabase
+          .from('users')
+          .update({ balance: sellerBalance + milestoneData.amount })
+          .eq('id', contractData.seller_id);
+
+        if (updateError) {
+          return { milestone: null, error: 'Failed to update seller balance' };
+        }
+      }
+
+      // Update the milestone status
       const { data, error } = await supabase
         .from('contract_milestones')
-        .update({ status: status, updated_at: new Date().toISOString() }) // Also update updated_at
+        .update({
+          status: status,
+          updated_at: new Date().toISOString()
+        })
         .eq('id', milestoneId)
         .select()
         .single();
 
-      if (error) {
-        console.error(
-          `Supabase error updating milestone ${milestoneId}:`,
-          error,
-        );
-        return null;
-      }
-      if (!data) {
-        console.error(
-          `No data returned after updating milestone ${milestoneId}.`,
-        );
-        return null;
+      if (error || !data) {
+        // If milestone update fails and we already updated seller's balance, we should rollback
+        if ((status === 'approved' || status === 'paid') && milestoneData.amount) {
+          const { data: contractData } = await supabase
+            .from('contracts')
+            .select('seller_id')
+            .eq('id', milestoneData.contract_id)
+            .single();
+
+          if (contractData) {
+            const { data: sellerData } = await supabase
+              .from('users')
+              .select('balance')
+              .eq('id', contractData.seller_id)
+              .single();
+
+            if (sellerData) {
+              await supabase
+                .from('users')
+                .update({ balance: sellerData.balance - milestoneData.amount })
+                .eq('id', contractData.seller_id);
+            }
+          }
+        }
+        return { milestone: null, error: 'Error updating milestone status' };
       }
 
-      console.log(`Milestone ${milestoneId} status updated successfully.`);
       // Validate the returned data
       const parsedMilestone = ContractMilestoneSchema.parse(data);
-      return parsedMilestone;
+      return { milestone: parsedMilestone, error: null };
     } catch (err) {
-      console.error(
-        `Unexpected error in updateMilestoneStatus for ${milestoneId}:`,
-        err,
-      );
+      console.error(`Unexpected error in updateMilestoneStatus for ${milestoneId}:`, err);
       if (err instanceof z.ZodError) {
         console.error('Zod validation errors:', err.errors);
       }
-      return null;
+      return { milestone: null, error: 'An unexpected error occurred' };
     }
   },
 
   // Create a new milestone
   async createMilestone(
     milestoneData: Omit<ContractMilestone, 'id' | 'created_at' | 'updated_at'>,
-  ): Promise<ContractMilestone | null> {
+  ): Promise<{ milestone: ContractMilestone | null; error: string | null }> {
     console.log(
       'Creating new milestone for contract:',
       milestoneData.contract_id,
     );
 
     try {
+      // First, get the contract to check if it's a one-time payment and get buyer_id
+      const { data: contractData, error: contractError } = await supabase
+        .from('contracts')
+        .select('contract_type, buyer_id')
+        .eq('id', milestoneData.contract_id)
+        .single();
+
+      if (contractError || !contractData) {
+        return { milestone: null, error: 'Failed to fetch contract information' };
+      }
+
+      // Get buyer's current balance
+      const { data: buyerData, error: buyerError } = await supabase
+        .from('users')
+        .select('balance')
+        .eq('id', contractData.buyer_id)
+        .single();
+
+      if (buyerError || !buyerData) {
+        return { milestone: null, error: 'Failed to fetch buyer balance' };
+      }
+
+      const buyerBalance = buyerData.balance || 0;
+
+      // Check if milestone amount is valid
+      if (!milestoneData.amount) {
+        return { milestone: null, error: 'Milestone amount is required' };
+      }
+
+      // Check if buyer has enough balance for the milestone
+      if (buyerBalance < milestoneData.amount) {
+        return {
+          milestone: null,
+          error: `Insufficient balance. Required: ${milestoneData.amount}, Available: ${buyerBalance}`
+        };
+      }
+
+      // Deduct the milestone amount from buyer's balance
+      const { error: updateError } = await supabase
+        .from('users')
+        .update({ balance: buyerBalance - milestoneData.amount })
+        .eq('id', contractData.buyer_id);
+
+      if (updateError) {
+        return { milestone: null, error: 'Failed to update buyer balance' };
+      }
+
       // Default status to pending if not provided
       const dataToInsert = {
         ...milestoneData,
         status: milestoneData.status || 'pending',
-        // created_at and updated_at will be set by the database or triggers
       };
 
       const { data, error } = await supabase
@@ -1658,25 +1888,25 @@ export const contractMilestoneOperations = {
         .select()
         .single();
 
-      if (error) {
-        console.error('Supabase error creating milestone:', error);
-        return null;
-      }
-      if (!data) {
-        console.error('No data returned after creating milestone.');
-        return null;
+      if (error || !data) {
+        // If milestone creation fails, refund the buyer
+        await supabase
+          .from('users')
+          .update({ balance: buyerBalance })
+          .eq('id', contractData.buyer_id);
+        return { milestone: null, error: 'Error creating milestone' };
       }
 
       console.log('Milestone created successfully:', data.id);
       // Validate the returned data
       const parsedMilestone = ContractMilestoneSchema.parse(data);
-      return parsedMilestone;
+      return { milestone: parsedMilestone, error: null };
     } catch (err) {
       console.error('Unexpected error in createMilestone:', err);
       if (err instanceof z.ZodError) {
         console.error('Zod validation errors:', err.errors);
       }
-      return null;
+      return { milestone: null, error: 'An unexpected error occurred' };
     }
   },
 

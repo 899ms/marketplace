@@ -11,6 +11,8 @@ import { User, Job, BaseFileData } from '@/utils/supabase/types';
 import { chatOperations } from '@/utils/supabase/database';
 import { format, parseISO, isValid } from 'date-fns';
 import i18n from '@/i18n';
+import { useNotification } from './use-notification';
+import { useTranslation } from 'react-i18next';
 
 export interface UseSendOfferFormReturn {
   formMethods: UseFormReturn<SendOfferFormData>;
@@ -57,6 +59,8 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
     Pick<User, 'id' | 'username' | 'full_name'>[]
   >([]);
   const [jobs, setJobs] = useState<Pick<Job, 'id' | 'title'>[]>([]);
+  const { notification: toast } = useNotification();
+  const { t } = useTranslation('common');
 
   const { user } = useAuth();
   const router = useRouter();
@@ -136,6 +140,38 @@ export function useSendOfferForm(): UseSendOfferFormReturn {
   const onSubmit = async (data: SendOfferFormData) => {
     if (!user) {
       setError('You must be logged in to send an offer');
+      return;
+    }
+
+    // Check if the user has enough balance to send the offer
+    const { data: userData, error: userError } = await supabase
+      .from('users')
+      .select('balance')
+      .eq('id', user.id)
+      .single();
+
+    if (userError || !userData) {
+      setError('Failed to fetch user balance');
+      return;
+    }
+
+    const userBalance = userData.balance;
+
+    // Handle both one-time and installment payments
+    let totalAmount = 0;
+    if (data.paymentType === 'one-time') {
+      totalAmount = data.amount!;
+    } else if (data.milestones?.length) {
+      totalAmount = data.milestones.reduce((sum, m) => sum + (m.amount || 0), 0);
+    }
+
+    if (totalAmount > userBalance) {
+      // setError('Insufficient balance to send offer');
+
+      toast({
+        description: t('offers.sendOfferForm.insufficientBalance'),
+        notificationType: 'error',
+      });
       return;
     }
 
