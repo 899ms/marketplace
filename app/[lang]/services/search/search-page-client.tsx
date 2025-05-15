@@ -102,6 +102,7 @@ export default function SearchPageClient() {
   const [projectPage, setProjectPage] = useState(1);
   const [projectFilters, setProjectFilters] = useState(defaultProjectFilters);
   const [applicationSubmitted, setApplicationSubmitted] = useState(0);
+  const [projectBuyers, setProjectBuyers] = useState<Record<string, User | null>>({});
 
   const [resetKey, setResetKey] = useState(0);
   const itemsPerPage = 9;
@@ -255,6 +256,21 @@ export default function SearchPageClient() {
         });
         setProjects(result.jobs);
         setTotalProjects(result.total);
+
+        // Fetch buyer information for each project
+        const buyerPromises = result.jobs.map(async (job) => {
+          if (job.buyer_id) {
+            const buyer = await userOperations.getUserById(job.buyer_id);
+            return { [job.id]: buyer };
+          }
+          return { [job.id]: null };
+        });
+
+        const buyerResults = await Promise.all(buyerPromises);
+        const buyersMap = buyerResults.reduce((acc, curr) => {
+          return { ...acc, ...curr };
+        }, {} as Record<string, User | null>);
+        setProjectBuyers(buyersMap);
       } catch (error) {
         console.error('Error loading projects:', error);
         setProjects([]);
@@ -808,7 +824,7 @@ export default function SearchPageClient() {
                                 avatarUrl:
                                   'https://placekitten.com/24/24?image=' +
                                   project.id.substring(0, 2),
-                                name: 'Placeholder Client Name',
+                                name: project.buyer_id ? (projectBuyers[project.id]?.full_name || 'Client Name') : 'Client Name',
                                 rating: 4.5,
                                 reviewCount: 10,
                               }}

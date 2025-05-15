@@ -3,7 +3,7 @@
 import React from 'react';
 import { useAudioPlayer } from '@/contexts/AudioContext';
 import * as Badge from '@/components/ui/badge';
-import { RiPlayCircleFill, RiPauseCircleFill, RiBookmarkLine } from '@remixicon/react';
+import { RiPlayCircleFill, RiPauseCircleLine, RiBookmarkLine } from '@remixicon/react';
 import { Bookmark } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
@@ -51,7 +51,7 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
           aria-label={isActiveTrack && isPlaying ? t('audioPlayer.pause') : t('audioPlayer.play')}
         >
           {isActiveTrack && isPlaying ? (
-            <RiPauseCircleFill className="size-8 text-[#525866]" />
+            <RiPauseCircleLine className="size-8 text-[#525866]" />
           ) : (
             <RiPlayCircleFill className="size-8 text-[#525866]" />
           )}

@@ -48,6 +48,10 @@ interface AttachmentsSectionProps {
   setIsUploadingFiles: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
+function generateUniqueId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
+
 export function AttachmentsSection({
   form,
   setIsUploadingFiles,
@@ -97,8 +101,6 @@ export function AttachmentsSection({
     setIsUploadingFiles(currentlyUploading);
   }, [managedFiles, setIsUploadingFiles]);
 
-  // ... rest of uploadFile, updateManagedFileStatus, handlers unchanged ...
-
   const uploadFile = async (attachment: ManagedAttachment): Promise<void> => {
     if (!user) {
       updateManagedFileStatus(
@@ -138,6 +140,7 @@ export function AttachmentsSection({
       };
       append(finalData);
     } catch (err: any) {
+      console.error('Upload error:', err);
       updateManagedFileStatus(
         attachment.localId,
         'error',
@@ -160,9 +163,11 @@ export function AttachmentsSection({
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
+    if (!e.target.files?.length) return;
+
+    try {
       const toUpload = Array.from(e.target.files).map((file) => ({
-        localId: crypto.randomUUID(),
+        localId: generateUniqueId(),
         file,
         name: file.name,
         size: file.size,
@@ -170,6 +175,9 @@ export function AttachmentsSection({
       }));
       setManagedFiles((m) => [...m, ...toUpload]);
       toUpload.forEach(uploadFile);
+    } catch (error) {
+      console.error('Error processing files:', error);
+    } finally {
       e.target.value = '';
     }
   };
@@ -226,7 +234,7 @@ export function AttachmentsSection({
                   </span>
                 </div>
                 <RiDeleteBinLine
-                  className="cursor-pointer w-[10%] size-5"
+                  className="cursor-pointer size-5"
                   onClick={() => handleRemoveFile(file.localId)}
                   aria-label={t('offers.attachments.removeFile')}
                 />
@@ -243,7 +251,7 @@ export function AttachmentsSection({
         <input
           id="contract-file-upload"
           type="file"
-          className="sr-only"
+          className="hidden"
           multiple
           onChange={handleFileChange}
           accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"

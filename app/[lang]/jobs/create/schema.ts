@@ -6,7 +6,7 @@ export const CreateJobFormSchema = z.object({
   title: z.string().min(1, 'Subject is required'), // Renamed from 'subject' to match JobSchema
   description: z
     .string()
-    .min(1, 'Detail is required')
+    .min(20, 'Detail must be at least 20 characters')
     .max(1000, 'Detail must be 1000 characters or less'), // Renamed from 'detail'
   budget: z
     .number({ invalid_type_error: 'Amount must be a number' })

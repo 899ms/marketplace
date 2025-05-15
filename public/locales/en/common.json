@@ -135,7 +135,9 @@
     },
     "bpm": {
       "unknown": "-- BPM"
-    }
+    },
+    "addedToFavorites": "Added to favorites",
+    "removedFromFavorites": "Removed from favorites"
   },
   "home": {
     "banner": {
@@ -1218,7 +1220,9 @@
         "cannotMessageSelf": "Cannot message yourself",
         "message": "Send message",
         "follow": "Follow"
-      }
+      },
+      "followed": "You are now following {{name}}",
+      "unfollowed": "You have unfollowed {{name}}"
     }
   },
   "widgets": {

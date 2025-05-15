@@ -74,7 +74,7 @@ export function ProfileSection({
           </div>
 
           {specialty && (
-            <div className="flex items-center gap-1 mt-1">
+            <div className="flex items-start gap-2 mt-1">
               <Button.Icon className="flex-shrink-0">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M9.1377 7.77283V10.3869H12.8446C12.6818 11.2276 12.1933 11.9395 11.4607 12.4181L13.6961 14.1179C14.9985 12.9397 15.7499 11.2093 15.7499 9.15358C15.7499 8.67495 15.7061 8.21468 15.6247 7.7729L9.1377 7.77283Z" fill="#4285F4" />

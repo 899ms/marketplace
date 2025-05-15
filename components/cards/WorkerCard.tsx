@@ -25,7 +25,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
 
   const handlePlay = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();        // stop the card’s onClick if needed
+    e.stopPropagation();        // stop the card's onClick if needed
     setIsPlaying(p => !p);
     // audioPlayer.loadTrack(...); // or whatever play action you need
   };
@@ -33,7 +33,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const avatarUrl = worker?.avatar_url || null;
-  const bio = worker?.bio || 'Passionate about delivering high-quality audio mixing and editing. Let\'s create something amazing together!';
+  const bio = worker?.bio || <Translate id="worker.profile.noBio" />;
 
   // Get the first character of the name for the fallback avatar
   const nameInitial = name.charAt(0).toUpperCase();
@@ -130,7 +130,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
 
       <Divider.Root />
 
-      <p className='text-[#525866] line-clamp-2 text-[14px]'>
+      <p className='text-[#525866] line-clamp-2 text-[14px] min-h-[44px]'>
         {bio}
       </p>
       <div className='flex flex-wrap gap-2'>
@@ -139,7 +139,6 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
         <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Singing</Tag.Root>
         <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Jazz</Tag.Root>
         <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Hip hop</Tag.Root>
-        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>K pop</Tag.Root>
       </div>
     </div>
   );

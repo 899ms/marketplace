@@ -42,7 +42,7 @@ export function RelatedServiceCard({ service }: RelatedServiceCardProps) {
 
   return (
     <Link href={`/${i18n.language}/services/${service.id}`} className='group block flex-shrink-0 basis-[calc((100%-32px)/3)] max-w-[253px] max-h-[256px]'>
-      <div className='shadow-sm group-hover:shadow-md overflow-hidden rounded-lg border border-t-0  border-stroke-soft-200 bg-bg-white-0 transition-all h-full flex flex-col'>
+      <div className='shadow-sm group-hover:shadow-md overflow-hidden rounded-lg border border-t-0  border-stroke-soft-200 bg-bg-white-0 hover:shadow-[0_6px_14px_-4px_rgba(0,0,0,0.15)] transition-shadow duration-200 h-full flex flex-col'>
         {/* Image Section */}
         <div className={`relative w-full h-[164px] ${!imageUrl ? imagePlaceholder : ''}`}>
           {imageUrl ? (

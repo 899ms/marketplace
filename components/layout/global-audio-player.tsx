@@ -7,10 +7,11 @@ import * as Avatar from '@/components/ui/avatar';
 import * as Slider from '@/components/ui/slider';
 import {
   RiPlayFill,
-  RiPauseFill,
+  RiPauseCircleLine,
   RiSkipBackFill,
   RiSkipForwardFill,
   RiHeart3Line,
+  RiHeart3Fill,
   RiVolumeUpLine,
   RiVolumeDownLine,
   RiVolumeMuteLine,
@@ -19,6 +20,7 @@ import {
   RiArrowDownSLine,
 } from '@remixicon/react';
 import { cn } from '@/utils/cn';
+import { notification as toast } from '@/hooks/use-notification';
 
 const formatTime = (seconds: number): string => {
   if (isNaN(seconds) || seconds === Infinity) return '0:00';
@@ -43,6 +45,7 @@ export default function GlobalAudioPlayer() {
   } = useAudioPlayer();
 
   const [isVisible, setIsVisible] = useState(true);
+  const [liked, setLiked] = useState(false);
 
   useEffect(() => {
     if (currentTrack) {
@@ -65,10 +68,19 @@ export default function GlobalAudioPlayer() {
   };
   const VolumeIcon = getVolumeIcon();
 
+  const handleLike = () => {
+    setLiked(!liked);
+    if (!liked) {
+      toast({ description: t('audioPlayer.addedToFavorites') });
+    } else {
+      toast({ description: t('audioPlayer.removedFromFavorites') });
+    }
+  };
+
   return (
     <>
       {currentTrack && currentSeller && (
-        <div className="fixed bottom-0 left-0 right-0 z-[9999]">
+        <div className="fixed bottom-0 left-0 right-0 z-[9998]">
           <div className="relative bg-white border-t border-stroke-soft-200 shadow-md px-4 md:px-6">
             {/* Toggle Button */}
             <div className="absolute -top-[2.3rem] left-[95%] transform -translate-x-1/2 z-10">
@@ -129,7 +141,7 @@ export default function GlobalAudioPlayer() {
                       aria-label={isPlaying ? t('audioPlayer.pause') : t('audioPlayer.play')}
                     >
                       {isPlaying ? (
-                        <RiPauseFill className="w-4 h-4 md:w-5 md:h-5" />
+                        <RiPauseCircleLine className="w-4 h-4 md:w-5 md:h-5" />
                       ) : (
                         <RiPlayFill className="w-4 h-4 md:w-5 md:h-5" />
                       )}
@@ -164,8 +176,11 @@ export default function GlobalAudioPlayer() {
 
                 {/* Right: Volume & Actions */}
                 <div className="flex items-center gap-3 md:gap-4 w-1/4 justify-end">
-                  <button className="text-text-secondary-600 hover:text-red-500 transition-colors">
-                    <RiHeart3Line className="w-5 h-5" />
+                  <button
+                    className="text-text-secondary-600 hover:text-red-500 transition-colors"
+                    onClick={handleLike}
+                  >
+                    {liked ? <RiHeart3Fill className="w-5 h-5 text-red-500" /> : <RiHeart3Line className="w-5 h-5" />}
                   </button>
                   <div className="flex items-center gap-2 w-24">
                     <VolumeIcon className="w-5 h-5 text-text-secondary-600" />

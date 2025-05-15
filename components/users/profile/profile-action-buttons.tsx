@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import * as Button from '@/components/ui/button';
 import * as FancyButton from '@/components/ui/fancy-button';
-import { RiHeart3Line, RiLoader4Line, RiArrowRightSLine, RiHeartLine } from '@remixicon/react';
+import { RiHeart3Line, RiLoader4Line, RiArrowRightSLine, RiHeart3Fill } from '@remixicon/react';
 import { User } from '@/utils/supabase/types';
 import { useTranslation } from 'react-i18next';
+import { notification as toast } from '@/hooks/use-notification';
 
 interface ProfileActionButtonsProps {
   targetUser: User; // The user whose profile is being viewed
@@ -23,7 +24,17 @@ export function ProfileActionButtons({
   onMessage,
 }: ProfileActionButtonsProps) {
   const { t } = useTranslation('common');
+  const [isFollowing, setIsFollowing] = useState(false);
   const isOwnProfile = currentUser?.id === targetUser.id;
+
+  const handleFollow = () => {
+    setIsFollowing(!isFollowing);
+    if (!isFollowing) {
+      toast({ description: t('users.profile.followed', { name: targetUser.full_name || targetUser.username }) });
+    } else {
+      toast({ description: t('users.profile.unfollowed', { name: targetUser.full_name || targetUser.username }) });
+    }
+  };
 
   return (
     <div className="flex items-center justify-center gap-[20px]">
@@ -33,12 +44,12 @@ export function ProfileActionButtons({
         mode="stroke"
         size="xsmall"
         className="w-[85px] h-[32px] rounded-[8px] border border-[#E1E4EA] bg-bg-white-0 shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)] flex items-center justify-center gap-[8px] px-2"
-        onClick={onHire}
+        onClick={handleFollow}
         disabled={!currentUser || isOwnProfile}
         aria-label={isOwnProfile ? t('users.profile.actions.cannotHireSelf') : t('users.profile.actions.hire')}
       >
         <span className="text-paragraph-[14px] text-[#525866]">{t('users.profile.actions.follow')}</span>
-        <Button.Icon as={RiHeart3Line} className="size-5 text-[#525866]" />
+        <Button.Icon as={isFollowing ? RiHeart3Fill : RiHeart3Line} className={`size-5 ${isFollowing ? 'text-red-500' : 'text-[#525866]'}`} />
       </Button.Root>}
 
       {/* Touch Button */}
