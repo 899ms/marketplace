@@ -52,7 +52,7 @@ export function ServiceCard({ service, rating, reviewCount, sellerAvatarUrl, sel
   return (
     // Wrap the entire card content with a Link
     <Link href={`/${i18n.language}/services/${service.id}`} className="block group">
-      <div className='shadow-sm group-hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 transition-all'>
+      <div className='shadow-sm group-hover:shadow-md overflow-hidden rounded-lg border border-stroke-soft-200 bg-bg-white-0 hover:shadow-[0_6px_14px_-4px_rgba(0,0,0,0.15)] transition-shadow duration-200'>
         {/* Image Section - Use Next/Image or img tag */}
         <div className={`relative h-40 w-full bg-gray-200`}> {/* Fallback bg */}
           <Image
@@ -68,7 +68,7 @@ export function ServiceCard({ service, rating, reviewCount, sellerAvatarUrl, sel
 
         <div className='p-3 space-y-2'> {/* Added space-y-2 for spacing */}
           {/* Title */}
-          <p className='line-clamp-2 text-paragraph-sm font-medium text-text-strong-950 group-hover:text-blue-600 transition-colors'>
+          <p className='line-clamp-2 text-paragraph-sm font-medium text-text-strong-950 transition-colors'>
             {displayTitle}
           </p>
 
