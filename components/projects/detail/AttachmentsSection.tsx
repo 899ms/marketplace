@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { RiPauseCircleFill, RiPlayCircleFill, RiDownload2Line } from '@remixicon/react';
+import { RiPauseCircleLine, RiPlayCircleFill, RiDownload2Line } from '@remixicon/react';
 import { BaseFileData, User, MusicItem } from '@/utils/supabase/types';
 import { useAudioPlayer } from '@/contexts/AudioContext';
 import { useTranslation } from 'react-i18next';
@@ -78,7 +78,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
                     {attachment.name}
                   </span>
                   {currentTrack?.url === attachment.url && isPlaying ? (
-                    <RiPauseCircleFill className="size-6 text-[#525866] flex-shrink-0" />
+                    <RiPauseCircleLine className="size-6 text-[#525866] flex-shrink-0" />
                   ) : (
                     <RiPlayCircleFill className="size-6 text-[#525866] flex-shrink-0" />
                   )}

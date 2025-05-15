@@ -7,7 +7,7 @@ import * as Avatar from '@/components/ui/avatar';
 import * as Slider from '@/components/ui/slider';
 import {
   RiPlayFill,
-  RiPauseFill,
+  RiPauseCircleLine,
   RiSkipBackFill,
   RiSkipForwardFill,
   RiHeart3Line,
@@ -141,7 +141,7 @@ export default function GlobalAudioPlayer() {
                       aria-label={isPlaying ? t('audioPlayer.pause') : t('audioPlayer.play')}
                     >
                       {isPlaying ? (
-                        <RiPauseFill className="w-4 h-4 md:w-5 md:h-5" />
+                        <RiPauseCircleLine className="w-4 h-4 md:w-5 md:h-5" />
                       ) : (
                         <RiPlayFill className="w-4 h-4 md:w-5 md:h-5" />
                       )}
