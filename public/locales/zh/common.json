@@ -135,7 +135,9 @@
     },
     "bpm": {
       "unknown": "-- BPM"
-    }
+    },
+    "addedToFavorites": "已添加到收藏夹",
+    "removedFromFavorites": "已从收藏夹移除"
   },
   "home": {
     "banner": {
@@ -1220,7 +1222,9 @@
         "cannotMessageSelf": "不能给自己发送消息",
         "message": "发送消息",
         "follow": "关注"
-      }
+      },
+      "followed": "您已关注{{name}}",
+      "unfollowed": "您已取消关注{{name}}"
     }
   },
   "widgets": {

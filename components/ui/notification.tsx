@@ -19,7 +19,7 @@ const NotificationViewport = React.forwardRef<
     ref={forwardedRef}
     className={cn(
       // Centered horizontally, near bottom, fit content width
-      'fixed bottom-6 left-1/2 z-[100] flex w-fit -translate-x-1/2 flex-col gap-3 p-4',
+      'fixed bottom-6 left-1/2  z-[9999] flex w-fit -translate-x-1/2 flex-col gap-3 p-4',
       className,
     )}
     {...rest}

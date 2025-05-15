@@ -23,14 +23,10 @@ import { usePathname } from 'next/navigation';
 
 import {
   RiStarFill,
-  RiHeart3Line,
-  RiSendPlane2Fill,
-  RiPencilLine,
   RiTwitchFill,
   RiTwitterXFill,
   RiGoogleFill,
   RiArrowRightSLine,
-  RiLoader4Line,
 } from '@remixicon/react';
 import { useNotification } from '@/hooks/use-notification';
 import SellerProfilePage from '@/app/[lang]/users/[id]/seller-profile-page';

@@ -13,6 +13,7 @@ import {
   RiStarFill,
   RiStarSFill,
   RiHeart3Line,
+  RiHeart3Fill,
   RiSendPlane2Fill,
   RiPencilLine,
   RiTwitchFill,
@@ -36,6 +37,7 @@ export default function OrderSidebar({
   currentUser,
 }: OrderSidebarProps) {
   const { t } = useTranslation('common');
+  const [isFollowing, setIsFollowing] = useState(false);
 
   /* --- editable‑bio state --- */
   const [isEditing, setIsEditing] = useState(false);
@@ -84,6 +86,15 @@ export default function OrderSidebar({
       });
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleFollow = () => {
+    setIsFollowing(!isFollowing);
+    if (!isFollowing) {
+      toast({ description: t('orderSidebar.followed', { name: displayName }) });
+    } else {
+      toast({ description: t('orderSidebar.unfollowed', { name: displayName }) });
     }
   };
 
@@ -145,11 +156,12 @@ export default function OrderSidebar({
             mode="stroke"
             size="xsmall"
             className="flex h-[32px] w-[85px] items-center justify-center gap-[6px] rounded-lg border border-stroke-soft-200 bg-bg-white-0 px-2 shadow-sm"
+            onClick={handleFollow}
           >
             <span className="text-paragraph-xs">
               {t('orderSidebar.follow')}
             </span>
-            <Button.Icon as={RiHeart3Line} className="size-[18px]" />
+            <Button.Icon as={isFollowing ? RiHeart3Fill : RiHeart3Line} className={`size-[18px] ${isFollowing ? 'text-red-500' : ''}`} />
           </Button.Root>
 
           <Button.Root
