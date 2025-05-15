@@ -25,7 +25,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
 
   const handlePlay = (e: React.MouseEvent) => {
     e.preventDefault();
-    e.stopPropagation();        // stop the card’s onClick if needed
+    e.stopPropagation();        // stop the card's onClick if needed
     setIsPlaying(p => !p);
     // audioPlayer.loadTrack(...); // or whatever play action you need
   };
@@ -33,7 +33,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const avatarUrl = worker?.avatar_url || null;
-  const bio = worker?.bio || 'Passionate about delivering high-quality audio mixing and editing. Let\'s create something amazing together!';
+  const bio = worker?.bio || <Translate id="worker.profile.noBio" />;
 
   // Get the first character of the name for the fallback avatar
   const nameInitial = name.charAt(0).toUpperCase();
