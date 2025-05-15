@@ -148,7 +148,7 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
 
   const isValidToMoveNext = () => {
     const { title, description } = getValues();
-    return title?.length > 0 && description?.length >= 10;
+    return title?.length > 0 && description?.length >= 20;
   };
 
   // Format file size for display
@@ -200,12 +200,18 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
             rows={5}
             placeholder={t('worker.services.create.step1.detailPlaceholder')}
             className='resize-none'
-            {...register('description')}
+            {...register('description', {
+              required: 'Description is required',
+              minLength: {
+                value: 20,
+                message: 'Description must be at least 20 characters'
+              }
+            })}
           >
             <Textarea.CharCounter current={description.length} max={2000} />
           </Textarea.Root>
           {errors.description && (
-            <p className='text-[12px] mt-1 text-red-500'>{errors.description.message}</p>
+            <p className='text-[14px] mt-1 text-red-500'>{errors.description.message}</p>
           )}
         </div>
 
