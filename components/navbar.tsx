@@ -219,28 +219,33 @@ export default function Navbar() {
                 </FancyButton.Root>
               </Link>
 
-              <button
-                onClick={() => {
-                  const newLang = i18n.language === 'en' ? 'zh' : 'en';
-                  const currentPath = window.location.pathname;
-                  const newPath = currentPath.replace(/^\/(en|zh)/, `/${newLang}`);
-                  // Get current query parameters
-                  const searchParams = window.location.search;
-                  // Update i18n language
-                  i18n.changeLanguage(newLang);
-                  // Update URL using Next.js router, preserving query parameters
-                  router.push(`${newPath}${searchParams}`);
-                }}
-                className="hover:bg-bg-neutral-subtle-100 rounded-md p-1 transition-colors"
-              >
-                <Image
-                  src={`/images/icons/${i18n.language === 'en' ? 'United_States' : 'China'}.svg`}
-                  alt={t('navbar.language.alt')}
-                  width={24}
-                  height={24}
-                />
-              </button>
+            </>
+          ) : (null)}
 
+          <button
+            onClick={() => {
+              const newLang = i18n.language === 'en' ? 'zh' : 'en';
+              const currentPath = window.location.pathname;
+              const newPath = currentPath.replace(/^\/(en|zh)/, `/${newLang}`);
+              // Get current query parameters
+              const searchParams = window.location.search;
+              // Update i18n language
+              i18n.changeLanguage(newLang);
+              // Update URL using Next.js router, preserving query parameters
+              router.push(`${newPath}${searchParams}`);
+            }}
+            className="hover:bg-bg-neutral-subtle-100 rounded-md p-1 transition-colors"
+          >
+            <Image
+              src={`/images/icons/${i18n.language === 'en' ? 'United_States' : 'China'}.svg`}
+              alt={t('navbar.language.alt')}
+              width={24}
+              height={24}
+            />
+          </button>
+
+          {user ? (
+            <>
               <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 relative rounded-md p-2'>
                 <span className='absolute right-1.5 top-1.5 block h-2 w-2 rounded-full bg-error-base ring-2 ring-bg-white-0'></span>
                 <RiNotification3Line className='size-5' />

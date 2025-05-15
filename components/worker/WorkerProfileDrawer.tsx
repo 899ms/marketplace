@@ -12,7 +12,6 @@ import ChatPopupWrapper from '@/components/chat/chat-popup-wrapper';
 import * as FancyButton from '@/components/ui/fancy-button';
 import {
   RiCloseLine,
-  RiSendPlaneLine,
   RiStarFill,
   RiGoogleFill,
   RiArrowDropRightLine,

@@ -6,37 +6,21 @@ import { userOperations } from '@/utils/supabase/database';
 import Link from 'next/link';
 import { useNotification } from '@/hooks/use-notification';
 import { useTranslation } from 'react-i18next';
-import i18n from '@/i18n';
 
 import * as Avatar from '@/components/ui/avatar';
 import * as Divider from '@/components/ui/divider';
-import * as Badge from '@/components/ui/badge'; // Keep Badge import for tags if needed
 import {
   RiStarFill,
-  RiHomeLine,
-  RiFileList2Line,
-  RiChat1Line,
-  RiCouponLine,
-  RiQuestionLine,
   RiPencilLine,
   RiTwitchFill,
   RiTwitterXFill,
-  RiGoogleFill,
-  RiHeart3Line,
-  RiSendPlane2Fill,
-  RiLoader4Line,
-  RiStarSFill,
 } from '@remixicon/react';
 import { cn } from '@/utils/cn';
 import * as Tag from '@/components/ui/tag'; // Keep Tag import for tags section
 import { User } from '@/utils/supabase/types';
 import * as Button from '@/components/ui/button'; // Add Button import
-import * as AvatarGroup from '@/components/ui/avatar-group'; // Add AvatarGroup import
 import { ProfileActionButtons } from '../../users/profile/profile-action-buttons'; // Use relative path
 import * as AvatarGroupCompact from '@/components/ui/avatar-group-compact';
-
-// --- Helper Components (Keep SidebarLink as it's used) ---
-
 
 export function AvatarGroupDemo() {
   return (
