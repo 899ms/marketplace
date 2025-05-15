@@ -234,7 +234,7 @@ export function AttachmentsSection({
                   </span>
                 </div>
                 <RiDeleteBinLine
-                  className="cursor-pointer w-[10%] size-5"
+                  className="cursor-pointer size-5"
                   onClick={() => handleRemoveFile(file.localId)}
                   aria-label={t('offers.attachments.removeFile')}
                 />
