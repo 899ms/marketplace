@@ -139,7 +139,6 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
         <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Singing</Tag.Root>
         <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Jazz</Tag.Root>
         <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Hip hop</Tag.Root>
-        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>K pop</Tag.Root>
       </div>
     </div>
   );
