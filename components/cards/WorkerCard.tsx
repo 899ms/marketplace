@@ -130,7 +130,7 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
 
       <Divider.Root />
 
-      <p className='text-[#525866] line-clamp-2 text-[14px]'>
+      <p className='text-[#525866] line-clamp-2 text-[14px] min-h-[44px]'>
         {bio}
       </p>
       <div className='flex flex-wrap gap-2'>
