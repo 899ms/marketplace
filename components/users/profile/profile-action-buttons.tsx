@@ -42,7 +42,7 @@ export function ProfileActionButtons({
       </Button.Root>}
 
       {/* Touch Button */}
-      {!(!currentUser || isLoadingChat || isOwnProfile) && <FancyButton.Root
+      {(!(!currentUser || isLoadingChat || isOwnProfile) && currentUser?.user_type !== targetUser.user_type) && <FancyButton.Root
         variant="neutral"
         size="xsmall"
         className="w-[83px] h-[30px] rounded-[8px]"

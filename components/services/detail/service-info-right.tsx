@@ -299,7 +299,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
         </div>
 
         {/* Action Buttons - Update links/actions */}
-        <div className='mb-[24px] grid grid-cols-1 gap-2 sm:grid-cols-2'>
+        {userProfile?.user_type === 'buyer' && <div className='mb-[24px] grid grid-cols-1 gap-2 sm:grid-cols-2'>
           {/* Message Button - Changed to use onClick */}
           <Button.Root
             variant='neutral'
@@ -361,7 +361,7 @@ export function ServiceInfoRight({ service }: ServiceInfoRightProps) {
             <Button.Icon as={RiArrowRightSLine} />
           </Button.Root>
 
-        </div>
+        </div>}
 
         {/* Display Chat Error if exists */}
         {chatError && (

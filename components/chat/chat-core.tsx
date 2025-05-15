@@ -25,6 +25,7 @@ import { ContractDetails } from '../orders/detail/contract-details';
 import { useRouter } from 'next/navigation';
 import i18n from '@/i18n';
 import { RiLoader4Line } from '@remixicon/react';
+import { useNotification } from '@/hooks/use-notification';
 
 // --- Moved formatBytes function to top level --- 
 function formatBytes(bytes: number, decimals = 2): string {
@@ -764,6 +765,7 @@ export default function ChatCore({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const { notification: toast } = useNotification();
 
 
   const scrollToBottom = useCallback(() => {
@@ -832,6 +834,34 @@ export default function ChatCore({
 
   const handleSendMessage = async (e?: React.FormEvent<HTMLFormElement>) => {
     e?.preventDefault();
+
+    // Check if the user has not reached the consecutive message limit which is 5 messages (do not count the messages which are of type 'offer', 'system', 'milestone_activated', 'milestone_completed')
+    const consecutiveMessageLimit = 5;
+
+    // Get the most recent messages and count consecutive ones from current user
+    const recentMessages = [...messages].reverse();
+    let consecutiveMessageCount = 0;
+
+    for (const message of recentMessages) {
+      if (message.message_type === 'offer' ||
+        message.message_type === 'system_event' ||
+        message.message_type === 'milestone_activated' ||
+        message.message_type === 'milestone_completed') {
+        continue;
+      }
+
+      if (message.sender_id === currentUserId) {
+        consecutiveMessageCount++;
+      } else {
+        break; // Stop counting when we find a message from another user
+      }
+    }
+
+    if (consecutiveMessageCount >= consecutiveMessageLimit) {
+      toast({ description: t('chat.consecutiveMessageLimit'), notificationType: 'warning' });
+      return;
+    }
+
     const textContent = newMessage.trim();
 
     if ((!textContent && !selectedFile) || isSending) return;
