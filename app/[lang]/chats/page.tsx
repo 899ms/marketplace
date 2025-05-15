@@ -186,20 +186,22 @@ export default function ChatsPage() {
   return (
     <div className="flex h-[calc(100vh-70px)] w-full overflow-hidden bg-bg-subtle-50 px-[32px] pt-1">
       {/* Left Column: Chat List */}
-      <div className="w-full max-w-xs shrink-0 lg:w-[200px] border-r border-t border-[#E2E4E9] h-full">
+      <div className="w-full max-w-xs shrink-0 lg:w-[200px] border-r border-t border-[#E2E4E9] h-full flex flex-col">
         <h1 className="sticky top-0 z-10 bg-bg-white-0 px-6 py-4 text-[24px] text-[#0E121B] font-medium">{t('chat.title')}</h1>
         {chats.length === 0 ? (
-          <div className="h-full flex items-center justify-center">
+          <div className="flex-1 flex items-center justify-center">
             <p className="text-center text-[#525866] text-[14px] font-medium mb-36">{t('chat.noChats')}</p>
           </div>
         ) : (
-          <ChatList
-            chats={chats}
-            chatProfiles={chatProfiles}
-            selectedChatId={selectedChatId}
-            onChatSelect={handleChatSelect}
-            currentUserId={currentUser.id}
-          />
+          <div className="flex-1">
+            <ChatList
+              chats={chats}
+              chatProfiles={chatProfiles}
+              selectedChatId={selectedChatId}
+              onChatSelect={handleChatSelect}
+              currentUserId={currentUser.id}
+            />
+          </div>
         )}
       </div>
 
