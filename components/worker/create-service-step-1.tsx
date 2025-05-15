@@ -205,7 +205,7 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
             <Textarea.CharCounter current={description.length} max={2000} />
           </Textarea.Root>
           {errors.description && (
-            <p className='text-[14px] mt-1 text-red-500'>{errors.description.message}</p>
+            <p className='text-[12px] mt-1 text-red-500'>{errors.description.message}</p>
           )}
         </div>
 
