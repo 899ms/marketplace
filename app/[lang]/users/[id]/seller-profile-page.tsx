@@ -180,6 +180,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
 
   // --- Hire Handler ---
   const handleHire = () => {
+    console.log('Hire clicked');
     toast({
       title: "Hire Clicked (Placeholder)",
       description: `Proceed to hire ${sellerProfile?.full_name || sellerProfile?.username || 'this seller'}.`,

@@ -229,6 +229,8 @@
       }
     },
     "profile": {
+      "likeInitiatedToast": "Worker added to your favorites.",
+      "unlikeInitiatedToast": "Worker removed from your favorites.",
       "about": {
         "title": "About",
         "edit": "Edit your bio",
