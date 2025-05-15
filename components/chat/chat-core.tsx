@@ -552,16 +552,14 @@ function ChatMessageRenderer({
         )}
         {message.message_type === 'offer' && (
           <div className={`mt-2 flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
-            <div className={`flex flex-col gap-2 w-1/2`}>
+            <div className={`flex flex-col gap-2 w-1/2 min-w-[16rem]`}>
               <div className='flex flex-row gap-1 items-center'>
                 <p className='text-[12px] text-[#525866]'>{t('chat.offer')}</p>
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M6 12C2.6862 12 0 9.3138 0 6C0 2.6862 2.6862 0 6 0C9.3138 0 12 2.6862 12 6C12 9.3138 9.3138 12 6 12ZM6 10.8C7.27304 10.8 8.49394 10.2943 9.39411 9.39411C10.2943 8.49394 10.8 7.27304 10.8 6C10.8 4.72696 10.2943 3.50606 9.39411 2.60589C8.49394 1.70571 7.27304 1.2 6 1.2C4.72696 1.2 3.50606 1.70571 2.60589 2.60589C1.70571 3.50606 1.2 4.72696 1.2 6C1.2 7.27304 1.70571 8.49394 2.60589 9.39411C3.50606 10.2943 4.72696 10.8 6 10.8ZM5.4 3H6.6V4.2H5.4V3ZM5.4 5.4H6.6V9H5.4V5.4Z" fill="#525866" />
                 </svg>
-
-
               </div>
-              <div className='flex flex-col rounded-lg border border-[#E1E4EA]'>
+              <div className='flex flex-col rounded-lg border border-[#E1E4EA] min-w-[16rem]'>
                 <div className='flex flex-row justify-between bg-[#F5F7FA] rounded-t-lg p-2'>
                   <p className='text-[14px] text-[#0E121B] font-medium'>{message.data?.title}</p>
                   <p className='text-[16px] text-[#0E121B] font-medium'>${message.data?.price}</p>
@@ -631,7 +629,7 @@ function ChatMessageRenderer({
         {/* Show Service Name, Description and Price with Accept and Decline Button on Seller Side and Cancel on Buyer Side */}
         {message.message_type === 'hire_request' && (
           <div className={`mt-2 flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
-            <div className={`flex flex-col gap-2 w-1/2`}>
+            <div className={`flex flex-col gap-2 w-1/2 min-w-[16rem]`}>
               <div className='flex flex-row gap-1 items-center'>
                 <p className='text-[12px] text-[#525866]'>{t('chat.hireRequest')}</p>
                 <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -640,7 +638,7 @@ function ChatMessageRenderer({
 
 
               </div>
-              <div className='flex flex-col rounded-lg border border-[#E1E4EA]'>
+              <div className='flex flex-col rounded-lg border border-[#E1E4EA] min-w-[16rem]'>
                 <div className='flex flex-row justify-between bg-[#F5F7FA] rounded-t-lg p-2'>
                   <p className='text-[14px] text-[#0E121B] font-medium'>{message.data?.title}</p>
                   <p className='text-[16px] text-[#0E121B] font-medium'>${message.data?.price}</p>
@@ -707,7 +705,7 @@ function ChatMessageRenderer({
 
         {(message.message_type === 'milestone_completed' || message.message_type === 'milestone_activated') && (
           <div className={`flex flex-col gap-2 w-full ${isCurrentUser ? 'items-end' : 'items-start'}`}>
-            <div className={`flex flex-col gap-2 w-1/2`}>
+            <div className={`flex flex-col gap-2 w-1/2 min-w-[16rem]`}>
               <div className='flex flex-row gap-1 items-center'>
                 <p className='text-[12px] text-[#525866]'>
                   {message.data.status && message.data.status === 'completed'
@@ -715,7 +713,7 @@ function ChatMessageRenderer({
                     : t('chat.milestone.activated')}
                 </p>
               </div>
-              <div className='flex flex-col gap-2 rounded-lg bg-[#F5F7FA] p-2'>
+              <div className='flex flex-col gap-2 rounded-lg bg-[#F5F7FA] p-2 min-w-[16rem]'>
                 <p className='text-[14px] text-[#0E121B]'>Milestone {message.data?.sequence}: &quot;{message.data?.description}&quot;</p>
                 <p className='text-[14px] text-[#0E121B]'>Amount: ${message.data?.amount}</p>
                 <LinkButton

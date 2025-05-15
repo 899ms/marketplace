@@ -100,12 +100,12 @@ export function ProjectCard({
           </div>
 
           {/* Skill Tags */}
-          <div className='flex flex-wrap gap-1.5 font-medium text-[12px]'>
+          <div className='flex flex-wrap gap-1.5 font-medium text-[10px]'>
             {skillTags.map((skill, index) => (
               <Tag.Root
                 key={skill}
                 variant={index === 0 ? 'stroke' : 'gray'}
-                className={index === 0 ? 'border border-black text-black' : 'border border-[#E2E4E9] bg-white text-[#525866]'}
+                className={index === 0 ? ' text-[10px] border border-black text-black' : 'text-[10px] border border-[#E2E4E9] bg-white text-[#525866]'}
               >
                 {skill}
               </Tag.Root>
