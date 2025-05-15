@@ -251,7 +251,7 @@ export function AttachmentsSection({
         <input
           id="contract-file-upload"
           type="file"
-          className="sr-only"
+          className="hidden"
           multiple
           onChange={handleFileChange}
           accept=".pdf,.doc,.docx,.png,.jpg,.jpeg"
