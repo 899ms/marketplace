@@ -108,12 +108,19 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
           rows={4}
           placeholder={t('jobs.create.step1.detailPlaceholder')}
           className='resize-none'
-          {...register('description')}
+          {...register('description', {
+            required: 'Detail is required',
+            minLength: {
+              value: 20,
+              message: 'Detail must be at least 20 characters'
+            }
+          })}
         >
           <Textarea.CharCounter current={descriptionLength} max={1000} />
         </Textarea.Root>
-
-        <FormFieldError error={errors.description} />
+        {errors.description && (
+          <p className='text-[14px] mt-1 text-red-500'>{errors.description.message}</p>
+        )}
       </div>
 
       {/* Amount & Deadline Row */}
