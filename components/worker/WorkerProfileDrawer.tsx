@@ -328,48 +328,50 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     </div>
                   </button>
 
-                  <FancyButton.Root
-                    size="medium"
-                    className="w-[100px] h-8 gap-[2px] px-[6px] py-[6px] font-medium text-sm text-white bg-text-strong-950 shadow-[0_0_0_1px_rgba(36,38,40,1),0_1px_2px_0_rgba(27,28,29,0.48)] hover:bg-text-strong-900 disabled:opacity-50 disabled:cursor-not-allowed"
-                    onClick={handleOpenChat}
-                    disabled={disableActions || isLoadingChat}
-                    aria-label={
-                      currentUserProfile?.id === worker?.id
-                        ? t('worker.profile.actions.cannotMessageSelf')
-                        : t('worker.profile.actions.message', { name: displayName })
-                    }
-                  >
-                    {isLoadingChat ? (
-                      <RiLoader4Line className="animate-spin" size={18} />
-                    ) : (
-                      <div className="flex items-center text-[14px] font-medium gap-[2px]">
-                        {t('worker.profile.actions.touch')}
-                        <svg
-                          width="20"
-                          height="20"
-                          viewBox="0 0 21 20"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="w-5 h-5 stroke-current text-white"
-                        >
-                          <path
-                            d="M6.66641 5.2668L13.7414 2.90846C16.9164 1.85013 18.6414 3.58346 17.5914 6.75846L15.2331 13.8335C13.6497 18.5918 11.0497 18.5918 9.46641 13.8335L8.76641 11.7335L6.66641 11.0335C1.90807 9.45013 1.90807 6.85846 6.66641 5.2668Z"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                          <path
-                            d="M8.92578 11.375L11.9091 8.3833"
-                            stroke="currentColor"
-                            strokeWidth="1.5"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </div>
-                    )}
-                  </FancyButton.Root>
+                  {currentUserProfile?.user_type !== worker?.user_type && (
+                    <FancyButton.Root
+                      size="medium"
+                      className="w-[100px] h-8 gap-[2px] px-[6px] py-[6px] font-medium text-sm text-white bg-text-strong-950 shadow-[0_0_0_1px_rgba(36,38,40,1),0_1px_2px_0_rgba(27,28,29,0.48)] hover:bg-text-strong-900 disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={handleOpenChat}
+                      disabled={disableActions || isLoadingChat}
+                      aria-label={
+                        currentUserProfile?.id === worker?.id
+                          ? t('worker.profile.actions.cannotMessageSelf')
+                          : t('worker.profile.actions.message', { name: displayName })
+                      }
+                    >
+                      {isLoadingChat ? (
+                        <RiLoader4Line className="animate-spin" size={18} />
+                      ) : (
+                        <div className="flex items-center text-[14px] font-medium gap-[2px]">
+                          {t('worker.profile.actions.touch')}
+                          <svg
+                            width="20"
+                            height="20"
+                            viewBox="0 0 21 20"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-5 h-5 stroke-current text-white"
+                          >
+                            <path
+                              d="M6.66641 5.2668L13.7414 2.90846C16.9164 1.85013 18.6414 3.58346 17.5914 6.75846L15.2331 13.8335C13.6497 18.5918 11.0497 18.5918 9.46641 13.8335L8.76641 11.7335L6.66641 11.0335C1.90807 9.45013 1.90807 6.85846 6.66641 5.2668Z"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <path
+                              d="M8.92578 11.375L11.9091 8.3833"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                          </svg>
+                        </div>
+                      )}
+                    </FancyButton.Root>
+                  )}
 
                   <button className="rounded-full text-[#525866] transition-colors hover:bg-bg-weak-50 hover:text-red-500" onClick={handleLikeStatus}>
                     {!likeStatus ? <RiHeart3Line className="size-[28px]" /> : <RiHeart3Fill className="size-[28px] text-red-500" />}

@@ -5,7 +5,10 @@ import * as React from 'react';
 import { cn } from '@/utils/cn';
 import * as NotificationPrimitives from '@radix-ui/react-toast';
 import {
+  RiAlertFill,
   RiCheckboxCircleFill,
+  RiCloseCircleFill,
+  RiInformationFill,
 } from '@remixicon/react';
 
 const NotificationProvider = NotificationPrimitives.Provider;
@@ -33,6 +36,7 @@ type NotificationProps = React.ComponentPropsWithoutRef<
   // Keep only description and action if needed
   description?: React.ReactNode;
   action?: React.ReactNode; // Optional: Keep if actions are sometimes needed
+  notificationType?: 'success' | 'error' | 'warning' | 'info';
 };
 
 const Notification = React.forwardRef<
@@ -44,13 +48,14 @@ const Notification = React.forwardRef<
       className,
       description,
       action,
+      notificationType = 'success',
       // Removed status, variant, title, disableDismiss
       ...rest
     }: NotificationProps,
     forwardedRef,
   ) => {
     // Static icon
-    const Icon = RiCheckboxCircleFill;
+    const Icon = notificationType === 'success' ? RiCheckboxCircleFill : notificationType === 'error' ? RiCloseCircleFill : notificationType === 'warning' ? RiAlertFill : RiInformationFill;
 
     return (
       <NotificationPrimitives.Root
@@ -81,7 +86,7 @@ const Notification = React.forwardRef<
           {/* Optional Action Area */}
           {action && <div className='flex items-center gap-2'>{action}</div>}
         </div>
-        {/* Removed Close Button */}
+        {/* Close Button */}
       </NotificationPrimitives.Root>
     );
   },

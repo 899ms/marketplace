@@ -540,7 +540,8 @@
     },
     "yourOfferIncludes": "您的报价包括",
     "hireRequest": "雇佣请求",
-    "view": "查看"
+    "view": "查看",
+    "consecutiveMessageLimit": "请等待用户回复后再发送更多消息"
   },
   "chatDetails": {
     "selectChat": "选择一个聊天以查看详情。",

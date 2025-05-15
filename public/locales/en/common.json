@@ -506,6 +506,7 @@
     "title": "Chat",
     "noChats": "You have no chats yet.",
     "selectChat": "Select a chat to start messaging.",
+    "consecutiveMessageLimit": "Please wait for the user to respond before sending more messages",
     "loadingMessages": "Loading messages...",
     "error": "Error",
     "online": "Online",
