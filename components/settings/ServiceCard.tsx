@@ -32,7 +32,7 @@ export default function ServiceCard({ service }: Props) {
       href={`/${i18n.language}/services/${service.id}`}
       className="block transition-all hover:shadow-md rounded-lg"
     >
-      <div className="flex items-center justify-between gap-2 rounded-lg bg-bg-white-0 p-0 shadow-sm">
+      <div className="flex items-center justify-between gap-2 rounded-lg bg-bg-white-0 p-0 shadow-sm  hover:bg-[#F6F8FA] pr-[24px]">
         <div className='flex items-center gap-4'>
           <div className="relative h-[120px] w-[148px] shrink-0 overflow-hidden rounded-md bg-gray-100">
             <Image
