@@ -780,7 +780,7 @@ export default function SearchPageClient() {
                 </div>
               ) : projects.length > 0 ? (
                 <>
-                  <div className='flex flex-col space-y-4'>
+                  <div className='flex flex-col space-y-0'>
                     {projects.map((project) => {
                       console.log(`[SearchPageClient] Checking project ID: ${project.id}, User ID: ${user?.id}`);
                       console.log('[SearchPageClient] Current userContracts:', userContracts);
@@ -803,7 +803,7 @@ export default function SearchPageClient() {
                           passHref
                           legacyBehavior
                         >
-                          <a className='block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg hover:bg-[#E5E7EB] mt-0 py[16px]'>
+                          <a className='block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-[#E5E7EB] mt-0 py[16px]'>
                             <ProjectCard
                               title={project.title}
                               infoBadges={[

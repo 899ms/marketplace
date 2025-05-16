@@ -947,7 +947,7 @@
       "lastMonth": "Last Month"
     },
     "search": {
-      "placeholder": "Search projects...",
+      "placeholder": "Search...",
       "deadline": "Deadline",
       "urgent": "Urgent",
       "withinWeek": "Within a week",
