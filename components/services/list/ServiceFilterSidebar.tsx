@@ -163,103 +163,144 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       )}
 
       {/* Skills Section (Service & Project) */}
-      {(activeTab === 'Service' || activeTab === 'Project') && (
-        <div className='mx-[16px]' >
-          <div className='mb-2 flex items-center justify-between'>
-            <h3 className='text-[14px] font-medium text-text-strong-950'>{t('filters.skills')}</h3>
-            {selectedSkills.length > 0 && (
-              <button onClick={clearSkills} className='text-[12px] font-medium text-[#525866] underline hover:text-text-primary-600'>
-                {t('filters.clear')}
-              </button>
-            )}
-          </div>
-          <TagInputContainer>
-            {selectedSkills.map((skill) => (
+      <div className='mx-[16px]' >
+        <div className='mb-2 flex items-center justify-between'>
+          <h3 className='text-[14px] font-medium text-text-strong-950'>{t('filters.skills')}</h3>
+          {selectedSkills.length > 0 && (
+            <button onClick={clearSkills} className='text-[12px] font-medium text-[#525866] underline hover:text-text-primary-600'>
+              {t('filters.clear')}
+            </button>
+          )}
+        </div>
+        <TagInputContainer>
+          {selectedSkills.map((skill) => (
+            <Tag.Root
+              key={skill}
+              className="!border font-medium !border-[#525866] text-[#525866]"
+            >
+              {skill}
+              <Tag.Icon
+                as={RiCloseLine}
+                onClick={() => removeSkill(skill)}
+                className="ml-1 cursor-pointer text-[#525866] "
+              />
+            </Tag.Root>
+          ))}
+        </TagInputContainer>
+
+        <div className="flex flex-wrap gap-1.5">
+          {availableSkills
+            .filter((skill) => !selectedSkills.includes(skill))
+            .map((skill, idx) => (
               <Tag.Root
                 key={skill}
-                className="!border font-medium !border-[#525866] text-[#525866]"
-              >
-                {skill}
-                <Tag.Icon
-                  as={RiCloseLine}
-                  onClick={() => removeSkill(skill)}
-                  className="ml-1 cursor-pointer text-[#525866] "
-                />
-              </Tag.Root>
-            ))}
-          </TagInputContainer>
-
-          <div className="flex flex-wrap gap-1.5">
-            {availableSkills
-              .filter((skill) => !selectedSkills.includes(skill))
-              .map((skill, idx) => (
-                <Tag.Root
-                  key={skill}
-                  asChild
-                  variant="gray"
-                  className={`
+                asChild
+                variant="gray"
+                className={`
                     cursor-pointer
                     ${idx % 2 === 0
-                      ? "bg-white border border-gray-100 hover:bg-[#F6F8FA] hover:border-[#F6F8FA]"
-                      : "bg-[#F6F8FA] border border-[#F6F8FA] hover:bg-white hover:border-gray-100"
+                    ? "bg-white border border-gray-100 hover:bg-[#F6F8FA] hover:border-[#F6F8FA]"
+                    : "bg-[#F6F8FA] border border-[#F6F8FA] hover:bg-white hover:border-gray-100"
+                  }
+                  `}
+              >
+                <button onClick={() => handleSkillToggle(skill)}>
+                  {skill}
+                </button>
+              </Tag.Root>
+            ))}
+        </div>
+        <hr className='border-stroke-soft-200 my-[16px]' />
+      </div>
+
+
+      {/* Featured Tags Section (Worker Only) */}
+      {activeTab === 'Worker' && (
+        <div className='mx-[16px]' >
+          <div className='mb-2 flex items-center gap-1'>
+            <h3 className='text-[14px] font-medium text-text-strong-950'>{t('filters.featuredTags')}</h3>
+            <button className='text-icon-secondary-400'><RiInformationFill className='size-4 text-[#CACFD8]' /></button>
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {availableFeaturedTags.map((tag) => {
+              const isSelected = selectedFeaturedTags.includes(tag)
+              return (
+                <Tag.Root
+                  key={tag}
+                  asChild
+                  variant="stroke"
+                  className={`
+                    bg-white
+                    cursor-pointer
+                    flex items-center
+                    hover:bg-[#F6F8FA] hover:text-black
+                    ${isSelected ?
+                      'text-[#525866] !border font-medium !border-[#525866]' :
+                      'text-[#525866]'
                     }
                   `}
                 >
-                  <button onClick={() => handleSkillToggle(skill)}>
-                    {skill}
+                  <button onClick={() => handleFeaturedTagToggle(tag)} className="flex items-center">
+                    <Tag.Icon>
+                      <Image src="/images/Monday.com.svg" alt={t('filters.tagIcon')} width={16} height={16} />
+                    </Tag.Icon>
+                    <span>{tag}</span>
+                    {isSelected && (
+                      <Tag.Icon as={RiCloseLine} className="ml-1 cursor-pointer text-[#525866]" />
+                    )}
                   </button>
                 </Tag.Root>
-              ))}
+              )
+            })}
           </div>
-          <hr className='border-stroke-soft-200 my-[16px]' />
-        </div>
-      )}
 
-      {/* Tools Section (Service Only) */}
-      {activeTab === 'Service' && (
-        <div className='mx-[16px]' >
-          <div className='mb-2 flex items-center justify-between'>
-            <div className='flex items-center gap-1'>
-              <h3 className='text-[14px] font-medium text-text-strong-950'>{t('filters.tools')}</h3>
-              <RiInformationFill className="w-4 text-[#CACFD8] h-4" />
-            </div>
-            {selectedTools.length > 0 && (
-              <button onClick={clearTools} className='text-[12px] text-[#525866] underline hover:text-text-primary-600'>
-                {t('filters.clear')}
-              </button>
-            )}
-          </div>
-          <TagInputContainer>
-            {selectedTools.map((tool) => (
-              <Tag.Root key={tool} className="!border font-medium !border-[#525866] text-[#525866] ">
-                {tool}
-                <Tag.Icon as={RiCloseLine} onClick={() => removeTool(tool)} className='ml-1 cursor-pointer text-[#525866]' />
-              </Tag.Root>
-            ))}
-          </TagInputContainer>
-          <div className='flex flex-wrap gap-1.5'>
-            {availableTools
-              .filter((tool) => !selectedTools.includes(tool))
-              .map((tool, idx) => (
-                <Tag.Root
-                  key={tool}
-                  asChild
-                  variant="gray"
-                  className={`
-                    cursor-pointer
-                    ${idx % 2 === 0
-                      ? "bg-white border border-gray-100 hover:bg-[#F6F8FA] hover:border-[#F6F8FA]"
-                      : "bg-[#F6F8FA] border border-[#F6F8FA] hover:bg-white hover:border-gray-100"
-                    }
-                  `}
-                >
-                  <button onClick={() => handleToolToggle(tool)}>{tool}</button>
-                </Tag.Root>
-              ))}
-          </div>
           <hr className='my-6 border-stroke-soft-200 my-[16px]' />
         </div>
       )}
+
+      {/* Tools Section (Service & Worker Only) */}
+      <div className='mx-[16px]' >
+        <div className='mb-2 flex items-center justify-between'>
+          <div className='flex items-center gap-1'>
+            <h3 className='text-[14px] font-medium text-text-strong-950'>{t('filters.tools')}</h3>
+            <RiInformationFill className="w-4 text-[#CACFD8] h-4" />
+          </div>
+          {selectedTools.length > 0 && (
+            <button onClick={clearTools} className='text-[12px] text-[#525866] underline hover:text-text-primary-600'>
+              {t('filters.clear')}
+            </button>
+          )}
+        </div>
+        <TagInputContainer>
+          {selectedTools.map((tool) => (
+            <Tag.Root key={tool} className="!border font-medium !border-[#525866] text-[#525866] ">
+              {tool}
+              <Tag.Icon as={RiCloseLine} onClick={() => removeTool(tool)} className='ml-1 cursor-pointer text-[#525866]' />
+            </Tag.Root>
+          ))}
+        </TagInputContainer>
+        <div className='flex flex-wrap gap-1.5'>
+          {availableTools
+            .filter((tool) => !selectedTools.includes(tool))
+            .map((tool, idx) => (
+              <Tag.Root
+                key={tool}
+                asChild
+                variant="gray"
+                className={`
+                    cursor-pointer
+                    ${idx % 2 === 0
+                    ? "bg-white border border-gray-100 hover:bg-[#F6F8FA] hover:border-[#F6F8FA]"
+                    : "bg-[#F6F8FA] border border-[#F6F8FA] hover:bg-white hover:border-gray-100"
+                  }
+                  `}
+              >
+                <button onClick={() => handleToolToggle(tool)}>{tool}</button>
+              </Tag.Root>
+            ))}
+        </div>
+        <hr className='my-6 border-stroke-soft-200 my-[16px]' />
+      </div>
 
       {/* Featured Tags Section (Service Only) */}
       {activeTab === 'Service' && (
@@ -306,39 +347,41 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       )}
 
       {/* Available and professional services toggles */}
-      <div className="space-y-3 pl-4">
-        {/* Item 1 - Available */}
-        <div className="flex items-start gap-2">
-          {/* Icon */}
-          <Switch.Root
-            className='mt-1'
-            id='available-toggle'
-            checked={isAvailable}
-            onCheckedChange={(checked) => handleToggleChange('available', checked)}
-          />
-          {/* Text */}
-          <div className='mt-0.5'>
-            <p className="text-base font-normal text-[14px] text-[#1F2937]">{t('filters.available')}</p>
-            <p className="text-[12px] font-normal text-[#6B7280]">{t('filters.recentOnline')}</p>
+      {(activeTab === 'Worker' || activeTab === 'Service') && (
+        <div className="space-y-3 pl-4">
+          {/* Item 1 - Available */}
+          <div className="flex items-start gap-2">
+            {/* Icon */}
+            <Switch.Root
+              className='mt-1'
+              id='available-toggle'
+              checked={isAvailable}
+              onCheckedChange={(checked) => handleToggleChange('available', checked)}
+            />
+            {/* Text */}
+            <div className='mt-0.5'>
+              <p className="text-base font-normal text-[14px] text-[#1F2937]">{t('filters.available')}</p>
+              <p className="text-[12px] font-normal text-[#6B7280]">{t('filters.recentOnline')}</p>
+            </div>
           </div>
-        </div>
 
-        {/* Item 2 - Professional */}
-        <div className="flex items-start gap-2">
-          {/* Icon */}
-          <Switch.Root
-            className='mt-1'
-            id='professional-toggle'
-            checked={isProfessional}
-            onCheckedChange={(checked) => handleToggleChange('professional', checked)}
-          />
-          {/* Text */}
-          <div className='mt-0.5'>
-            <p className="text-base font-normal text-[14px] text-[#1F2937]">{t('filters.professionalServices')}</p>
-            <p className="text-[12px] font-normal text-[#6B7280]">{t('filters.vettedSkills')}</p>
+          {/* Item 2 - Professional */}
+          <div className="flex items-start gap-2">
+            {/* Icon */}
+            <Switch.Root
+              className='mt-1'
+              id='professional-toggle'
+              checked={isProfessional}
+              onCheckedChange={(checked) => handleToggleChange('professional', checked)}
+            />
+            {/* Text */}
+            <div className='mt-0.5'>
+              <p className="text-base font-normal text-[14px] text-[#1F2937]">{t('filters.professionalServices')}</p>
+              <p className="text-[12px] font-normal text-[#6B7280]">{t('filters.vettedSkills')}</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Toggle Options Section (Worker Only) */}
       {activeTab === 'Worker' && (
@@ -362,7 +405,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
       )}
 
       {/* Price/Budget Section (Service & Project) */}
-      {(activeTab === 'Service' || activeTab === 'Project') && (
+      {(activeTab === 'Project') && (
         <div className='mx-[16px]' >
           <h3 className='mb-10 text-[14px] font-medium text-text-strong-950'>
             {t('filters.price')}
