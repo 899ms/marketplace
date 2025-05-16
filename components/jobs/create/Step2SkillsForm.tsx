@@ -252,7 +252,7 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
 
               <div className='mt-2 flex flex-wrap gap-2'>
                 {watchSkillLevels.map((level) => (
-                  <Tag.Root key={level} variant='stroke'>
+                  <Tag.Root key={level} variant='stroke' className='hover:text-[#525866]'>
                     {level}
                     <button
                       type='button'
@@ -260,7 +260,7 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
                       className='ml-1 inline-flex items-center'
                       aria-label={t('jobs.create.step2.remove')}
                     >
-                      <RiCloseLine size={14} />
+                      <RiCloseLine size={14} className='text-[#99A0AE]' />
                     </button>
                   </Tag.Root>
                 ))}
@@ -309,7 +309,7 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
 
               <div className='mt-2 flex flex-wrap gap-2'>
                 {watchCandidateSources.map((source) => (
-                  <Tag.Root key={source} variant='stroke'>
+                  <Tag.Root key={source} variant='stroke' className='hover:text-[#525866]'>
                     {source}
                     <button
                       type='button'
@@ -429,7 +429,7 @@ const Step2SkillsForm: React.FC<Step2Props> = ({
                     )}
                   </div>
                 </div>
-                <CompactButton.Root variant='ghost' size='medium' onClick={() => handleRemoveFile(file.name)}>
+                <CompactButton.Root variant='ghost' size='medium' className='' onClick={() => handleRemoveFile(file.name)}>
                   <CompactButton.Icon className='h-24 w-24' as={RiDeleteBinLine} />
                 </CompactButton.Root>
               </div>
