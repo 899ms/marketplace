@@ -153,8 +153,8 @@ export function OrderDetailsClient({
       const milestone = mappedMilestones.find(m => m.id === milestoneId);
       const milestoneActivatedMessage = await chatOperations.sendMessage({
         chat_id: chat.id,
-        message_type: 'milestone_activated',
-        content: 'Milestone activated',
+        message_type: 'milestone_completed',
+        content: 'Milestone completed',
         sender_id: contract.buyer_id,
         data: {
           contractId: contract.id,
@@ -162,6 +162,7 @@ export function OrderDetailsClient({
           description: milestone?.description || 'N/A',
           amount: milestone?.amount || 'N/A',
           sequence: milestone?.sequence || 1,
+          currency: contract.currency || 'USD',
         }
       });
     }
@@ -258,11 +259,14 @@ export function OrderDetailsClient({
     date: contract.created_at ? new Date(contract.created_at).toLocaleString() : 'N/A',
   })) || [];
 
+  const currency = contract.currency || 'USD';
+  const currencySymbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : currency === 'CNY' ? '¥' : '$';
+
   const financialData = {
-    totalAmount: `$${initialMilestonesData.reduce((acc, m) => acc + (m.amount ?? 0), 0).toFixed(2)}`,
-    received: `$${initialMilestonesData.reduce((acc, m) => acc + (m.status === 'paid' || m.status === 'approved' ? (m.amount ?? 0) : 0), 0).toFixed(2)}`,
-    inEscrow: `$${initialMilestonesData.reduce((acc, m) => acc + (m.status === 'pending' || m.status === 'rejected' ? (m.amount ?? 0) : 0), 0).toFixed(2)}`,
-    refunded: '$0.00',
+    totalAmount: `${currencySymbol}${initialMilestonesData.reduce((acc, m) => acc + (m.amount ?? 0), 0).toFixed(2)}`,
+    received: `${currencySymbol}${initialMilestonesData.reduce((acc, m) => acc + (m.status === 'paid' || m.status === 'approved' ? (m.amount ?? 0) : 0), 0).toFixed(2)}`,
+    inEscrow: `${currencySymbol}${initialMilestonesData.reduce((acc, m) => acc + (m.status === 'pending' || m.status === 'rejected' ? (m.amount ?? 0) : 0), 0).toFixed(2)}`,
+    refunded: `${currencySymbol}0.00`,
   };
 
   let mappedMilestones = initialMilestonesData.map(m => {
@@ -332,6 +336,7 @@ export function OrderDetailsClient({
       <div className="flex gap-[24px] max-w-[1200px]">
         <div className="w-full md:w-[614px] md:max-w-none">
           <MilestoneSection
+            currency={currency}
             userRole={userRole}
             contractId={contract.id}
             milestones={mappedMilestones}

@@ -165,15 +165,15 @@ const Step4Preview: React.FC<Step4Props> = ({
           </div>
           <div className='flex flex-row justify-between items-center'>
             <p className='text-[#525866] font-normal text-[14px]'>{t('jobs.create.step4.orderAmount')}</p>
-            <p className='text-[#0E121B] text-[14px]'>{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{formData.budget || '-'}</p>
+            <p className='text-[#0E121B] text-[14px]'>{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : formData.currency === 'GBP' ? '£' : '$'}{formData.budget || '-'}</p>
           </div>
           <div className='flex flex-row justify-between items-center'>
             <p className='text-[#525866] font-normal text-[14px]'>{t('jobs.create.step4.discount')} <span className='font-normal text-[#99A0AE] text-[12px]'>{discountCode}</span></p>
-            <p className='text-[#0E121B] text-[14px]'>-{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{discountAmount || '-'}</p>
+            <p className='text-[#0E121B] text-[14px]'>-{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '$'}{discountAmount || '-'}</p>
           </div>
           <div className='flex flex-row justify-between items-end mt-2'>
             <p className='text-[#525866] text-[14px]'>{t('jobs.create.step4.amountPaid')}</p>
-            <p className='text-[#0E121B] text-[24px]'>{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : '¥'}{formData.budget - discountAmount || '-'}</p>
+            <p className='text-[#0E121B] text-[24px]'>{formData.currency === 'USD' ? '$' : formData.currency === 'EUR' ? '€' : formData.currency === 'GBP' ? '£' : '$'}{formData.budget - discountAmount || '-'}</p>
           </div>
 
         </div>

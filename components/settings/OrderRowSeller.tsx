@@ -23,6 +23,7 @@ export interface SellerOrder {
   deadline: string;
   rating: number | null;
   status: string;
+  currency: string;
 }
 
 /* ---------------------------------------------------------------- */
@@ -35,7 +36,7 @@ interface Props {
 export default function OrderRowSeller({ order }: Props) {
   const { t } = useTranslation('common');
   const detailLink = `/${i18n.language}/orders/detail/${order.id}`;
-
+  const currency = order.currency === 'USD' ? '$' : order.currency === 'EUR' ? '€' : order.currency === 'GBP' ? '£' : order.currency === 'CNY' ? '¥' : '$';
   return (
     <Table.Row className='border-b border-[#E1E4EA] group'>
       {/* -------- From (buyer) -------- */}
@@ -68,7 +69,7 @@ export default function OrderRowSeller({ order }: Props) {
           </div>
         </Link>
         <div className="text-[12px] text-[#0E121B]">
-          ${order.price.toLocaleString()}
+          {`${currency}${order.price.toLocaleString()}`}
         </div>
       </Table.Cell>
 

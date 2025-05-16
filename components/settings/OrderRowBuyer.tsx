@@ -24,6 +24,7 @@ export interface BuyerEngagement {
   proposals?: number | null;
   worker: PersonInfo | null;
   status: string;
+  currency: string;
 }
 
 interface Props {
@@ -38,6 +39,8 @@ export default function OrderRowBuyer({ engagement }: Props) {
     ? `/${i18n.language}/projects/${engagement.id}`
     : `/${i18n.language}/orders/detail/${engagement.id}`;
 
+
+  const currency = engagement.currency === 'USD' ? '$' : engagement.currency === 'EUR' ? '€' : engagement.currency === 'GBP' ? '£' : engagement.currency === 'CNY' ? '¥' : '$';
   return (
     <Table.Row className='border-b border-[#E1E4EA]'>
 
@@ -49,7 +52,7 @@ export default function OrderRowBuyer({ engagement }: Props) {
           </div>
         </Link>
         <div className="text-[12px] text-[#0E121B]">
-          ${engagement.price.toLocaleString()}
+          {`${currency}${engagement.price.toLocaleString()}`}
         </div>
       </Table.Cell>
 

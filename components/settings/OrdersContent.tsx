@@ -94,6 +94,7 @@ export default function OrdersContent() {
                     }
                     : null,
                   status: linked.status || 'pending',
+                  currency: job.currency || 'USD',
                 };
               }
               return {
@@ -104,6 +105,7 @@ export default function OrdersContent() {
                 deadline: job.deadline || 'N/A',
                 worker: null,
                 status: job.status || 'open',
+                currency: job.currency || 'USD',
               };
             }),
           );
@@ -128,6 +130,7 @@ export default function OrdersContent() {
               deadline: 'N/A',
               rating: 4.5,     // TODO replace with real rating
               status: c.status || 'pending',
+              currency: c.currency || 'USD',
             });
           }
 

@@ -52,9 +52,9 @@ export default async function ServiceDetailPage({
             </Link>
           </Breadcrumb.Item>
 
-          <span className='text-[14px] text-[#CACFD8] mr-2'>/</span>
+          {/* <span className='text-[14px] text-[#CACFD8] mr-2'>/</span>
 
-          <Breadcrumb.Item active className='text-[#525866]'>{service.title}</Breadcrumb.Item>
+          <Breadcrumb.Item active className='text-[#525866]'>{service.title}</Breadcrumb.Item> */}
         </Breadcrumb.Root>
       </div>
 

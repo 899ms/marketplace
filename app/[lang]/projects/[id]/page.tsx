@@ -437,6 +437,8 @@ export default function ProjectDetailPage() {
   const projectDescription = projectDataState.description ? [projectDataState.description] : [];
   const projectSkills = projectDataState.skill_levels ?? [];
   const projectAttachments = projectDataState.files ?? [];
+  const projectCurrency = projectDataState.currency ?? 'USD';
+  const projectCurrencySymbol = projectCurrency === 'USD' ? '$' : projectCurrency === 'EUR' ? '€' : projectCurrency === 'GBP' ? '£' : projectCurrency === 'CNY' ? '¥' : '$';
 
   const clientName = clientDataState?.full_name ?? 'Unknown Client';
   const clientAvatar = clientDataState?.avatar_url ?? 'https://via.placeholder.com/100'; // Placeholder avatar
@@ -445,7 +447,7 @@ export default function ProjectDetailPage() {
   const clientReviews = 125; // Placeholder
   const clientIsVerified = true; // Placeholder
 
-  const projectBudget = `$${projectDataState.budget ?? 0}`;
+  const projectBudget = `${projectCurrencySymbol}${projectDataState.budget ?? 0}`;
   // Derive Release Time (Example: using raw date for now)
   const projectReleaseTime = projectDataState.created_at ? new Date(projectDataState.created_at).toLocaleDateString() : 'N/A';
   const projectDeadline = projectDataState.deadline ?? 'N/A';

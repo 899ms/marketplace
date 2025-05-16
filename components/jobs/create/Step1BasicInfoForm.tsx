@@ -43,6 +43,12 @@ const currencies = [
     symbol: '¥',
   },
   {
+    icon: 'https://alignui.com/flags/GB.svg',
+    value: 'GBP',
+    label: 'GBP',
+    symbol: '£',
+  },
+  {
     icon: 'https://alignui.com/flags/EU.svg',
     value: 'EUR',
     label: 'EUR',
@@ -143,7 +149,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
             <Input.Root>
               <Input.Wrapper>
                 <Input.InlineAffix className='text-[#0E121B]'>
-                  {currency === 'USD' ? '$' : currency === 'CNY' ? '¥' : '€'}
+                  {currency === 'USD' ? '$' : currency === 'CNY' ? '¥' : currency === 'GBP' ? '£' : '€'}
                 </Input.InlineAffix>
                 <Input.Input id='budget' type='number' placeholder='0.00' step='0.01' className='placeholder:text-[#99A0AE] hover:text-[#525866]' {...register('budget', { valueAsNumber: true })} />
               </Input.Wrapper>
@@ -202,7 +208,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
                   <Button.Root
                     type='button'
                     className={cn(
-                      'w-full justify-start rounded-md border border-[#E1E4EA] hover:border-none hover:bg-[#F6F8FA] bg-white px-3 py-2 text-left font-normal',
+                      'w-full justify-start rounded-md border border-[#E1E4EA] hover:border-white hover:bg-[#F6F8FA] bg-white px-3 py-2 text-left font-normal',
                       !field.value && 'text-muted-foreground',
                     )}
                   >

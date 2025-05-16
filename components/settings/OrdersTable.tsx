@@ -21,6 +21,7 @@ export interface BuyerEngagement {
   type: 'job' | 'contract';
   subject: string;
   price: number;
+  currency: string;
   deadline: string;
   proposals?: number | null;
   worker: PersonInfo | null;
@@ -34,6 +35,7 @@ export interface SellerOrder {
   deadline: string;
   rating: number | null;
   status: string;
+  currency: string;
 }
 
 /* ------------------------------------------------------------------ */

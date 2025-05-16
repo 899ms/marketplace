@@ -44,6 +44,7 @@ interface MilestoneSectionProps {
   milestones: Milestone[];
   onConfirmPayment?: (milestoneId: string) => void;
   isConfirmingId?: string | null;
+  currency: string;
 }
 
 export function MilestoneSection({
@@ -51,7 +52,8 @@ export function MilestoneSection({
   contractId,
   milestones: initialMilestones,
   onConfirmPayment,
-  isConfirmingId
+  isConfirmingId,
+  currency
 }: MilestoneSectionProps) {
   const { t } = useTranslation('common');
 
@@ -66,6 +68,7 @@ export function MilestoneSection({
   const [calendarOpen, setCalendarOpen] = React.useState(false);
   const [isSaving, setIsSaving] = React.useState(false);
   const { notification: toast } = useNotification();
+  const currencySymbol = currency === 'USD' ? '$' : currency === 'EUR' ? '€' : currency === 'GBP' ? '£' : currency === 'CNY' ? '¥' : '$';
 
   // Log state after initialization
   React.useEffect(() => {
@@ -156,6 +159,7 @@ export function MilestoneSection({
               description: 'New Milestone',
               amount: newMilestoneAmount,
               sequence: nextSequence,
+              currency: currency
             }
           });
         }
@@ -212,7 +216,7 @@ export function MilestoneSection({
                       {milestone.title}
                     </h4>
                     <p className="text-[16px] text-[#0E121B] mt-[4px]">
-                      ${milestone.amount}
+                      {`${currencySymbol}${milestone.amount}`}
                     </p>
                   </div>
                   {milestone.date && (
