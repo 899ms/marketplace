@@ -135,10 +135,10 @@ const WorkerCard: React.FC<WorkerCardProps> = ({ worker, onClick }) => {
       </p>
       <div className='flex flex-wrap gap-2'>
         {/* Placeholder Tags */}
-        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Mixing</Tag.Root>
-        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Singing</Tag.Root>
-        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Jazz</Tag.Root>
-        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:border hover: border-black hover:text-black'>Hip hop</Tag.Root>
+        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:text-black hover:bg-[#F6F8FA]'>Mixing</Tag.Root>
+        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:text-black hover:bg-[#F6F8FA]'>Singing</Tag.Root>
+        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:text-black hover:bg-[#F6F8FA]'>Jazz</Tag.Root>
+        <Tag.Root className='text-[12px] font-medium text-[#525866] hover:text-black hover:bg-[#F6F8FA]'>Hip hop</Tag.Root>
       </div>
     </div>
   );

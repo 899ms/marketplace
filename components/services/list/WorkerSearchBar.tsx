@@ -98,6 +98,7 @@ export function WorkerSearchBar({
             text-[14px] leading-[20px]
             text-[#99A0AE]
             placeholder:text-[#99A0AE]
+            hover:bg-[#F6F8FA]
           `}
         />
       </div>

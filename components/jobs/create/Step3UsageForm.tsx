@@ -41,7 +41,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
             <div className=''>
               {/* Private Usage Option */}
               <label
-                className='flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-bg-weak-50'
+                className='flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-[#F6F8FA]'
                 data-checked={field.value === 'private'}
               >
                 <Checkbox.Root
@@ -63,7 +63,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
               </label>
               {/* Business Usage Option */}
               <label
-                className='flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-bg-weak-50 '
+                className='flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-[#F6F8FA] '
                 data-checked={field.value === 'business'}
               >
                 <Checkbox.Root
@@ -100,7 +100,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
             <div className=''>
               {/* Public Privacy Option */}
               <label
-                className=' flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-bg-weak-50 '
+                className=' flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-[#F6F8FA] '
                 data-checked={field.value === 'public'}
               >
                 <Checkbox.Root
@@ -122,7 +122,7 @@ const Step3UsageForm: React.FC<Step3Props> = ({
               </label>
               {/* Private Privacy Option */}
               <label
-                className='flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-bg-weak-50'
+                className='flex cursor-pointer items-start gap-3 rounded-lg py-2 transition-colors hover:bg-[#F6F8FA]'
                 data-checked={field.value === 'private'}
               >
                 <Checkbox.Root

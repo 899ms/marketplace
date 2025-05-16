@@ -18,7 +18,7 @@ export const buttonVariants = tv({
       // focus
       'focus:outline-none',
       // disabled
-      'disabled:pointer-events-none disabled:bg-bg-weak-50 disabled:text-text-disabled-300 disabled:ring-transparent',
+      'disabled:pointer-events-none disabled:bg-[#F6F8FA] disabled:text-text-disabled-300 disabled:ring-transparent',
     ],
     icon: [
       // base
@@ -145,7 +145,7 @@ export const buttonVariants = tv({
           // base
           'bg-bg-white-0 text-text-sub-600 shadow-regular-xs ring-stroke-soft-200',
           // hover
-          'hover:bg-bg-weak-50 hover:text-text-strong-950 hover:shadow-none hover:ring-transparent',
+          'hover:bg-[#F6F8FA] hover:text-text-strong-950 hover:shadow-none hover:ring-transparent',
           // focus
           'focus-visible:text-text-strong-950 focus-visible:shadow-button-important-focus focus-visible:ring-stroke-strong-950',
         ],
@@ -157,7 +157,7 @@ export const buttonVariants = tv({
       class: {
         root: [
           // base
-          'bg-bg-weak-50 text-text-sub-600 ring-transparent',
+          'bg-[#F6F8FA] text-text-sub-600 ring-transparent',
           // hover
           'hover:bg-bg-white-0 hover:text-text-strong-950 hover:shadow-regular-xs hover:ring-stroke-soft-200',
           // focus
@@ -173,7 +173,7 @@ export const buttonVariants = tv({
           // base
           'bg-transparent text-text-sub-600 ring-transparent',
           // hover
-          'hover:bg-bg-weak-50 hover:text-text-strong-950',
+          'hover:bg-[#F6F8FA] hover:text-text-strong-950',
           // focus
           'focus-visible:bg-bg-white-0 focus-visible:text-text-strong-950 focus-visible:shadow-button-important-focus focus-visible:ring-stroke-strong-950',
         ],

@@ -199,10 +199,10 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
               </div>
             </div>
             <div className='flex items-center justify-center gap-3 mb-3'>
-              <div className='gap-1 flex flex-row'>
+              <div className='gap-1 flex flex-row hover:bg-[#F6F8FA] hover:text-text-strong-950 px-2 rounded-md'>
                 <Image src="/images/Chrome.svg" alt="Icon" width={16} height={16} /> <span className="text-[12px]">Google</span>
               </div>
-              <div className='gap-1 flex flex-row'>
+              <div className='gap-1 flex flex-row hover:bg-[#F6F8FA] hover:text-text-strong-950 px-2 rounded-md'>
                 <Image src="/images/Chrome.svg" alt="Icon" width={16} height={16} /> <span className="text-[12px]">Google</span>
               </div>
             </div>
@@ -223,10 +223,10 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
           )}
 
           {/* Recent Reviews */}
-          <div className='px-3 py-2'>
+          <div className='px-3'>
             <div className=" flex flex-col sm:flex-row sm:items-center sm:justify-between">
               {/* Left section - Star and text */}
-              <div className="flex items-center gap-1 text-label-md font-medium text-text-strong-950">
+              <div className="flex items-center gap-1 text-label-md font-medium w-full text-text-strong-950 hover:bg-[#F6F8FA] hover:text-text-strong-950 py-2 px-2 rounded-md">
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" className="size-5">
                   <path d="M11.4416 2.92501L12.9083 5.85835C13.1083 6.26668 13.6416 6.65835 14.0916 6.73335L16.7499 7.17501C18.4499 7.45835 18.8499 8.69168 17.6249 9.90835L15.5583 11.975C15.2083 12.325 15.0166 13 15.1249 13.4833L15.7166 16.0417C16.1833 18.0667 15.1083 18.85 13.3166 17.7917L10.8249 16.3167C10.3749 16.05 9.63326 16.05 9.17492 16.3167L6.68326 17.7917C4.89992 18.85 3.81659 18.0583 4.28326 16.0417L4.87492 13.4833C4.98326 13 4.79159 12.325 4.44159 11.975L2.37492 9.90835C1.15826 8.69168 1.54992 7.45835 3.24992 7.17501L5.90826 6.73335C6.34992 6.65835 6.88326 6.26668 7.08326 5.85835L8.54992 2.92501C9.34992 1.33335 10.6499 1.33335 11.4416 2.92501Z" fill="#0A0D14" stroke="#0A0D14" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
@@ -252,7 +252,7 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
                 key={tag}
                 variant="light"
                 size="medium"
-                className="bg-white min-h-[24px] rounded-md border border-stroke-soft-300 text-gray-600 px-2 py-0.5"
+                className="bg-white min-h-[24px] rounded-md border border-stroke-soft-300 text-gray-600 px-2 py-0.5 hover:bg-[#F6F8FA] hover:text-text-strong-950"
               >
                 {tag}
               </Badge.Root>
@@ -291,7 +291,13 @@ const UserSidebar = ({ userData }: { userData: User | null }) => {
               <RiTwitterXFill className='size-7' />
             </Link>
             <Link href="#">
-              <RiGoogleFill className="size-7" style={{ color: 'initial' }} />
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M14.2139 12.0911V16.1575H19.9801C19.7269 17.4652 18.9671 18.5725 17.8275 19.317L21.3048 21.9612C23.3307 20.1285 24.4996 17.4366 24.4996 14.2389C24.4996 13.4944 24.4314 12.7784 24.3048 12.0912L14.2139 12.0911Z" fill="#4285F4" />
+                <path d="M4.64927 9.29431C3.91879 10.707 3.5 12.3011 3.5 14.0002C3.5 15.6993 3.91879 17.2934 4.64927 18.7061C4.64927 18.7155 8.21429 15.9951 8.21429 15.9951C8 15.3651 7.87334 14.697 7.87334 14.0001C7.87334 13.3032 8 12.635 8.21429 12.005L4.64927 9.29431Z" fill="#FBBC05" />
+                <path d="M14.2143 7.68093C15.7923 7.68093 17.1949 8.21546 18.315 9.24639L21.3832 6.2396C19.5228 4.54053 17.1072 3.5 14.2143 3.5C10.026 3.5 6.41241 5.85774 4.64941 9.29413L8.21432 12.0051C9.06168 9.5232 11.4286 7.68093 14.2143 7.68093Z" fill="#EA4335" />
+                <path d="M8.20971 15.9987L7.42545 16.587L4.64941 18.7061C6.41241 22.1329 10.0258 24.5002 14.2141 24.5002C17.1069 24.5002 19.5322 23.5647 21.305 21.9611L17.8277 19.317C16.8732 19.947 15.6556 20.3288 14.2141 20.3288C11.4284 20.3288 9.06156 18.4866 8.21409 16.0047L8.20971 15.9987Z" fill="#34A853" />
+              </svg>
+
             </Link>
 
           </div>
@@ -360,13 +366,13 @@ const OrderListItem = ({ job, loggedInUserType }: { job: Job; loggedInUserType?:
   return (
     <Link
       href={`/${lang}/projects/${job.id}`}
-      className='block border-b border-stroke-soft-200 py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 last:border-b-0'
+      className='block border-b border-stroke-soft-200 px-[16px] py-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 last:border-b-0'
     >
-      <div className='flex items-start justify-between gap-4 px-2'>
+      <div className='flex items-start justify-between gap-4'>
         <div className='flex-1 max-w-[80%]'>
           {/* Title */}
           <h3 className='mb-2.5 text-paragraph-lg font-medium text-[20px] text-text-strong-950'>
-            W{job.title}
+            {job.title}
           </h3>
 
           {/* Tags */}
@@ -433,7 +439,7 @@ const ReviewListItem = () => {
   };
 
   return (
-    <div className='border-b border-stroke-soft-200 py-4'>
+    <div className='border-b border-stroke-soft-200 py-4 hover:bg-[#F6F8FA] hover:text-text-strong-950 px-[16px]'>
       {/* Top row with user info and amount */}
       <div className='flex items-start justify-between mb-3'>
         {/* LEFT SIDE: Avatar + User Info */}
@@ -678,7 +684,7 @@ export default function UserProfilePage({ params }: { params: Promise<{ id: stri
         <UserSidebar userData={userData} />
         <main className="flex-1 max-w-[1000px] max-h-[964px]">
           <div className="w-full lg:max-w-[1000px] mx-auto flex flex-col gap-4">
-            <div className="border-t-0">
+            <div className="border-t-0 px-[16px]">
               <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
                 <TabMenuHorizontal.List className="flex items-center justify-start w-fit gap-4 border-none border-y-0">
                   <TabMenuHorizontal.Trigger

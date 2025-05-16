@@ -20,12 +20,12 @@ export const selectVariants = tv({
       'flex items-center text-left',
       'transition duration-200 ease-out',
       // hover
-      'hover:bg-bg-weak-50 hover:ring-transparent',
+      'hover:bg-[#F6F8FA] hover:ring-transparent',
       // focus
       'focus:shadow-button-important-focus focus:outline-none focus:ring-stroke-strong-950',
       'focus:text-text-strong-950 data-[placeholder]:focus:text-text-strong-950',
       // disabled
-      'disabled:pointer-events-none disabled:bg-bg-weak-50 disabled:text-text-disabled-300 disabled:shadow-none disabled:ring-transparent data-[placeholder]:disabled:text-text-disabled-300',
+      'disabled:pointer-events-none disabled:bg-[#F6F8FA] disabled:text-text-disabled-300 disabled:shadow-none disabled:ring-transparent data-[placeholder]:disabled:text-text-disabled-300',
       // placeholder state
       'data-[placeholder]:text-text-sub-600',
     ],
@@ -83,7 +83,7 @@ export const selectVariants = tv({
           // base
           'w-auto rounded-none shadow-none ring-0',
           // focus
-          'focus:bg-bg-weak-50 focus:shadow-none focus:ring-0 focus:ring-transparent',
+          'focus:bg-[#F6F8FA] focus:shadow-none focus:ring-0 focus:ring-transparent',
         ],
       },
       inline: {
@@ -376,7 +376,7 @@ const SelectItem = React.forwardRef<
         // disabled
         'data-[disabled]:pointer-events-none data-[disabled]:text-text-disabled-300',
         // hover, focus
-        'data-[highlighted]:bg-bg-weak-50 data-[highlighted]:outline-0',
+        'data-[highlighted]:bg-[#F6F8FA] data-[highlighted]:outline-0',
         {
           'gap-1.5 pr-[34px]': size === 'xsmall',
         },

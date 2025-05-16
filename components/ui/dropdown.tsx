@@ -58,7 +58,7 @@ const DropdownMenuItem = React.forwardRef<
       'flex items-center gap-2',
       'transition duration-200 ease-out',
       // hover
-      'data-[highlighted]:bg-bg-weak-50',
+      'data-[highlighted]:bg-[#F6F8FA]',
       // focus
       'focus:outline-none',
       // disabled
@@ -134,7 +134,7 @@ const DropdownMenuSubTrigger = React.forwardRef<
       'flex items-center gap-2',
       'transition duration-200 ease-out',
       // hover
-      'data-[highlighted]:bg-bg-weak-50',
+      'data-[highlighted]:bg-[#F6F8FA]',
       // disabled
       'data-[disabled]:text-text-disabled-300',
       inset && 'pl-9',

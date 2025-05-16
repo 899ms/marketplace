@@ -36,9 +36,9 @@ export const inputVariants = tv({
       'group/input-wrapper flex w-full cursor-text items-center bg-bg-white-0',
       'transition duration-200 ease-out',
       // hover
-      'hover:[&:not(&:has(input:focus))]:bg-bg-weak-50',
+      'hover:[&:not(&:has(input:focus))]:bg-[#F6F8FA]',
       // disabled
-      'has-[input:disabled]:pointer-events-none has-[input:disabled]:bg-bg-weak-50',
+      'has-[input:disabled]:pointer-events-none has-[input:disabled]:bg-[#F6F8FA]',
     ],
     input: [
       // base
@@ -224,9 +224,9 @@ InputWrapper.displayName = INPUT_WRAPPER_NAME;
 const Input = React.forwardRef<
   HTMLInputElement,
   React.InputHTMLAttributes<HTMLInputElement> &
-    InputSharedProps & {
-      asChild?: boolean;
-    }
+  InputSharedProps & {
+    asChild?: boolean;
+  }
 >(
   (
     { className, type = 'text', size, hasError, asChild, ...rest },

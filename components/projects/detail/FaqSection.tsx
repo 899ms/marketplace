@@ -42,7 +42,7 @@ const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
             className={`
               overflow-hidden
               border-b-[2px] border-stroke-soft-200
-              ${faq.isOpen ? 'bg-bg-weak-50 border-b-[0px]' : ''}
+              ${faq.isOpen ? 'bg-[#F6F8FA] border-b-[0px]' : ''}
             `}
           >
             {/* Question row */}

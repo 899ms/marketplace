@@ -66,7 +66,7 @@ export default function ChatList({
   }
 
   return (
-    <div className="flex flex-col px-4 gap-2 custom-scrollbar h-full overflow-y-auto">
+    <div className="flex flex-col px-4 gap-2 custom-scrollbar h-[calc(100vh-180px)] overflow-y-auto">
       {chats.map((chat) => {
         const otherUserProfile = chatProfiles[chat.id];
         const displayName = otherUserProfile?.full_name || otherUserProfile?.username || 'Unknown User';

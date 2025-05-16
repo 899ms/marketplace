@@ -143,7 +143,7 @@ export function Step3Review({
           </h1>
           {/* Image Carousel */}
           <div className='space-y-3'>
-            <div className='relative aspect-video w-full overflow-hidden rounded-xl bg-bg-weak-50 '>
+            <div className='relative aspect-video w-full overflow-hidden rounded-xl bg-[#F6F8FA] '>
               <Image
                 // Use displayData which contains URLs (blob or http)
                 src={displayData.images[currentImageIndex]}
@@ -176,7 +176,7 @@ export function Step3Review({
                   <button
                     key={index}
                     onClick={(e) => handleThumbnailClick(index, e)}
-                    className={'aspect-video w-32 h-24 flex-shrink-0 overflow-hidden rounded-lg border-2 border-none bg-bg-weak-50'}
+                    className={'aspect-video w-32 h-24 flex-shrink-0 overflow-hidden rounded-lg border-2 border-none bg-[#F6F8FA]'}
                   >
                     <Image
                       src={thumb}

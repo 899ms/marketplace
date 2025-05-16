@@ -112,7 +112,7 @@ function DayPicker({ defaultDate, onDayChange }: DayPickerProps) {
           '[&:nth-child(2)]:col-start-1 [&:nth-child(2)]:row-start-1',
           '[&:nth-last-child(2)]:col-start-5 [&:nth-last-child(2)]:row-start-1',
           {
-            'hover:bg-bg-weak-50': !isSameDay(day, selectedDayTemp),
+            'hover:bg-[#F6F8FA]': !isSameDay(day, selectedDayTemp),
             'transition duration-300 ease-out': isAnimating,
             '-translate-x-[calc(100%+4px)] last:translate-x-0':
               isAnimating && translateDir === -1,
@@ -151,7 +151,7 @@ function DayPicker({ defaultDate, onDayChange }: DayPickerProps) {
 
   return (
     <div className=''>
-      <div className='flex h-9 items-center justify-between gap-1.5 rounded-lg bg-bg-weak-50 px-1.5'>
+      <div className='flex h-9 items-center justify-between gap-1.5 rounded-lg bg-[#F6F8FA] px-1.5'>
         <CompactButton.Root
           size='large'
           variant='white'
