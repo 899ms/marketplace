@@ -198,11 +198,10 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                   asChild
                   variant="gray"
                   className={`
-                    cursor-pointer 
-                    border-gray-100             /* gray-600 border */
+                    cursor-pointer
                     ${idx % 2 === 0
-                      ? "bg-white border-[E1E4EA]"
-                      : "bg-gray-100"
+                      ? "bg-white border border-gray-100 hover:bg-[#F6F8FA] hover:border-[#F6F8FA]"
+                      : "bg-[#F6F8FA] border border-[#F6F8FA] hover:bg-white hover:border-gray-100"
                     }
                   `}
                 >
@@ -247,11 +246,10 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                   asChild
                   variant="gray"
                   className={`
-                    cursor-pointer 
-                    border-gray-100             /* gray-600 border */
+                    cursor-pointer
                     ${idx % 2 === 0
-                      ? "bg-white border-[E1E4EA] "
-                      : "bg-gray-100"
+                      ? "bg-white border border-gray-100 hover:bg-[#F6F8FA] hover:border-[#F6F8FA]"
+                      : "bg-[#F6F8FA] border border-[#F6F8FA] hover:bg-white hover:border-gray-100"
                     }
                   `}
                 >
@@ -282,6 +280,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                     bg-white
                     cursor-pointer
                     flex items-center
+                    hover:bg-[#F6F8FA] hover:text-black
                     ${isSelected ?
                       'text-[#525866] !border font-medium !border-[#525866]' :
                       'text-[#525866]'
