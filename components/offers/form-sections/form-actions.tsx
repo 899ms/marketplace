@@ -19,7 +19,7 @@ export function FormActions({ isSubmitting, onCancel }: FormActionsProps) {
       <Button
         type='button'
         disabled={isSubmitting}
-        className='text-black w-1/2 rounded-md border border-gray-300 bg-white px-4 py-2 hover:bg-gray-50'
+        className='text-black w-1/2 rounded-md border border-[#E1E4EA] bg-white px-4 py-2 hover:bg-gray-50 hover:border-none hover:bg-[#F5F7FA]'
         onClick={onCancel} // Add cancel handler if provided
       >
         {t('offers.formActions.cancel')}

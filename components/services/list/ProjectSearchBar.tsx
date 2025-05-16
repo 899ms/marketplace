@@ -84,7 +84,7 @@ export function ProjectSearchBar({
   };
 
   return (
-    <div className='mb-4 rounded-lg bg-[#E1E4EA] px-6 py-5'> {/* Adjust background color if needed */}
+    <div className='mb-4 rounded-xl bg-[#E1E4EA] px-6 py-5'> {/* Adjust background color if needed */}
       <div className='flex flex-wrap items-center gap-[8px]'>
         {/* Search Input */}
         <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3 max-w-[310px] '>
@@ -92,7 +92,7 @@ export function ProjectSearchBar({
           <Input
             type='search'
             placeholder={t('projects.search.placeholder')}
-            className='w-full max-w-[310px] rounded-[10px] border font-[400] border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE]' // Adjusted styles
+            className='hover:border-none hover:placeholder:text-[#525866] w-full max-w-[310px] rounded-[10px] border font-[400] border-[#CACFD8] bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE] hover:bg-[#F6F8FA] placeholder:text-[#99A0AE]' // Adjusted styles
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -100,8 +100,8 @@ export function ProjectSearchBar({
 
         {/* Deadline Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('deadline', value)}>
-          <SelectPrimitive.Trigger className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]'>
-            <SelectPrimitive.Value placeholder={t('projects.search.deadline')} />
+          <SelectPrimitive.Trigger className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000] hover:text-[#525866]'>
+            <SelectPrimitive.Value className='hover:text-[#525866]' placeholder={t('projects.search.deadline')} />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
             <SelectPrimitive.Item value='urgent'>{t('projects.search.urgent')}</SelectPrimitive.Item>
@@ -113,8 +113,8 @@ export function ProjectSearchBar({
         {/* Purpose Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('purpose', value)}>
           <SelectPrimitive.Trigger
-            className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]'>
-            <SelectPrimitive.Value placeholder={t('projects.search.purpose')} />
+            className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000] hover:text-[#525866]'>
+            <SelectPrimitive.Value className='hover:text-[#525866]' placeholder={t('projects.search.purpose')} />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
             <SelectPrimitive.Item value='mixing'>{t('projects.search.mixing')}</SelectPrimitive.Item>
@@ -125,8 +125,8 @@ export function ProjectSearchBar({
 
         {/* Posting Date Dropdown */}
         <SelectPrimitive.Root onValueChange={(value) => handleFilterChange('postingDate', value)}>
-          <SelectPrimitive.Trigger className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] border border-[#E1E4EA] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000]'>
-            <SelectPrimitive.Value placeholder={t('projects.search.postingDate')} />
+          <SelectPrimitive.Trigger className='w-full sm:flex-none sm:w-[200px] rounded-[0.6rem] bg-white px-3 py-2 text-[14px] data-[placeholder]:!text-[#000000] hover:text-[#525866]'>
+            <SelectPrimitive.Value className='hover:text-[#525866]' placeholder={t('projects.search.postingDate')} />
           </SelectPrimitive.Trigger>
           <SelectPrimitive.Content>
             <SelectPrimitive.Item value='today'>{t('projects.search.today')}</SelectPrimitive.Item>

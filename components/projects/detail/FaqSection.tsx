@@ -41,8 +41,8 @@ const FaqSection: React.FC<FaqSectionProps> = ({ initialFaqs }) => {
             key={idx}
             className={`
               overflow-hidden
-              border-b-[2px] border-stroke-soft-200
-              ${faq.isOpen ? 'bg-bg-weak-50 border-b-[0px]' : ''}
+              border-b-[2px] border-stroke-soft-200 hover:bg-[#F6F8FA]
+              ${faq.isOpen ? 'bg-[#F6F8FA] border-b-[0px]' : ''}
             `}
           >
             {/* Question row */}

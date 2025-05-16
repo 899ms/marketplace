@@ -231,7 +231,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
             />
 
             {/* 1) Work - Use workerData */}
-            <div className="mt-8 flex items-center justify-between">
+            <div className="mt-8 flex items-center justify-between mb-4">
               <h3 className="text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 pb-1 border-b-2 border-text-strong-950">
                 {t('users.profile.seller.page.work.title')}
               </h3>
@@ -305,7 +305,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
 
             {/* 3) Reviews - Use workerData */}
             <h3 className="inline-block text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">{t('users.profile.seller.page.reviews.title')}</h3>
-            <div className='mt-4 space-y-5 divide-y divide-stroke-soft-200'>
+            <div>
               {workerData.reviews.length > 0 ? (
                 workerData.reviews.map((r) => (
                   <ReviewItem key={r.id} review={r} />
@@ -367,7 +367,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
         );
       case 'reviews':
         return (
-          <div className='space-y-5 divide-y divide-stroke-soft-200'>
+          <div>
             {workerData.reviews.length > 0 ? (
               workerData.reviews.map((review) => (
                 <ReviewItem key={review.id} review={review} />
@@ -419,16 +419,16 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
               onValueChange={setActiveTab}
             >
               <TabMenuHorizontal.List className="border-y-0">
-                <TabMenuHorizontal.Trigger value='about' className="text-[24px] font-medium leading-8 tracking-normal text-center">
+                <TabMenuHorizontal.Trigger value='about' className="text-[24px] font-medium leading-8 tracking-normal text-center text-[#525866] hover:text-[#0E121B]">
                   {t('users.profile.seller.page.tabs.about')}
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='work' className="text-[24px] font-medium leading-8 tracking-normal text-center">
+                <TabMenuHorizontal.Trigger value='work' className="text-[24px] font-medium leading-8 tracking-normal text-center text-[#525866] hover:text-[#0E121B]">
                   {t('users.profile.seller.page.tabs.work')}
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='services' className="text-[24px] font-medium leading-8 tracking-normal text-center">
+                <TabMenuHorizontal.Trigger value='services' className="text-[24px] font-medium leading-8 tracking-normal text-center text-[#525866] hover:text-[#0E121B]">
                   {t('users.profile.seller.page.tabs.services')}
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='reviews' className="text-[24px] font-medium leading-8 tracking-normal text-center">
+                <TabMenuHorizontal.Trigger value='reviews' className="text-[24px] font-medium leading-8 tracking-normal text-center text-[#525866] hover:text-[#0E121B]">
                   {t('users.profile.seller.page.tabs.reviews')}
                 </TabMenuHorizontal.Trigger>
               </TabMenuHorizontal.List>

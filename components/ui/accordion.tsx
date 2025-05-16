@@ -30,11 +30,11 @@ const AccordionItem = React.forwardRef<
         'rounded-10 bg-bg-white-0 p-3.5 ring-1 ring-inset ring-stroke-soft-200',
         'transition duration-200 ease-out',
         // hover
-        'hover:bg-bg-weak-50 hover:ring-transparent',
+        'hover:bg-[#F6F8FA] hover:ring-transparent',
         // has-focus-visible
-        'has-[:focus-visible]:bg-bg-weak-50 has-[:focus-visible]:ring-transparent',
+        'has-[:focus-visible]:bg-[#F6F8FA] has-[:focus-visible]:ring-transparent',
         // open
-        'data-[state=open]:bg-bg-weak-50 data-[state=open]:ring-transparent',
+        'data-[state=open]:bg-[#F6F8FA] data-[state=open]:ring-transparent',
         className,
       )}
       {...rest}

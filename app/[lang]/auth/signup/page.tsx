@@ -20,7 +20,7 @@ export default async function SignupPage({ params }: { params: { lang: string } 
   }
 
   return (
-    <div className='flex min-h-screen items-center justify-center bg-bg-weak-50 px-4 py-12 sm:px-6 lg:px-8'>
+    <div className='flex min-h-screen items-center justify-center bg-[#F6F8FA] px-4 py-12 sm:px-6 lg:px-8'>
       <div className='w-full max-w-md space-y-8'>
         <SignupForm />
       </div>

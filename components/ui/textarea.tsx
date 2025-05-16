@@ -29,7 +29,7 @@ const Textarea = React.forwardRef<
             'ring-1 ring-inset ring-stroke-soft-200',
             'transition duration-200 ease-out',
             // hover
-            'hover:[&:not(:focus)]:bg-bg-weak-50',
+            'hover:[&:not(:focus)]:bg-[#F6F8FA]',
             !hasError && [
               // hover
               'hover:[&:not(:focus)]:ring-transparent',
@@ -42,7 +42,7 @@ const Textarea = React.forwardRef<
               // focus
               'focus:shadow-button-error-focus focus:ring-error-base',
             ],
-            disabled && ['bg-bg-weak-50 ring-transparent'],
+            disabled && ['bg-[#F6F8FA] ring-transparent'],
           ],
           !disabled && [
             // placeholder
@@ -92,17 +92,17 @@ ResizeHandle.displayName = TEXTAREA_RESIZE_HANDLE_NAME;
 type TextareaProps = React.TextareaHTMLAttributes<HTMLTextAreaElement> &
   (
     | {
-        simple: true;
-        children?: never;
-        containerClassName?: never;
-        hasError?: boolean;
-      }
+      simple: true;
+      children?: never;
+      containerClassName?: never;
+      hasError?: boolean;
+    }
     | {
-        simple?: false;
-        children?: React.ReactNode;
-        containerClassName?: string;
-        hasError?: boolean;
-      }
+      simple?: false;
+      children?: React.ReactNode;
+      containerClassName?: string;
+      hasError?: boolean;
+    }
   );
 
 const TextareaRoot = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
@@ -125,9 +125,9 @@ const TextareaRoot = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
             'ring-1 ring-inset ring-stroke-soft-200',
             'transition duration-200 ease-out',
             // hover
-            'hover:[&:not(:focus-within)]:bg-bg-weak-50',
+            'hover:[&:not(:focus-within)]:bg-[#F6F8FA]',
             // disabled
-            'has-[[disabled]]:pointer-events-none has-[[disabled]]:bg-bg-weak-50 has-[[disabled]]:ring-transparent',
+            'has-[[disabled]]:pointer-events-none has-[[disabled]]:bg-[#F6F8FA] has-[[disabled]]:ring-transparent',
           ],
           !hasError && [
             // hover

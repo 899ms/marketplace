@@ -70,7 +70,7 @@ export function WorkFiles({
         <Accordion.Header className="px-4 py-3 border-b border-stroke-soft-200">
           <Accordion.Trigger className="w-full text-[16px] text-[#0E121B] font-medium p-0 m-0 flex justify-between items-center hover:no-underline">
             {t('orders.workFiles.title')}
-            <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-gray-500 transition-transform duration-200 group-data-[state=open]/accordion:rotate-180" />
+            <Accordion.Arrow openIcon={RiArrowDownSLine} closeIcon={RiArrowDownSLine} className="size-5 text-[#525866] transition-transform duration-200 group-data-[state=open]/accordion:rotate-180 hover:bg-[#F5F7FA] rounded-md" />
           </Accordion.Trigger>
         </Accordion.Header>
 

@@ -37,7 +37,7 @@ export default function OrderRowSeller({ order }: Props) {
   const detailLink = `/${i18n.language}/orders/detail/${order.id}`;
 
   return (
-    <Table.Row className='border-b border-[#E1E4EA]'>
+    <Table.Row className='border-b border-[#E1E4EA] group'>
       {/* -------- From (buyer) -------- */}
       <Table.Cell className=" align-center whitespace-nowrap">
         <div className="flex items-center gap-4">
@@ -80,7 +80,7 @@ export default function OrderRowSeller({ order }: Props) {
       {/* -------- Rating -------- */}
       <Table.Cell className=" align-center whitespace-nowrap">
         {typeof order.rating === 'number' ? (
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 transition-transform duration-200 group-hover:-translate-x-4">
             <RiStarFill className="size-4 text-yellow-500" />
             <span className='text-[14px] text-[#525866] leading-none'>{order.rating.toFixed(1)}</span>
           </div>

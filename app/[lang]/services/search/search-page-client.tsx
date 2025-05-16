@@ -551,13 +551,13 @@ export default function SearchPageClient() {
               onValueChange={handleTabChange}
             >
               <TabMenuHorizontal.List className="flex justify-center items-center px-4 border-y-0 gap-2">
-                <TabMenuHorizontal.Trigger value='Service' className="text-[16px] px-4 font-medium leading-8 tracking-normal text-center">
+                <TabMenuHorizontal.Trigger value='Service' className="text-[16px] px-4 font-medium leading-8 tracking-normal text-center hover:text-black">
                   {t('services.search.page.tabs.service')}
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='Worker' className="text-[16px] px-4 font-medium leading-8 tracking-normal text-center">
+                <TabMenuHorizontal.Trigger value='Worker' className="text-[16px] px-4 font-medium leading-8 tracking-normal text-center hover:text-black">
                   {t('services.search.page.tabs.worker')}
                 </TabMenuHorizontal.Trigger>
-                <TabMenuHorizontal.Trigger value='Project' className="text-[16px] px-4 font-medium leading-8 tracking-normal text-center">
+                <TabMenuHorizontal.Trigger value='Project' className="text-[16px] px-4 font-medium leading-8 tracking-normal text-center hover:text-black">
                   {t('services.search.page.tabs.project')}
                 </TabMenuHorizontal.Trigger>
               </TabMenuHorizontal.List>
@@ -780,7 +780,7 @@ export default function SearchPageClient() {
                 </div>
               ) : projects.length > 0 ? (
                 <>
-                  <div className='flex flex-col space-y-4'>
+                  <div className='flex flex-col space-y-0'>
                     {projects.map((project) => {
                       console.log(`[SearchPageClient] Checking project ID: ${project.id}, User ID: ${user?.id}`);
                       console.log('[SearchPageClient] Current userContracts:', userContracts);
@@ -803,7 +803,7 @@ export default function SearchPageClient() {
                           passHref
                           legacyBehavior
                         >
-                          <a className='block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg'>
+                          <a className='block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 hover:bg-[#E5E7EB] mt-0 py[16px]'>
                             <ProjectCard
                               title={project.title}
                               infoBadges={[

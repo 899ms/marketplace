@@ -71,7 +71,7 @@ const AttachmentsSection: React.FC<AttachmentsSectionProps> = ({
               {isAudio ? (
                 <button
                   onClick={() => handlePlayAudio(attachment)}
-                  className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer text-left w-full md:w-auto bg-[#FDFDFD] gap-16"
+                  className="inline-flex items-center rounded-xl border border-stroke-soft-200 p-[14px] hover:bg-[#F6F8FA] dark:hover:bg-gray-700/50 transition-colors duration-150 cursor-pointer text-left w-full md:w-auto bg-[#FDFDFD] gap-16"
                   title={t('projects.attachments.playAudio', { name: attachment.name })}
                 >
                   <span className="text-[14px] pr-[16px] font-medium text-text-strong-950 truncate" title={attachment.name}>

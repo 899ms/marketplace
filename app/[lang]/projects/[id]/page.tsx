@@ -466,18 +466,18 @@ export default function ProjectDetailPage() {
             href={`/${lang}/home`}
             className='text-text-sub-600 text-icon-secondary-400 hover:text-icon-primary-500'
           >
-            <RiHomeSmile2Line className='size-5' />
+            <RiHomeSmile2Line className='size-5 hover:text-[#0E121B]' />
           </Link>
           <span className='text-text-sub-600'>/</span>
           {/* Updated Find Project/Works Link */}
           <Link
             href={`/${lang}/services/search?tab=Project`}
-            className='font-medium text-text-sub-600 text-text-strong-950'
+            className='font-medium text-text-sub-600 text-text-strong-950 hover:text-[#0E121B] hover:underline'
           >
             {findWorksLabel} { /* Keep dynamic label for now */}
           </Link>
           <span className='text-text-sub-600'>/</span>
-          <span className='font-medium text-text-sub-600 text-text-strong-950'>
+          <span className='font-medium text-text-sub-600 text-text-strong-950 hover:text-[#0E121B] hover:underline'>
             {t('projects.detail.page.breadcrumbs.projectDetail')}
           </span>
         </div>

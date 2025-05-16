@@ -98,7 +98,7 @@ export default function OrderRowBuyer({ engagement }: Props) {
         <div className='flex flex-row item-center gap-2 capitalize'>
           <Tag.Root
             variant="stroke"
-            className='flex flex-row item-center gap-2 capitalize'
+            className='flex flex-row item-center gap-2 capitalize pointer-events-none'
           >
             {engagement.status && (engagement.status === 'pending' || engagement.status === 'close' || engagement.status === 'dispute' || engagement.status === 'overdue') && (
               renderStatusIcon(engagement.status)
@@ -112,7 +112,7 @@ export default function OrderRowBuyer({ engagement }: Props) {
       <Table.Cell className="px-4 py-3 text-right align-top whitespace-nowrap">
         <Dropdown.Root>
           <Dropdown.Trigger asChild>
-            <button className="p-1 text-text-sub-400 hover:text-text-strong-950 focus:outline-none">
+            <button className="p-1 text-[#525866] hover:text-text-strong-950 focus:outline-none">
               <RiMore2Fill className="size-5" />
             </button>
           </Dropdown.Trigger>

@@ -40,9 +40,9 @@ export const tagVariants = tv({
           // base
           'bg-bg-white-0 ring-stroke-soft-200',
           // hover
-          'hover:bg-bg-weak-50 hover:ring-transparent',
+          'hover:bg-[#F6F8FA] hover:ring-transparent',
           // focus-within
-          'focus-within:bg-bg-weak-50 focus-within:ring-transparent',
+          'focus-within:bg-[#F6F8FA] focus-within:ring-transparent',
         ],
         dismissIcon: [
           // hover
@@ -54,7 +54,7 @@ export const tagVariants = tv({
       gray: {
         root: [
           // base
-          'bg-bg-weak-50 ring-transparent',
+          'bg-[#F6F8FA] ring-transparent',
           // hover
           'hover:bg-bg-white-0 hover:ring-stroke-soft-200',
         ],
@@ -62,7 +62,7 @@ export const tagVariants = tv({
     },
     disabled: {
       true: {
-        root: 'pointer-events-none bg-bg-weak-50 text-text-disabled-300 ring-transparent',
+        root: 'pointer-events-none bg-[#F6F8FA] text-text-disabled-300 ring-transparent',
         icon: 'text-text-disabled-300 [&:not(.remixicon)]:opacity-[.48]',
         dismissIcon: 'text-text-disabled-300',
       },

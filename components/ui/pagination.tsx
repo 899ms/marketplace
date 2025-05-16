@@ -28,13 +28,13 @@ const paginationVariants = tv({
           // base
           'h-8 min-w-8 rounded-lg px-1.5 ring-1 ring-inset ring-stroke-soft-200',
           // hover
-          'hover:bg-bg-weak-50 hover:ring-transparent',
+          'hover:bg-[#F6F8FA] hover:ring-transparent',
         ],
         navButton: [
           // base
           'size-8 rounded-lg',
           // hover
-          'hover:bg-bg-weak-50',
+          'hover:bg-[#F6F8FA]',
         ],
       },
       rounded: {
@@ -43,13 +43,13 @@ const paginationVariants = tv({
           // base
           'h-8 min-w-8 rounded-full px-1.5 ring-1 ring-inset ring-stroke-soft-200',
           // hover
-          'hover:bg-bg-weak-50 hover:ring-transparent',
+          'hover:bg-[#F6F8FA] hover:ring-transparent',
         ],
         navButton: [
           // base
           'size-8 rounded-full',
           // hover
-          'hover:bg-bg-weak-50',
+          'hover:bg-[#F6F8FA]',
         ],
       },
       group: {
@@ -58,13 +58,13 @@ const paginationVariants = tv({
           // base
           'h-8 min-w-10 px-1.5',
           // hover
-          'hover:bg-bg-weak-50',
+          'hover:bg-[#F6F8FA]',
         ],
         navButton: [
           // base
           'h-8 w-10 px-1.5',
           // hover
-          'hover:bg-bg-weak-50',
+          'hover:bg-[#F6F8FA]',
         ],
       },
     },

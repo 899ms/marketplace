@@ -170,16 +170,16 @@ export default function Navbar() {
           </Link>
           {/* Navigation Links Container */}
           <div className='text-text-secondary-600 hidden items-center gap-5 text-label-md lg:flex'>
-            <Link href={`/${i18n.language}/services/search?tab=Worker`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'>
+            <Link href={`/${i18n.language}/services/search?tab=Worker`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-[#F6F8FA] transition-colors'>
               {t('navbar.links.findWorker')}
             </Link>
-            <Link href={`/${i18n.language}/services/search?tab=Service`} className='hover:text-text-strong-950 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'>
+            <Link href={`/${i18n.language}/services/search?tab=Service`} className='hover:text-text-strong-950  px-2 py-1 rounded-md hover:bg-[#F6F8FA] transition-colors'>
               {t('navbar.links.findServices')}
             </Link>
-            <Link href={`/${i18n.language}/services/search?tab=Project`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'>
+            <Link href={`/${i18n.language}/services/search?tab=Project`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-[#F6F8FA] transition-colors'>
               {t('navbar.links.findProjects')}
             </Link>
-            <Link href={`/${i18n.language}/bonus`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-bg-weak-50 transition-colors'>
+            <Link href={`/${i18n.language}/bonus`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-[#F6F8FA] transition-colors'>
               {t('navbar.links.bonus')}
             </Link>
           </div>
@@ -246,14 +246,14 @@ export default function Navbar() {
 
           {user ? (
             <>
-              <button className='text-icon-secondary-400 hover:bg-bg-neutral-subtle-100 relative rounded-md p-2'>
+              <button className='text-icon-secondary-400 hover:bg-[#F6F8FA] relative rounded-md p-2'>
                 <span className='absolute right-1.5 top-1.5 block h-2 w-2 rounded-full bg-error-base ring-2 ring-bg-white-0'></span>
                 <RiNotification3Line className='size-5' />
               </button>
 
               <Dropdown.Root open={dropdownOpen} onOpenChange={setDropdownOpen}>
                 <Dropdown.Trigger asChild>
-                  <button onClick={() => setDropdownOpen((prev) => !prev)} className='text-text-secondary-600 hover:bg-bg-neutral-subtle-100 flex items-center rounded-10 border border-stroke-soft-200 p-1 pr-2 h-10 bg-white'>
+                  <button onClick={() => setDropdownOpen((prev) => !prev)} className='text-text-secondary-600 hover:bg-[#F6F8FA] flex items-center rounded-10 border border-stroke-soft-200 p-1 pr-2 h-10 bg-white'>
                     {user.user_metadata?.avatar_url ? <Avatar.Root size='32'>
                       <Avatar.Image
                         src={user.user_metadata.avatar_url ? user.user_metadata.avatar_url : 'https://via.placeholder.com/40'}
@@ -343,7 +343,10 @@ export default function Navbar() {
                           {t('navbar.account.balance')}
                         </div>
                         <div className='text-label-md font-medium text-text-strong-950'>
-                          12,000.05
+                          {userProfile?.balance?.toLocaleString('en-US', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2
+                          }) ?? '0.00'}
                         </div>
                       </div>
                       <Button.Root variant='primary' mode='stroke' size='small'>

@@ -89,12 +89,12 @@ export function ServiceSearchBar({
     <div className='mb-[24px] rounded-lg bg-[#E1E4EA] px-6 py-5'>
       <div className='flex flex-wrap items-center gap-[8px]'>
         {/* Search Input */}
-        <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3 max-w-[310px] '>
+        <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3 max-w-[310px]'>
           <RiSearchLine className='absolute left-3 top-1/2 size-5 -translate-y-1/2 text-[#525866]' />
           <Input
             type="search"
             placeholder={t('services.search.placeholder')}
-            className="w-full max-w-[310px] rounded-[10px] border font-[400] border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE]"
+            className="w-full max-w-[310px] rounded-[10px] border font-[400] border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE] hover:bg-[#F6F8FA] hover:text-text-strong-950 transition-colors duration-150"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

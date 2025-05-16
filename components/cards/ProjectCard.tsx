@@ -68,7 +68,7 @@ export function ProjectCard({
   return (
     <div
       className={cn(
-        'overflow-hidden border-b border-stroke-soft-200 bg-bg-white-0 p-4 shadow-sm transition-shadow hover:shadow-md',
+        'overflow-hidden border-b border-stroke-soft-200 p-4 shadow-sm transition-shadow hover:shadow-md',
         className,
       )}
     >
@@ -105,7 +105,7 @@ export function ProjectCard({
               <Tag.Root
                 key={skill}
                 variant={index === 0 ? 'stroke' : 'gray'}
-                className={index === 0 ? ' text-[10px] border border-black text-black' : 'text-[10px] border border-[#E2E4E9] bg-white text-[#525866]'}
+                className={index === 0 ? 'text-[10px] border border-black text-black hover:bg-[#F6F8FA]' : 'text-[10px] border border-[#E2E4E9] bg-white text-[#525866] hover:bg-[#F6F8FA] hover:text-black'}
               >
                 {skill}
               </Tag.Root>

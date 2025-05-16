@@ -59,12 +59,12 @@ export default function TabsFiltersBar({
                 value={key}
                 className={
                   key === 'all'
-                    ? 'rounded-lg px-12 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'
+                    ? 'rounded-lg px-12 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#0E121B] !data-[state=active]:shadow-md hover:text-[#525866]'
                     : key === 'inProgress'
-                      ? 'rounded-lg px-4 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'
+                      ? 'rounded-lg px-4 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#0E121B] !data-[state=active]:shadow-md hover:text-[#525866]'
                       : key === 'completed'
-                        ? 'rounded-lg px-4 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'
-                        : 'rounded-lg px-8 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#525866] !data-[state=active]:shadow-md'}
+                        ? 'rounded-lg px-4 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#0E121B] !data-[state=active]:shadow-md hover:text-[#525866]'
+                        : 'rounded-lg px-8 py-1.5 text-[14px] text-[#99A0AE] font-medium data-[state=active]:bg-white data-[state=active]:text-[#0E121B] !data-[state=active]:shadow-md hover:text-[#525866]  '}
               >
                 {t(`tabsFiltersBar.tabs.${key}`)}
               </Tabs.Trigger>
@@ -75,13 +75,13 @@ export default function TabsFiltersBar({
         {/* -------- Search + filters -------- */}
         <div className="flex gap-2 items-center">
           {/* Search */}
-          <div className="relative lg:w-[300px]">
-            <RiSearch2Line className="pointer-events-none absolute left-2 top-1/2 -translate-y-1/2 size-4 text-[#99A0AE]" />
+          <div className="relative lg:w-[300px] !hover:text-[#525866] !hover:placeholder:text-[#525866] hover:bg-[#F5F7FA] rounded-lg !hover:border-none text-[#868C98] group">
+            <RiSearch2Line className=" absolute left-2 top-1/2 -translate-y-1/2 size-4 text-[#868C98] group-hover:text-[#525866]" />
             <Input
               placeholder={t('tabsFiltersBar.search.placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-9 w-full rounded-lg border border-[#E1E4EA] pl-8 pr-3 text-[12px] placeholder:text-[#99A0AE] focus:outline-none focus:ring-1 focus:ring-ring"
+              className="h-9 w-full rounded-lg border border-[#E1E4EA] hover:border-none hover:placeholder:text-[#525866] pl-8 pr-3 text-[12px] placeholder:text-[#868C98] focus:outline-none focus:ring-1 focus:ring-ring"
             />
           </div>
 
@@ -89,7 +89,7 @@ export default function TabsFiltersBar({
             /* Buyer – date picker */
             <Dropdown.Root>
               <Dropdown.Trigger asChild>
-                <button className="inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-2 text-[14px] text-gray-500 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                <button className="inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-2 text-[14px] text-gray-500 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:border-none hover:bg-[#F5F7FA] hover:text-[#0E121B]">
                   {/* <Image src={calendarIcon} alt={t('tabsFiltersBar.calendar.alt')} width={20} height={20} /> */}
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M13.332 1.66667V4.16667" stroke="#868C98" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />

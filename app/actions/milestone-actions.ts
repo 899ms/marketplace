@@ -131,7 +131,7 @@ export async function addMilestone(
     }
 
     console.log(
-      `[Server Action] Milestone added successfully: ${createdMilestone.id}`,
+      `[Server Action] Milestone added successfully: ${createdMilestone.milestone?.id}`,
     );
 
     // Revalidate path

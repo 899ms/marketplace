@@ -19,14 +19,14 @@ export const buttonGroupVariants = tv({
       'border border-stroke-soft-200',
       'transition duration-200 ease-out',
       // hover
-      'hover:bg-bg-weak-50',
+      'hover:bg-[#F6F8FA]',
       // focus
-      'focus:bg-bg-weak-50 focus:outline-none',
+      'focus:bg-[#F6F8FA] focus:outline-none',
       // active
-      'data-[state=on]:bg-bg-weak-50',
+      'data-[state=on]:bg-[#F6F8FA]',
       'data-[state=on]:text-text-strong-950',
       // disabled
-      'disabled:pointer-events-none disabled:bg-bg-weak-50',
+      'disabled:pointer-events-none disabled:bg-[#F6F8FA]',
       'disabled:text-text-disabled-300',
     ],
     icon: 'shrink-0',

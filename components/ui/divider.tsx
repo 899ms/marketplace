@@ -39,7 +39,7 @@ export const dividerVariants = tv({
       ],
       'solid-text': [
         // base
-        'bg-bg-weak-50 px-5 py-1.5 uppercase',
+        'bg-[#F6F8FA] px-5 py-1.5 uppercase',
         'text-subheading-xs text-text-soft-400',
       ],
     },

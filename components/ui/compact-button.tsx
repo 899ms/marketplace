@@ -29,7 +29,7 @@ export const compactButtonVariants = tv({
           // base
           'border border-stroke-soft-200 bg-bg-white-0 text-text-sub-600 shadow-regular-xs',
           // hover
-          'hover:border-transparent hover:bg-bg-weak-50 hover:text-text-strong-950 hover:shadow-none',
+          'hover:border-transparent hover:bg-[#F6F8FA] hover:text-text-strong-950 hover:shadow-none',
           // focus
           'focus-visible:border-transparent focus-visible:bg-bg-strong-950 focus-visible:text-text-white-0 focus-visible:shadow-none',
         ],
@@ -39,7 +39,7 @@ export const compactButtonVariants = tv({
           // base
           'bg-transparent text-text-sub-600',
           // hover
-          'hover:bg-bg-weak-50 hover:text-text-strong-950',
+          'hover:bg-[#F6F8FA] hover:text-text-strong-950',
           // focus
           'focus-visible:bg-bg-strong-950 focus-visible:text-text-white-0',
         ],
@@ -49,7 +49,7 @@ export const compactButtonVariants = tv({
           // base
           'bg-bg-white-0 text-text-sub-600 shadow-regular-xs',
           // hover
-          'hover:bg-bg-weak-50 hover:text-text-strong-950',
+          'hover:bg-[#F6F8FA] hover:text-text-strong-950',
           // focus
           'focus-visible:bg-bg-strong-950 focus-visible:text-text-white-0',
         ],
