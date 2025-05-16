@@ -170,12 +170,13 @@ export default function Navbar() {
           </Link>
           {/* Navigation Links Container */}
           <div className='text-text-secondary-600 hidden items-center gap-5 text-label-md lg:flex'>
-            <Link href={`/${i18n.language}/services/search?tab=Worker`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-[#F6F8FA] transition-colors'>
-              {t('navbar.links.findWorker')}
-            </Link>
             <Link href={`/${i18n.language}/services/search?tab=Service`} className='hover:text-text-strong-950  px-2 py-1 rounded-md hover:bg-[#F6F8FA] transition-colors'>
               {t('navbar.links.findServices')}
             </Link>
+            <Link href={`/${i18n.language}/services/search?tab=Worker`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-[#F6F8FA] transition-colors'>
+              {t('navbar.links.findWorker')}
+            </Link>
+
             <Link href={`/${i18n.language}/services/search?tab=Project`} className='hover:text-text-strong-950 px-2 py-1 rounded-md hover:bg-[#F6F8FA] transition-colors'>
               {t('navbar.links.findProjects')}
             </Link>

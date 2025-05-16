@@ -84,7 +84,7 @@ export function ProjectSearchBar({
   };
 
   return (
-    <div className='mb-4 rounded-xl bg-[#E1E4EA] px-6 py-5'> {/* Adjust background color if needed */}
+    <div className='mb-4 rounded-xl bg-[#E1E4EA] px-6 py-5 h-[15%]'> {/* Adjust background color if needed */}
       <div className='flex flex-wrap items-center gap-[8px]'>
         {/* Search Input */}
         <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3 max-w-[310px] '>

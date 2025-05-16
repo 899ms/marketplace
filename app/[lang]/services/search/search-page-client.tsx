@@ -541,9 +541,9 @@ export default function SearchPageClient() {
 
   return (
     <>
-      <div className='flex flex-1 gap-6 py-8 h-full mx-auto w-full max-w-[1376px]'>
+      <div className='flex flex-1 gap-6 pt-8 pb-2 max-h-[85vh] mx-auto w-full max-w-[1376px]'>
         {/* Left Column: Tabs + Filters */}
-        <div className='w-full max-w-[342px] flex-shrink-0 flex flex-col h-full space-y-4'>
+        <div className='w-full max-w-[342px] flex-shrink-0 flex flex-col h-[85vh] space-y-4'>
           {/* Tab Navigation */}
           <div className='border-b border-stroke-soft-200 flex-shrink-0'>
             <TabMenuHorizontal.Root
@@ -582,7 +582,7 @@ export default function SearchPageClient() {
         </div>
 
         {/* Right Column: Tab Content */}
-        <div className='w-full max-w-[1010px] flex-1 space-y-4 min-w-0'>
+        <div className='w-full max-w-[1010px] flex-1 space-y-4 min-w-0 max-h-full'>
           {/* Search Bars */}
           {activeTab === 'Service' && (
             <ServiceSearchBar
@@ -603,7 +603,7 @@ export default function SearchPageClient() {
 
           {/* Services Grid */}
           {activeTab === 'Service' && (
-            <>
+            <div className='h-[85%] overflow-y-auto custom-scrollbar'>
               {serviceIsLoading ? (
                 <div className='grid grid-cols-3 gap-4'>
                   {[...Array(itemsPerPage)].map((_, i) => (
@@ -670,12 +670,12 @@ export default function SearchPageClient() {
                   </p>
                 </div>
               )}
-            </>
+            </div>
           )}
 
           {/* Workers Grid */}
           {activeTab === 'Worker' && (
-            <>
+            <div className='h-[100%] overflow-y-auto custom-scrollbar'>
               {workerIsLoading ? (
                 <div className='grid grid-cols-2 gap-4'>
                   {[...Array(itemsPerPage)].map((_, i) => (
@@ -740,14 +740,14 @@ export default function SearchPageClient() {
                   </p>
                 </div>
               )}
-            </>
+            </div>
           )}
 
           {/* Project Tab */}
           {activeTab === 'Project' && (
-            <>
+            <div className='h-[85%] overflow-y-auto custom-scrollbar'>
               {projectIsLoading || contractsLoading ? (
-                <div className='flex flex-col space-y-4'>
+                <div className='flex flex-col space-y-4 '>
                   {[...Array(5)].map((_, i) => (
                     <div
                       key={i}
@@ -779,7 +779,7 @@ export default function SearchPageClient() {
                   ))}
                 </div>
               ) : projects.length > 0 ? (
-                <>
+                <div className=''>
                   <div className='flex flex-col space-y-0'>
                     {projects.map((project) => {
                       console.log(`[SearchPageClient] Checking project ID: ${project.id}, User ID: ${user?.id}`);
@@ -840,7 +840,7 @@ export default function SearchPageClient() {
                   </div>
 
                   {totalProjectPages > 1 && (
-                    <div className='flex justify-center gap-2 mt-6'>
+                    <div className='flex justify-center items-center gap-2 mt-6'>
                       <button
                         onClick={handleProjectPrevPage}
                         disabled={projectPage === 1}
@@ -860,7 +860,7 @@ export default function SearchPageClient() {
                       </button>
                     </div>
                   )}
-                </>
+                </div>
               ) : (
                 <div className='flex flex-col items-center justify-center py-12 text-center'>
                   <p className='text-lg font-medium mb-2'>{t('services.search.page.noResults.projects.title')}</p>
@@ -869,7 +869,7 @@ export default function SearchPageClient() {
                   </p>
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>
