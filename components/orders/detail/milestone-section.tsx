@@ -191,7 +191,7 @@ export function MilestoneSection({
         <Accordion.Content className="p-[16px]">
           <div className="space-y-[24px] mt-4 ">
             {milestones.map((milestone) => (
-              <div key={milestone.id} className="flex items-start gap-3 pb-2.5">
+              <div key={milestone.id} className="flex items-center gap-3 pb-2.5">
                 {/* status icon */}
                 <div className="mt-1 flex-shrink-0">
                   {milestone.status === 'completed' ? (
@@ -199,9 +199,9 @@ export function MilestoneSection({
                       <RiCheckFill className="h-4 w-4" />
                     </div>
                   ) : (
-                    <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                      <RiTimeLine className="h-4 w-4 text-gray-400" />
-                    </div>
+                    // <div className="w-6 h-6 rounded-full border-2 border-gray-300 flex items-center justify-center">
+                    <RiTimeLine className="h-6 w-6 text-gray-400" />
+                    // </div> 
                   )}
                 </div>
 
