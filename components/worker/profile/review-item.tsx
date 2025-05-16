@@ -11,7 +11,7 @@ interface ReviewItemProps {
 
 export function ReviewItem({ review }: ReviewItemProps) {
   return (
-    <div className="border-stroke-soft-200 py-4 border-b hover:bg-[#F5F7FA]">
+    <div className="border-stroke-soft-200 py-4 border-b hover:bg-[#F5F7FA] px-[16px]">
       {/* Top row: avatar + name on left, price + like on right */}
       <div className="flex items-start justify-between mb-3">
         {/* left */}
