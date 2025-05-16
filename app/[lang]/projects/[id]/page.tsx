@@ -455,8 +455,8 @@ export default function ProjectDetailPage() {
   const projectLink = 'https://www.example.com'; // Placeholder - not in JobSchema
 
   // Adjust breadcrumb logic based on role if needed
-  const findWorksLabel = isOwner || isBuyerVisitor ? 'Find Project' : 'Find Works';
-  const findWorksLink = isOwner || isBuyerVisitor ? '/projects' : '/jobs'; // Example adjustment
+  const findWorksLabel = isOwner || isBuyerVisitor ? 'Find Project' : 'Find Project';
+  const findWorksLink = isOwner || isBuyerVisitor ? '/projects' : '/projects'; // Example adjustment
 
   return (
     <div className='container mx-auto  py-10 px-1   max-w-[1200px]'>
@@ -476,7 +476,7 @@ export default function ProjectDetailPage() {
             href={`/${lang}/services/search?tab=Project`}
             className='font-medium text-text-sub-600 text-text-strong-950 hover:text-[#0E121B] hover:underline'
           >
-            {findWorksLabel} { /* Keep dynamic label for now */}
+            {t('projects.detail.page.breadcrumbs.findProject')} { /* Keep dynamic label for now */}
           </Link>
           <span className='text-text-sub-600'>/</span>
           <span className='font-medium text-text-sub-600 text-text-strong-950 hover:text-[#0E121B] hover:underline'>
