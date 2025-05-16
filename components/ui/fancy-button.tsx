@@ -19,7 +19,7 @@ export const fancyButtonVariants = tv({
       'focus:outline-none',
       // disabled
       'disabled:pointer-events-none disabled:text-text-disabled-300',
-      'disabled:bg-bg-weak-50 disabled:bg-none disabled:shadow-none disabled:before:hidden disabled:after:hidden',
+      'disabled:bg-[#F6F8FA] disabled:bg-none disabled:shadow-none disabled:before:hidden disabled:after:hidden',
     ],
     icon: 'relative z-10 size-5 shrink-0',
   },
@@ -39,7 +39,7 @@ export const fancyButtonVariants = tv({
           // base
           'bg-bg-white-0 text-text-sub-600 shadow-fancy-buttons-stroke',
           // hover
-          'hover:bg-bg-weak-50 hover:text-text-strong-950 hover:shadow-none',
+          'hover:bg-[#F6F8FA] hover:text-text-strong-950 hover:shadow-none',
         ],
       },
     },

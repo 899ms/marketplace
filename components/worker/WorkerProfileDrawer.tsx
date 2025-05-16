@@ -316,7 +316,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                       text-sm font-medium text-[#525866] 
                       shadow-[0_1px_2px_0_rgba(10,13,20,0.03)] 
                       transition-colors
-                      hover:bg-bg-weak-50
+                      hover:bg-[#F6F8FA]
                       disabled:opacity-50 disabled:cursor-not-allowed
                     "
                     onClick={handleHireClick}
@@ -373,7 +373,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     </FancyButton.Root>
                   )}
 
-                  <button className="rounded-full text-[#525866] transition-colors hover:bg-bg-weak-50 hover:text-red-500" onClick={handleLikeStatus}>
+                  <button className="rounded-full text-[#525866] transition-colors hover:bg-[#F6F8FA] hover:text-red-500" onClick={handleLikeStatus}>
                     {!likeStatus ? <RiHeart3Line className="size-[28px]" /> : <RiHeart3Fill className="size-[28px] text-red-500" />}
                   </button>
                 </div>

@@ -117,7 +117,7 @@ const commandItemVariants = tv({
     'cursor-pointer text-paragraph-sm text-text-strong-950',
     'transition duration-200 ease-out',
     // hover/selected
-    'data-[selected=true]:bg-bg-weak-50',
+    'data-[selected=true]:bg-[#F6F8FA]',
   ],
   variants: {
     size: {
@@ -184,7 +184,7 @@ function CommandFooterKeyBox({
   return (
     <div
       className={cn(
-        'flex size-5 shrink-0 items-center justify-center rounded bg-bg-weak-50 text-text-sub-600 ring-1 ring-inset ring-stroke-soft-200',
+        'flex size-5 shrink-0 items-center justify-center rounded bg-[#F6F8FA] text-text-sub-600 ring-1 ring-inset ring-stroke-soft-200',
         className,
       )}
       {...rest}

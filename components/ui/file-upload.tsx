@@ -20,7 +20,7 @@ const FileUpload = React.forwardRef<
         'flex w-full cursor-pointer flex-col items-center gap-5 rounded-xl border border-dashed border-stroke-sub-300 bg-bg-white-0 p-8 text-center',
         'transition duration-200 ease-out',
         // hover
-        'hover:bg-bg-weak-50',
+        'hover:bg-[#F6F8FA]',
         className,
       )}
       {...rest}

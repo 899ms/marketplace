@@ -13,7 +13,7 @@ const FilterTag: React.FC<FilterTagProps> = ({ label, onRemove }) => {
   const { t } = useTranslation();
 
   return (
-    <div className='text-xs text-text-secondary-600 flex items-center gap-1 rounded-md bg-bg-weak-50 px-2 py-1'>
+    <div className='text-xs text-text-secondary-600 flex items-center gap-1 rounded-md bg-[#F6F8FA] px-2 py-1'>
       <span className='truncate'>{label}</span>
       <button
         onClick={onRemove}

@@ -50,11 +50,11 @@ const TabMenuVerticalTrigger = React.forwardRef<
         'grid auto-cols-auto grid-flow-col grid-cols-[auto,minmax(0,1fr)] items-center gap-1.5',
         'transition duration-200 ease-out',
         // hover
-        'hover:bg-bg-weak-50',
+        'hover:bg-[#F6F8FA]',
         // focus
         'focus:outline-none',
         // active
-        'data-[state=active]:bg-bg-weak-50 data-[state=active]:text-text-strong-950',
+        'data-[state=active]:bg-[#F6F8FA] data-[state=active]:text-text-strong-950',
         className,
       )}
       {...rest}
