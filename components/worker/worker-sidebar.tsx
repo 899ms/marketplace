@@ -87,7 +87,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
             </div>
           </div>
           <div className='text-text-secondary-600 flex items-center gap-2 mt-1 font-medium'>
-            <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866]'>
+            <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866] hover:bg-[#F6F8FA] rounded-md'>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M7.99978 5.38672V7.29339L7.32645 7.06005C6.98645 6.94005 6.77979 6.82672 6.77979 6.24672C6.77979 5.77339 7.13312 5.38672 7.56645 5.38672H7.99978Z" fill="#F27B2C" />
                 <path d="M10.22 9.75321C10.22 10.2265 9.86667 10.6132 9.43333 10.6132H9V8.70654L9.67333 8.93988C10.0133 9.05988 10.22 9.17321 10.22 9.75321Z" fill="#F27B2C" />
@@ -96,7 +96,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
               {' '}
               {t('worker.salary')}
             </span>
-            <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866]'>
+            <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866] hover:bg-[#F6F8FA] rounded-md'>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <g clipPath="url(#clip0_24005_11186)">
                   <path d="M6.59977 4.99316C6.22644 4.99316 5.93311 5.29316 5.93311 5.65983C5.93311 6.0265 6.23311 6.3265 6.59977 6.3265C6.96644 6.3265 7.26644 6.0265 7.26644 5.65983C7.26644 5.29316 6.96644 4.99316 6.59977 4.99316Z" fill="#5A36BF" />
@@ -112,7 +112,7 @@ export function WorkerSidebar({ userProfile }: WorkerSidebarProps) {
               </svg>
               {t('worker.work')}
             </span>
-            <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866]'>
+            <span className='inline-flex items-center gap-0.5 text-[12px] text-[#525866] hover:bg-[#F6F8FA] rounded-md'>
               <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M9.65327 2.33977L10.8266 4.68643C10.9866 5.0131 11.4133 5.32643 11.7733 5.38643L13.8999 5.73977C15.2599 5.96643 15.5799 6.9531 14.5999 7.92643L12.9466 9.57977C12.6666 9.85977 12.5133 10.3998 12.5999 10.7864L13.0733 12.8331C13.4466 14.4531 12.5866 15.0798 11.1533 14.2331L9.15994 13.0531C8.79994 12.8398 8.20661 12.8398 7.83994 13.0531L5.84661 14.2331C4.41994 15.0798 3.55327 14.4464 3.92661 12.8331L4.39994 10.7864C4.48661 10.3998 4.33327 9.85977 4.05327 9.57977L2.39994 7.92643C1.42661 6.9531 1.73994 5.96643 3.09994 5.73977L5.22661 5.38643C5.57994 5.32643 6.00661 5.0131 6.16661 4.68643L7.33994 2.33977C7.97994 1.06643 9.01994 1.06643 9.65327 2.33977Z" fill="#253EA7" />
               </svg>
