@@ -89,7 +89,7 @@ export default function TabsFiltersBar({
             /* Buyer – date picker */
             <Dropdown.Root>
               <Dropdown.Trigger asChild>
-                <button className="inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-2 text-[14px] text-gray-500 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:border-none hover:bg-[#F5F7FA] hover:text-[#0E121B]">
+                <button className="inline-flex h-9 items-center gap-2 whitespace-nowrap rounded-lg border border-stroke-soft-200 bg-bg-white-0 p-2 text-[14px] text-gray-500 transition-colors hover:bg-bg-neutral-subtle-100 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring hover:border-white hover:bg-[#F5F7FA] hover:text-[#0E121B]">
                   {/* <Image src={calendarIcon} alt={t('tabsFiltersBar.calendar.alt')} width={20} height={20} /> */}
                   <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M13.332 1.66667V4.16667" stroke="#868C98" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />

@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 /* -------- lightweight interface (or import a shared one) -------- */
 interface PersonInfo {
+  id: string;
   name: string;
   avatarUrl: string;
 }
@@ -29,11 +30,12 @@ export interface SellerOrder {
 /* ---------------------------------------------------------------- */
 interface Props {
   order: SellerOrder;
+  handleOpenChat: (contractId: string | null, personId: string | undefined, chatWith: 'buyer' | 'seller') => void;
 }
 
 /* ---------------------------------------------------------------- */
 /** One table row for a SELLER in Orders view */
-export default function OrderRowSeller({ order }: Props) {
+export default function OrderRowSeller({ order, handleOpenChat }: Props) {
   const { t } = useTranslation('common');
   const detailLink = `/${i18n.language}/orders/detail/${order.id}`;
   const currency = order.currency === 'USD' ? '$' : order.currency === 'EUR' ? '€' : order.currency === 'GBP' ? '£' : order.currency === 'CNY' ? '¥' : '$';
@@ -117,7 +119,7 @@ export default function OrderRowSeller({ order }: Props) {
             <Dropdown.Item asChild>
               <Link href={detailLink}>{t('orders.viewDetails')}</Link>
             </Dropdown.Item>
-            <Dropdown.Item>{t('orders.messageBuyer')}</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleOpenChat(order.id, order.from?.id, 'buyer')}>{t('orders.messageBuyer')}</Dropdown.Item>
             <Dropdown.Separator />
             <Dropdown.Item className="text-text-danger-500">
               {t('orders.cancelOrder')}

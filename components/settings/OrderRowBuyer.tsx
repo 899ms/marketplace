@@ -12,11 +12,13 @@ import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 /* ---------- interface (now includes proposals) ---------- */
 interface PersonInfo {
+  id: string;
   name: string;
   avatarUrl: string;
 }
 export interface BuyerEngagement {
   id: string;
+  contractId: string | null;
   type: 'job' | 'contract';
   subject: string;
   price: number;
@@ -29,10 +31,11 @@ export interface BuyerEngagement {
 
 interface Props {
   engagement: BuyerEngagement;
+  handleOpenChat: (contractId: string | null, personId: string | undefined, chatWith: 'buyer' | 'seller') => void;
 }
 
 /* ---------- one table row for a BUYER ---------- */
-export default function OrderRowBuyer({ engagement }: Props) {
+export default function OrderRowBuyer({ engagement, handleOpenChat }: Props) {
   const { t } = useTranslation('common');
   const isJob = engagement.type === 'job';
   const detailLink = isJob
@@ -123,7 +126,7 @@ export default function OrderRowBuyer({ engagement }: Props) {
             <Dropdown.Item asChild>
               <Link href={detailLink}>{t('orders.viewDetails')}</Link>
             </Dropdown.Item>
-            <Dropdown.Item disabled={!engagement.worker}>
+            <Dropdown.Item disabled={!engagement.worker || !engagement.contractId} onClick={() => handleOpenChat(engagement.contractId, engagement.worker?.id, 'seller')}>
               {t('orders.messageWorker')}
             </Dropdown.Item>
             <Dropdown.Separator />

@@ -84,11 +84,13 @@ export default function OrdersContent() {
                 return {
                   id: linked.id,
                   type: 'contract',
+                  contractId: linked.id,
                   subject: job.title,
                   price: linked.amount,
                   deadline: job.deadline || 'N/A',
                   worker: seller
                     ? {
+                      id: seller.id,
                       name: seller.full_name,
                       avatarUrl: seller.avatar_url || 'https://via.placeholder.com/40',
                     }
@@ -100,6 +102,7 @@ export default function OrdersContent() {
               return {
                 id: job.id,
                 type: 'job',
+                contractId: null,
                 subject: job.title,
                 price: job.budget,
                 deadline: job.deadline || 'N/A',
@@ -123,7 +126,7 @@ export default function OrdersContent() {
             sellerRows.push({
               id: c.id,
               from: buyer
-                ? { name: buyer.full_name, avatarUrl: buyer.avatar_url || 'https://via.placeholder.com/40' }
+                ? { id: buyer.id, name: buyer.full_name, avatarUrl: buyer.avatar_url || 'https://via.placeholder.com/40' }
                 : null,
               subject: c.title || 'Contract',
               price: c.amount,
