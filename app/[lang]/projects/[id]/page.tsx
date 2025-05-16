@@ -574,12 +574,12 @@ export default function ProjectDetailPage() {
                   {t('projects.detail.page.chat.error', { message: chatError })}
                 </p>
               )}
-              <div className="shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
+              {/* <div className="shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
                 <ApplicantsList
                   applications={jobApplications}
                   userRole="seller"
                 />
-              </div>
+              </div> */}
               <ProjectLinkCard link={projectLink} />
             </>
           )}
