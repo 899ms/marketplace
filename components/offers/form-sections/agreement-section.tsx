@@ -70,11 +70,11 @@ export function AgreementSection({ form }: AgreementSectionProps) {
             <a
               href='/terms'
               target='_blank'
-              className='font-medium text-[#0E121B] text-[14px] underline hover:text-[#0E121B]'
+              className='font-medium text-[#0E121B] text-[14px] underline hover:text-[#0E121B] whitespace-pre-wrap'
             >
               {t('offers.agreement.terms.terms')}
             </a>
-            {' '}{t('offers.agreement.terms.and')}{' '}
+            {` ${t('offers.agreement.terms.and')} `}
             <a
               href='/privacy'
               target='_blank'

@@ -82,7 +82,7 @@ export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
         </div>
         <div className='flex items-center gap-2'>
           {/* Placeholder Google Logos */}
-          <div className='flex flex-row items-center gap-1 text-[#525866] text-[12px]'>
+          <div className='flex flex-row items-center gap-1 text-[#525866] text-[12px] hover:bg-[#F6F8FA] rounded-md p-1'>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8.00015 11.5C9.93325 11.5 11.5003 9.93283 11.5003 7.99973C11.5003 6.06663 9.93325 4.49951 8.00015 4.49951C6.06704 4.49951 4.5 6.06663 4.5 7.99973C4.5 9.93283 6.06704 11.5 8.00015 11.5Z" fill="white" />
               <path d="M4.96887 9.75042L1.93811 4.50098C1.32358 5.56505 1 6.77214 1 8.00098C1 9.22982 1.32343 10.4369 1.93789 11.501C2.55235 12.5651 3.43615 13.4487 4.50037 14.0629C5.56459 14.677 6.77182 15.0002 8.00059 14.9999L11.0313 9.75042V9.74962C10.7244 10.282 10.2826 10.7241 9.75055 11.0315C9.21848 11.3389 8.61485 11.5008 8.00036 11.5009C7.38588 11.501 6.7822 11.3393 6.25004 11.032C5.71788 10.7248 5.27602 10.2828 4.96887 9.75057V9.75042Z" fill="#229342" />
@@ -92,7 +92,7 @@ export function OfferProfileSidebar({ worker }: OfferProfileSidebarProps) {
             </svg>
             {t('offers.profileSidebar.google')}
           </div>
-          <div className='flex flex-row items-center gap-1 text-[#525866]  text-[12px]'>
+          <div className='flex flex-row items-center gap-1 text-[#525866]  text-[12px] hover:bg-[#F6F8FA] rounded-md p-1'>
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M8.14258 6.72729V9.4382H11.9868C11.818 10.31 11.3114 11.0482 10.5517 11.5446L12.8699 13.3073C14.2205 12.0855 14.9998 10.291 14.9998 8.15918C14.9998 7.66283 14.9543 7.18551 14.8699 6.72737L8.14258 6.72729Z" fill="#4285F4" />
               <path d="M4.13966 9.33234L3.61681 9.72456L1.76611 11.1373C2.94145 13.4218 5.35039 15 8.14261 15C10.0712 15 11.688 14.3763 12.8699 13.3073L10.5517 11.5445C9.91532 11.9645 9.10362 12.2191 8.14261 12.2191C6.28545 12.2191 4.70756 10.9909 4.14258 9.33638L4.13966 9.33234Z" fill="#34A853" />

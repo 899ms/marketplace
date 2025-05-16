@@ -124,7 +124,7 @@ export function InstallmentPaymentDetails({
               <div className='flex items-center gap-0'>
                 <Input.Root className='flex-grow rounded-r-none'>
                   <Input.Wrapper>
-                    <div className='text-text-sub-600'>
+                    <div className='!text-[#0E121B]'>
                       {currency === 'USD'
                         ? '$'
                         : currency === 'EUR'
@@ -140,6 +140,7 @@ export function InstallmentPaymentDetails({
                       type='number'
                       placeholder='0.00'
                       min='1'
+                      className='!placeholder:text-[#0E121B] !text-[#0E121B] hover:text-[#525866]'
                       step='0.01'
                       {...register(`milestones.${index}.amount`, {
                         valueAsNumber: true,
@@ -202,7 +203,7 @@ export function InstallmentPaymentDetails({
                       <Button
                         type='button'
                         className={cn(
-                          'mt-1 w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50',
+                          'w-full justify-start rounded-md border border-[#E1E4EA]  hover:bg-[#F5F7FA] rounded-md hover:border-none bg-white px-3 py-2 text-left font-normal pr-10',
                           !field.value && 'text-muted-foreground',
                         )}
                       >
