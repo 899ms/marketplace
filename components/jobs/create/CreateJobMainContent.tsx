@@ -61,7 +61,7 @@ const CreateJobMainContent = ({
               key={stepNumber}
               className={`overflow-hidden rounded-3xl border !bg-white !border-[#E1E4EA] !px-0 data-[state=open]:shadow-[0px_2px_4px_#0E121B08,0px_6px_10px_#0E121B0F] data-[state=closed]:shadow-none !ring-0 !ring-offset-0`}
             >
-              <Accordion.Trigger className='!p-4 !mx-0 group/trigger flex w-full items-center justify-between text-left hover:bg-[#F6F8FA]' onClick={() => setActiveStep(stepNumber)}>
+              <Accordion.Trigger className='!p-4 !mx-0 group/trigger flex w-full items-center justify-between text-left' onClick={() => setActiveStep(stepNumber)}>
                 {' '}
                 {/* Added group */}
                 <div className='flex items-center gap-3'>
@@ -72,7 +72,7 @@ const CreateJobMainContent = ({
                     {step.title}
                   </span>
                 </div>
-                <div className='flex items-center justify-center size-6 rounded-md border border-[#E1E4EA]'>
+                <div className='flex items-center justify-center size-6 rounded-md border border-[#E1E4EA] hover:bg-[#F6F8FA] hover:border-none'>
                   <RiArrowDownSLine className='text-[#525866] size-5 transition-transform duration-200 group-data-[state=open]/trigger:rotate-180' />{' '}
                 </div>
                 {/* Use group state */}

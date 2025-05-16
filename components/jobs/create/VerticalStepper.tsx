@@ -53,7 +53,7 @@ const VerticalStepper = ({
                         className={cn(
                           'flex size-6 items-center justify-center rounded-full text-label-xs font-medium',
                           stepNumber === currentStep
-                            ? 'text-[12px] text-white bg-[#525866]'
+                            ? 'text-[12px] text-white bg-black'
                             : 'text-[12px] text-[#525866] bg-white',
                         )}
                       >
@@ -79,7 +79,7 @@ const VerticalStepper = ({
         <Button.Root
           variant='neutral'
           mode='stroke'
-          className='w-full font-medium'
+          className='w-full font-medium text-[#525866]'
           onClick={handleContactClick}
         >
           <Button.Icon as={RiHeadphoneLine} />

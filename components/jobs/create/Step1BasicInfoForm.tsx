@@ -88,6 +88,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
             <Input.Input
               id='title'
               placeholder={t('jobs.create.step1.subjectPlaceholder')}
+              className='placeholder:text-[#99A0AE]'
               {...register('title')}
             />
           </Input.Wrapper>
@@ -107,7 +108,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
           id='description'
           rows={4}
           placeholder={t('jobs.create.step1.detailPlaceholder')}
-          className='resize-none'
+          className='resize-none placeholder:text-[#99A0AE]'
           {...register('description', {
             required: 'Detail is required',
             minLength: {
@@ -141,10 +142,10 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
 
             <Input.Root>
               <Input.Wrapper>
-                <Input.InlineAffix>
+                <Input.InlineAffix className='text-[#0E121B]'>
                   {currency === 'USD' ? '$' : currency === 'CNY' ? '¥' : '€'}
                 </Input.InlineAffix>
-                <Input.Input id='budget' type='number' placeholder='0.00' step='0.01' {...register('budget', { valueAsNumber: true })} />
+                <Input.Input id='budget' type='number' placeholder='0.00' step='0.01' className='placeholder:text-[#99A0AE] hover:text-[#525866]' {...register('budget', { valueAsNumber: true })} />
               </Input.Wrapper>
               <Select.Root variant='compactForInput'
                 defaultValue='USD'
@@ -201,7 +202,7 @@ const Step1BasicInfoForm: React.FC<Step1Props> = ({
                   <Button.Root
                     type='button'
                     className={cn(
-                      'mt-1 w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50',
+                      'w-full justify-start rounded-md border border-[#E1E4EA] hover:border-none hover:bg-[#F6F8FA] bg-white px-3 py-2 text-left font-normal',
                       !field.value && 'text-muted-foreground',
                     )}
                   >
