@@ -92,7 +92,7 @@ export function ProjectSearchBar({
           <Input
             type='search'
             placeholder={t('projects.search.placeholder')}
-            className='w-full max-w-[310px] rounded-[10px] border font-[400] border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE]' // Adjusted styles
+            className='w-full max-w-[310px] rounded-[10px] border font-[400] border-gray-300 bg-white py-2 pl-9 pr-3 text-[14px] text-[#99A0AE] hover:bg-[#F6F8FA]' // Adjusted styles
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

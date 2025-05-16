@@ -803,7 +803,7 @@ export default function SearchPageClient() {
                           passHref
                           legacyBehavior
                         >
-                          <a className='block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg'>
+                          <a className='block focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 rounded-lg hover:bg-[#E5E7EB] mt-0 py[16px]'>
                             <ProjectCard
                               title={project.title}
                               infoBadges={[
