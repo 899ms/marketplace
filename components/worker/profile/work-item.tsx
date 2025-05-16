@@ -42,7 +42,7 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
   };
 
   return (
-    <div className="flex items-center justify-between py-[12px]">
+    <div className="flex items-center justify-between py-[12px] hover:bg-[#F5F7FA]">
       {/* 1. Play + Info */}
       <div className="flex items-center gap-2.5 w-[200px]">
         <button
@@ -86,7 +86,7 @@ export function WorkItem({ url, title, remarks, sellerName, sellerAvatarUrl, dur
           className="text-[#525866] hover:text-icon-primary-500 shrink-0"
           aria-label={t('audioPlayer.bookmark')}
         >
-          <Bookmark className="w-[16px] h-[14px] text-[#525866]" />
+          <Bookmark className="w-[20px] h-[20px] text-[#525866]" />
         </button>
       </div>
     </div>

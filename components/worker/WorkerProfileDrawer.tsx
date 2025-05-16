@@ -229,7 +229,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
           <div className="px-[24px] pt-4 flex-shrink-0">
             <div className="flex items-center justify-between h-[40px] px-1">
               <Drawer.Close asChild>
-                <button className="rounded-sm opacity-70 transition-opacity hover:opacity-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+                <button className="rounded-sm hover:bg-[#F5F7FA] rounded-xl p-2">
                   <RiCloseLine className="size-6 text-[#0E121B]" />
                   <span className="sr-only">{t('common.close')}</span>
                 </button>
@@ -306,17 +306,19 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                 <div className="flex items-center gap-3">
                   <button
                     className="
-                      w-[100px]            
+                      w-[100px]
                       h-8
                       rounded-lg           
                       border border-[#E1E4EA]  
                       bg-white             
-                      px-[6px] py-[6px]    
-                      flex items-center justify-center gap-[2px] 
+                      pl-[22px] pr-[8px] py-[6px]    
+                      flex items-center justify-between gap-[2px] 
+                      
                       text-sm font-medium text-[#525866] 
                       shadow-[0_1px_2px_0_rgba(10,13,20,0.03)] 
                       transition-colors
-                      hover:bg-[#F6F8FA]
+                      hover:bg-[#F5F7FA]
+                      hover:border-none
                       disabled:opacity-50 disabled:cursor-not-allowed
                     "
                     onClick={handleHireClick}
@@ -373,7 +375,7 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                     </FancyButton.Root>
                   )}
 
-                  <button className="rounded-full text-[#525866] transition-colors hover:bg-[#F6F8FA] hover:text-red-500" onClick={handleLikeStatus}>
+                  <button className="rounded-full text-[#525866] transition-colors " onClick={handleLikeStatus}>
                     {!likeStatus ? <RiHeart3Line className="size-[28px]" /> : <RiHeart3Fill className="size-[28px] text-red-500" />}
                   </button>
                 </div>
@@ -413,10 +415,12 @@ const WorkerProfileDrawer: React.FC<WorkerProfileDrawerProps> = ({
                         py-2 
                         text-[20px] 
                         font-medium 
-                        text-text-secondary-600 
+                        text-[#525866]
+                        hover:text-[#0E121B]
                         transition-colors 
                         data-[state=active]:border-black 
-                        data-[state=active]:text-text-strong-950 
+                        data-[state=active]:text-[#0E121B]
+
                         data-[state=active]:bg-transparent
                       "
                     >

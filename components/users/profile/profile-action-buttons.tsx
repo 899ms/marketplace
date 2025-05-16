@@ -43,12 +43,12 @@ export function ProfileActionButtons({
         variant="neutral"
         mode="stroke"
         size="xsmall"
-        className="w-[85px] h-[32px] rounded-[8px] border border-[#E1E4EA] hover:bg-[#F6F8FA] hover:text-text-strong-950 bg-bg-white-0 shadow-[0px_1px_2px_0px_rgba(10,13,20,0.03)] flex items-center justify-center gap-[8px] px-2"
+        className="w-[85px] h-[32px] rounded-[8px] border !border-[#E1E4EA] hover:bg-[#F6F8FA] hover:text-[#0E121B] hover:border-none bg-bg-white-0 flex items-center justify-center gap-[8px] px-2 text-[#525866]"
         onClick={handleFollow}
         disabled={!currentUser || isOwnProfile}
         aria-label={isOwnProfile ? t('users.profile.actions.cannotHireSelf') : t('users.profile.actions.hire')}
       >
-        <span className="text-paragraph-[14px] text-[#525866]">{t('users.profile.actions.follow')}</span>
+        <span className="text-paragraph-[14px]">{t('users.profile.actions.follow')}</span>
         <Button.Icon as={isFollowing ? RiHeart3Fill : RiHeart3Line} className={`size-5 ${isFollowing ? 'text-red-500' : 'text-[#525866]'}`} />
       </Button.Root>}
 
