@@ -60,7 +60,7 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
         <div className='flex items-center gap-0'>
           <Input.Root className='flex-grow rounded-r-none'>
             <Input.Wrapper>
-              <div className='text-text-sub-600'>
+              <div className='!text-[#0E121B]'>
                 {currency === 'USD'
                   ? '$'
                   : currency === 'EUR'
@@ -74,6 +74,7 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
               <Input.Input
                 type='number'
                 placeholder='0.00'
+                className='!placeholder:text-[#0E121B] !text-[#0E121B] hover:text-[#525866]'
                 min='1'
                 step='0.01'
                 {...register('amount', { valueAsNumber: true })}
@@ -130,11 +131,11 @@ export function OneTimePaymentDetails({ form }: OneTimePaymentDetailsProps) {
           render={({ field }) => (
             <Popover open={deadlineCalendarOpen} onOpenChange={setDeadlineCalendarOpen}>
               <PopoverTrigger asChild>
-                <div className='relative w-full mt-1'>
+                <div className='relative w-full'>
                   <Button
                     type='button'
                     className={cn(
-                      'w-full justify-start rounded-md border border-gray-300 bg-white px-3 py-2 text-left font-normal hover:bg-gray-50 pr-10',
+                      'w-full justify-start rounded-md border border-[#E1E4EA]  hover:bg-[#F5F7FA] rounded-md hover:border-none bg-white px-3 py-2 text-left font-normal pr-10',
                       !field.value && 'text-muted-foreground',
                     )}
                   >

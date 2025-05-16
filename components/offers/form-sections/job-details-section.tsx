@@ -97,21 +97,23 @@ export function JobDetailsSection({
           <Controller
             name='sendTo'
             control={control}
+
             defaultValue={sellerId}
             render={({ field }) => (
               <Select
                 onValueChange={field.onChange}
                 value={field.value}
+
                 disabled={isLoading || sellers.length === 0}
               >
-                <SelectTrigger className=''>
+                <SelectTrigger className='hover:bg-white hover:border hover:border-[#E1E4EA] !border-[#E1E4EA]'>
                   <SelectValue
                     placeholder={
                       isLoading ? t('offers.jobDetails.loadingSellers') : t('offers.jobDetails.selectRecipient')
                     }
                   >
-                    <Tag.Root variant='stroke'>
-                      <div className='flex items-center gap-1'>
+                    <Tag.Root variant='stroke' className='border-[#E1E4EA] hover:border-none hover:bg-[#F5F7FA] !pointer-events-auto'>
+                      <div className='flex items-center gap-1 rounded-md p-1'>
                         <Avatar.Root className='size-4 text-[10px]' color='yellow'>
                           {sellers.find((seller) => seller.id === field.value)?.full_name.charAt(0)}
                         </Avatar.Root>
@@ -252,10 +254,11 @@ export function JobDetailsSection({
                     <button
                       type='button'
                       onClick={() => handleRemoveSkillLevel(level)}
-                      className='ml-1 inline-flex items-center'
+                      className='ml-1 inline-flex items-center text-[#99A0AE] hover:text-[#525866]'
                       aria-label={t('offers.jobDetails.remove')}
+
                     >
-                      <RiCloseLine size={14} />
+                      <RiCloseLine size={14} className='' />
                     </button>
                   </Tag.Root>
                 ))}
