@@ -389,12 +389,13 @@ export default function MusicUploadDialog({
             </div>
           </div>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className="px-5 py-4 flex gap-4">
           <Button.Root
             variant='neutral'
             mode='stroke'
             onClick={() => onOpenChange(false)}
             disabled={isUploading}
+            className="flex-1"
           >
             {t('musicUpload.cancel')}
           </Button.Root>
@@ -403,6 +404,7 @@ export default function MusicUploadDialog({
             mode='filled'
             onClick={handleUpload}
             disabled={!file || !title || isUploading}
+            className="flex-1"
           >
             {isUploading ? <RiLoader2Fill className="animate-spin mr-2" /> : null}
             {isUploading ? t('musicUpload.uploading') : t('musicUpload.upload')}

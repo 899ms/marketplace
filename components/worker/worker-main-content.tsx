@@ -61,7 +61,7 @@ export function ProjectCard({ job, hasApplied, onApply }: ProjectCardProps) {
   const tags = Array.isArray(job.skill_levels) ? job.skill_levels : [];
 
   return (
-    <div className="flex flex-col max-h-[148px] gap-4">
+    <div className="flex flex-col max-h-[148px] gap-6 hover:bg-[#F6F8FA] px-[16px]">
       <div className='flex flex-col gap-2  pt-4'>
         <div className='flex flex-row justify-between'>
           <div className='flex flex-col gap-2'>
@@ -174,7 +174,7 @@ export function WorkerMainContent({ userProfile, recentJobs }: WorkerMainContent
       <Banner />
       <section className='flex flex-col max-w-[676px] max-h-[632px]'>
         <SectionHeader title={t('worker.mainContent.projects')} href={`/${i18n.language}/services/search?tab=Project`} />
-        <div className='flex flex-col gap-2'>
+        <div className='flex flex-col'>
           {recentJobs && recentJobs.length > 0 ? (
             recentJobs.map((job) => {
               const hasApplied = user ? userApplications.some(

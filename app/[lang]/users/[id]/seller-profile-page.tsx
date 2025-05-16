@@ -305,7 +305,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
 
             {/* 3) Reviews - Use workerData */}
             <h3 className="inline-block text-[24px] font-medium leading-8 tracking-normal text-text-strong-950 mt-8 pb-1 border-b-2 border-text-strong-950">{t('users.profile.seller.page.reviews.title')}</h3>
-            <div className='mt-4 space-y-5 divide-y divide-stroke-soft-200'>
+            <div>
               {workerData.reviews.length > 0 ? (
                 workerData.reviews.map((r) => (
                   <ReviewItem key={r.id} review={r} />
@@ -367,7 +367,7 @@ export default function SellerProfilePage({ user: targetSeller }: SellerProfileP
         );
       case 'reviews':
         return (
-          <div className='space-y-5 divide-y divide-stroke-soft-200'>
+          <div>
             {workerData.reviews.length > 0 ? (
               workerData.reviews.map((review) => (
                 <ReviewItem key={review.id} review={review} />
