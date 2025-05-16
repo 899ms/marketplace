@@ -31,27 +31,9 @@ const SkillsSection: React.FC<SkillsSectionProps> = ({ skills }) => {
       </h2>
       <div className='flex flex-wrap gap-2'>
         {skills.map((skill, idx) => (
-          // <Badge.Root
-          //   key={idx}
-          //   size='small'
-          //   className=" 
-          //     bg-bg-white-0
-          //     text-gray-600
-          //     rounded-[6px]
-          //     px-2 py-1
-          //     gap-[3px]
-          //     h-full
-          //     flex items-center justify-center
-          //     text-[12px]
-          //     border
-          //     border-gray-300
-          //     capitalize
-          //   "
-          // >
-          <Tag.Root className='text-[#525866] border border-[#E2E4E9] hover:border-none'>
+          <Tag.Root className='text-[#525866] border border-[#E2E4E9] hover:border-[#F6F8FA]'>
             {skill}
           </Tag.Root>
-          // </Badge.Root>
         ))}
       </div>
 
