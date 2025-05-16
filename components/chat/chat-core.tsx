@@ -1265,7 +1265,7 @@ export default function ChatCore({
                       </span>
                     </div>
                   )}
-                  <X size={20} onClick={clearSelectedFile} className='absolute top-1 right-1 cursor-pointer text-[#525866] p-0.5 rounded-full bg-white/80 hover:bg-white' />
+                  <div className='hover:bg-[#F5F7FA] absolute top-1 right-1 rounded-md'><X size={20} onClick={clearSelectedFile} className=' cursor-pointer text-[#525866] p-0.5 rounded-full' /></div>
                 </div>
               )}
             </div>

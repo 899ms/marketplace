@@ -77,7 +77,7 @@ export default function ChatList({
         const isContractChat = chat.contract_id !== null;
 
         return (
-          <div key={chat.id} className={`flex gap-3 p-2 items-center ${isSelected ? 'bg-[#F5F7FA]' : 'bg-white'} rounded-lg cursor-pointer`} onClick={() => onChatSelect(chat.id)}>
+          <div key={chat.id} className={`flex gap-3 p-2 items-center ${isSelected ? 'bg-[#F5F7FA]' : 'bg-white'} rounded-lg cursor-pointer hover:bg-[#F5F7FA]`} onClick={() => onChatSelect(chat.id)}>
             <div className="relative">
               {otherUserProfile?.avatar_url && otherUserProfile?.avatar_url != "" ? (
                 <Avatar.Root size='40'>
