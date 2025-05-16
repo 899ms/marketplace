@@ -142,16 +142,18 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
         return (
           <div className='divide-y mt-[-24px] ml-3 divide-stroke-soft-200'>
             {[1, 2, 3].map((i) => (
-              <ReviewItem
-                key={i}
-                review={{
-                  id: String(i),
-                  user: { name: 'Cleve Music', avatar: 'https://via.placeholder.com/40', rating: 4.9 },
-                  date: 'Jan 8, 2023',
-                  text: t('service.info.reviewPlaceholder'),
-                  amount: 1000.00, // Example amount
-                }}
-              />
+              <div className='pb-[16px] hover:bg-[#F6F8FA] transition-all duration-300'>
+                <ReviewItem
+                  key={i}
+                  review={{
+                    id: String(i),
+                    user: { name: 'Cleve Music', avatar: 'https://via.placeholder.com/40', rating: 4.9 },
+                    date: 'Jan 8, 2023',
+                    text: t('service.info.reviewPlaceholder'),
+                    amount: 1000.00, // Example amount
+                  }}
+                />
+              </div>
             ))}
           </div>
         );
@@ -173,16 +175,16 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
       <div className='mb-6 ml-4'>
         <TabMenuHorizontal.Root value={activeTab} onValueChange={setActiveTab}>
           <TabMenuHorizontal.List className="border-none">
-            <TabMenuHorizontal.Trigger value='Details' className="text-[24px] font-medium">
+            <TabMenuHorizontal.Trigger value='Details' className="text-[24px] font-medium hover:text-text-strong-950 data-[state=inactive]:text-text-secondary-600">
               {t('service.info.tabs.details')}
             </TabMenuHorizontal.Trigger>
-            <TabMenuHorizontal.Trigger value='Options' className="text-[24px] font-medium">
+            <TabMenuHorizontal.Trigger value='Options' className="text-[24px] font-medium hover:text-text-strong-950 data-[state=inactive]:text-text-secondary-600">
               {t('service.info.tabs.options')}
             </TabMenuHorizontal.Trigger>
-            <TabMenuHorizontal.Trigger value='Portfolio' className="text-[24px] font-medium">
+            <TabMenuHorizontal.Trigger value='Portfolio' className="text-[24px] font-medium hover:text-text-strong-950 data-[state=inactive]:text-text-secondary-600">
               {t('service.info.tabs.portfolio')}
             </TabMenuHorizontal.Trigger>
-            <TabMenuHorizontal.Trigger value='Review' className="text-[24px] font-medium">
+            <TabMenuHorizontal.Trigger value='Review' className="text-[24px] font-medium hover:text-text-strong-950 data-[state=inactive]:text-text-secondary-600">
               {t('service.info.tabs.review')}
             </TabMenuHorizontal.Trigger>
           </TabMenuHorizontal.List>

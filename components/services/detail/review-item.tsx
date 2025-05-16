@@ -12,7 +12,7 @@ interface ReviewItemProps {
 
 export function ReviewItem({ review }: ReviewItemProps) {
   return (
-    <div className='pt-[16px]'>
+    <div className='pt-[16px] px-4'>
       <div className='mb-[16px] flex items-start justify-between'>
         <div className='flex items-center gap-3'>
           <Avatar.Root size='48'>
@@ -36,7 +36,7 @@ export function ReviewItem({ review }: ReviewItemProps) {
           ${review.amount.toFixed(2)}
         </span>
       </div>
-      <div className='mb-[16px]'>
+      <div className=''>
         <p className='text-[#525866] line-clamp-3 text-paragraph-sm'>
           {review.text}
         </p>
