@@ -14,8 +14,9 @@ import { ServiceSearchBar } from '@/components/services/list/ServiceSearchBar';
 import { ProjectSearchBar } from '@/components/services/list/ProjectSearchBar';
 import WorkerProfileDrawer from '@/components/worker/WorkerProfileDrawer';
 import { serviceOperations, userOperations, jobOperations, contractOperations } from '@/utils/supabase/database';
-import { Service, User, Job, Contract } from '@/utils/supabase/types';
+import { Service, User, Job, Contract, JobApplication } from '@/utils/supabase/types';
 import { useAuth } from '@/utils/supabase/AuthContext';
+import { jobApplicationOperations } from '@/utils/supabase/job-application-operations';
 
 // Define the possible tab values
 type ActiveTabValue = 'Service' | 'Worker' | 'Project';
@@ -110,6 +111,20 @@ export default function SearchPageClient() {
   const { user } = useAuth();
   const [userContracts, setUserContracts] = useState<Contract[]>([]);
   const [contractsLoading, setContractsLoading] = useState(false);
+  const [userApplications, setUserApplications] = useState<JobApplication[]>([]);
+
+  useEffect(() => {
+    if (!user) {
+      setUserApplications([]);
+      return;
+    }
+    jobApplicationOperations.getUserJobApplications(user.id)
+      .then(setUserApplications)
+      .catch(error => {
+        console.error('[WorkerMainContent] Error fetching user applications:', error);
+        setUserApplications([]);
+      });
+  }, [user, applicationSubmitted]);
 
   useEffect(() => {
     console.log('[SearchPageClient] User from useAuth:', user);
@@ -469,81 +484,112 @@ export default function SearchPageClient() {
     router.push(`/${lang}/services/search?${currentParams.toString()}`);
   };
 
+  // const handleApplyToProject = async (projectId: string, projectTitle: string) => {
+  //   if (!user) {
+  //     console.error('[SearchPageClient] User not logged in. Cannot apply.');
+  //     // Optionally, trigger a notification to log in
+  //     return;
+  //   }
+
+  //   console.log(`[SearchPageClient] Attempting to apply to project ID: ${projectId} by user ID: ${user.id}`);
+
+  //   // Check if already applied (client-side check before DB call)
+  //   const alreadyApplied = userContracts.some(
+  //     (contract) => contract.job_id === projectId && contract.seller_id === user.id
+  //   );
+
+  //   if (alreadyApplied) {
+  //     console.log(`[SearchPageClient] User ${user.id} already applied to project ${projectId}.`);
+  //     // Notify user they've already applied (though button should be disabled)
+  //     // This is a safeguard.
+  //     return;
+  //   }
+
+  //   try {
+  //     const newContractData: Omit<Contract, 'id' | 'created_at'> = {
+  //       buyer_id: 'placeholder-buyer-id', // This needs to be the actual buyer_id of the job/project
+  //       seller_id: user.id,
+  //       job_id: projectId,
+  //       service_id: null,
+  //       title: `Application for: ${projectTitle}`,
+  //       contract_type: 'one-time', // Or determine based on project
+  //       status: 'pending', // Initial status for an application
+  //       amount: 0, // Or project.budget, or to be negotiated
+  //       description: `User ${user.id} applied to project ${projectTitle}`,
+  //       attachments: [],
+  //       currency: 'USD', // Or from project
+  //     };
+
+  //     // We need the project's buyer_id. Let's find the project first.
+  //     const projectToApply = projects.find(p => p.id === projectId);
+  //     if (!projectToApply || !projectToApply.buyer_id) {
+  //       console.error('[SearchPageClient] Could not find project or project.buyer_id to apply.');
+  //       // Notify error
+  //       return;
+  //     }
+  //     newContractData.buyer_id = projectToApply.buyer_id;
+  //     if (projectToApply.budget) {
+  //       newContractData.amount = projectToApply.budget;
+  //     }
+  //     if (projectToApply.currency) {
+  //       newContractData.currency = projectToApply.currency;
+  //     }
+
+
+  //     console.log('[SearchPageClient] Creating contract with data:', newContractData);
+  //     const createdContract = await contractOperations.createContract(newContractData);
+
+  //     if (createdContract) {
+  //       console.log('[SearchPageClient] Successfully applied (contract created):', createdContract);
+  //       // Trigger a re-fetch of contracts to update the UI
+  //       setApplicationSubmitted(prev => prev + 1);
+  //       // Optionally, show success notification (ProjectCard also shows one)
+  //     } else {
+  //       console.error('[SearchPageClient] Failed to create contract for application.');
+  //       // Notify user of failure
+  //     }
+  //   } catch (error) {
+  //     console.error('[SearchPageClient] Error during application process:', error);
+  //     // Notify user of error
+  //   }
+  // };
+
   const handleApplyToProject = async (projectId: string, projectTitle: string) => {
     if (!user) {
-      console.error('[SearchPageClient] User not logged in. Cannot apply.');
-      // Optionally, trigger a notification to log in
+      console.error('[WorkerMainContent] User not logged in. Cannot apply.');
+      return;
+    }
+    if (!projectId) {
+      console.error('[WorkerMainContent] Job ID missing. Cannot apply.');
       return;
     }
 
-    console.log(`[SearchPageClient] Attempting to apply to project ID: ${projectId} by user ID: ${user.id}`);
-
-    // Check if already applied (client-side check before DB call)
-    const alreadyApplied = userContracts.some(
-      (contract) => contract.job_id === projectId && contract.seller_id === user.id
+    const alreadyApplied = userApplications.some(
+      (application) => application.job_id === projectId && application.seller_id === user.id
     );
-
     if (alreadyApplied) {
-      console.log(`[SearchPageClient] User ${user.id} already applied to project ${projectId}.`);
-      // Notify user they've already applied (though button should be disabled)
-      // This is a safeguard.
+      console.log(`[WorkerMainContent] User ${user.id} already applied to project ${projectId}.`);
       return;
     }
 
     try {
-      const newContractData: Omit<Contract, 'id' | 'created_at'> = {
-        buyer_id: 'placeholder-buyer-id', // This needs to be the actual buyer_id of the job/project
-        seller_id: user.id,
-        job_id: projectId,
-        service_id: null,
-        title: `Application for: ${projectTitle}`,
-        contract_type: 'one-time', // Or determine based on project
-        status: 'pending', // Initial status for an application
-        amount: 0, // Or project.budget, or to be negotiated
-        description: `User ${user.id} applied to project ${projectTitle}`,
-        attachments: [],
-        currency: 'USD', // Or from project
-      };
+      const createdApplication = await jobApplicationOperations.createJobApplication(projectId, user.id);
 
-      // We need the project's buyer_id. Let's find the project first.
-      const projectToApply = projects.find(p => p.id === projectId);
-      if (!projectToApply || !projectToApply.buyer_id) {
-        console.error('[SearchPageClient] Could not find project or project.buyer_id to apply.');
-        // Notify error
-        return;
-      }
-      newContractData.buyer_id = projectToApply.buyer_id;
-      if (projectToApply.budget) {
-        newContractData.amount = projectToApply.budget;
-      }
-      if (projectToApply.currency) {
-        newContractData.currency = projectToApply.currency;
-      }
-
-
-      console.log('[SearchPageClient] Creating contract with data:', newContractData);
-      const createdContract = await contractOperations.createContract(newContractData);
-
-      if (createdContract) {
-        console.log('[SearchPageClient] Successfully applied (contract created):', createdContract);
-        // Trigger a re-fetch of contracts to update the UI
+      if (createdApplication) {
         setApplicationSubmitted(prev => prev + 1);
-        // Optionally, show success notification (ProjectCard also shows one)
       } else {
-        console.error('[SearchPageClient] Failed to create contract for application.');
-        // Notify user of failure
+        console.error('[WorkerMainContent] Failed to create job application.');
       }
     } catch (error) {
-      console.error('[SearchPageClient] Error during application process:', error);
-      // Notify user of error
+      console.error('[WorkerMainContent] Error during application process:', error);
     }
   };
 
   return (
     <>
-      <div className='flex flex-1 gap-6 py-8 h-full mx-auto w-full max-w-[1376px]'>
+      <div className='flex flex-1 gap-6 pt-8 pb-2 max-h-[85vh] mx-auto w-full max-w-[1376px]'>
         {/* Left Column: Tabs + Filters */}
-        <div className='w-full max-w-[342px] flex-shrink-0 flex flex-col h-full space-y-4'>
+        <div className='w-full max-w-[342px] flex-shrink-0 flex flex-col h-[85vh] space-y-4'>
           {/* Tab Navigation */}
           <div className='border-b border-stroke-soft-200 flex-shrink-0'>
             <TabMenuHorizontal.Root
@@ -582,7 +628,7 @@ export default function SearchPageClient() {
         </div>
 
         {/* Right Column: Tab Content */}
-        <div className='w-full max-w-[1010px] flex-1 space-y-4 min-w-0'>
+        <div className='w-full max-w-[1010px] flex-1 space-y-4 min-w-0 max-h-full'>
           {/* Search Bars */}
           {activeTab === 'Service' && (
             <ServiceSearchBar
@@ -603,7 +649,7 @@ export default function SearchPageClient() {
 
           {/* Services Grid */}
           {activeTab === 'Service' && (
-            <>
+            <div className='h-[85%] overflow-y-auto custom-scrollbar'>
               {serviceIsLoading ? (
                 <div className='grid grid-cols-3 gap-4'>
                   {[...Array(itemsPerPage)].map((_, i) => (
@@ -670,12 +716,12 @@ export default function SearchPageClient() {
                   </p>
                 </div>
               )}
-            </>
+            </div>
           )}
 
           {/* Workers Grid */}
           {activeTab === 'Worker' && (
-            <>
+            <div className='h-[100%] overflow-y-auto custom-scrollbar'>
               {workerIsLoading ? (
                 <div className='grid grid-cols-2 gap-4'>
                   {[...Array(itemsPerPage)].map((_, i) => (
@@ -740,14 +786,14 @@ export default function SearchPageClient() {
                   </p>
                 </div>
               )}
-            </>
+            </div>
           )}
 
           {/* Project Tab */}
           {activeTab === 'Project' && (
-            <>
+            <div className='h-[85%] overflow-y-auto custom-scrollbar'>
               {projectIsLoading || contractsLoading ? (
-                <div className='flex flex-col space-y-4'>
+                <div className='flex flex-col space-y-4 '>
                   {[...Array(5)].map((_, i) => (
                     <div
                       key={i}
@@ -779,22 +825,23 @@ export default function SearchPageClient() {
                   ))}
                 </div>
               ) : projects.length > 0 ? (
-                <>
+                <div className=''>
                   <div className='flex flex-col space-y-0'>
                     {projects.map((project) => {
                       console.log(`[SearchPageClient] Checking project ID: ${project.id}, User ID: ${user?.id}`);
                       console.log('[SearchPageClient] Current userContracts:', userContracts);
-                      const foundContract = userContracts.find(
-                        (contract) => {
-                          const conditionsMet = contract.seller_id === user?.id && contract.job_id === project.id;
-                          if (contract.job_id === project.id) {
-                            console.log(`[SearchPageClient] Contract ${contract.id} (job_id: ${contract.job_id}) vs Project ${project.id}. Seller_id match: ${contract.seller_id === user?.id}`);
-                          }
-                          return conditionsMet;
-                        }
-                      );
-                      console.log('[SearchPageClient] Found contract for project ' + project.id + ':', foundContract);
-                      const hasApplied = !!foundContract;
+                      // const foundContract = userContracts.find(
+                      //   (contract) => {
+                      //     const conditionsMet = contract.seller_id === user?.id && contract.job_id === project.id;
+                      //     if (contract.job_id === project.id) {
+                      //       console.log(`[SearchPageClient] Contract ${contract.id} (job_id: ${contract.job_id}) vs Project ${project.id}. Seller_id match: ${contract.seller_id === user?.id}`);
+                      //     }
+                      //     return conditionsMet;
+                      //   }
+                      // );
+                      const hasApplied = user ? userApplications.some(
+                        (application) => application.job_id === project.id && application.seller_id === user.id
+                      ) : false;
                       console.log('[SearchPageClient] hasApplied for project ' + project.id + ':', hasApplied);
                       return (
                         <Link
@@ -840,7 +887,7 @@ export default function SearchPageClient() {
                   </div>
 
                   {totalProjectPages > 1 && (
-                    <div className='flex justify-center gap-2 mt-6'>
+                    <div className='flex justify-center items-center gap-2 mt-6'>
                       <button
                         onClick={handleProjectPrevPage}
                         disabled={projectPage === 1}
@@ -860,7 +907,7 @@ export default function SearchPageClient() {
                       </button>
                     </div>
                   )}
-                </>
+                </div>
               ) : (
                 <div className='flex flex-col items-center justify-center py-12 text-center'>
                   <p className='text-lg font-medium mb-2'>{t('services.search.page.noResults.projects.title')}</p>
@@ -869,7 +916,7 @@ export default function SearchPageClient() {
                   </p>
                 </div>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>

@@ -12,6 +12,7 @@ import { useTranslation } from 'react-i18next';
 import i18n from '@/i18n';
 /* -------- lightweight interface (or import a shared one) -------- */
 interface PersonInfo {
+  id: string;
   name: string;
   avatarUrl: string;
 }
@@ -23,19 +24,21 @@ export interface SellerOrder {
   deadline: string;
   rating: number | null;
   status: string;
+  currency: string;
 }
 
 /* ---------------------------------------------------------------- */
 interface Props {
   order: SellerOrder;
+  handleOpenChat: (contractId: string | null, personId: string | undefined, chatWith: 'buyer' | 'seller') => void;
 }
 
 /* ---------------------------------------------------------------- */
 /** One table row for a SELLER in Orders view */
-export default function OrderRowSeller({ order }: Props) {
+export default function OrderRowSeller({ order, handleOpenChat }: Props) {
   const { t } = useTranslation('common');
   const detailLink = `/${i18n.language}/orders/detail/${order.id}`;
-
+  const currency = order.currency === 'USD' ? '$' : order.currency === 'EUR' ? '€' : order.currency === 'GBP' ? '£' : order.currency === 'CNY' ? '¥' : '$';
   return (
     <Table.Row className='border-b border-[#E1E4EA] group'>
       {/* -------- From (buyer) -------- */}
@@ -68,7 +71,7 @@ export default function OrderRowSeller({ order }: Props) {
           </div>
         </Link>
         <div className="text-[12px] text-[#0E121B]">
-          ${order.price.toLocaleString()}
+          {`${currency}${order.price.toLocaleString()}`}
         </div>
       </Table.Cell>
 
@@ -116,7 +119,7 @@ export default function OrderRowSeller({ order }: Props) {
             <Dropdown.Item asChild>
               <Link href={detailLink}>{t('orders.viewDetails')}</Link>
             </Dropdown.Item>
-            <Dropdown.Item>{t('orders.messageBuyer')}</Dropdown.Item>
+            <Dropdown.Item onClick={() => handleOpenChat(order.id, order.from?.id, 'buyer')}>{t('orders.messageBuyer')}</Dropdown.Item>
             <Dropdown.Separator />
             <Dropdown.Item className="text-text-danger-500">
               {t('orders.cancelOrder')}

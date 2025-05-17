@@ -35,7 +35,7 @@ const ProjectInfoCard: React.FC<ProjectInfoCardProps> = ({
           </span>
         </div>
         <span className="text-[24px] text-text-strong-950">
-          {budget}
+          {`${budget}`}
         </span>
       </div>
 

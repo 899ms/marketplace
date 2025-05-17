@@ -434,7 +434,7 @@
       "page": {
         "breadcrumb": {
           "home": "首页",
-          "services": "服务"
+          "services": "查找服务"
         },
         "title": "您将获得{{title}}"
       }
@@ -950,7 +950,7 @@
       "lastMonth": "上月"
     },
     "search": {
-      "placeholder": "搜索...",
+      "placeholder": "搜索项目...",
       "deadline": "截止日期",
       "urgent": "紧急",
       "withinWeek": "一周内",

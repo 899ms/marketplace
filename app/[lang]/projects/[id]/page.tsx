@@ -437,6 +437,8 @@ export default function ProjectDetailPage() {
   const projectDescription = projectDataState.description ? [projectDataState.description] : [];
   const projectSkills = projectDataState.skill_levels ?? [];
   const projectAttachments = projectDataState.files ?? [];
+  const projectCurrency = projectDataState.currency ?? 'USD';
+  const projectCurrencySymbol = projectCurrency === 'USD' ? '$' : projectCurrency === 'EUR' ? '€' : projectCurrency === 'GBP' ? '£' : projectCurrency === 'CNY' ? '¥' : '$';
 
   const clientName = clientDataState?.full_name ?? 'Unknown Client';
   const clientAvatar = clientDataState?.avatar_url ?? 'https://via.placeholder.com/100'; // Placeholder avatar
@@ -445,7 +447,7 @@ export default function ProjectDetailPage() {
   const clientReviews = 125; // Placeholder
   const clientIsVerified = true; // Placeholder
 
-  const projectBudget = `$${projectDataState.budget ?? 0}`;
+  const projectBudget = `${projectCurrencySymbol}${projectDataState.budget ?? 0}`;
   // Derive Release Time (Example: using raw date for now)
   const projectReleaseTime = projectDataState.created_at ? new Date(projectDataState.created_at).toLocaleDateString() : 'N/A';
   const projectDeadline = projectDataState.deadline ?? 'N/A';
@@ -453,8 +455,8 @@ export default function ProjectDetailPage() {
   const projectLink = 'https://www.example.com'; // Placeholder - not in JobSchema
 
   // Adjust breadcrumb logic based on role if needed
-  const findWorksLabel = isOwner || isBuyerVisitor ? 'Find Project' : 'Find Works';
-  const findWorksLink = isOwner || isBuyerVisitor ? '/projects' : '/jobs'; // Example adjustment
+  const findWorksLabel = isOwner || isBuyerVisitor ? 'Find Project' : 'Find Project';
+  const findWorksLink = isOwner || isBuyerVisitor ? '/projects' : '/projects'; // Example adjustment
 
   return (
     <div className='container mx-auto  py-10 px-1   max-w-[1200px]'>
@@ -474,7 +476,7 @@ export default function ProjectDetailPage() {
             href={`/${lang}/services/search?tab=Project`}
             className='font-medium text-text-sub-600 text-text-strong-950 hover:text-[#0E121B] hover:underline'
           >
-            {findWorksLabel} { /* Keep dynamic label for now */}
+            {t('projects.detail.page.breadcrumbs.findProject')} { /* Keep dynamic label for now */}
           </Link>
           <span className='text-text-sub-600'>/</span>
           <span className='font-medium text-text-sub-600 text-text-strong-950 hover:text-[#0E121B] hover:underline'>
@@ -572,12 +574,12 @@ export default function ProjectDetailPage() {
                   {t('projects.detail.page.chat.error', { message: chatError })}
                 </p>
               )}
-              <div className="shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
+              {/* <div className="shadow-sm rounded-[20px] border border-neutral-300 bg-bg-white-0 shadow-[0px_16px_32px_-12px_rgba(14,18,27,0.15)] overflow-hidden">
                 <ApplicantsList
                   applications={jobApplications}
                   userRole="seller"
                 />
-              </div>
+              </div> */}
               <ProjectLinkCard link={projectLink} />
             </>
           )}

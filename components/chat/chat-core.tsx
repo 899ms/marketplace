@@ -450,6 +450,7 @@ function ChatMessageRenderer({
                 description: contractData.title,
                 amount: contractData.amount,
                 sequence: 1,
+                currency: contractData.currency,
               }
             });
           }
@@ -494,6 +495,7 @@ function ChatMessageRenderer({
                 description: milestones[0].description,
                 amount: milestones[0].amount,
                 sequence: 1,
+                currency: contractData.currency,
               }
             });
           }
@@ -662,7 +664,7 @@ function ChatMessageRenderer({
               <div className='flex flex-col rounded-lg border border-[#E1E4EA] min-w-[16rem]'>
                 <div className='flex flex-row justify-between bg-[#F5F7FA] rounded-t-lg p-2'>
                   <p className='text-[14px] text-[#0E121B] font-medium'>{message.data?.title}</p>
-                  <p className='text-[16px] text-[#0E121B] font-medium'>${message.data?.price}</p>
+                  <p className='text-[16px] text-[#0E121B] font-medium'>{`${message.data?.currency === 'USD' ? '$' : message.data?.currency === 'EUR' ? '€' : message.data?.currency === 'GBP' ? '£' : message.data?.currency === 'CNY' ? '¥' : '$'}${message.data?.price}`}</p>
                 </div>
                 <div className='flex flex-col p-2 gap-1 border-b border-[#E1E4EA]'>
                   <p className='text-[12px] text-[#0E121B] border-b border-[#E1E4EA] pb-2 mb-1'>{message.data?.description}</p>
@@ -815,7 +817,7 @@ function ChatMessageRenderer({
               </div>
               <div className='flex flex-col gap-2 rounded-lg bg-[#F5F7FA] p-2 min-w-[16rem]'>
                 <p className='text-[14px] text-[#0E121B]'>Milestone {message.data?.sequence}: &quot;{message.data?.description}&quot;</p>
-                <p className='text-[14px] text-[#0E121B]'>Amount: ${message.data?.amount}</p>
+                <p className='text-[14px] text-[#0E121B]'>{`Amount: ${message.data?.currency === 'USD' ? '$' : message.data?.currency === 'EUR' ? '€' : message.data?.currency === 'GBP' ? '£' : message.data?.currency === 'CNY' ? '¥' : '$'}${message.data?.amount}`}</p>
                 <LinkButton
                   variant="primary"
                   size="medium"
