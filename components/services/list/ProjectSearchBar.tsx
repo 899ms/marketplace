@@ -85,7 +85,7 @@ export function ProjectSearchBar({
 
   return (
     <div className='mb-4 rounded-xl bg-[#E1E4EA] px-6 py-5'> {/* Adjust background color if needed */}
-      <div className='flex flex-wrap items-center gap-[8px]'>
+      <div className='flex flex-nowrap items-center gap-[8px]'>
         {/* Search Input */}
         <div className='relative flex-grow sm:flex-grow-0 sm:basis-1/3 max-w-[310px] '>
           <RiSearchLine className='absolute left-3 top-1/2 size-5 -translate-y-1/2 text-[#525866]' />
@@ -137,4 +137,4 @@ export function ProjectSearchBar({
       </div>
     </div>
   );
-} 
+}
