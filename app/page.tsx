@@ -18,7 +18,6 @@ export default function RootPage() {
 
     <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900">
 
-
       <Suspense fallback={<LoginFormSkeleton />}>
 
 

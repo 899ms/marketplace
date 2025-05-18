@@ -258,7 +258,8 @@
         "touch": "联系",
         "cannotHireSelf": "不能雇佣自己",
         "cannotMessageSelf": "不能与自己聊天",
-        "message": "发送消息给 {{name}}"
+        "message": "发送消息给 {{name}}",
+        "cannotMessageSameType": "工作者不能与其他工作者聊天"
       },
       "error": {
         "loadFailed": "加载工作者资料失败，请重试。"
