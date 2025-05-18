@@ -258,7 +258,8 @@
         "touch": "Touch",
         "cannotHireSelf": "Cannot hire yourself",
         "cannotMessageSelf": "You cannot message yourself",
-        "message": "Message {{name}}"
+        "message": "Message {{name}}",
+        "cannotMessageSameType": "Workers cannot message other workers"
       },
       "error": {
         "loadFailed": "Failed to load worker profile, please try again."
