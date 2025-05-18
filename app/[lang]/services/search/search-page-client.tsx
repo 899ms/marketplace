@@ -649,7 +649,7 @@ export default function SearchPageClient() {
 
           {/* Services Grid */}
           {activeTab === 'Service' && (
-            <div className='h-[85%] overflow-y-auto custom-scrollbar'>
+            <div className='h-[85%] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'>
               {serviceIsLoading ? (
                 <div className='grid grid-cols-3 gap-4'>
                   {[...Array(itemsPerPage)].map((_, i) => (
@@ -721,7 +721,7 @@ export default function SearchPageClient() {
 
           {/* Workers Grid */}
           {activeTab === 'Worker' && (
-            <div className='h-[100%] overflow-y-auto custom-scrollbar'>
+            <div className='h-[100%] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'>
               {workerIsLoading ? (
                 <div className='grid grid-cols-2 gap-4'>
                   {[...Array(itemsPerPage)].map((_, i) => (
@@ -791,7 +791,7 @@ export default function SearchPageClient() {
 
           {/* Project Tab */}
           {activeTab === 'Project' && (
-            <div className='h-[85%] overflow-y-auto custom-scrollbar'>
+            <div className='h-[85%] overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'>
               {projectIsLoading || contractsLoading ? (
                 <div className='flex flex-col space-y-4 '>
                   {[...Array(5)].map((_, i) => (
