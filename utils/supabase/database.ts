@@ -347,10 +347,10 @@ export const userOperations = {
     if (!title) return { success: false, error: 'Title is required.' };
 
     const bucketName = 'music-storage';
-    // Sanitize file name to support Chinese and special characters
-    const encodedFileName = encodeURIComponent(file.name);
+    // Sanitize file name to support only S3-safe characters (Supabase restriction)
+    const safeFileName = file.name.replace(/[^a-zA-Z0-9!\-_.()*'()/ &@$=;:+,?]/g, '_');
     // Create a unique file path, e.g., userId/timestamp-filename
-    const filePath = `${userId}/${Date.now()}-${encodedFileName}`;
+    const filePath = `${userId}/${Date.now()}-${safeFileName}`;
 
     try {
       // 1. Upload file to Supabase Storage
@@ -432,6 +432,7 @@ export const userOperations = {
         url: publicUrl,
         title: title,
         remarks: remarks,
+        originalName: file.name,
       };
 
       // Validate the new item just in case

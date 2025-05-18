@@ -7,6 +7,7 @@ export const MusicItemSchema = z.object({
   url: z.string().url(),
   title: z.string(),
   remarks: z.string().optional().nullable(), // Remarks can be optional
+  originalName: z.string().optional(), // Store original file name for display
 });
 export type MusicItem = z.infer<typeof MusicItemSchema>;
 
