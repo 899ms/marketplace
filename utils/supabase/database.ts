@@ -347,8 +347,10 @@ export const userOperations = {
     if (!title) return { success: false, error: 'Title is required.' };
 
     const bucketName = 'music-storage';
+    // Sanitize file name to support Chinese and special characters
+    const encodedFileName = encodeURIComponent(file.name);
     // Create a unique file path, e.g., userId/timestamp-filename
-    const filePath = `${userId}/${Date.now()}-${file.name}`;
+    const filePath = `${userId}/${Date.now()}-${encodedFileName}`;
 
     try {
       // 1. Upload file to Supabase Storage
