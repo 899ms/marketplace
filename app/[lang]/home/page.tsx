@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { createSupabaseServerClient } from '@/utils/supabase/server';
-import { userOperations, jobOperations } from '@/utils/supabase/database';
+import { serverDbOperations } from '@/utils/supabase/server-db';
 import { redirect } from 'next/navigation';
 
 // Buyer Home Content (assuming structure from previous app/home/page.tsx)
@@ -27,10 +27,12 @@ function BuyerHome({ userProfile }: { userProfile: User }) {
 export default async function HomePage({ params }: { params: { lang: string } }) {
   const { lang } = params;
 
+  console.log('------------- DEBUG: HOME PAGE LOAD START -------------');
 
   let supabase;
   try {
     supabase = await createSupabaseServerClient();
+    console.log('DEBUG: Successfully created server client');
   } catch (error) {
     console.error("Error creating Supabase server client:", error);
     // Handle client creation error, maybe redirect to a generic error page
@@ -39,16 +41,23 @@ export default async function HomePage({ params }: { params: { lang: string } })
 
   const { data: { user }, error: getUserError } = await supabase.auth.getUser();
 
+  if (getUserError) {
+    console.error('DEBUG: Auth error details:', getUserError);
+  }
+
   if (getUserError || !user) {
     console.log('User not authenticated or error fetching user, redirecting to / (login)', getUserError);
     // Middleware should handle this, but redirect as a fallback
     redirect(`/${lang}`);
   }
 
+  console.log('DEBUG: User authenticated successfully, ID:', user.id);
+
   let userProfile: User | null = null;
   try {
     console.log(`Fetching profile for user ID: ${user.id}`);
-    userProfile = await userOperations.getUserById(user.id);
+    // Use serverDbOperations instead of userOperations
+    userProfile = await serverDbOperations.getUserById(user.id);
     console.log('Fetched profile:', userProfile);
   } catch (error) {
     console.error(`Error fetching user profile for ID ${user.id}:`, error);
@@ -63,12 +72,15 @@ export default async function HomePage({ params }: { params: { lang: string } })
     redirect(`/${lang}`);
   }
 
+  console.log('DEBUG: Successfully retrieved user profile');
+
   // Fetch recent jobs *only if* the user is a seller
   let recentJobs: Job[] = [];
   if (userProfile.user_type === 'seller') {
     try {
       console.log('Fetching recent jobs for seller...');
-      recentJobs = await jobOperations.getRecentJobs(3);
+      // Use serverDbOperations instead of jobOperations
+      recentJobs = await serverDbOperations.getRecentJobs(3);
       console.log(`Fetched ${recentJobs.length} recent jobs.`);
     } catch (error) {
       console.error('Error fetching recent jobs:', error);
@@ -76,6 +88,8 @@ export default async function HomePage({ params }: { params: { lang: string } })
       recentJobs = [];
     }
   }
+
+  console.log('------------- DEBUG: HOME PAGE LOAD COMPLETE -------------');
 
   // --- Conditional Rendering based on user_type ---
   if (userProfile.user_type === 'seller') {
