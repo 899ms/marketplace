@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { createSupabaseServerClient } from '@/utils/supabase/server';
-import { serverDbOperations } from '@/utils/supabase/server-db';
+import { userOperations, jobOperations } from '@/utils/supabase/database';
 import { redirect } from 'next/navigation';
 
 // Buyer Home Content (assuming structure from previous app/home/page.tsx)
@@ -57,7 +57,7 @@ export default async function HomePage({ params }: { params: { lang: string } })
   try {
     console.log(`Fetching profile for user ID: ${user.id}`);
     // Use serverDbOperations instead of userOperations
-    userProfile = await serverDbOperations.getUserById(user.id);
+    userProfile = await userOperations.getUserById(user.id);
     console.log('Fetched profile:', userProfile);
   } catch (error) {
     console.error(`Error fetching user profile for ID ${user.id}:`, error);
@@ -80,7 +80,7 @@ export default async function HomePage({ params }: { params: { lang: string } })
     try {
       console.log('Fetching recent jobs for seller...');
       // Use serverDbOperations instead of jobOperations
-      recentJobs = await serverDbOperations.getRecentJobs(3);
+      recentJobs = await jobOperations.getRecentJobs(3);
       console.log(`Fetched ${recentJobs.length} recent jobs.`);
     } catch (error) {
       console.error('Error fetching recent jobs:', error);
