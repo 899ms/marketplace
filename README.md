@@ -6,80 +6,67 @@
   <p align="center">The Design System You Need</p>
 </p>
 
+
 [Join the AlignUI Community](https://discord.gg/alignui)
 
-# AlignUI Starter Template with Next.js + Docker + Supabase
+# AlignUI Starter Template with Next.js
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app), Dockerized for production and connected to a self-hosted [Supabase](https://supabase.com) backend.
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
----
+## Features
 
-## ✨ Features
+- 🔸 Includes all styles
+- 🔸 Ready-to-use Tailwind setup
+- 🔸 All base components included
+- 🔸 All utils included
+- 🔸 Inter font setup
+- 🔸 Dark mode toggle included
 
-- ⚡ Dockerized Next.js frontend
-- 🎨 Pre-configured Tailwind CSS & dark mode toggle
-- 🧩 Includes base components & utility classes
-- 🔐 Supabase client integration (auth, db, etc.)
-- 🧱 Supports environment-based configuration
-- 🚀 Production-ready build setup
+## Getting Started
 
----
+**Setup environment variables**
 
-## 🛠️ Environment Variables
+Copy the environment example file and configure your environment variables:
 
-Create a `.env` file in the root of your project and add the following values:
-
-```env
-NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
-NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
+```bash
+cp .env.example .env
 ```
 
-⚠️ These values should match the Supabase backend instance you are connecting to (self-hosted or cloud).
+**Install dependencies**
 
-
-
-
-## 🚀 Getting Started (Local Development)
-Install dependencies:
-
-```
-pnpm install
+```bash
+pnpm i
 ```
 
-Run the development server:
+**Run the development server:**
 
-```
+```bash
 pnpm dev
 ```
 
-Visit: http://localhost:3000
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-## 🐳 Running with Docker
+## Deployment
 
-1. Build the Docker image
+### Docker Deployment
 
+This project includes Docker support for easy deployment. The application runs on port 3000 by default unless the port is mapped to a domain.
+
+**Build and run with Docker Compose:**
+
+```bash
+docker compose up -d --build
 ```
-docker build -t alignui-next-app .
-```
 
-2. Run the container
-```
-docker compose up -d
-```
+This command will:
+- Build the Docker image
+- Start the container in detached mode
+- Make the application available on port 3000
 
-By default, the app will be available at:
-http://localhost:3000
+**Stop and remove the service:**
 
-3. Stop the container
-```
+```bash
 docker compose down
 ```
 
-You can modify the exposed ports or other settings in docker-compose.yml.
-
-## 📚 Additional Resources
-
-- [Supabase Docs](https://supabase.com/docs)
-- [Next.js Docs](https://nextjs.org/docs)
-- [Tailwind CSS Docs](https://tailwindcss.com/docs/installation/using-vite)
-- [AlignUI](https://alignui.com/)
+This will stop the running containers and remove them along with the associated networks.
