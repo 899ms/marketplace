@@ -6,34 +6,80 @@
   <p align="center">The Design System You Need</p>
 </p>
 
-
 [Join the AlignUI Community](https://discord.gg/alignui)
 
-# AlignUI Starter Template with Next.js
+# AlignUI Starter Template with Next.js + Docker + Supabase
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app), Dockerized for production and connected to a self-hosted [Supabase](https://supabase.com) backend.
 
-## Features
+---
 
-- 🔸 Includes all styles
-- 🔸 Ready-to-use Tailwind setup
-- 🔸 All base components included
-- 🔸 All utils included
-- 🔸 Inter font setup
-- 🔸 Dark mode toggle included
+## ✨ Features
 
-## Getting Started
+- ⚡ Dockerized Next.js frontend
+- 🎨 Pre-configured Tailwind CSS & dark mode toggle
+- 🧩 Includes base components & utility classes
+- 🔐 Supabase client integration (auth, db, etc.)
+- 🧱 Supports environment-based configuration
+- 🚀 Production-ready build setup
 
-**Install dependencies**
+---
 
-```bash
-pnpm i
+## 🛠️ Environment Variables
+
+Create a `.env` file in the root of your project and add the following values:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=<your-supabase-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-supabase-anon-key>
 ```
 
-**Run the development server:**
+⚠️ These values should match the Supabase backend instance you are connecting to (self-hosted or cloud).
 
-```bash
+
+
+
+## 🚀 Getting Started (Local Development)
+Install dependencies:
+
+```
+pnpm install
+```
+
+Run the development server:
+
+```
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit: http://localhost:3000
+
+## 🐳 Running with Docker
+
+1. Build the Docker image
+2. 
+```
+docker build -t alignui-next-app .
+```
+
+2. Run the container
+```
+docker compose up -d
+```
+
+By default, the app will be available at:
+http://localhost:3000
+
+3. Stop the container
+```
+docker compose down
+```
+
+You can modify the exposed ports or other settings in docker-compose.yml.
+
+## 📚 Additional Resources
+
+- [Supabase Docs](https://supabase.com/docs)
+- [Next.js Docs](https://nextjs.org/docs)
+- [Tailwind CSS Docs](https://tailwindcss.com/docs/installation/using-vite)
+- [AlignUI](https://alignui.com/)
