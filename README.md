@@ -57,7 +57,7 @@ Visit: http://localhost:3000
 ## 🐳 Running with Docker
 
 1. Build the Docker image
-2. 
+
 ```
 docker build -t alignui-next-app .
 ```
