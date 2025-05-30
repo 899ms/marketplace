@@ -61,6 +61,7 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
 
     switch (activeTab) {
       case 'Details':
+        const additionaloptionServices = service.additional_services;
         return (
           <div className='space-y-4 pl-4'>
             {/* Service Description Section */}
@@ -88,7 +89,74 @@ export function ServiceInfoLeft({ service, portfolioServices }: ServiceInfoLeftP
                 </ul>
               </div>
             )}
-            {/* Add other relevant sections from service data if needed */}
+            {/* Service Options Section */}
+            <h3 className="mt-8 mb-4 text-[22px] font-medium text-[#0E121B] border-b-2 border-[#0E121B] w-fit">
+              {t('service.info.tabs.options')}
+            </h3>
+            <div className='divide-y px-4  divide-stroke-soft-200 rounded-lg border border-stroke-soft-200'>
+              {additionaloptionServices && additionaloptionServices.length > 0 ? (
+                additionaloptionServices.map((option, index) => (
+                  <div
+                    key={index} // Consider using a more stable key if options have IDs
+                    className='flex items-center justify-between py-5'
+                  >
+                    <span className='text-[16px] text-[#525866]'>
+                      {option.name}
+                    </span>
+                    <span className='text-[18px] font-medium text-text-strong-950'>
+                      {/* TODO: Consider currency formatting based on service.currency */}
+                      ${option.price}
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="px-4 py-3 text-sm text-text-secondary-600">
+                  {t('service.info.noOptions')}
+                </p>
+              )}
+            </div>
+            {/* Service portfolio Section */}
+            <h3 className="mt-8 mb-4 text-[22px] font-medium text-[#0E121B] border-b-2 border-[#0E121B] w-fit">
+              {t('service.info.tabs.portfolio')}
+            </h3>
+            <div className='w-full max-w-[824px] mx-auto'>
+              {portfolioServices.length > 0 ? (
+                <div className='flex justify-between'>
+                  {portfolioServices
+                    .slice(0, 3)
+                    .map((portfolioService) => (
+                      <RelatedServiceCard
+                        key={portfolioService.id}
+                        service={portfolioService}
+                      />
+                    ))}
+                </div>
+              ) : (
+                <p className='text-sm text-text-secondary-600'>
+                  {t('service.info.noPortfolio')}
+                </p>
+              )}
+            </div>
+            {/* Service review Section */}
+            <h3 className="mt-8 mb-4 text-[22px] font-medium text-[#0E121B] border-b-2 border-[#0E121B] w-fit">
+              {t('service.info.tabs.review')}
+            </h3>
+            <div className='divide-y mt-[-24px] ml-3 divide-stroke-soft-200'>
+              {[1, 2, 3].map((i) => (
+                <div className='pb-[16px] hover:bg-[#F6F8FA] transition-all duration-300'>
+                  <ReviewItem
+                    key={i}
+                    review={{
+                      id: String(i),
+                      user: { name: 'Cleve Music', avatar: 'https://via.placeholder.com/40', rating: 4.9 },
+                      date: 'Jan 8, 2023',
+                      text: t('service.info.reviewPlaceholder'),
+                      amount: 1000.00, // Example amount
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         );
       case 'Options': // Use actual service.additional_services
