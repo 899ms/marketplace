@@ -121,7 +121,7 @@ export const inputVariants = tv({
       false: {
         root: [
           // hover
-          'hover:[&:not(:has(input:focus)):has(>:only-child)]:before:ring-transparent',
+          // 'hover:[&:not(:has(input:focus)):has(>:only-child)]:before:ring-transparent', // Removed to fix cut-off edges
         ],
       },
     },

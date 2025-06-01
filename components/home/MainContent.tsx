@@ -123,7 +123,7 @@ const MainContent = () => {
             ) : recentServices.length > 0 ? (
               // Map through fetched services
               recentServices.map((service) => (
-                <Link key={service.id} href={`/${i18n.language}/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
+                <Link key={service.id} href={`/${i18n.language}/services/${service.id}`} className="focus:outline-none focus:ring-0 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
                   <ServiceCard service={service} />
                 </Link>
               ))
@@ -150,7 +150,7 @@ const MainContent = () => {
             ) : recentWorkers.length > 0 ? (
               // Map through fetched workers
               recentWorkers.map((worker) => (
-                <Link key={worker.id} href={`/${i18n.language}/users/${worker.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
+                <Link key={worker.id} href={`/${i18n.language}/users/${worker.id}`} className="focus:outline-none focus:ring-0 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg">
                   <WorkerCard worker={worker} />
                 </Link>
               ))
@@ -177,7 +177,7 @@ const MainContent = () => {
             ) : categoryServices.length > 0 ? (
               // Map through shuffled services
               categoryServices.map((service) => (
-                <Link key={`category-${service.id}`} href={`/${i18n.language}/services/${service.id}`} className="focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
+                <Link key={`category-${service.id}`} href={`/${i18n.language}/services/${service.id}`} className="focus:outline-none focus:ring-0 focus:ring-offset-2 focus:ring-indigo-500 rounded-lg block max-w-[340px] h-[284px]">
                   <ServiceCard service={service} />
                 </Link>
               ))

@@ -199,13 +199,14 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                   key={skill}
                   asChild
                   variant="gray"
-                  className={`
+                  className="
                     cursor-pointer
-                    ${idx % 2 === 0
-                      ? "bg-white border border-gray-100 hover:bg-[#F6F8FA] hover:border-[#F6F8FA]"
-                      : "bg-[#F6F8FA] border border-[#F6F8FA] hover:bg-white hover:border-gray-100"
-                    }
-                  `}
+                    bg-white 
+                    border 
+                    border-gray-100 
+                    hover:bg-[#F6F8FA] 
+                    hover:border-[#F6F8FA]
+                  "
                 >
                   <button onClick={() => handleSkillToggle(skill)}>
                     {skill}
@@ -249,7 +250,16 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                       </Tag.Icon>
                       <span>{tag}</span>
                       {isSelected && (
-                        <Tag.Icon as={RiCloseLine} className="ml-1 cursor-pointer text-[#525866]" />
+                        <Tag.Icon
+                          as={RiCloseLine}
+                          className="ml-1 cursor-pointer text-[#525866]"
+                          onClick={e => {
+                            e.stopPropagation();
+                            removeFeaturedTag(tag);
+                            // Blur the parent button to remove focus state
+                            (e.currentTarget.closest('button') as HTMLButtonElement)?.blur();
+                          }}
+                        />
                       )}
                     </button>
                   </Tag.Root>
@@ -290,13 +300,14 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                   key={tool}
                   asChild
                   variant="gray"
-                  className={`
+                  className="
                     cursor-pointer
-                    ${idx % 2 === 0
-                      ? "bg-white border border-gray-100 hover:bg-[#F6F8FA] hover:border-[#F6F8FA]"
-                      : "bg-[#F6F8FA] border border-[#F6F8FA] hover:bg-white hover:border-gray-100"
-                    }
-                  `}
+                    bg-white 
+                    border 
+                    border-gray-100 
+                    hover:bg-[#F6F8FA] 
+                    hover:border-[#F6F8FA]
+                  "
                 >
                   <button onClick={() => handleToolToggle(tool)}>{tool}</button>
                 </Tag.Root>
@@ -337,7 +348,16 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
                       </Tag.Icon>
                       <span>{tag}</span>
                       {isSelected && (
-                        <Tag.Icon as={RiCloseLine} className="ml-1 cursor-pointer text-[#525866]" />
+                        <Tag.Icon
+                          as={RiCloseLine}
+                          className="ml-1 cursor-pointer text-[#525866]"
+                          onClick={e => {
+                            e.stopPropagation();
+                            removeFeaturedTag(tag);
+                            // Blur the parent button to remove focus state
+                            (e.currentTarget.closest('button') as HTMLButtonElement)?.blur();
+                          }}
+                        />
                       )}
                     </button>
                   </Tag.Root>
@@ -432,7 +452,7 @@ const ServiceFilterSidebar: React.FC<ServiceFilterSidebarProps> = ({
           className={cn(
             'w-full flex items-center text-[#525866] font-medium justify-center gap-1 rounded-[10px] border border-stroke-soft-200',
             'bg-bg-white-0 px-4 py-2.5 text-[14px] font-medium leading-[20px] shadow-[0px_1px_2px_0px_#5258660F] transition',
-            'hover:bg-[#F5F7FA] hover:text-[#0E121B] hover:border-none focus:outline-none focus:ring-2 focus:ring-text-primary-600'
+            'hover:bg-[#F5F7FA] hover:text-[#0E121B] hover:border-none focus:outline-none focus:ring-0 focus:ring-text-primary-600'
           )}
         >
           {t('filters.clearAll')}
