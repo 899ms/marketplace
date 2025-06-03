@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { UseFormReturn } from 'react-hook-form';
+import { useRouter } from 'next/navigation';
 import { CreateServiceFormData } from '@/app/[lang]/worker/services/create/schema';
 import * as Button from '@/components/ui/button';
 import * as FileUpload from '@/components/ui/file-upload';
@@ -38,6 +39,7 @@ interface Step1BasicInfoProps {
 
 export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
   const { t } = useTranslation('common');
+  const router = useRouter();
   const { uploadFile } = useCreateServiceForm();
   const [inputValue, setInputValue] = useState('');
   const [fileUploadError, setFileUploadError] = useState<string | null>(null);
@@ -158,6 +160,10 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
     return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
   };
 
+  const handleClose = () => {
+    router.back();
+  };
+
   return (
     <div className='shadow-sm mx-auto max-w-2xl rounded-xl border border-[#EBEBEB] bg-bg-white-0'>
       {/* Header */}
@@ -166,7 +172,7 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
           <h2 className='font-semibold text-[#0E121B] text-[16px]'>{t('worker.services.create.page.title')}</h2>
           <p className='text-[12px] text-[#525866]'>{t('worker.services.create.page.steps.terms')}</p>
         </div>
-        <Button.Root variant='neutral' mode='ghost' size='medium'>
+        <Button.Root variant='neutral' mode='ghost' size='medium' onClick={handleClose}>
           <Button.Icon as={RiCloseLine} />
         </Button.Root>
       </div>
@@ -352,7 +358,7 @@ export function Step1BasicInfo({ formMethods, nextStep }: Step1BasicInfoProps) {
         </div>
         {/* Action Buttons */}
         <div>
-          <Button.Root variant='neutral' mode='stroke' className='mr-2'>
+          <Button.Root variant='neutral' mode='stroke' className='mr-2' onClick={handleClose}>
             {t('worker.services.create.step1.cancel')}
           </Button.Root>
           <FancyButton.Root

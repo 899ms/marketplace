@@ -1,6 +1,5 @@
 import supabase from './client';
 // Comment out server client import as it's causing issues in Pages Router
-// import { createServerClient } from './server';
 import {
   UserSchema,
   JobSchema,

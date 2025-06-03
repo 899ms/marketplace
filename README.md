@@ -24,6 +24,14 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+**Setup environment variables**
+
+Copy the environment example file and configure your environment variables:
+
+```bash
+cp .env.example .env
+```
+
 **Install dependencies**
 
 ```bash
@@ -37,3 +45,28 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Deployment
+
+### Docker Deployment
+
+This project includes Docker support for easy deployment. The application runs on port 3000 by default unless the port is mapped to a domain.
+
+**Build and run with Docker Compose:**
+
+```bash
+docker compose up -d --build
+```
+
+This command will:
+- Build the Docker image
+- Start the container in detached mode
+- Make the application available on port 3000
+
+**Stop and remove the service:**
+
+```bash
+docker compose down
+```
+
+This will stop the running containers and remove them along with the associated networks.

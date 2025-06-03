@@ -1,0 +1,12 @@
+# ignore dependencies, build artifacts, logs, and private env files
+node_modules
+.next
+out
+*.log
+
+# ignore all env files (we pass them in at runtime via `env_file`)
+.env*
+!.env.example
+
+# macOS
+.DS_Store

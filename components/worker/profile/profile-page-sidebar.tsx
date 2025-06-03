@@ -51,7 +51,7 @@ interface SidebarLinkProps {
 const SidebarLink = ({ href, icon: Icon, label, isActive, onClick }: SidebarLinkProps) => {
   const commonClasses = cn(
     'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-label-md transition-colors duration-200',
-    'text-text-secondary-600 focus:outline-none focus:ring-2 focus:ring-border-focus-base',
+    'text-text-secondary-600 focus:outline-none focus:ring-0 focus:ring-border-focus-base',
     isActive ? 'bg-action-hover-bg-inverse-0 text-text-strong-950' : 'hover:bg-action-hover-bg-inverse-0 hover:text-text-strong-950'
   );
 

@@ -81,7 +81,7 @@ export default function TabsFiltersBar({
               placeholder={t('tabsFiltersBar.search.placeholder')}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="h-9 w-full rounded-lg border border-[#E1E4EA] hover:border-none hover:placeholder:text-[#525866] pl-8 pr-3 text-[12px] placeholder:text-[#868C98] focus:outline-none focus:ring-1 focus:ring-ring"
+              className="h-9 w-full rounded-lg border border-[#E1E4EA] hover:border-none hover:placeholder:text-[#525866] pl-8 pr-3 text-[12px] placeholder:text-[#868C98] focus:outline-none focus:ring-0 focus:ring-ring"
             />
           </div>
 

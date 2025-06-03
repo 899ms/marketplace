@@ -204,7 +204,7 @@ const ProjectLinkCard = ({ link }: { link: string }) => {
         {t('projects.details.link')}
       </label>
       <Input.Root>
-        <Input.Wrapper className="flex items-center bg-white border border-gray-300 rounded-md px-2 py-1">
+        <Input.Wrapper className="flex items-center bg-white border border-gray-300 px-2 py-1">
           {/* link icon */}
           <RiLinksLine className="size-5 text-gray-400 mr-2" />
           {/* read-only input */}
