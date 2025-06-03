@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 
 import OrdersSidebar from '@/components/settings/OrdersSidebar';
 import OrdersContent from '@/components/settings/OrdersContent';
+import BillingContent from '@/components/settings/BillingContent';
 import MyServicesView from '@/components/settings/MyServicesView';
 
 export type ActiveView = 'orders' | 'billing' | 'my-services';
@@ -86,12 +87,7 @@ export default function SettingsPageContent() {
             </main>
           )}
 
-          {currentTab === 'billing' && (
-            <main>
-              {/* TODO: BillingView component once implemented */}
-              <p className="text-text-sub-400">{t('settingsPage.billingComingSoon')}</p>
-            </main>
-          )}
+          {currentTab === 'billing' && <BillingContent />}
         </Suspense>
       </div>
     </div>
